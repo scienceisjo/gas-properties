@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+/* 전자칠판 보정 — 패널 브라우저가 뷰포트를 좁게 잡아 화면이 왼쪽에 몰리는 것을 막는다 */
+(function(){try{var sw=screen.width,iw=innerWidth;
+ if(sw>=1600&&iw>0&&sw/iw>1.15)document.querySelector('meta[name=viewport]')
+  .setAttribute('content','width='+sw+', user-scalable=no, viewport-fit=cover');}catch(e){}})();
+</script>
+<meta name="theme-color" content="#eef4f9">
+<title>튜브를 눌렀는데 내 손이 밀렸다 · 기체의 압력 — 입자의 충돌</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════ VI. 기체의 성질 — 「바람과 하늘 공방」 테마 ══════════
+   물총·튜브·과자 봉지·열기구가 사는 단원. 맑은 하늘과 종이비행기의 톤.
+   색 약속(단원 내내 고정):
+   압력 #b23a30(빨강) · 부피 #3f64b5(파랑) · 온도 #c4711e(주황)
+   입자 #3a7a3f(초록) · 힘 #7d5ba6(보라) · 면적 #8a5f24(갈색) */
+:root{
+ --paper:#eef4f9; --paper-hi:#f9fcfe; --paper-lo:#d9e6f0;
+ --line:#9db7cc; --line-soft:#c3d5e2;
+ --ink:#1e2c39; --ink-dim:#41586c; --ink-mute:#7b91a4;
+ --accent:#20748f; --accent2:#20748f;
+ --sky:#3f88c5; --sky-hi:#a9d0ef; --sky-dk:#1c507e;
+ --c1:#b23a30; /* 압력 */
+ --c2:#3f64b5; /* 부피 */
+ --c3:#c4711e; /* 온도 */
+ --c4:#3a7a3f; /* 입자 */
+ --c5:#7d5ba6; /* 힘 */
+ --c6:#8a5f24; /* 면적 */
+ --gold:#c4711e; --ok:#2c7a44; --danger:#b3362e;
+ --disp:"Pretendard",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ --body:var(--disp); --mono:"JetBrains Mono",ui-monospace,monospace; --jua:"Jua",var(--disp);
+ --header-h:60px; --r:16px; --shadow:0 16px 44px -22px rgba(23,52,80,.55); --scrim:.82;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+html,body{background:var(--paper-lo)}
+body{font-family:var(--body);color:var(--ink);line-height:1.62;font-size:16.5px;
+ background:
+ radial-gradient(1150px 600px at 78% -8%, rgba(63,136,197,.16), transparent 60%),
+ radial-gradient(820px 520px at 8% 8%, rgba(196,113,30,.10), transparent 62%),
+ linear-gradient(180deg,var(--paper-hi),var(--paper) 55%,var(--paper-lo))}
+body.cover-on{overflow:hidden}
+::selection{background:rgba(63,136,197,.25)}
+
+/* ── 구름 배경 ── */
+#bgLayer{position:fixed;inset:0;z-index:-3;background-size:cover;background-position:center;transition:opacity .5s}
+#clouds{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.55}
+
+/* ── 표지 ── */
+#cover{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+ padding:24px;overflow:auto;
+ background:linear-gradient(180deg,#eaf3fb 0%,#f6fafd 46%,#e6eff7 100%)}
+#cover.hide{opacity:0;pointer-events:none;transition:opacity .45s}
+.cover-in{max-width:880px;text-align:center;padding:12px 0 30px}
+.cover-emoji{font-size:clamp(34px,6vw,52px);letter-spacing:.14em}
+.cover-art{margin:6px auto 0;width:clamp(120px,20vw,180px)}
+.cover-art svg{width:100%;height:auto;display:block}
+.cover-title{font-family:var(--jua);font-size:clamp(32px,6.4vw,60px);line-height:1.26;margin-top:8px}
+.cover-sub{font-size:clamp(16px,2.3vw,21px);color:var(--ink-dim);margin-top:12px;line-height:1.7}
+.cover-meta{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.steps-card{max-width:620px;margin:24px auto 0;text-align:left;background:var(--paper-hi);
+ border:1.5px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow)}
+.steps-card h3{font-family:var(--jua);font-size:17px;color:var(--accent);margin-bottom:10px}
+.steps-card ol{list-style:none;display:grid;gap:8px}
+.steps-card li{display:flex;gap:11px;align-items:flex-start;font-size:15.5px;color:var(--ink-dim)}
+.steps-card li b{color:var(--ink)}
+.steps-card .sn{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+ font-family:var(--mono);font-size:12.5px;font-weight:700;color:#fff;margin-top:2px;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 55%,var(--sky-dk));border:1px solid var(--sky-dk)}
+.steps-card li.opt .sn{background:var(--paper-lo);color:var(--ink-mute);border-color:var(--line)}
+.cover-cta{margin-top:24px}
+.cover-hint{display:block;font-size:13.5px;color:var(--ink-mute);margin-top:12px}
+
+/* ── 공통 부품 ── */
+.btn{font-family:var(--body);font-weight:700;font-size:15.5px;color:var(--ink);background:var(--paper-hi);
+ border:2px solid var(--line);border-bottom-width:4px;border-radius:13px;padding:10px 18px;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--accent)}
+.btn:active{transform:translateY(2px);border-bottom-width:2px}
+.btn.primary{background:linear-gradient(178deg,var(--sky-hi),var(--sky) 48%,var(--sky-dk));
+ color:#fff;border-color:var(--sky-dk);text-shadow:0 1px 2px rgba(15,40,70,.35)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent}
+.btn.sm{font-size:13.5px;padding:7px 12px;border-bottom-width:3px}
+.btn.xl{font-size:clamp(17px,2.5vw,22px);padding:15px 32px;border-radius:16px}
+.card{background:linear-gradient(180deg,var(--paper-hi),#f2f7fb);border:1.5px solid var(--line);
+ border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.card-t{font-family:var(--jua);font-size:clamp(18px,2.4vw,22px);margin-bottom:8px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;padding:5px 12px;
+ border-radius:999px;background:var(--paper-hi);border:1.5px solid var(--line);color:var(--ink-dim)}
+.badge.gold{background:#f4ead8;border-color:var(--c3);color:#8f5312}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;
+ background:var(--paper-hi);border:1.5px solid var(--line);border-radius:999px;padding:6px 13px}
+.pill b{color:var(--accent)}
+.pill-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.t1{color:var(--c1)}.t2{color:var(--c2)}.t3{color:var(--c3)}.t4{color:var(--c4)}.t5{color:var(--c5)}.t6{color:var(--c6)}
+b.k,.k{color:var(--ink)}
+.doit b.k,.lead b.k,.help b.k,p b.k,li b.k,.u-d b.k,.note b.k,.de b.k{
+ color:var(--ink);background:linear-gradient(transparent 58%, rgba(63,136,197,.26) 58%);
+ padding:0 2px;border-radius:2px;font-weight:800}
+b.k[style*="color"],.k[style*="color"]{background:none}
+.badge b.k,.btn b.k,.sbadge b.k,.mq-badge b.k,.pill b.k{background:none;color:inherit}
+
+/* ── 머리 ── */
+header.top{position:sticky;top:0;z-index:40;background:linear-gradient(178deg,#f2f8fc,#dcebf5);
+ border-bottom:3px solid var(--sky-dk);box-shadow:0 4px 14px rgba(23,52,80,.22)}
+.top-bar{max-width:1400px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;cursor:pointer;text-align:left;min-width:0}
+.brand .logo{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk));border:1px solid var(--sky-dk)}
+.brand b{font-family:var(--jua);font-weight:400;font-size:18px;display:block;line-height:1.2;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis}
+.brand b span{color:var(--accent)}
+.brand .sub{font-size:12px;color:var(--ink-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head-right{margin-left:auto;display:flex;align-items:center;gap:9px}
+.hbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;cursor:pointer;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk));border:1px solid var(--sky-dk);text-decoration:none}
+.progress-mini{display:flex;align-items:center;gap:8px;cursor:pointer}
+.progress-mini .bar{width:86px;height:12px;border-radius:99px;background:var(--paper-hi);
+ border:1.5px solid var(--sky-dk);overflow:hidden;box-shadow:inset 0 1px 3px rgba(23,52,80,.25)}
+.progress-mini .bar i{display:block;height:100%;width:0;border-radius:99px;
+ background:linear-gradient(90deg,var(--sky-hi),var(--sky));transition:width .4s}
+.progress-mini .pct{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent);min-width:38px;text-align:right}
+@media(max-width:470px){.progress-mini .bar{width:56px}}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 12px 8px;max-width:1400px;margin:0 auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:none;font-family:var(--body);font-weight:700;font-size:14.5px;color:var(--ink-dim);
+ background:var(--paper-hi);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer;
+ display:flex;align-items:center;gap:7px;transition:.15s}
+nav.tabs button:hover{border-color:var(--accent)}
+nav.tabs button .sn{display:grid;place-items:center}
+nav.tabs button .sn i{font-style:normal;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;
+ font-size:12px;font-weight:700;background:var(--paper-lo);border:1px solid var(--line)}
+nav.tabs button.active{background:linear-gradient(178deg,var(--sky-hi),var(--sky) 48%,var(--sky-dk));
+ color:#fff;border-color:var(--sky-dk)}
+nav.tabs button.active .sn i{background:rgba(255,255,255,.28);border-color:transparent;color:#fff}
+nav.tabs button.done .sn i{background:var(--ok);border-color:var(--ok);color:#fff}
+nav.tabs button.done .sn i::before{content:"✓"}
+nav.tabs button.done .sn i{font-size:0}
+nav.tabs button.done .sn i::before{font-size:12px}
+nav.tabs button.optional{border-style:dashed}
+.tab-sep{flex:none;width:1.5px;background:var(--line);margin:6px 3px}
+
+.prog-list{position:fixed;top:calc(var(--header-h) + 46px);right:14px;z-index:45;width:min(320px,88vw);
+ background:var(--paper-hi);border:2px solid var(--sky-dk);border-radius:16px;padding:15px 17px;
+ box-shadow:var(--shadow);display:none}
+.prog-list.show{display:block}
+.prog-list h4{font-family:var(--jua);font-size:16px;color:var(--accent);margin-bottom:8px}
+.prog-list li{list-style:none;display:flex;gap:8px;font-size:13.5px;color:var(--ink-mute);padding:3px 0}
+.prog-list li.on{color:var(--ink-dim)}
+.prog-list li .mk{color:var(--line)} .prog-list li.on .mk{color:var(--ok)}
+
+main{max-width:1400px;margin:0 auto;padding:24px 16px 90px}
+.panel{display:none;animation:fade .35s}
+.panel.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+h1.big{font-family:var(--jua);font-size:clamp(28px,5vw,48px);line-height:1.3}
+h2.sec{font-family:var(--jua);font-size:clamp(23px,3.8vw,36px);line-height:1.3;margin-bottom:4px}
+p.lead{font-size:clamp(16px,2.1vw,19.5px);color:var(--ink-dim);line-height:1.75;margin-top:10px}
+p.help{font-size:15px;color:var(--ink-mute);line-height:1.7;margin-top:8px}
+.muted{color:var(--ink-mute)}
+.stepline{display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap}
+.sbadge{font-family:var(--jua);font-size:14.5px;color:#fff;padding:5px 15px;border-radius:999px;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk));border:1px solid var(--sky-dk)}
+.stepline.opt .sbadge{background:var(--paper-hi);color:var(--ink-mute);border-color:var(--line)}
+.swhat{font-size:14.5px;color:var(--ink-mute);font-weight:700}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:900px){.grid.two{grid-template-columns:1fr 1fr}}
+.cta-row{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── 안내 상자 ── */
+.note{display:flex;gap:11px;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px;
+ background:#f2f7fb;font-size:15.5px;color:var(--ink-dim);line-height:1.7}
+.note .ic{font-size:20px;flex:none}
+.note.myth{border-color:#d59a94;background:#faf0ee}
+.note.myth b{color:var(--danger)}
+.note.class{border-color:#9dc2b3;background:#eef6f1;display:none}
+.note.class b{color:var(--ok)}
+body.teacher .note.class{display:flex}
+.verdict{margin-top:14px;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;
+ font-size:15.5px;line-height:1.65;background:var(--paper-hi);color:var(--ink-dim)}
+.verdict b{color:var(--ink)}
+.verdict.hit{border-color:#7fae83;background:rgba(44,122,68,.09)}
+.clue{border:1.5px solid var(--c5);background:rgba(125,91,166,.07);border-radius:14px;padding:16px 18px;margin-top:16px}
+.clue .cl-h{font-family:var(--jua);font-size:18px;color:var(--c5);display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.clue p{font-size:15.5px;color:var(--ink-dim);line-height:1.68}
+.rulebox{margin-top:16px;background:var(--paper-hi);border:1.5px solid var(--c2);border-radius:14px;padding:16px 18px}
+.rulebox .rb-h{font-family:var(--jua);font-size:18px;color:var(--c2);display:flex;align-items:center;gap:8px}
+
+/* ── 실험 순서 ── */
+.doit{margin:12px 0 0;padding:0;counter-reset:doit;list-style:none}
+.doit li{position:relative;padding:9px 0 9px 42px;font-size:16px;color:var(--ink-dim);line-height:1.7;counter-increment:doit}
+.doit li::before{content:counter(doit);position:absolute;left:0;top:9px;width:28px;height:28px;border-radius:50%;
+ display:grid;place-items:center;font-family:var(--mono);font-size:13.5px;font-weight:700;color:#fff;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk));border:1px solid var(--sky-dk)}
+
+/* ── 용어 카드 ── */
+.terms{display:grid;gap:12px;grid-template-columns:1fr;margin-top:14px}
+@media(min-width:760px){.terms{grid-template-columns:1fr 1fr}}
+.term{border:1.5px solid var(--line);border-left:6px solid var(--c,var(--accent));border-radius:13px;
+ padding:14px 16px;background:var(--paper-hi)}
+.term .nm{font-family:var(--jua);font-size:18px;margin-bottom:5px}
+.term .de{font-size:15px;color:var(--ink-dim);line-height:1.68}
+
+/* ── 빈칸 ── */
+.cloze{display:inline-block;min-width:52px;border-bottom:2.5px solid var(--line);text-align:center;
+ cursor:pointer;font-weight:800;color:transparent;padding:2px 10px;border-radius:6px 6px 0 0;
+ background:rgba(63,136,197,.07);transition:.15s;position:relative}
+.cloze:hover{background:rgba(63,136,197,.16)}
+.cloze.revealed{color:var(--accent);background:transparent;border-color:transparent;animation:clozePop .35s}
+@keyframes clozePop{0%{transform:scale(1)}45%{transform:scale(1.18)}100%{transform:scale(1)}}
+.cloze-line{font-size:17px;line-height:2.15;margin-top:10px}
+.cloze-hint{font-size:13.5px;color:var(--ink-mute);margin-top:10px}
+.cloze-done{display:none;align-items:center;gap:6px;margin-top:12px;font-size:14px;font-weight:700;color:var(--ok)}
+.cloze-set.complete .cloze-done{display:inline-flex;animation:fade .4s}
+
+/* ── 표 ── */
+.dtable-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper-hi);margin-top:12px}
+.dtable{border-collapse:collapse;width:100%}
+.dtable th{background:#e3eef6;color:var(--ink-dim);font-weight:700;font-size:13.5px;padding:9px 11px;
+ border-bottom:1.5px solid var(--line);white-space:nowrap}
+.dtable td{padding:9px 11px;text-align:center;font-family:var(--mono);font-size:14.5px;
+ border-bottom:1px solid var(--line-soft);white-space:nowrap}
+.dtable td:first-child{font-family:var(--body)}
+.dtable tr:last-child td{border-bottom:0}
+.dtable tr.fresh td{animation:fade .5s}
+.dtable td.del{cursor:pointer;color:var(--ink-mute);font-family:var(--body)}
+.dtable td.del:hover{color:var(--danger)}
+.dtable .empty{color:var(--ink-mute);font-family:var(--body);padding:16px;font-size:13.5px}
+
+/* ── 시뮬 골격 ── */
+.simgrid{display:grid;gap:16px;grid-template-columns:1fr;margin-top:14px}
+.simwrap{display:grid;gap:16px;grid-template-columns:1fr;margin-top:14px;align-items:start}
+@media(min-width:900px){.simwrap{grid-template-columns:minmax(0,1fr) 276px}
+ .simwrap .simctl{position:sticky;top:calc(var(--header-h) + 12px)}}
+.simstage{background:#f6fafd;border:1.5px solid var(--line);border-radius:13px;overflow:hidden}
+.simstage canvas{display:block;width:100%;height:auto}
+.svgstage{background:#f6fafd;border:1.5px solid var(--line);border-radius:13px;padding:10px;overflow-x:auto}
+.svgstage svg{display:block;width:100%;height:auto;max-width:680px;margin:0 auto}
+.simctl{background:#e7f0f7;border:1.5px solid var(--line);border-radius:13px;padding:16px}
+.simctl h4{font-family:var(--jua);font-size:16.5px;margin-bottom:4px}
+.ctl{margin-top:14px}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--ink-dim);
+ font-weight:600;margin-bottom:7px}
+.ctl label .val{font-family:var(--mono);font-size:15px;color:var(--accent);font-weight:700}
+input[type=range]{width:100%;height:26px;-webkit-appearance:none;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:var(--paper-lo);
+ border:1px solid var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+ margin-top:-8px;background:radial-gradient(circle at 35% 30%,#cfe6f8,var(--sky) 55%,var(--sky-dk));
+ border:1.5px solid var(--sky-dk);box-shadow:0 2px 6px rgba(23,52,80,.35)}
+.readout{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.readout .r{flex:1;min-width:100px;background:var(--paper-hi);border:1.5px solid var(--line);border-radius:11px;
+ padding:10px 12px;text-align:center}
+.readout .r .lab2{font-size:12px;color:var(--ink-mute)}
+.readout .r .v{font-family:var(--mono);font-size:19px;font-weight:700;line-height:1.3}
+.readout .r .v small{font-size:11.5px;color:var(--ink-mute);font-weight:400}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.seg button{flex:1;min-width:96px;font-family:var(--body);font-weight:700;font-size:14.5px;color:var(--ink-dim);
+ background:var(--paper-hi);border:1.5px solid var(--line);border-radius:11px;padding:9px 10px;cursor:pointer;transition:.15s}
+.seg button:hover{border-color:var(--accent)}
+.seg button.on{color:#fff;border-color:transparent;background:linear-gradient(178deg,var(--sky-hi),var(--sky) 50%,var(--sky-dk))}
+.legend{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:13px;color:var(--ink-mute)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+.obscap{font-size:14px;color:var(--ink-mute);text-align:center;margin-top:8px;line-height:1.6}
+
+/* ── 예측(POE) 카드 ── */
+.poe-card{position:relative}
+.choices{display:grid;gap:9px;margin-top:12px}
+.choice{display:flex;gap:11px;align-items:flex-start;text-align:left;font-family:var(--body);font-size:15.5px;
+ color:var(--ink);background:var(--paper-hi);border:2px solid var(--line);border-radius:13px;padding:13px 15px;
+ cursor:pointer;transition:.15s;line-height:1.6}
+.choice .key{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+ font-weight:700;font-size:13.5px;background:var(--paper-lo);border:1px solid var(--line)}
+.choice:hover:not(.done){border-color:var(--accent)}
+.choice.sel{border-color:var(--c5);background:rgba(125,91,166,.09)}
+.choice.sel .key{background:var(--c5);border-color:var(--c5);color:#fff}
+.obswrap{display:none;margin-top:14px}
+.obswrap.show{display:block;animation:fade .4s}
+.lockmsg{margin-top:12px;border:1.5px dashed var(--line);border-radius:12px;padding:13px 16px;
+ background:#f2f7fb;font-size:14.5px;color:var(--ink-mute);text-align:center}
+
+/* ── 미니 퀴즈 ── */
+.miniquiz{background:linear-gradient(180deg,#f2f7fb,#e9f1f8);border:1.5px solid var(--line);border-radius:14px;
+ padding:18px;margin-top:18px}
+.miniquiz .mq-head{display:flex;align-items:center;gap:9px;margin-bottom:4px;flex-wrap:wrap}
+.mq-badge{font-family:var(--jua);font-size:14px;color:#fff;padding:4px 13px;border-radius:99px;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk))}
+.mq-prog{font-family:var(--mono);font-size:13px;color:var(--ink-mute)}
+.mq-q{margin-top:12px}
+.mq-q .mq-text{font-size:16.5px;font-weight:700;line-height:1.6}
+.mq-q .mq-text .qn{color:var(--accent);margin-right:6px}
+.mq-choices{display:grid;gap:8px;margin-top:11px}
+.mq-opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font-family:var(--body);font-size:15px;
+ color:var(--ink);background:var(--paper-hi);border:2px solid var(--line);border-radius:12px;padding:11px 14px;
+ cursor:pointer;transition:.15s;line-height:1.55}
+.mq-opt .k{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+ font-weight:700;font-size:12.5px;background:var(--paper-lo);border:1px solid var(--line)}
+.mq-opt:hover:not(.locked){border-color:var(--accent)}
+.mq-opt.correct{border-color:var(--ok);background:rgba(44,122,68,.10)}
+.mq-opt.correct .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.mq-opt.wrong{border-color:var(--danger);background:rgba(179,54,46,.09)}
+.mq-opt.wrong .k{background:var(--danger);border-color:var(--danger);color:#fff}
+.mq-opt.locked{cursor:default}
+.mq-fb{display:none;margin-top:11px;border-radius:12px;padding:12px 15px;font-size:14.5px;line-height:1.65}
+.mq-fb.show{display:block;animation:fade .35s}
+.mq-fb.ok{background:rgba(44,122,68,.10);border:1.5px solid #7fae83;color:var(--ink-dim)}
+.mq-fb.no{background:rgba(179,54,46,.08);border:1.5px solid #d59a94;color:var(--ink-dim)}
+.mq-fb b{color:var(--ink)}
+.mq-next{display:none;margin-top:11px}
+.mq-next.show{display:inline-flex}
+.mq-done{display:none;margin-top:12px;font-size:15px;font-weight:700;color:var(--ok)}
+.miniquiz.alldone .mq-done{display:block}
+
+/* ── 확인 문제(게임) ── */
+.game-hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.score-box{background:var(--paper-hi);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;text-align:center}
+.score-box .lab2{font-size:11.5px;color:var(--ink-mute)}
+.score-box .num{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--accent)}
+.mq-lv{font-family:var(--jua);font-size:13px;padding:3px 11px;border-radius:99px;border:1.5px solid}
+.mq-lv[data-lv="하"]{color:var(--ok);border-color:#7fae83;background:rgba(44,122,68,.08)}
+.mq-lv[data-lv="중"]{color:#8f5312;border-color:var(--c3);background:rgba(196,113,30,.08)}
+.mq-lv[data-lv="상"]{color:var(--danger);border-color:#d59a94;background:rgba(179,54,46,.07)}
+.qfig{margin-top:12px;background:#f6fafd;border:1.5px solid var(--line-soft);border-radius:12px;padding:8px;overflow-x:auto}
+.qfig svg{display:block;width:100%;height:auto;max-width:620px;margin:0 auto}
+.bogi{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper-hi);padding:12px 16px}
+.bogi-t{font-family:var(--jua);font-size:14px;color:var(--accent);margin-bottom:6px}
+.bogi ul{list-style:none}
+.bogi li{display:flex;gap:9px;font-size:15px;line-height:1.7;color:var(--ink-dim)}
+.bogi li .bk{font-weight:700;flex:none}
+.bogi li .bv{display:none;font-weight:700}
+.bogi.reveal li .bv{display:inline}
+.bogi.reveal li.t .bv{color:var(--ok)} .bogi.reveal li.f .bv{color:var(--danger)}
+
+/* ── 사례 그리드 ── */
+.use-grid{display:grid;gap:14px;grid-template-columns:1fr;margin-top:14px}
+@media(min-width:700px){.use-grid{grid-template-columns:1fr 1fr}}
+.use{border:1.5px solid var(--line);border-radius:14px;background:var(--paper-hi);padding:16px 17px}
+.use .u-t{font-family:var(--jua);font-size:17.5px;margin-bottom:6px}
+.use .u-d{font-size:14.5px;color:var(--ink-dim);line-height:1.68}
+
+/* ── 그림 슬롯 ── */
+.fig{border:1.5px solid var(--line);border-radius:13px;overflow:hidden;background:var(--paper-hi);margin-top:14px}
+.fig img{display:block;width:100%;height:auto}
+.fig figcaption{font-size:13.5px;color:var(--ink-mute);padding:9px 13px;border-top:1px solid var(--line-soft)}
+.fig.slot{display:none;padding:20px;text-align:center}
+body.teacher .fig.slot{display:block}
+.fig.slot .fe{font-size:26px}
+.fig.slot .fn{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:5px}
+.fig.slot .fd{font-size:13px;color:var(--ink-mute);margin-top:4px}
+
+/* ── 서술 답란 ── */
+textarea{width:100%;font-family:var(--body);font-size:15.5px;color:var(--ink);background:var(--paper-hi);
+ border:2px solid var(--line);border-radius:12px;padding:11px 14px;resize:vertical;line-height:1.65;margin-top:10px}
+textarea:focus{outline:0;border-color:var(--accent)}
+.savemark{font-size:13px;color:var(--ok);font-weight:700;opacity:0;transition:.3s;margin-left:8px}
+.savemark.on{opacity:1}
+
+/* ── 판서 모드 ── */
+.say{display:none}
+body.teacher .say{display:revert}
+.keyline-s{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:10px 0 20px}
+body.teacher .keyline-s{display:none}
+.keyline-s .kw{font-family:var(--jua);font-size:clamp(19px,2.6vw,25px);font-weight:800;color:var(--ink);
+ background:var(--paper-hi);border:2px solid var(--line);border-bottom-width:4px;
+ border-radius:12px;padding:9px 18px;line-height:1.35}
+.keyline-s .kw.hi{border-color:var(--accent);background:#e2f0f7;color:var(--accent)}
+.keyline-s .kw.q{border-style:dashed;color:var(--ink-dim)}
+.keyline-s .arw{font-size:22px;color:var(--ink-mute);font-weight:800}
+.keyline-s .memo{flex:1 1 100%;min-height:34px}
+@media(max-width:520px){.keyline-s{gap:8px}.keyline-s .kw{padding:8px 14px}}
+@media print{.say{display:revert!important}.keyline-s{display:flex!important}}
+
+/* ── '왜 그럴까?' 모듈 ── */
+.why-mod{border:2px solid var(--sky);background:linear-gradient(180deg,var(--paper-hi),#eef4f9);
+ border-radius:18px;padding:22px 20px;margin-top:22px;box-shadow:var(--shadow)}
+.why-q{display:flex;gap:12px;align-items:flex-start}
+.why-q .qi{font-size:30px;line-height:1.1}
+.why-q .qt{font-family:var(--jua);font-size:clamp(20px,3.1vw,26px);color:var(--ink);line-height:1.45}
+.why-step{margin-top:20px;border-top:1px dashed var(--line);padding-top:18px}
+.why-h{display:flex;align-items:center;gap:9px;font-family:var(--jua);font-size:18.5px;color:var(--accent);margin-bottom:9px}
+.why-h .no{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 50%,var(--sky-dk));color:#fff;font-size:15px;
+ border:1px solid var(--sky-dk);flex:none}
+.why-step>p{font-size:15.5px;color:var(--ink-dim);line-height:1.72}
+.wpick{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.wpick button{flex:1 1 148px;font-family:var(--body);font-size:15px;font-weight:700;color:var(--ink-dim);
+ background:var(--paper-hi);border:2px solid var(--line);border-bottom-width:4px;border-radius:12px;
+ padding:11px 13px;cursor:pointer;transition:.15s}
+.wpick button:hover{border-color:var(--accent);color:var(--ink)}
+.wpick button.sel{border-color:var(--c5);background:rgba(125,91,166,.13);color:var(--ink)}
+.wpick.small button{flex:1 1 108px;font-size:14.5px;padding:9px 11px}
+.wlock{display:none}
+.wlock.open{display:block}
+body.teacher .wlock{display:block}
+.wlockmsg{margin-top:12px;border:1.5px dashed var(--line);border-radius:13px;padding:15px 17px;
+ background:#f2f7fb;font-size:15px;color:var(--ink-mute);text-align:center;line-height:1.7}
+.wlockmsg.gone{display:none}
+body.teacher .wlockmsg{display:none}
+.wsub{margin-top:15px;font-size:15.5px;color:var(--ink-dim);font-weight:700}
+.obs-list{margin:8px 0 0;padding-left:19px}
+.obs-list li{font-size:15.5px;color:var(--ink-dim);margin:7px 0;line-height:1.7}
+.obs-list li b{color:var(--ink)}
+.wfold{margin-top:16px}
+.wfold>summary{cursor:pointer;list-style:none;font-family:var(--jua);font-size:16.5px;color:var(--c5);
+ background:rgba(125,91,166,.08);border:1.5px solid var(--c5);border-radius:12px;padding:11px 15px}
+.wfold>summary::-webkit-details-marker{display:none}
+.wfold>summary::before{content:"▸ "}
+.wfold[open]>summary::before{content:"▾ "}
+.wfold .fold-in{padding:14px 4px 2px;font-size:15.5px;color:var(--ink-dim);line-height:1.85}
+.eqline{font-family:var(--mono);font-size:16.5px;color:var(--ink);text-align:center;margin:9px 0;font-weight:700}
+
+/* ── 링크 카드 ── */
+.linkcard{display:flex;gap:13px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;
+ background:var(--paper-hi);padding:14px 16px;margin-top:12px;text-decoration:none;color:inherit;transition:.15s}
+.linkcard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.linkcard .lc-e{font-size:24px;flex:none}
+.linkcard .lc-t{font-weight:800;font-size:15.5px;display:block}
+.linkcard .lc-d{font-size:13.5px;color:var(--ink-mute);display:block;margin-top:3px;line-height:1.6}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
+ background:var(--ink);color:var(--paper-hi);padding:12px 20px;border-radius:12px;font-size:14.5px;font-weight:700;
+ transition:.3s;z-index:70;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.good{background:var(--ok)}
+@media print{header.top,#cover,#toast,.cta-row,.prog-list{display:none!important}.panel{display:block!important}}
+
+</style>
+</head>
+<body class="cover-on">
+<div id="bgLayer"></div><canvas id="clouds"></canvas>
+
+<div id="cover">
+ <div class="cover-in">
+
+  <div class="cover-emoji">🏊 🎈 ⚽</div>
+  <div class="cover-art"><svg viewBox="0 0 160 120" aria-hidden="true">
+   <circle cx="80" cy="62" r="44" fill="#f1f7fc" stroke="#1c507e" stroke-width="3"/>
+   <circle cx="80" cy="62" r="44" fill="none" stroke="#3f88c5" stroke-width="1.4" opacity=".6"/>
+   <circle cx="62" cy="50" r="5.5" fill="#3a7a3f"/><circle cx="95" cy="44" r="5.5" fill="#3a7a3f"/>
+   <circle cx="104" cy="72" r="5.5" fill="#3a7a3f"/><circle cx="70" cy="82" r="5.5" fill="#3a7a3f"/>
+   <circle cx="86" cy="63" r="5.5" fill="#3a7a3f"/>
+   <path d="M58 45 l-7-6 M99 40 l6-7 M108 75 l8 3 M66 87 l-6 7" stroke="#3a7a3f" stroke-width="2.4" stroke-linecap="round"/>
+  </svg></div>
+  <h1 class="cover-title">튜브를 눌렀는데<br>내 손이 밀렸다</h1>
+  <p class="cover-sub">그 안에 든 건 공기뿐인데, 무엇이 내 손을 밀까?<br>보이지 않는 알갱이들의 정체를 추적합니다.</p>
+  <div class="cover-meta">
+   <span class="badge">⏱️ 45분</span>
+   <span class="badge">📘 VI. 기체의 성질 · 1. 기체의 압력 ②</span>
+   <span class="badge gold" id="coverSaved" style="display:none">🔖 이어서 하기</span>
+  </div>
+  <div class="steps-card">
+   <h3>💡 학습 단계 안내</h3>
+   <ol>
+    <li><span class="sn">1</span><div><b>생각 열기</b> — 튜브가 손을 미는 까닭 예상하기</div></li>
+    <li><span class="sn">2</span><div><b>탐구하기</b> — 쇠구슬 페트병으로 흉내 내기</div></li>
+    <li><span class="sn">3</span><div><b>모형으로 보기</b> — 입자 상자에서 충돌 세어 보기</div></li>
+    <li><span class="sn">4</span><div><b>적용하기</b> — 물 뿜는 인형의 첫 번째 답</div></li>
+    <li><span class="sn">5</span><div><b>확인하기</b> — 배운 것 점검</div></li>
+    <li class="opt"><span class="sn">+</span><div><b>더 알아보기</b> — 대기압을 잰 토리첼리</div></li>
+   </ol>
+  </div>
+  <div class="cover-cta">
+   <button class="btn primary xl" id="coverGo">입자 상자 열기 🎈</button>
+   <span class="cover-hint">진행 상황은 이 기기에 자동 저장돼요 · 왼쪽 위 제목을 누르면 이 화면으로 돌아옵니다</span>
+  </div>
+
+ </div>
+</div>
+
+<header class="top">
+ <div class="top-bar">
+  <button class="brand" id="brandBtn" title="표지로 돌아가기">
+
+   <div class="logo">🎈</div>
+   <div><b>튜브를 눌렀는데 <span>내 손이</span> 밀렸다</b>
+   <div class="sub">VI. 기체의 성질 · 1. 기체의 압력 ② · 중1 과학</div></div>
+
+  </button>
+  <div class="head-right">
+   <a class="hbtn" href="index.html" title="단원 허브로">🎈</a>
+   <button class="hbtn" id="tmodeBtn" title="교사 모드 — 문장 설명과 교실 노트 보기">🧑‍🏫</button>
+   <div class="progress-mini" id="progWrap" title="진행도 — 누르면 남은 활동이 보여요">
+    <div class="bar"><i id="progBar"></i></div><div class="pct" id="progPct">0%</div>
+   </div>
+  </div>
+ </div>
+ <nav class="tabs" id="tabNav">
+
+  <button data-tab="open" class="active"><span class="sn"><i>1</i></span>생각 열기</button>
+  <button data-tab="explore"><span class="sn"><i>2</i></span>탐구하기</button>
+  <button data-tab="model"><span class="sn"><i>3</i></span>모형으로 보기</button>
+  <button data-tab="apply"><span class="sn"><i>4</i></span>적용하기</button>
+  <button data-tab="check"><span class="sn"><i>5</i></span>확인하기</button>
+  <span class="tab-sep"></span>
+  <button data-tab="beyond" class="optional"><span class="sn"><i>+</i></span>💡 더 알아보기</button>
+
+ </nav>
+</header>
+
+<div class="prog-list" id="progList"><h4>남은 활동</h4><ul id="progItems"></ul></div>
+
+<main>
+
+<!-- 1 생각 열기 -->
+<section class="panel show" id="panel-open">
+ <div class="stepline"><span class="sbadge">STEP 1</span><span class="swhat">생각 열기 · 공기가 미는 힘?</span></div>
+ <h1 class="big">공기를 넣은 튜브를 누르면<br><span class="t4">손이 밀리는</span> 느낌이 든다</h1>
+ <p class="lead say">여름에 튜브에 바람을 넣어 본 적 있죠? 빵빵해진 튜브를 손으로 누르면
+ <b class="k">튜브가 내 손을 되미는 것 같은</b> 느낌이 듭니다. 튜브 안에는 공기뿐인데 —
+ 잡을 수도, 볼 수도 없는 공기가 <b class="k">어떻게 힘을 줄까요?</b></p>
+ <div class="keyline-s"><span class="kw">튜브 안 = 공기뿐</span><span class="arw">→</span><span class="kw q">무엇이 내 손을 미나?</span><span class="memo"></span></div>
+
+ <div class="card" style="margin-top:20px">
+  <h3 class="card-t">🤔 내 생각 남기기</h3>
+  <p class="help">지난 시간 「물질의 상태 변화」에서 배운 것을 하나 꺼내 봅시다 —
+  <b>물질을 이루는 입자는 스스로 끊임없이 운동한다.</b> 이걸 이용해 예상해 보세요.</p>
+  <div class="choices" id="openPick">
+   <button class="choice" data-v="a"><span class="key">가</span><span>공기가 풍선 껍질처럼 하나의 덩어리로 손을 민다.</span></button>
+   <button class="choice" data-v="b"><span class="key">나</span><span>공기 알갱이들이 이리저리 날아다니다 튜브 벽에 부딪혀서 민다.</span></button>
+   <button class="choice" data-v="c"><span class="key">다</span><span>공기는 힘이 없다. 튜브 고무가 미는 것이다.</span></button>
+  </div>
+  <div class="verdict" id="openSay" style="display:none"></div>
+ </div>
+
+ <div class="note class"><span class="ic">💬</span><div><b>교실 노트</b> — '나'를 고르는 학생이 많지 않습니다.
+ 입자가 날아다닌다는 것과 힘을 준다는 것이 아직 안 이어져 있어요. 답을 말하지 말고 2단계 쇠구슬로 넘기세요.
+ '다'를 고른 학생은 바람 빠진 튜브를 눌러 보게 하면 스스로 무너집니다.</div></div>
+ <div class="cta-row"><button class="btn primary" data-go="explore">2단계 · 쇠구슬 실험으로 →</button></div>
+</section>
+
+<!-- 2 탐구하기 -->
+<section class="panel" id="panel-explore">
+ <div class="stepline"><span class="sbadge">STEP 2</span><span class="swhat">탐구하기 · 쇠구슬 페트병</span></div>
+ <h2 class="sec">보이지 않는 것을 <span class="t4">보이는 것</span>으로 흉내 낸다</h2>
+ <p class="lead say">기체 입자는 눈에 보이지 않으니, <b class="k">보이는 쇠구슬</b>로 흉내 냅니다.
+ 페트병에 쇠구슬을 넣고 뚜껑을 꼭 닫은 뒤 양손으로 잡고 흔들어 보세요 —
+ <b class="k">손바닥에 무엇이 느껴지는지</b>가 오늘의 관찰입니다.</p>
+ <div class="keyline-s"><span class="kw">보이지 않는 입자</span><span class="arw">→</span><span class="kw">쇠구슬로 흉내</span><span class="arw">→</span><span class="kw hi">손바닥의 느낌</span><span class="memo"></span></div>
+
+ <div class="card" style="margin-top:16px">
+  <h3 class="card-t">🧪 이렇게 해 보세요</h3>
+  <ol class="doit">
+   <li>페트병에 쇠구슬 <b class="k">15개</b>를 넣고 뚜껑을 꼭 닫은 다음, 양손으로 잡고 좌우로 흔들며 손바닥의 느낌을 확인한다.</li>
+   <li>다른 페트병에 쇠구슬 <b class="k">30개</b>를 넣고 뚜껑을 닫는다.</li>
+   <li>두 페트병을 <b class="k">같은 빠르기로</b> 흔들면서 손바닥에 느껴지는 힘을 비교한다.</li>
+  </ol>
+  <div class="note"><span class="ic">⚠️</span><div><b>안전</b> — 쇠구슬이 튀어 나가지 않게 뚜껑을 세게 닫습니다.
+  같은 빠르기로 흔들어야 비교가 되니, 한 명이 숫자를 세고 거기에 맞춰 흔드세요.</div></div>
+ </div>
+
+ <div class="card" style="margin-top:16px">
+  <h3 class="card-t">👁️ 관찰 기록 <span class="savemark">저장됨</span></h3>
+  <p class="help">① 쇠구슬은 어느 방향으로 움직였나요? ② 쇠구슬 수가 많으면 손바닥의 느낌은 어떻게 달랐나요?</p>
+  <textarea data-essay="obs" rows="3" placeholder="쇠구슬은 … 방향으로 움직였고, 30개일 때는 …"></textarea>
+ </div>
+
+ <div class="card" style="margin-top:16px">
+  <h3 class="card-t">⚠️ 이 모형에는 한계가 있습니다</h3>
+  <div class="note myth"><span class="ic">⚠️</span><div><b>쇠구슬과 기체 입자의 결정적 차이</b> —
+  쇠구슬은 <b>사람이 흔들어야</b> 움직이지만, 기체 입자는 <b class="k">아무도 흔들지 않아도 스스로 끊임없이</b> 움직입니다.
+  모형은 흉내일 뿐, 이 차이를 놓치면 "기체도 누가 흔들어 줘야 움직인다"는 오개념이 생깁니다.</div></div>
+ </div>
+ <div class="cta-row"><button class="btn primary" data-go="model">3단계 · 진짜 입자를 보러 →</button></div>
+</section>
+
+<!-- 3 모형으로 보기 -->
+<section class="panel" id="panel-model">
+ <div class="stepline"><span class="sbadge">STEP 3</span><span class="swhat">모형으로 보기 · 입자 상자</span></div>
+ <h2 class="sec">충돌을 <span class="t4">직접 세어</span> 봅시다</h2>
+ <p class="lead say">이번엔 진짜 기체처럼 <b class="k">스스로 움직이는</b> 입자 상자입니다.
+ 입자들이 벽에 부딪힐 때마다 벽이 반짝이고, 1초 동안의 충돌 횟수가 세어집니다.
+ <b class="k">입자 수를 바꿔 가며</b> 충돌 횟수가 어떻게 변하는지 기록해 보세요.</p>
+ <div class="keyline-s"><span class="kw">스스로 움직임</span><span class="kw">벽에 충돌</span><span class="arw">→</span><span class="kw q">입자 수를 늘리면?</span><span class="memo"></span></div>
+
+ <div class="simwrap">
+  <div>
+   <div class="simstage"><canvas id="boxCv" width="660" height="380"></canvas></div>
+   <p class="obscap">벽 네 면이 <b>골고루</b> 반짝이는 것도 눈여겨보세요 — 충돌은 어느 한 방향이 아닙니다.</p>
+  </div>
+  <div class="simctl">
+   <h4>🎛️ 조작판</h4>
+   <div class="ctl"><label>입자 수 <span class="val" id="npV">15개</span></label>
+    <input type="range" id="npR" min="5" max="40" step="1" value="15" aria-label="입자 수"></div>
+   <div class="readout">
+    <div class="r"><div class="lab2">1초 동안 벽 충돌</div><div class="v" id="roHit">–<small> 회</small></div></div>
+    <div class="r"><div class="lab2">위·아래·왼쪽·오른쪽</div><div class="v" id="roSide" style="font-size:14px">– / – / – / –</div></div>
+   </div>
+   <div class="btn-row" style="margin-top:12px">
+    <button class="btn sm primary" id="hitRec">📌 기록</button>
+    <button class="btn sm ghost" id="hitClear">지우기</button>
+   </div>
+  </div>
+ </div>
+
+ <div class="card" style="margin-top:16px">
+  <h3 class="card-t">🧾 기록표 <span class="badge" id="hitCount">0회 기록</span></h3>
+  <div class="dtable-wrap"><table class="dtable">
+   <thead><tr><th>입자 수</th><th>1초 충돌 횟수</th><th></th></tr></thead>
+   <tbody id="hitBody"><tr><td class="empty" colspan="3">입자 수를 바꿔 가며 📌 를 눌러 보세요 — 3번 이상</td></tr></tbody>
+  </table></div>
+  <div class="verdict" id="hitSay" style="display:none"></div>
+ </div>
+
+ <div class="card" style="margin-top:18px">
+  <h3 class="card-t">📖 이름 붙이기 — 기체의 압력</h3>
+  <p class="lead say" style="margin-top:6px">기체 입자는 끊임없이 운동하다가 <b class="k">벽에 충돌하며 힘을 가합니다.</b>
+  일정한 면적에 기체 입자가 충돌해서 가하는 힘 — 이것이 <b class="k">기체의 압력</b>입니다.
+  입자가 모든 방향으로 날아다니니 압력도 <b class="k">모든 방향으로</b> 작용하고,
+  입자 수가 많아지면 충돌이 잦아져 압력이 <b class="k">커집니다.</b></p>
+  <div class="keyline-s"><span class="kw">입자의 충돌</span><span class="arw">→</span><span class="kw hi">기체의 압력</span><span class="kw">모든 방향</span><span class="kw">입자 수 ↑ 압력 ↑</span><span class="memo"></span></div>
+  <div class="terms">
+   <div class="term" style="--c:var(--c1)"><div class="nm">🎯 기체의 <span class="cloze" data-ans="압력" data-c="c1">　</span></div>
+    <div class="de">일정한 면적에 기체 <b>입자가 충돌</b>해서 가하는 힘.</div></div>
+   <div class="term" style="--c:var(--c4)"><div class="nm">🧭 작용 방향 — <span class="cloze" data-ans="모든 방향" data-c="c4">　</span></div>
+    <div class="de">입자가 사방으로 운동하므로 기체의 압력은 위·아래·옆 가리지 않고 작용한다.</div></div>
+  </div>
+  <div class="note myth" style="margin-top:14px"><span class="ic">⚠️</span><div><b>오해</b> — "기체의 압력은 공기가 <b>내리누르는</b> 힘이니까 아래로 작용한다."<br>
+  → <b class="k">아닙니다.</b> 방금 입자 상자에서 봤듯 <b>천장에도, 옆벽에도</b> 똑같이 충돌합니다.
+  튜브가 사방으로 부풀어 오르는 것이 그 증거예요.</div></div>
+ </div>
+
+ <div class="card cloze-set" style="margin-top:18px">
+  <div class="badge" style="margin-bottom:10px">✍️ 빈칸을 눌러 확인 — 먼저 머릿속으로 답한 뒤에</div>
+  <p class="cloze-line">기체 입자가 벽에 <span class="cloze" data-ans="충돌" data-c="c4">　</span>해서 가하는 힘을 기체의 압력이라 하고,
+  이 압력은 <span class="cloze" data-ans="모든" data-c="c1">　</span> 방향으로 작용한다.</p>
+  <p class="cloze-line">일정한 크기의 용기 안에 기체 입자의 수가 많아지면 충돌 횟수가 늘어
+  기체의 압력은 <span class="cloze" data-ans="커진다" data-c="c1">　</span>.</p>
+  <div class="cloze-done">✅ 이 문단은 다 채웠어요!</div>
+  <p class="cloze-hint">빈칸을 그냥 눌러 답만 보면 남지 않아요. 소리 내어 답해 보고 누르세요.</p>
+ </div>
+
+ <div class="miniquiz" data-quiz="model"></div>
+ <div class="cta-row"><button class="btn primary" data-go="apply">4단계 · 물 뿜는 인형의 답 →</button></div>
+</section>
+
+<!-- 4 적용하기 -->
+<section class="panel" id="panel-apply">
+ <div class="stepline"><span class="sbadge">STEP 4</span><span class="swhat">적용하기 · 첫 번째 블록 완성</span></div>
+ <h2 class="sec">생활 속의 <span class="t1">기체 압력</span></h2>
+ <div class="use-grid">
+  <div class="use"><div class="u-t">⚽ 찌그러진 축구공 살리기</div>
+   <div class="u-d">공기를 넣으면 공 속 <b class="k">입자 수가 늘어</b> 충돌이 잦아지고, 압력이 커져
+   <b class="k">사방으로</b> 부풀어 오른다. 압력이 한 방향이라면 한쪽만 펴졌을 것.</div></div>
+  <div class="use"><div class="u-t">🚗 자동차 에어백</div>
+   <div class="u-d">순간적으로 기체를 채워 압력을 만들고, 그 압력이 몸을 <b class="k">받쳐</b> 충격을 줄인다.</div></div>
+  <div class="use"><div class="u-t">🏰 풍선 놀이 틀</div>
+   <div class="u-d">기체가 차면서 압력이 커져 팽팽하게 부푼다. 뛰면 눌렸다가 압력이 되밀어 준다.</div></div>
+  <div class="use"><div class="u-t">⛰️ 높이 올라가면?</div>
+   <div class="u-d">위로 갈수록 공기의 양이 줄어 <b class="k">공기의 압력(기압)이 작아진다.</b>
+   다음 시간에 이 사실이 큰 일을 낸다 — 과자 봉지를 기억해 두세요.</div></div>
+ </div>
+
+ <div class="card" style="margin-top:18px">
+  <h3 class="card-t">✍️ 사고력 — 풍선의 반대쪽 <span class="savemark">저장됨</span></h3>
+  <p class="help">공기가 든 풍선의 한쪽을 손가락으로 누르면 <b>다른 쪽이 튀어나옵니다.</b>
+  그 까닭을 '입자'와 '충돌'이라는 낱말을 넣어 설명해 보세요.</p>
+  <textarea data-essay="balloon" rows="3" placeholder="눌린 곳의 공기 입자들이 …"></textarea>
+ </div>
+
+ <div class="card" style="margin-top:18px">
+  <h3 class="card-t">🧱 첫 번째 블록 완성 — 물 뿜는 인형</h3>
+  <p class="lead say" style="margin-top:6px">이제 답할 수 있습니다. <b class="k">"물 뿜는 인형에서 물은 어떻게 뿜어져 나올까?"</b><br>
+  인형을 꾹 누르면 — 인형 속 <b class="k">공기 입자들이</b> 좁아진 공간에서 더 자주
+  <b class="k">벽과 물에 충돌하며 힘을 가하고</b>, 그 힘이 물을 구멍 밖으로 밀어냅니다.
+  손에 잡히지 않는 공기가 물총의 방아쇠였던 셈이죠.</p>
+  <div class="keyline-s"><span class="kw">인형을 누름</span><span class="arw">→</span><span class="kw">입자가 물에 충돌</span><span class="arw">→</span><span class="kw hi">물이 밀려 나감</span><span class="memo"></span></div>
+  <div class="card" style="margin-top:10px;background:#eef4f9">
+   <h3 class="card-t" style="font-size:16px">✍️ 내 문장으로 블록 완성 <span class="savemark">저장됨</span></h3>
+   <textarea data-essay="block1" rows="3" placeholder="물 뿜는 인형에서 물이 뿜어져 나오는 까닭은 …"></textarea>
+  </div>
+ </div>
+ <div class="cta-row"><button class="btn primary" data-go="check">5단계 · 확인하기 →</button></div>
+</section>
+
+<!-- 5 확인하기 -->
+<section class="panel" id="panel-check">
+ <div class="stepline"><span class="sbadge">STEP 5</span><span class="swhat">확인하기 · 배운 것 점검</span></div>
+ <h2 class="sec">확인 문제</h2>
+ <p class="lead">모르겠으면 3단계로 돌아갔다 와도 됩니다.</p>
+ <div id="gameBox" style="margin-top:16px"></div>
+</section>
+
+<!-- + 더 알아보기 -->
+<section class="panel" id="panel-beyond">
+ <div class="stepline opt"><span class="sbadge">+ 선택</span><span class="swhat">더 알아보기 · 시험에는 안 나와요</span></div>
+ <h2 class="sec">공기의 무게를 처음 잰 사람</h2>
+ <div class="card" style="margin-top:14px">
+  <h3 class="card-t">🧪 토리첼리의 유리관</h3>
+  <p class="lead say" style="margin-top:6px">1643년, 토리첼리는 1 m 유리관에 수은을 가득 채워 수은 그릇에 거꾸로 세웠습니다.
+  수은은 다 쏟아지지 않고 <b class="k">76 cm 높이에서 멈췄어요.</b> 그릇의 수은 면을
+  <b class="k">공기의 압력이 누르고 있었기 때문</b>입니다. 이렇게 대기압이 처음 측정되었고,
+  관 위쪽의 빈 공간은 인류가 처음 만든 <b class="k">진공</b>이 되었습니다.</p>
+  <div class="keyline-s"><span class="kw">수은 76 cm</span><span class="arw">→</span><span class="kw">대기압이 받치는 높이</span><span class="kw hi">최초의 진공</span><span class="memo"></span></div>
+ </div>
+ <div class="card" style="margin-top:14px">
+  <h3 class="card-t">🔬 가상실험실에서 더 해 보기</h3>
+  <a class="linkcard" href="https://phet.colorado.edu/sims/html/gas-properties/latest/gas-properties_ko.html" target="_blank" rel="noopener">
+   <span class="lc-e">🧪</span>
+   <span><span class="lc-t">기체의 성질 <span style="font-size:13px;opacity:.75">(PhET)</span></span>
+   <span class="lc-d">기체를 더 넣으면 충돌이 얼마나 잦아지는지, 압력계 바늘로 직접 확인해 보세요. 아직 안 배운 온도 손잡이는 그대로 두고요.</span></span>
+  </a>
+ </div>
+</section>
+
+</main>
+
+<div id="toast"></div>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-15</span></footer>
+
+<script>
+"use strict";
+/* ═══════════ 페이지 데이터 ═══════════ */
+const SAVE='gas_gaspressure_v1';
+const TABS=['open','explore','model','apply','check','beyond'];
+
+const QUIZ_SETS={
+ model:{title:'입자와 압력 가려보기',qs:[
+ {q:'기체의 압력이 나타나는 까닭은?',
+  ch:[{t:'기체 입자가 끊임없이 운동하며 벽에 충돌하기 때문',ok:1},
+      {t:'기체가 무거워서 바닥을 누르기 때문',no:'무게가 아니라 충돌이에요. 천장에도 압력이 작용하는 걸 설명할 수 없죠.'},
+      {t:'기체 입자들이 서로 밀어내기 때문',no:'입자끼리가 아니라 입자와 벽 사이의 일이에요.'}],
+  why:'입자 상자에서 세어 봤듯, <b>벽에 부딪히는 충돌 하나하나가 힘</b>이고 그 힘이 모인 것이 기체의 압력입니다.'},
+ {q:'같은 크기의 통에 기체 입자를 더 넣으면?',
+  ch:[{t:'충돌 횟수가 늘어 압력이 커진다',ok:1},
+      {t:'입자가 많아져 서로 방해하므로 압력이 작아진다',no:'기록표를 다시 보세요 — 입자 수와 충돌 횟수는 함께 늘었어요.'},
+      {t:'압력은 변하지 않는다',no:'입자 수를 바꿨을 때 충돌 횟수가 달라졌죠.'}],
+  why:'입자 수 ↑ → 벽에 충돌하는 횟수 ↑ → <b>압력 ↑</b>. 찌그러진 축구공에 공기를 넣으면 부푸는 까닭입니다.'},
+ {q:'쇠구슬 페트병 모형에서, 실제 기체 입자와 다른 점은?',
+  ch:[{t:'쇠구슬은 사람이 흔들어야 움직이지만 기체 입자는 스스로 움직인다',ok:1},
+      {t:'쇠구슬은 여러 방향으로 움직이지만 기체 입자는 한 방향으로만 움직인다',no:'반대예요 — 둘 다 여러 방향입니다.'},
+      {t:'다른 점이 없다',no:'모형은 흉내일 뿐이에요. 결정적인 차이가 하나 있죠.'}],
+  why:'기체 입자는 <b>아무도 흔들지 않아도 스스로 끊임없이</b> 운동합니다. 이 차이를 놓치면 모형이 오개념이 됩니다.'}
+ ]}
+};
+
+const GAME_QS=[
+ {id:'q1',difficulty:'하',
+  stem:'기체의 압력에 대한 설명으로 옳은 것은?',
+  ch:[{t:'일정한 면적에 기체 입자가 충돌해서 가하는 힘이다.',ok:1},
+      {t:'기체의 무게가 바닥을 누르는 힘이다.'},
+      {t:'아래 방향으로만 작용한다.'},
+      {t:'입자 수가 많아지면 작아진다.'},
+      {t:'기체 입자가 서로 끌어당기는 힘이다.'}],
+  why:'기체의 압력 = <b>입자의 충돌이 가하는 힘</b>.<br>②⑤ 무게도, 입자끼리의 힘도 아닙니다.<br>③ 입자가 사방으로 운동하므로 <b>모든 방향</b>으로 작용합니다.<br>④ 입자 수가 많아지면 충돌이 잦아져 <b>커집니다</b>.'},
+ {id:'q2',difficulty:'중',
+  svg:'<svg viewBox="0 0 560 230" role="img" aria-label="쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다.">'
+   +'<text x="150" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">(가) 쇠구슬 15개</text>'
+   +'<rect x="80" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/>'
+   +'<rect x="128" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>'
+   +'<g fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4">'
+   +'<circle cx="110" cy="90" r="7"/><circle cx="150" cy="76" r="7"/><circle cx="188" cy="98" r="7"/>'
+   +'<circle cx="122" cy="130" r="7"/><circle cx="166" cy="122" r="7"/><circle cx="198" cy="150" r="7"/>'
+   +'<circle cx="104" cy="162" r="7"/><circle cx="146" cy="158" r="7"/></g>'
+   +'<text x="410" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">(나) 쇠구슬 30개</text>'
+   +'<rect x="340" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/>'
+   +'<rect x="388" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>'
+   +'<g fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4">'
+   +'<circle cx="366" cy="82" r="7"/><circle cx="396" cy="70" r="7"/><circle cx="430" cy="86" r="7"/><circle cx="458" cy="74" r="7"/>'
+   +'<circle cx="356" cy="112" r="7"/><circle cx="386" cy="104" r="7"/><circle cx="418" cy="116" r="7"/><circle cx="452" cy="106" r="7"/>'
+   +'<circle cx="368" cy="144" r="7"/><circle cx="400" cy="136" r="7"/><circle cx="432" cy="148" r="7"/><circle cx="462" cy="140" r="7"/>'
+   +'<circle cx="356" cy="170" r="7"/><circle cx="392" cy="166" r="7"/><circle cx="426" cy="172" r="7"/></g>'
+   +'<text x="280" y="215" text-anchor="middle" font-size="12.5" fill="#7b91a4">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg>',
+  stem:'그림과 같이 쇠구슬을 넣은 두 페트병을 같은 빠르기로 흔들었다. 이에 대한 설명으로 옳은 것은?',
+  ch:[{t:'(나)에서 손바닥에 느껴지는 힘이 더 크다 — 쇠구슬의 충돌 횟수가 더 많기 때문이다.',ok:1},
+      {t:'(가)에서 손바닥에 느껴지는 힘이 더 크다 — 쇠구슬이 더 자유롭게 움직이기 때문이다.'},
+      {t:'두 병의 느낌은 같다 — 흔드는 빠르기가 같기 때문이다.'},
+      {t:'쇠구슬은 아래쪽 벽에만 부딪힌다.'},
+      {t:'이 실험으로는 기체의 압력을 설명할 수 없다.'}],
+  why:'쇠구슬이 많을수록 벽에 <b>충돌하는 횟수가 늘어</b> 손바닥에 더 큰 힘이 느껴집니다. 기체 입자 수가 많을수록 압력이 커지는 것과 같은 원리죠.<br>④ 흔들면 사방으로 부딪힙니다 — 양손 모두에서 느껴지는 것이 증거.<br>③ 빠르기를 같게 한 것은 <b>비교 조건을 맞추기 위해서</b>지, 결과가 같아지는 이유가 아닙니다.'},
+ {id:'q3',difficulty:'중',
+  stem:'찌그러진 축구공에 공기를 넣으면 사방으로 고르게 부풀어 오른다. 그 까닭으로 옳은 것은?',
+  ch:[{t:'공기 입자 수가 늘어 충돌이 잦아지고, 압력이 모든 방향으로 작용하기 때문',ok:1},
+      {t:'공기가 무거워져 공 아래쪽을 채우기 때문'},
+      {t:'공기 입자의 크기가 커지기 때문'},
+      {t:'공 껍질이 공기를 빨아들이기 때문'},
+      {t:'공기 입자가 공 벽에 달라붙기 때문'}],
+  why:'입자 수 ↑ → 충돌 ↑ → 압력 ↑. 그리고 입자가 <b>사방으로</b> 날아다니므로 압력도 사방으로 작용해 공이 <b>고르게</b> 부풉니다.<br>③ 입자의 크기는 변하지 않습니다 — 수가 늘어난 것뿐이에요.'},
+ {id:'q4',difficulty:'중',
+  stem:'공기가 들어 있는 풍선의 한쪽을 손가락으로 누르면 다른 쪽이 튀어나온다. 이를 옳게 설명한 것은?',
+  ch:[{t:'눌린 곳의 공기 입자들이 다른 쪽으로 이동해 그쪽 벽에 충돌하며 힘을 가하기 때문',ok:1},
+      {t:'공기 입자가 눌린 곳에서 터져 없어지기 때문'},
+      {t:'풍선 고무가 스스로 늘어나기 때문'},
+      {t:'눌린 곳의 압력이 사라지기 때문'},
+      {t:'공기가 풍선 밖으로 빠져나가기 때문'}],
+  why:'입자는 없어지지 않습니다. 눌린 공간을 떠나 <b>다른 쪽으로 이동해 그쪽 벽을 두드리니</b> 그 부분이 튀어나오는 것이죠. 압력이 모든 방향으로 작용한다는 사실이 여기서도 확인됩니다.'},
+ {id:'q5',difficulty:'상',
+  boxes:['기체의 압력은 기체 입자가 벽에 충돌해서 가하는 힘이다',
+         '쇠구슬 모형에서 쇠구슬처럼, 기체 입자도 다른 힘이 흔들어 주어야 움직인다',
+         '용기 속 기체 입자의 수가 많을수록 기체의 압력이 커진다'],
+  boxVerdicts:[true,false,true],
+  stem:'기체의 압력에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
+  ch:[{t:'ㄱ'},{t:'ㄴ'},{t:'ㄱ, ㄷ',ok:1},{t:'ㄴ, ㄷ'},{t:'ㄱ, ㄴ, ㄷ'}],
+  why:'<b>ㄱ. 옳다.</b> 기체 압력의 정의 그대로입니다.<br><b>ㄴ. 옳지 않다.</b> 쇠구슬은 흔들어야 움직이지만 <b>기체 입자는 스스로 끊임없이 운동</b>합니다. 모형과 실제의 결정적 차이였죠.<br><b>ㄷ. 옳다.</b> 입자 수 ↑ → 충돌 ↑ → 압력 ↑.<br>따라서 정답은 <b>ㄱ, ㄷ</b>.'}
+];
+
+
+/* ═══════════ 공통 엔진 ═══════════ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TAU=Math.PI*2;
+const CS=getComputedStyle(document.documentElement);
+const CV=k=>CS.getPropertyValue('--'+k).trim();
+const C={accent:CV('accent'),c1:CV('c1'),c2:CV('c2'),c3:CV('c3'),c4:CV('c4'),c5:CV('c5'),c6:CV('c6'),
+ line:CV('line'),linesoft:CV('line-soft'),ink:CV('ink'),inkdim:CV('ink-dim'),inkmute:CV('ink-mute'),
+ ok:CV('ok'),danger:CV('danger'),sky:CV('sky'),skydk:CV('sky-dk')};
+
+const A={ctx:null,
+ ensure(){if(!this.ctx){try{this.ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+ if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();return this.ctx;},
+ blip(f=600,d=.08,type='sine',vol=.15){const c=this.ensure();if(!c)return;
+ const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;o.connect(g);g.connect(c.destination);
+ const t=c.currentTime;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);
+ g.gain.exponentialRampToValueAtTime(.0001,t+d);o.start(t);o.stop(t+d+.03);},
+ correct(){this.blip(660,.11);setTimeout(()=>this.blip(880,.13),85);setTimeout(()=>this.blip(1170,.18),190);},
+ wrong(){this.blip(200,.2,'sawtooth',.1);setTimeout(()=>this.blip(150,.24,'sawtooth',.08),130);},
+ pop(){this.blip(440,.05,'triangle',.13);},
+ win(){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>this.blip(f,.22,'sine',.15),i*110));}};
+['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>A.ensure(),{once:true}));
+
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(S));}catch(e){}}
+function load(){try{return JSON.parse(localStorage.getItem(SAVE));}catch(e){return null;}}
+let S=Object.assign({tab:TABS[0],visited:{},cloze:{},mini:{},essays:{},best:0},load()||{});
+S.visited=S.visited||{};S.cloze=S.cloze||{};S.mini=S.mini||{};S.essays=S.essays||{};
+S.hits=Array.isArray(S.hits)?S.hits:[];S.openPick=S.openPick||'';
+let CLOZE_TOTAL=0;
+
+let toastT;
+function toast(msg,kind=''){const el=$('#toast');el.innerHTML=msg;el.className='show '+kind;
+ clearTimeout(toastT);toastT=setTimeout(()=>el.className='',2300);}
+
+function progChecks(){
+ return [
+
+ {label:'1단계 · 내 생각 고르기', ok:!!S.openPick},
+ {label:'2단계 · 쇠구슬 관찰 기록 쓰기', ok:(S.essays.obs||'').trim().length>=10},
+ {label:'3단계 · 입자 수 바꿔 3회 이상 기록', ok:(S.hits||[]).length>=3},
+ {label:'3단계 · 빈칸 모두 채우기', ok:CLOZE_TOTAL>0&&Object.keys(S.cloze).length>=CLOZE_TOTAL},
+ {label:'3단계 · 개념 확인 퀴즈', ok:!!S.mini.model},
+ {label:'4단계 · 풍선 설명 쓰기', ok:(S.essays.balloon||'').trim().length>=10},
+ {label:'4단계 · 물 뿜는 인형 블록 완성', ok:(S.essays.block1||'').trim().length>=10},
+ {label:'5단계 · 확인 문제 완주', ok:S.best>0}
+
+ ];
+}
+function tabDone(){
+ return {
+
+ open:!!S.openPick,
+ explore:(S.essays.obs||'').trim().length>=10,
+ model:(S.hits||[]).length>=3&&CLOZE_TOTAL>0&&Object.keys(S.cloze).length>=CLOZE_TOTAL&&!!S.mini.model,
+ apply:(S.essays.balloon||'').trim().length>=10&&(S.essays.block1||'').trim().length>=10,
+ check:S.best>0,
+ beyond:!!S.visited.beyond
+
+ };
+}
+function updateProgress(){
+ const c=progChecks(), pct=c.length?Math.round(c.filter(x=>x.ok).length/c.length*100):0;
+ $('#progBar').style.width=pct+'%';$('#progPct').textContent=pct+'%';
+ const ul=$('#progItems');
+ if(ul)ul.innerHTML=c.map(x=>`<li class="${x.ok?'on':''}"><span class="mk">${x.ok?'✔':'○'}</span>${x.label}</li>`).join('');
+ const done=tabDone();
+ $$('#tabNav button').forEach(b=>b.classList.toggle('done',!!done[b.dataset.tab]));
+}
+$('#progWrap').addEventListener('click',()=>$('#progList').classList.toggle('show'));
+document.addEventListener('click',e=>{
+ const pl=$('#progList');
+ if(pl.classList.contains('show')&&!pl.contains(e.target)&&!$('#progWrap').contains(e.target))pl.classList.remove('show');
+});
+
+function showTab(id,noScroll){
+ if(!TABS.includes(id))return;
+ $$('.panel').forEach(p=>p.classList.remove('show'));
+ $('#panel-'+id).classList.add('show');
+ $$('#tabNav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+ S.tab=id;S.visited[id]=true;save();updateProgress();
+ if(!noScroll)scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
+}
+$('#tabNav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showTab(b.dataset.tab);});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){A.ensure();showTab(b.dataset.go);}});
+
+function refreshCover(){
+ const any=progChecks().some(x=>x.ok);
+ const cs=$('#coverSaved'),cg=$('#coverGo');
+ if(cs)cs.style.display=any?'inline-flex':'none';
+ if(cg&&any)cg.textContent='이어서 하기 ('+$('#progPct').textContent+') 🎈';
+}
+$('#coverGo').addEventListener('click',()=>{$('#cover').classList.add('hide');
+ document.body.classList.remove('cover-on');A.ensure();A.pop();showTab(S.tab||TABS[0],true);});
+$('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classList.remove('hide');
+ document.body.classList.add('cover-on');});
+
+(function(){const KEY='teacherMode';
+ document.body.classList.toggle('teacher',localStorage.getItem(KEY)==='1');
+ $('#tmodeBtn').addEventListener('click',()=>{
+ const on=!document.body.classList.contains('teacher');
+ document.body.classList.toggle('teacher',on);localStorage.setItem(KEY,on?'1':'0');
+ toast(on?'교사 모드 ON — 문장 설명과 교실 노트가 보입니다 🧑‍🏫':'학생 화면 — 키워드만 보입니다 🎒');});
+})();
+
+/* 빈칸 */
+(function(){
+ const all=$$('.cloze');CLOZE_TOTAL=all.length;
+ all.forEach((cz,i)=>{
+ const reveal=silent=>{
+ if(cz.classList.contains('revealed'))return;
+ cz.textContent=cz.dataset.ans;
+ const col=CV(cz.dataset.c||'accent');cz.style.color=col;
+ cz.classList.add('revealed');if(!silent)A.blip(720,.08);
+ S.cloze[i]=1;save();
+ const set=cz.closest('.cloze-set');
+ if(set&&$$('.cloze',set).every(x=>x.classList.contains('revealed'))){set.classList.add('complete');if(!silent)A.pop();}
+ updateProgress();};
+ cz.addEventListener('click',()=>reveal(false));
+ if(S.cloze[i])reveal(true);
+ });
+})();
+
+/* 미니 퀴즈 */
+(function(){
+ function build(host,key){
+ const set=QUIZ_SETS[key];if(!set)return;
+ let done=0;const total=set.qs.length;
+ host.innerHTML=`<div class="mq-head"><span class="mq-badge">✅ 개념 확인</span>
+  <span class="mq-prog"><b>${set.title}</b> · <span class="mq-cur">0</span>/${total}</span></div><div class="mq-body"></div>
+  <div class="mq-done">🎉 개념 확인 완료!</div>`;
+ const body=$('.mq-body',host);
+ set.qs.forEach((q,qi)=>{
+ const w=document.createElement('div');w.className='mq-q';
+ w.innerHTML=`<div class="mq-text"><span class="qn">Q${qi+1}.</span>${q.q}</div>
+  <div class="mq-choices">${q.ch.map((c,ci)=>`<button class="mq-opt" data-ci="${ci}"><span class="k">${ci+1}</span><span>${c.t}</span></button>`).join('')}</div>
+  <div class="mq-fb"></div>`;
+ body.appendChild(w);
+ const opts=$$('.mq-opt',w),fb=$('.mq-fb',w);
+ let solved=false;
+ opts.forEach(o=>o.addEventListener('click',()=>{
+ if(solved)return;
+ const ci=+o.dataset.ci,okAns=!!q.ch[ci].ok;
+ if(okAns){solved=true;done++;
+  o.classList.add('correct');opts.forEach(x=>x.classList.add('locked'));
+  fb.className='mq-fb ok show';fb.innerHTML='⭕ 맞았어요! '+q.why;A.correct();
+  $('.mq-cur',host).textContent=done;
+  if(done>=total){host.classList.add('alldone');S.mini[key]=1;save();updateProgress();A.win();}
+ }else{o.classList.add('wrong');
+  fb.className='mq-fb no show';fb.innerHTML='❌ 다시 생각해 보세요. '+(q.ch[ci].no||'');A.wrong();
+  setTimeout(()=>o.classList.remove('wrong'),900);}
+ }));
+ });
+ if(S.mini[key]){host.classList.add('alldone');$('.mq-cur',host).textContent=total;}
+ }
+ $$('[data-quiz]').forEach(h=>build(h,h.dataset.quiz));
+})();
+
+/* 확인 문제(게임) */
+(function(){
+ const host=$('#gameBox');if(!host||typeof GAME_QS==='undefined')return;
+ let idx=0,scoreNow=0,started=false;
+ function paintIntro(){
+ host.innerHTML=`<div class="card">
+  <h3 class="card-t">📝 확인 문제 ${GAME_QS.length}문제</h3>
+  <p class="help">한 문제씩 풀고 해설을 확인합니다. 다 풀면 점수가 기록돼요.
+  ${S.best>0?`지금까지 최고 기록 <b>${S.best}점</b>`:''}</p>
+  <div class="cta-row" style="justify-content:flex-start"><button class="btn primary" id="gameStart">시작하기 ✏️</button></div></div>`;
+ $('#gameStart').addEventListener('click',()=>{idx=0;scoreNow=0;started=true;paintQ();});
+ }
+ function paintQ(){
+ const q=GAME_QS[idx];
+ host.innerHTML=`<div class="card">
+  <div class="game-hud">
+   <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
+   <span class="mq-lv" data-lv="${q.difficulty}">난이도 ${q.difficulty}</span>
+   <span class="score-box" style="margin-left:auto"><span class="lab2">점수</span><span class="num">${scoreNow}</span></span>
+  </div>
+  <p class="mq-text" style="margin-top:14px;font-size:17px;font-weight:700;line-height:1.7">${q.stem}</p>
+  ${q.svg?`<div class="qfig">${q.svg}</div>`:''}
+  ${q.boxes?`<div class="bogi" id="bogi"><div class="bogi-t">&lt;보기&gt;</div><ul>${
+   q.boxes.map((b,i)=>`<li class="${q.boxVerdicts[i]?'t':'f'}"><span class="bk">${'ㄱㄴㄷㄹ'[i]}.</span><span>${b}</span><span class="bv">${q.boxVerdicts[i]?' (옳음)':' (옳지 않음)'}</span></li>`).join('')
+  }</ul></div>`:''}
+  <div class="mq-choices" style="margin-top:14px">${q.ch.map((c,ci)=>
+   `<button class="mq-opt" data-ci="${ci}"><span class="k">${'①②③④⑤'[ci]}</span><span>${c.t}</span></button>`).join('')}</div>
+  <div class="mq-fb" id="gameFb"></div>
+  <div class="cta-row" style="justify-content:flex-start"><button class="btn primary mq-next" id="gameNext">다음 문제 →</button></div>
+ </div>`;
+ let solved=false;
+ $$('.mq-opt',host).forEach(o=>o.addEventListener('click',()=>{
+ if(solved)return;
+ const ci=+o.dataset.ci,okAns=!!q.ch[ci].ok;
+ const fb=$('#gameFb');
+ if(okAns){solved=true;scoreNow+=20;
+  o.classList.add('correct');$$('.mq-opt',host).forEach(x=>x.classList.add('locked'));
+  const bg=$('#bogi');if(bg)bg.classList.add('reveal');
+  fb.className='mq-fb ok show';fb.innerHTML='⭕ 정답! '+q.why;A.correct();
+  $('.score-box .num',host).textContent=scoreNow;
+  $('#gameNext').classList.add('show');
+ }else{o.classList.add('wrong');o.classList.add('locked');
+  fb.className='mq-fb no show';fb.innerHTML='❌ 아직이에요. 자료와 발문을 다시 읽어 보세요.';A.wrong();}
+ }));
+ $('#gameNext').addEventListener('click',()=>{
+ if(idx<GAME_QS.length-1){idx++;paintQ();}
+ else{
+  if(scoreNow>(S.best||0))S.best=scoreNow;
+  save();updateProgress();A.win();
+  host.innerHTML=`<div class="card" style="text-align:center">
+   <div style="font-size:44px">🎈</div>
+   <h3 class="card-t" style="margin-top:6px">완주! ${scoreNow}점</h3>
+   <p class="help">최고 기록 ${S.best}점 · 틀렸던 문제를 다시 풀어 보면 더 단단해져요.</p>
+   <div class="cta-row" style="justify-content:center"><button class="btn" id="gameRetry">다시 풀기 ↺</button></div></div>`;
+  $('#gameRetry').addEventListener('click',paintIntro);
+ }
+ });
+ }
+ paintIntro();
+})();
+
+/* 서술 답란 자동 저장 */
+$$('textarea[data-essay]').forEach(t=>{
+ const k=t.dataset.essay;
+ t.value=S.essays[k]||'';
+ let tm;
+ t.addEventListener('input',()=>{
+ S.essays[k]=t.value;save();updateProgress();
+ const m=t.parentElement.querySelector('.savemark');
+ if(m){m.classList.add('on');clearTimeout(tm);tm=setTimeout(()=>m.classList.remove('on'),1200);}
+ });
+});
+
+/* 그림 슬롯 */
+(function(){
+ if(typeof FIGS==='undefined')return;
+ $$('[data-fig]').forEach(el=>{
+ const key=el.dataset.fig,src=FIGS[key]||'',alt=el.dataset.alt||'',cap=el.dataset.cap||'';
+ const slot=()=>{el.classList.add('slot');
+ el.innerHTML=`<div class="fe">🖼️</div><div class="fn">${src||'img/'+key+'.jpg'}</div><div class="fd">${alt}</div>`;};
+ if(!src){slot();return;}
+ const im=new Image();
+ im.onload=()=>{el.classList.remove('slot');
+ el.innerHTML=`<img src="${src}" alt="${alt.replace(/"/g,'&quot;')}" loading="lazy">`+(cap?`<figcaption>${cap}</figcaption>`:'');};
+ im.onerror=slot;im.src=src;
+ });
+})();
+
+
+/* ── 1단계 내 생각 ── */
+(function(){
+ const box=$('#openPick');if(!box)return;
+ const SAYS={
+ a:'덩어리라면 튜브가 <b>한 덩어리로 출렁</b>여야겠죠. 그런데 튜브는 사방이 고르게 팽팽합니다. 2단계에서 다른 그림을 그려 봅시다.',
+ b:'지난 시간에 배운 <b>입자의 운동</b>을 그대로 이어 붙였네요. 정말 부딪히는 것만으로 손을 밀 수 있을지, 쇠구슬로 확인해 봅시다.',
+ c:'그럼 바람 빠진 튜브도 손을 밀어야 할 텐데요? 고무는 그대로인데 <b>공기가 빠지면 미는 힘도 사라집니다.</b> 공기 쪽을 다시 봐야겠어요.'};
+ function paint(){$$('.choice',box).forEach(c=>c.classList.toggle('sel',c.dataset.v===S.openPick));
+ const sy=$('#openSay');
+ if(S.openPick){sy.style.display='block';sy.innerHTML=SAYS[S.openPick];}}
+ box.addEventListener('click',e=>{const c=e.target.closest('.choice');if(!c)return;
+ S.openPick=c.dataset.v;save();updateProgress();A.pop();paint();});
+ paint();
+})();
+
+/* ── 3단계 입자 상자 ── */
+(function(){
+ const cv=$('#boxCv');if(!cv)return;
+ const ctx=cv.getContext('2d');
+ const W=660,H=380,PAD=26,R=6;
+ let els=[],hits=[],flash={t:0,b:0,l:0,r:0},sideCnt={t:0,b:0,l:0,r:0};
+ function build(n){
+ els=Array.from({length:n},()=>{
+ const a=Math.random()*TAU,v=95+Math.random()*55;
+ return {x:PAD+R+Math.random()*(W-2*PAD-2*R),y:PAD+R+Math.random()*(H-2*PAD-2*R),
+ vx:Math.cos(a)*v,vy:Math.sin(a)*v};});
+ hits=[];sideCnt={t:0,b:0,l:0,r:0};
+ }
+ function step(dt){
+ const now=performance.now()/1000;
+ els.forEach(e=>{
+ e.x+=e.vx*dt;e.y+=e.vy*dt;
+ if(e.x<PAD+R){e.x=PAD+R;e.vx=Math.abs(e.vx);hits.push(now);flash.l=1;sideCnt.l++;}
+ if(e.x>W-PAD-R){e.x=W-PAD-R;e.vx=-Math.abs(e.vx);hits.push(now);flash.r=1;sideCnt.r++;}
+ if(e.y<PAD+R){e.y=PAD+R;e.vy=Math.abs(e.vy);hits.push(now);flash.t=1;sideCnt.t++;}
+ if(e.y>H-PAD-R){e.y=H-PAD-R;e.vy=-Math.abs(e.vy);hits.push(now);flash.b=1;sideCnt.b++;}
+ });
+ while(hits.length&&now-hits[0]>1)hits.shift();
+ }
+ function draw(){
+ ctx.clearRect(0,0,W,H);
+ ctx.fillStyle='#f6fafd';ctx.fillRect(0,0,W,H);
+ /* 벽 — 충돌하면 빨갛게 번쩍 */
+ function wall(x1,y1,x2,y2,f){
+ ctx.strokeStyle=f>0?'rgba(178,58,48,'+(0.3+f*0.7)+')':'#1c507e';
+ ctx.lineWidth=f>0?7:5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+ wall(PAD,PAD,W-PAD,PAD,flash.t);wall(PAD,H-PAD,W-PAD,H-PAD,flash.b);
+ wall(PAD,PAD,PAD,H-PAD,flash.l);wall(W-PAD,PAD,W-PAD,H-PAD,flash.r);
+ ['t','b','l','r'].forEach(k=>flash[k]=Math.max(0,flash[k]-0.06));
+ ctx.fillStyle='#3a7a3f';
+ els.forEach(e=>{ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
+ ctx.fillStyle='#7b91a4';ctx.font='12.5px Pretendard, sans-serif';
+ ctx.fillText('입자 '+els.length+'개 — 스스로 끊임없이 움직입니다',PAD+4,H-8);
+ }
+ function readout(){
+ $('#roHit').innerHTML=hits.length+'<small> 회</small>';
+ $('#roSide').textContent=sideCnt.t+' / '+sideCnt.b+' / '+sideCnt.l+' / '+sideCnt.r;
+ }
+ $('#npR').addEventListener('input',()=>{
+ $('#npV').textContent=$('#npR').value+'개';build(+$('#npR').value);});
+ function paintRec(){
+ const tb=$('#hitBody');
+ if(!S.hits.length){tb.innerHTML='<tr><td class="empty" colspan="3">입자 수를 바꿔 가며 📌 를 눌러 보세요 — 3번 이상</td></tr>';}
+ else tb.innerHTML=S.hits.map((r,i)=>'<tr'+(i===S.hits.length-1?' class="fresh"':'')+'><td>'+r.n+'개</td><td><b>'+r.h+'회</b></td><td class="del" data-i="'+i+'">✕</td></tr>').join('');
+ $('#hitCount').textContent=S.hits.length+'회 기록';
+ const sy=$('#hitSay');
+ if(S.hits.length>=3){sy.style.display='block';sy.classList.add('hit');
+ sy.innerHTML='기록이 모였네요. 표에서 <b>입자 수가 많을수록 충돌 횟수가 어떻게 되는지</b> 읽어 보세요 — 그것이 곧 압력의 크기입니다.';}
+ updateProgress();
+ }
+ $('#hitRec').addEventListener('click',()=>{
+ S.hits.push({n:els.length,h:hits.length});save();paintRec();A.pop();});
+ $('#hitBody').addEventListener('click',e=>{const d=e.target.closest('.del');if(!d)return;
+ S.hits.splice(+d.dataset.i,1);save();paintRec();});
+ $('#hitClear').addEventListener('click',()=>{S.hits=[];save();paintRec();});
+ let last=0;
+ function frame(t){
+ const dt=Math.min(.04,(t-last)/1000)||.016;last=t;
+ const vis=$('#panel-model').classList.contains('show')&&!document.body.classList.contains('cover-on');
+ if(vis&&!reduceMotion){step(dt);draw();readout();}
+ requestAnimationFrame(frame);
+ }
+ build(15);draw();paintRec();requestAnimationFrame(frame);
+})();
+
+
+/* 구름 배경 */
+(function(){
+ const cv=$('#clouds');if(!cv)return;
+ const ctx=cv.getContext('2d');
+ let W=0,H=0,t=0,clouds=[];
+ function build(){
+ const dpr=Math.min(devicePixelRatio||1,2);
+ W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;
+ cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+ const n=Math.round(Math.min(7,W/260));
+ clouds=Array.from({length:n},(_,i)=>({x:Math.random()*W,y:20+Math.random()*H*.5,
+ s:.5+Math.random()*.9,v:.10+Math.random()*.16}));
+ }
+ function blob(x,y,s){
+ ctx.beginPath();
+ ctx.ellipse(x,y,66*s,20*s,0,0,TAU);
+ ctx.ellipse(x-30*s,y+4*s,34*s,15*s,0,0,TAU);
+ ctx.ellipse(x+34*s,y+5*s,38*s,16*s,0,0,TAU);
+ ctx.ellipse(x+4*s,y-12*s,34*s,17*s,0,0,TAU);
+ ctx.fill();
+ }
+ function draw(){
+ ctx.clearRect(0,0,W,H);
+ ctx.fillStyle='rgba(255,255,255,.6)';
+ clouds.forEach(c=>{blob(c.x,c.y,c.s);
+ if(!reduceMotion){const _n=performance.now();const _dt=Math.min(.05,(_n-(draw._pt||_n-16.7))/1000);c.x+=c.v*_dt*60;if(c.x-90*c.s>W)c.x=-100*c.s;}});
+ draw._pt=performance.now();
+ if(!reduceMotion)requestAnimationFrame(draw);
+ }
+ let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{build();if(reduceMotion)draw();},200);});
+ build();draw();
+})();
+
+(function init(){
+ updateProgress();
+ const start=TABS.includes(S.tab)?S.tab:TABS[0];
+ $$('.panel').forEach(p=>p.classList.remove('show'));
+ $('#panel-'+start).classList.add('show');
+ $$('#tabNav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===start));
+ S.tab=start;document.body.classList.add('cover-on');refreshCover();
+})();
+</script>
+
+<script id="sim-fullscreen">
+/* 시뮬 전체화면 버튼 — 전자칠판용. 큰 캔버스의 부모에 ⛶ 버튼을 단다. */
+(function(){
+  var st = document.createElement('style');
+  st.textContent = '.simfs-btn{position:absolute;right:8px;top:8px;z-index:40;width:34px;height:34px;'+
+    'border-radius:9px;border:1.5px solid rgba(128,128,128,.45);cursor:pointer;font-size:17px;line-height:1;'+
+    'background:rgba(24,24,24,.45);color:#fff;backdrop-filter:blur(3px);opacity:.55;transition:.15s}'+
+    '.simfs-btn:hover{opacity:1}'+
+    '.simfs-on{display:grid !important;place-items:center;background:#0b0f1a}'+
+    '.simfs-on>canvas{width:min(97vw, 178vh) !important;height:auto !important;max-height:96vh}';
+  document.head.appendChild(st);
+  function attach(cv){
+    if (cv.dataset.fsDone) return;
+    var host = cv.parentElement;
+    if (!host || host.querySelector('.simfs-btn')) { cv.dataset.fsDone = 1; return; }
+    cv.dataset.fsDone = 1;
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    var b = document.createElement('button');
+    b.className = 'simfs-btn'; b.type = 'button'; b.textContent = '⛶';
+    b.title = '전체화면 (전자칠판용) — 다시 누르거나 Esc로 나가기';
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      if (document.fullscreenElement === host){ document.exitFullscreen(); }
+      else if (host.requestFullscreen){ host.requestFullscreen(); }
+    });
+    host.appendChild(b);
+  }
+  document.addEventListener('fullscreenchange', function(){
+    var el = document.fullscreenElement;
+    document.querySelectorAll('.simfs-on').forEach(function(x){ if (x!==el) x.classList.remove('simfs-on'); });
+    if (el && el.querySelector('.simfs-btn') && typeof THREE === 'undefined') el.classList.add('simfs-on');
+    /* 시뮬들이 스스로 크기를 다시 재도록 */
+    setTimeout(function(){ dispatchEvent(new Event('resize')); }, 60);
+    setTimeout(function(){ dispatchEvent(new Event('resize')); }, 350);
+  });
+  function scan(){
+    document.querySelectorAll('canvas').forEach(function(cv){
+      if (cv.dataset.fsDone) return;
+      if (cv.clientWidth >= 290 && cv.clientHeight >= 150) attach(cv);
+    });
+  }
+  scan(); setInterval(scan, 1500);
+})();
+</script>
+
+<script id="sim-quiz">
+/* 시뮬 개념확인 카드 — 시뮬 조작 후 바로 답해 보는 1~2문항, 정답 시 해설 공개 */
+(function(){
+  var CFG = [{"at": {"cv": "boxCv"}, "qs": [{"q": "기체 압력의 정체는?", "c": ["입자들이 벽에 부딪히는 것", "기체 입자의 무게", "입자들이 서로 밀어내는 끈"], "ok": 0, "w": "쉴 새 없이 날아다니는 입자들의 <b>충돌</b>이 벽을 미는 것 — 그게 기체 압력의 전부입니다."}, {"q": "입자 수를 늘리면 벽에 부딪히는 횟수는?", "c": ["많아진다 (압력↑)", "적어진다", "변화 없다"], "ok": 0, "w": "부딪힐 선수가 많아지니 충돌도 잦아짐 → 압력 증가. 타이어에 공기를 더 넣으면 팽팽해지는 원리."}]}];
+  var st = document.createElement('style');
+  st.textContent = '.sq-card{margin:16px 0 4px;border-radius:14px;padding:14px 17px;'+
+    'border:1.5px solid rgba(128,128,128,.35);background:rgba(127,127,127,.09)}'+
+    '.sq-h{font-weight:800;font-size:14.5px;margin-bottom:2px;opacity:.85}'+
+    '.sq-q{font-size:14.5px;margin:12px 0 8px;line-height:1.55;font-weight:600}'+
+    '.sq-row{display:flex;gap:8px;flex-wrap:wrap}'+
+    '.sq-c{font-size:13.5px;padding:7px 14px;border-radius:99px;border:1.5px solid rgba(128,128,128,.45);'+
+    'background:rgba(255,255,255,.06);color:inherit;cursor:pointer;font-family:inherit;transition:.15s}'+
+    '.sq-c:hover{border-color:currentColor}'+
+    '.sq-c.ok{background:#2c7a44;border-color:#2c7a44;color:#fff}'+
+    '.sq-c.no{background:#b3362e;border-color:#b3362e;color:#fff;animation:sqsh .35s}'+
+    '@keyframes sqsh{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}'+
+    '.sq-why{display:none;margin-top:10px;font-size:13.5px;line-height:1.6;opacity:.92;'+
+    'border-top:1px dashed rgba(128,128,128,.35);padding-top:9px}';
+  document.head.appendChild(st);
+  function host(a){
+    var el = a.cv ? document.getElementById(a.cv) : null;
+    if (!el && a.id) el = document.getElementById(a.id);
+    if (!el && a.h3){
+      var hs = document.querySelectorAll('h3');
+      for (var i=0;i<hs.length;i++) if (hs[i].textContent.indexOf(a.h3)>=0){ el = hs[i]; break; }
+    }
+    if (!el) return null;
+    return el.closest('.card,.simlab,.lab,.stage-card,.obs,section') || el.parentElement;
+  }
+  CFG.forEach(function(grp){
+    var h = host(grp.at); if (!h || h.dataset.sq) return; h.dataset.sq = 1;
+    var card = document.createElement('div'); card.className = 'sq-card';
+    var hd = document.createElement('div'); hd.className = 'sq-h';
+    hd.textContent = '🧪 개념 확인 — 시뮬에서 답을 찾았나요?'; card.appendChild(hd);
+    grp.qs.forEach(function(q){
+      var qd = document.createElement('div'); qd.className = 'sq-q'; qd.textContent = 'Q. ' + q.q; card.appendChild(qd);
+      var row = document.createElement('div'); row.className = 'sq-row';
+      var why = document.createElement('div'); why.className = 'sq-why'; why.innerHTML = '💡 ' + q.w;
+      q.c.forEach(function(t, i){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'sq-c'; b.textContent = t;
+        b.addEventListener('click', function(){
+          if (i === q.ok){
+            row.querySelectorAll('.sq-c').forEach(function(x){ x.disabled = true; x.classList.remove('no'); });
+            b.classList.add('ok'); why.style.display = 'block';
+          } else { b.classList.add('no'); setTimeout(function(){ b.classList.remove('no'); }, 650); }
+        });
+        row.appendChild(b);
+      });
+      card.appendChild(row); card.appendChild(why);
+    });
+    h.insertAdjacentElement('afterend', card);
+  });
+})();
+</script>
+
+<script id="ui-extras">
+/* ① 학생용 키워드 줄을 누르면 바로 위의 교사용 설명 문장을 펼쳐 본다
+   ② 헤더 아이콘(허브 이동 / 교사용 on-off)에 글자 라벨을 붙인다 */
+(function(){
+  var st = document.createElement('style');
+  st.textContent =
+    /* ① 키워드 → 설명 펼치기 */
+    '.keyline-s .kw{cursor:pointer;position:relative}'+
+    '.keyline-s .kw:hover{filter:brightness(.97)}'+
+    '.kw-peek{display:block;margin:-8px 0 18px;padding:12px 15px;border-radius:12px;font-size:15px;line-height:1.7;'+
+    'border:1.5px dashed rgba(128,128,128,.45);background:rgba(127,127,127,.08)}'+
+    '.kw-peek .kw-peek-h{font-size:12.5px;opacity:.7;margin-bottom:5px}'+
+    'body.teacher .kw-peek{display:none}'+
+    /* ② 헤더 아이콘 라벨 */
+    '.hbtn{position:relative}'+
+    '.hb-wrap{display:flex;flex-direction:column;align-items:center;gap:2px}'+
+    '.hb-lab{font-size:9.5px;line-height:1.1;opacity:.75;white-space:nowrap;letter-spacing:-.02em}'+
+    '@media(max-width:520px){.hb-lab{display:none}}';
+  document.head.appendChild(st);
+
+  /* ── ① 키워드 클릭 → 바로 위 .say 문단 펼치기 ── */
+  document.querySelectorAll('.keyline-s').forEach(function(line){
+    /* 이 키워드 줄 바로 앞에 오는 교사용 설명(.say)들을 모은다 */
+    var says = [], p = line.previousElementSibling;
+    while (p && (p.classList.contains('say') || p.tagName === 'BR')){
+      if (p.classList.contains('say')) says.unshift(p);
+      p = p.previousElementSibling;
+    }
+    if (!says.length) return;
+    var peek = null;
+    line.querySelectorAll('.kw').forEach(function(kw){
+      kw.setAttribute('title', '눌러서 자세한 설명 보기');
+      kw.addEventListener('click', function(){
+        if (peek){ peek.remove(); peek = null; line.querySelectorAll('.kw').forEach(function(x){x.style.outline='';}); return; }
+        peek = document.createElement('div');
+        peek.className = 'kw-peek';
+        peek.innerHTML = '<div class="kw-peek-h">📖 자세한 설명</div>' +
+          says.map(function(s){ return s.innerHTML; }).join('<br>');
+        line.insertAdjacentElement('afterend', peek);
+        kw.style.outline = '2px solid currentColor';
+        peek.scrollIntoView({block:'nearest', behavior:'smooth'});
+      });
+    });
+  });
+
+  /* ── ② 헤더 아이콘 라벨 ── */
+  function label(el, text){
+    if (!el || el.dataset.hbl) return; el.dataset.hbl = 1;
+    var w = document.createElement('span'); w.className = 'hb-wrap';
+    el.parentNode.insertBefore(w, el); w.appendChild(el);
+    var l = document.createElement('span'); l.className = 'hb-lab'; l.textContent = text;
+    w.appendChild(l);
+  }
+  var hubBtn = document.querySelector('a.hbtn[href$="허브.html"], a.hbtn[href$="index.html"], a.hbtn[href*="허브"], a.hbtn[href*="index"]');
+  label(hubBtn, '허브페이지로 이동');
+  label(document.getElementById('tmodeBtn'), '교사용 on/off');
+})();
+</script>
+</body>
+</html>

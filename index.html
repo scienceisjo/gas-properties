@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+/* 전자칠판 보정 */
+(function(){try{var sw=screen.width,iw=innerWidth;
+ if(sw>=1600&&iw>0&&sw/iw>1.15)document.querySelector('meta[name=viewport]')
+  .setAttribute('content','width='+sw+', user-scalable=no, viewport-fit=cover');}catch(e){}})();
+</script>
+<meta name="theme-color" content="#eef4f9">
+<title>VI. 기체의 성질 · 중1 과학 단원 허브</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --paper:#eef4f9; --paper-hi:#f9fcfe; --paper-lo:#d9e6f0;
+ --line:#9db7cc; --line-soft:#c3d5e2;
+ --ink:#1e2c39; --ink-dim:#41586c; --ink-mute:#7b91a4;
+ --accent:#20748f; --sky:#3f88c5; --sky-hi:#a9d0ef; --sky-dk:#1c507e;
+ --c1:#b23a30; --c2:#3f64b5; --c3:#c4711e; --c4:#3a7a3f;
+ --ok:#2c7a44;
+ --disp:"Pretendard",-apple-system,"Malgun Gothic",sans-serif;
+ --jua:"Jua",var(--disp); --mono:"JetBrains Mono",ui-monospace,monospace;
+ --r:18px; --shadow:0 16px 44px -22px rgba(23,52,80,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--disp);color:var(--ink);line-height:1.62;
+ background:
+ radial-gradient(1100px 600px at 80% -8%, rgba(63,136,197,.18), transparent 60%),
+ radial-gradient(800px 500px at 6% 12%, rgba(196,113,30,.10), transparent 62%),
+ linear-gradient(180deg,#f4f9fd,var(--paper) 55%,var(--paper-lo))}
+#clouds{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5}
+main{max-width:1180px;margin:0 auto;padding:30px 18px 90px}
+
+.hero{text-align:center;padding:26px 0 8px}
+.hero .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:14px;font-weight:700;color:var(--accent);
+ background:var(--paper-hi);border:1.5px solid var(--line);border-radius:999px;padding:6px 16px}
+.hero h1{font-family:var(--jua);font-size:clamp(34px,6.4vw,58px);line-height:1.26;margin-top:14px}
+.hero h1 .t{color:var(--sky-dk)}
+.hero p{font-size:clamp(16px,2.2vw,20px);color:var(--ink-dim);margin-top:12px;line-height:1.7}
+.hero-art{width:clamp(150px,24vw,220px);margin:10px auto 0}
+.hero-art svg{width:100%;height:auto;display:block}
+
+.blocks{display:grid;gap:16px;grid-template-columns:1fr;margin-top:26px}
+@media(min-width:860px){.blocks{grid-template-columns:1fr 1fr}}
+.block{border:2px solid var(--sky);border-radius:var(--r);background:linear-gradient(180deg,var(--paper-hi),#f0f6fa);
+ padding:20px 22px;box-shadow:var(--shadow)}
+.block .bq-tag{font-family:var(--jua);font-size:14px;color:#fff;padding:4px 14px;border-radius:99px;display:inline-block;
+ background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk));border:1px solid var(--sky-dk)}
+.block h3{font-family:var(--jua);font-size:clamp(19px,2.6vw,24px);line-height:1.4;margin-top:10px}
+.block p{font-size:14.5px;color:var(--ink-mute);margin-top:8px;line-height:1.65}
+
+.sec-h{font-family:var(--jua);font-size:clamp(22px,3.4vw,30px);margin:38px 0 6px;display:flex;align-items:center;gap:10px}
+.sec-sub{font-size:15px;color:var(--ink-mute)}
+
+.lessons{display:grid;gap:16px;grid-template-columns:1fr;margin-top:18px}
+@media(min-width:760px){.lessons{grid-template-columns:1fr 1fr}}
+.lesson{position:relative;display:block;text-decoration:none;color:inherit;border:1.5px solid var(--line);
+ border-radius:var(--r);background:linear-gradient(180deg,var(--paper-hi),#f2f7fb);padding:20px 22px;
+ box-shadow:var(--shadow);transition:.18s}
+.lesson:hover{transform:translateY(-3px);border-color:var(--accent)}
+.lesson .no{position:absolute;top:-13px;left:16px;font-family:var(--jua);font-size:14.5px;color:#fff;
+ padding:4px 15px;border-radius:99px;background:linear-gradient(178deg,var(--sky-hi),var(--sky) 52%,var(--sky-dk));
+ border:1px solid var(--sky-dk)}
+.lesson .st{position:absolute;top:-12px;right:14px;font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:99px;
+ background:var(--paper-hi);border:1.5px solid var(--line);color:var(--ink-mute)}
+.lesson .st.go{border-color:var(--ok);color:var(--ok)}
+.lesson h3{font-family:var(--jua);font-size:clamp(19px,2.5vw,23px);line-height:1.35;margin-top:8px}
+.lesson h3 small{display:block;font-size:14px;color:var(--ink-mute);font-family:var(--disp);font-weight:600;margin-top:3px}
+.lesson p{font-size:14.5px;color:var(--ink-dim);margin-top:9px;line-height:1.68}
+.lesson .pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.lesson .pill{font-size:12.5px;font-weight:700;background:var(--paper);border:1px solid var(--line-soft);
+ border-radius:99px;padding:4px 11px;color:var(--ink-dim)}
+.lesson .pill.mbl{border-color:var(--c3);color:#8f5312;background:#f7eddc}
+.lesson .go-t{display:inline-block;margin-top:14px;font-weight:800;font-size:14.5px;color:var(--accent)}
+
+.mapline{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:26px;
+ font-size:13.5px;color:var(--ink-mute);font-weight:600}
+.mapline .m{background:var(--paper-hi);border:1.5px solid var(--line);border-radius:99px;padding:5px 13px}
+.mapline .m.hl{border-color:var(--c3);color:#8f5312}
+
+footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;
+ font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;
+ border-top:1px solid rgba(128,128,128,.25)}
+</style>
+</head>
+<body>
+<canvas id="clouds"></canvas>
+<main>
+
+<div class="hero">
+ <span class="eyebrow">🎈 중1 과학 · VI. 기체의 성질</span>
+ <h1>물 뿜는 인형은<br>어떻게 <span class="t">물을 뿜을까</span></h1>
+ <div class="hero-art"><svg viewBox="0 0 200 150" aria-hidden="true">
+  <ellipse cx="100" cy="136" rx="70" ry="8" fill="#c9dcEB"/>
+  <path d="M100 18 q34 0 34 32 q0 18-12 26 l4 34 q0 12-26 12 q-26 0-26-12 l4-34 q-12-8-12-26 q0-32 34-32z"
+   fill="#f6c66a" stroke="#a8763f" stroke-width="3"/>
+  <circle cx="88" cy="48" r="4.5" fill="#1e2c39"/><circle cx="112" cy="48" r="4.5" fill="#1e2c39"/>
+  <path d="M92 62 q8 7 16 0" stroke="#1e2c39" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M124 40 q18-10 30-4 M128 34 q14-16 28-14 M124 48 q20-2 32 6"
+   stroke="#3f88c5" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="158" cy="30" r="3.4" fill="#3f88c5"/><circle cx="164" cy="42" r="3" fill="#3f88c5"/>
+  <circle cx="160" cy="54" r="2.6" fill="#3f88c5"/>
+ </svg></div>
+ <p>손에 잡히지도 않는 공기가 물을 밀어내고, 봉지를 부풀리고, 병을 찌그러뜨립니다.<br>
+ 다섯 걸음으로 그 <b>보이지 않는 알갱이들</b>의 정체를 밝힙니다.</p>
+</div>
+
+<div class="blocks">
+ <div class="block">
+  <span class="bq-tag">🧱 첫 번째 블록</span>
+  <h3>물 뿜는 인형에서 물은<br>어떻게 뿜어져 나올까?</h3>
+  <p>1~2걸음에서 단서를 모읍니다 — 압력이란 무엇인지, 그리고 기체가 어떻게 압력을 만드는지.</p>
+ </div>
+ <div class="block">
+  <span class="bq-tag">🧱 두 번째 블록</span>
+  <h3>물은 어떻게<br>들어갔다가 나오는 걸까?</h3>
+  <p>3~5걸음에서 단서를 모읍니다 — 압력과 부피, 온도와 부피의 시소 관계.</p>
+ </div>
+</div>
+
+<h2 class="sec-h">🚶 다섯 걸음 <span class="sec-sub">· 차시 순서대로</span></h2>
+<div class="lessons">
+
+ <a class="lesson" href="01-pressure.html" data-save="gas_pressure_v1">
+  <span class="no">1걸음 · 45분</span><span class="st">시작 전</span>
+  <h3>갯벌에서는 왜 널빤지를 탈까<small>압력 — 일정한 면적에 작용하는 힘</small></h3>
+  <p>같은 몸무게인데 빠지고, 안 빠지고. 스펀지 실험대에서 힘과 면적을 따로 바꿔 보며
+  그 차이의 이름을 배웁니다.</p>
+  <div class="pills"><span class="pill">압력</span><span class="pill">힘의 크기</span><span class="pill">면적</span></div>
+  <span class="go-t">수업 열기 →</span>
+ </a>
+
+ <a class="lesson" href="02-gas-pressure.html" data-save="gas_gaspressure_v1">
+  <span class="no">2걸음 · 45분</span><span class="st">시작 전</span>
+  <h3>튜브를 눌렀는데 내 손이 밀렸다<small>기체의 압력 — 입자의 충돌</small></h3>
+  <p>쇠구슬 페트병으로 흉내 내고, 입자 상자에서 충돌을 직접 세어 봅니다.
+  첫 번째 블록 질문이 여기서 풀립니다.</p>
+  <div class="pills"><span class="pill">기체의 압력</span><span class="pill">입자의 충돌</span><span class="pill">모든 방향</span></div>
+  <span class="go-t">수업 열기 →</span>
+ </a>
+
+ <a class="lesson" href="03-boyle.html" data-save="gas_boyle_v1">
+  <span class="no">3걸음 · 45분×2</span><span class="st">시작 전</span>
+  <h3>하늘 위에서 과자 봉지가 부풀었다<small>기체의 압력과 부피 관계</small></h3>
+  <p>주사기에 압력 센서를 연결해 숫자로 확인하고, 입자 상자에서
+  "빨라진 게 아니라 잦아진 것"임을 밝혀냅니다.</p>
+  <div class="pills"><span class="pill mbl">📡 압력 센서 MBL</span><span class="pill">압력↔부피</span><span class="pill">충돌 빈도</span></div>
+  <span class="go-t">수업 열기 →</span>
+ </a>
+
+ <a class="lesson" href="04-charles.html" data-save="gas_charles_v1">
+  <span class="no">4걸음 · 45분×2</span><span class="st">시작 전</span>
+  <h3>냉장고에 넣은 생수병이 찌그러졌다<small>기체의 온도와 부피 관계</small></h3>
+  <p>스포이트 물방울 온도계로 부피를 재고, 자유 피스톤 상자에서
+  이번에는 입자의 빠르기가 변하는 것을 확인합니다. 두 번째 블록 완성.</p>
+  <div class="pills"><span class="pill">온도↔부피</span><span class="pill">입자의 운동성</span><span class="pill">압력 일정</span></div>
+  <span class="go-t">수업 열기 →</span>
+ </a>
+
+ <a class="lesson" href="05-cases.html" data-save="gas_survey_v1">
+  <span class="no">5걸음 · 45분</span><span class="st">시작 전</span>
+  <h3>그릇이 혼자 미끄러졌다<small>기체의 부피 변화 예 조사하기</small></h3>
+  <p>열 장면을 압력·온도로 가려내고, 모둠이 고른 한 장면으로
+  30초 원리 설명 동영상을 만듭니다.</p>
+  <div class="pills"><span class="pill">판별 활동</span><span class="pill">🎬 동영상 제작</span><span class="pill">모둠</span></div>
+  <span class="go-t">수업 열기 →</span>
+ </a>
+
+</div>
+
+<div class="mapline">
+ <span class="m">압력</span>→<span class="m">기체의 압력 = 입자의 충돌</span>→
+ <span class="m hl">압력 ↔ 부피</span>→<span class="m hl">온도 ↔ 부피</span>→<span class="m">생활 속 부피 변화</span>
+</div>
+
+</main>
+
+<footer id="app-credit">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-15</span></footer>
+
+<script>
+"use strict";
+/* 진행 배지 — 각 차시의 저장 데이터를 읽어 상태를 보여 준다 */
+document.querySelectorAll('.lesson[data-save]').forEach(a=>{
+ try{
+ const d=JSON.parse(localStorage.getItem(a.dataset.save));
+ if(!d)return;
+ const st=a.querySelector('.st');
+ if(d.best>0){st.textContent='✅ 확인 문제까지 완료';st.classList.add('go');}
+ else{st.textContent='📖 진행 중';st.classList.add('go');}
+ }catch(e){}
+});
+
+/* 구름 */
+(function(){
+ const cv=document.getElementById('clouds');if(!cv)return;
+ const ctx=cv.getContext('2d');
+ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let W=0,H=0,clouds=[];
+ function build(){
+ const dpr=Math.min(devicePixelRatio||1,2);
+ W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;
+ cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+ clouds=Array.from({length:Math.round(Math.min(7,W/260))},()=>({
+ x:Math.random()*W,y:20+Math.random()*H*.5,s:.5+Math.random()*.9,v:.10+Math.random()*.16}));
+ }
+ function blob(x,y,s){
+ ctx.beginPath();
+ ctx.ellipse(x,y,66*s,20*s,0,0,Math.PI*2);
+ ctx.ellipse(x-30*s,y+4*s,34*s,15*s,0,0,Math.PI*2);
+ ctx.ellipse(x+34*s,y+5*s,38*s,16*s,0,0,Math.PI*2);
+ ctx.ellipse(x+4*s,y-12*s,34*s,17*s,0,0,Math.PI*2);
+ ctx.fill();
+ }
+ function draw(){
+ ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.62)';
+ clouds.forEach(c=>{blob(c.x,c.y,c.s);
+ if(!reduceMotion){c.x+=c.v;if(c.x-90*c.s>W)c.x=-100*c.s;}});
+ if(!reduceMotion)requestAnimationFrame(draw);
+ }
+ let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{build();if(reduceMotion)draw();},200);});
+ build();draw();
+})();
+</script>
+</body>
+</html>
