@@ -430,6 +430,22 @@ body.teacher .wlockmsg{display:none}
 #toast.show{opacity:1;transform:translateX(-50%)}
 #toast.good{background:var(--ok)}
 @media print{header.top,#cover,#toast,.cta-row,.prog-list{display:none!important}.panel{display:block!important}}
+/* ── 영상 ── */
+.vwrap{margin:16px 0 4px}
+.vwrap.pair{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:760px){.vwrap.pair{grid-template-columns:1fr 1fr}}
+.vbox{border:2px solid var(--line);border-radius:16px;overflow:hidden;background:#000;position:relative;
+ max-width:960px;margin-left:auto;margin-right:auto}
+.vbox::before{content:"";display:block;padding-top:56.25%}
+.vbox.tall{max-width:430px}
+.vbox.tall::before{padding-top:130%}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcap{font-size:14px;color:var(--ink-mute);margin-top:7px;line-height:1.6}
+.vcap b{color:var(--ink)}
+.vcap a{color:var(--accent)}
+.vlead{font-family:var(--jua);font-size:clamp(16px,2vw,19px);color:var(--gold);margin:2px 0 8px;
+ display:flex;align-items:center;gap:8px}
+@media print{.vbox{display:none!important}.vwrap{page-break-inside:avoid}}
 
 </style>
 </head>
@@ -510,6 +526,7 @@ body.teacher .wlockmsg{display:none}
  <p class="lead say">뜨거운 음식을 담은 그릇이 물기 있는 식탁 위에서 혼자 미끄러지는 것,
  본 적 있나요? 아무도 밀지 않았는데요. 이 단원에서 배운 것만으로 풀 수 있는 마지막 수수께끼입니다.</p>
  <div class="keyline-s"><span class="kw">뜨거운 그릇</span><span class="kw">물기 있는 식탁</span><span class="arw">→</span><span class="kw q">누가 밀었나?</span><span class="memo"></span></div>
+<div class="vwrap"><div class="vlead">🎬 정말로 혼자 움직입니다</div><div class="vbox tall"><iframe src="https://www.youtube.com/embed/Pe6ChWSd0e0" title="혼자 움직이는 국그릇" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p class="vcap">👀 <b>아무도 건드리지 않았다. 그릇과 식탁 <b>사이</b>에 무엇이 있었을까?</b><br>영상이 안 보이면 인터넷 연결을 확인하세요 · <a href="https://youtube.com/shorts/Pe6ChWSd0e0" target="_blank" rel="noopener">유튜브에서 바로 보기 →</a></p></div>
 
  <div class="card" style="margin-top:20px">
   <h3 class="card-t">🤔 원리를 골라 보세요</h3>
@@ -541,6 +558,7 @@ body.teacher .wlockmsg{display:none}
   <div id="sortGrid" class="use-grid"></div>
   <div class="verdict" id="sortSay" style="display:none"></div>
  </div>
+ <div class="vwrap"><div class="vlead">🎬 판별을 마쳤다면 — 국그릇의 정답 확인</div><div class="vbox"><iframe src="https://www.youtube.com/embed/uZmWscRlSCg" title="김밥천국 국그릇은 왜 움직일까 - 1분만" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p class="vcap">👀 <b>우리가 1단계에서 고른 답과 같은가? 다르다면 어디에서 갈렸을까?</b><br>⚠ 판별을 끝낸 뒤에 트세요 · 답이 바로 나옵니다 · <a href="https://youtu.be/uZmWscRlSCg" target="_blank" rel="noopener">유튜브에서 바로 보기 →</a></p></div>
  <div class="cta-row"><button class="btn primary" data-go="video">3단계 · 동영상 만들기 →</button></div>
 </section>
 
@@ -552,6 +570,7 @@ body.teacher .wlockmsg{display:none}
  그 원리를 설명하는 <b class="k">30초 내외</b>의 동영상을 만듭니다.
  화려한 편집보다 <b class="k">원리 설명이 정확한지</b>가 평가 기준이에요.</p>
  <div class="keyline-s"><span class="kw">장면 하나 고르기</span><span class="arw">→</span><span class="kw">원리 한 줄</span><span class="arw">→</span><span class="kw">스토리보드</span><span class="arw">→</span><span class="kw hi">30초 촬영</span><span class="memo"></span></div>
+<div class="vwrap"><div class="vlead">🎬 이런 느낌으로 찍으면 됩니다 — 본보기</div><div class="vbox tall"><iframe src="https://www.youtube.com/embed/4o57wS-XXhU" title="달걀을 병 속에 넣는 방법 - 기체의 부피를 이용한 실험" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p class="vcap">👀 <b>짧고, 한 장면에 집중하고, 원리를 한 줄로 말한다. 우리 모둠도 이렇게.</b><br>영상이 안 보이면 인터넷 연결을 확인하세요 · <a href="https://youtube.com/shorts/4o57wS-XXhU" target="_blank" rel="noopener">유튜브에서 바로 보기 →</a></p></div>
 
  <div class="note"><span class="ic">⏱️</span><div><b>시간 배분</b> — 주제 정하고 원리 쓰기 <b>10분</b> · 스토리보드 <b>10분</b> · 촬영·편집 <b>25분</b>.
  발표는 다음 시간에 여유 있게 합니다.</div></div>
@@ -1052,7 +1071,7 @@ $$('textarea[data-essay]').forEach(t=>{
     /* ② 헤더 아이콘 라벨 */
     '.hbtn{position:relative}'+
     '.hb-wrap{display:flex;flex-direction:column;align-items:center;gap:2px}'+
-    '.hb-lab{font-size:9.5px;line-height:1.1;opacity:.75;white-space:nowrap;letter-spacing:-.02em}'+
+    '.hb-lab{font-size:10px;line-height:1.15;white-space:nowrap;letter-spacing:-.02em;font-weight:700;'+'color:#fff;background:rgba(28,22,14,.62);padding:2px 7px;border-radius:7px;'+'text-shadow:0 1px 2px rgba(0,0,0,.65);backdrop-filter:blur(2px)}'+
     '@media(max-width:520px){.hb-lab{display:none}}';
   document.head.appendChild(st);
 
@@ -1089,7 +1108,7 @@ $$('textarea[data-essay]').forEach(t=>{
     var l = document.createElement('span'); l.className = 'hb-lab'; l.textContent = text;
     w.appendChild(l);
   }
-  var hubBtn = document.querySelector('a.hbtn[href$="허브.html"], a.hbtn[href$="index.html"], a.hbtn[href*="허브"], a.hbtn[href*="index"]');
+  var hubBtn = document.querySelector('a.hbtn[href$="index.html"], a.hbtn[href*="허브"], a.hbtn[href*="index"]');
   label(hubBtn, '허브페이지로 이동');
   label(document.getElementById('tmodeBtn'), '교사용 on/off');
 })();
