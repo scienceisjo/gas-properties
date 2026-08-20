@@ -10,7 +10,7 @@
   .setAttribute('content','width='+sw+', user-scalable=no, viewport-fit=cover');}catch(e){}})();
 </script>
 <meta name="theme-color" content="#eef4f9">
-<title>냉장고에 넣은 생수병이 찌그러졌다 · 기체의 온도와 부피 관계</title>
+<title>냉동실에 넣은 봉지가 쪼그라들었다 · 기체의 온도와 부피 관계</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -561,19 +561,20 @@ body.teacher .wlockmsg{display:none}
 
 <!-- 1 생각 열기 -->
 <section class="panel show" id="panel-open">
- <div class="stepline"><span class="sbadge">STEP 1</span><span class="swhat">생각 열기 · 찌그러진 생수병</span></div>
- <h1 class="big">아무도 누르지 않았는데,<br>병이 <span class="t3">혼자 찌그러졌다</span></h1>
- <p class="lead say">더운 여름날, 물이 조금 남은 생수병을 뚜껑을 닫아 냉장고에 넣어 두면
- 나중에 <b class="k">혼자 찌그러져</b> 있습니다. 손도 안 댔는데요.
+ <div class="stepline"><span class="sbadge">STEP 1</span><span class="swhat">생각 열기 · 쪼그라든 과자 봉지</span></div>
+ <h1 class="big">아무도 누르지 않았는데,<br>봉지가 <span class="t3">혼자 쪼그라들었다</span></h1>
+ <p class="lead say">산 위에서 그렇게 빵빵하던 그 봉지를, 이번에는 냉동실에 넣어 두었습니다.
+ 꺼내 보니 은박이 과자에 착 달라붙을 만큼 <b class="k">혼자 쪼그라들어</b> 있어요. 손도 안 댔는데요.
  지난 시간에 배운 압력–부피 시소를 떠올려도 이상합니다 — <b class="k">밖에서 누르는 압력이 커진 것도 아닌데</b> 말이죠.</p>
- <div class="keyline-s"><span class="kw">누른 사람 없음</span><span class="kw">뚜껑 닫힘</span><span class="arw">→</span><span class="kw q">누가 찌그러뜨렸나?</span><span class="memo"></span></div>
+ <div class="keyline-s"><span class="kw">누른 사람 없음</span><span class="kw">봉지는 그대로 밀봉</span><span class="arw">→</span><span class="kw q">누가 쪼그라뜨렸나?</span><span class="memo"></span></div>
+<div class="fig" data-fig="ga-bag-freezer" data-alt="냉동실에서 꺼낸 과자 봉지가 은박이 과자에 달라붙을 만큼 쪼그라든 모습" data-cap="산 위에서 빵빵하던 그 봉지다"></div>
 
  <div class="card" style="margin-top:20px">
   <h3 class="card-t">🕵️ 용의자 고르기</h3>
   <div class="choices" id="openPick">
-   <button class="choice" data-v="a"><span class="key">가</span><span>냉장고 안의 공기가 병을 눌러서 찌그러뜨렸다.</span></button>
-   <button class="choice" data-v="b"><span class="key">나</span><span>온도가 낮아지자 병 속 공기의 부피가 줄어들었다.</span></button>
-   <button class="choice" data-v="c"><span class="key">다</span><span>병 속의 물이 공기를 흡수해서 공기가 줄어들었다.</span></button>
+   <button class="choice" data-v="a"><span class="key">가</span><span>냉동실 안의 공기가 봉지를 눌러서 쪼그라뜨렸다.</span></button>
+   <button class="choice" data-v="b"><span class="key">나</span><span>온도가 낮아지자 봉지 속 공기의 부피가 줄어들었다.</span></button>
+   <button class="choice" data-v="c"><span class="key">다</span><span>봉지 속 공기가 조금씩 새어 나갔다.</span></button>
   </div>
   <div class="verdict" id="openSay" style="display:none"></div>
  </div>
@@ -846,6 +847,7 @@ body.teacher .wlockmsg{display:none}
  <h2 class="sec">하늘을 사랑한 샤를</h2>
  <div class="card" style="margin-top:14px">
   <h3 class="card-t">🎈 열기구와 수소 기구</h3>
+<div class="fig" data-fig="ga-balloon" data-alt="새벽 하늘로 떠오르는 열기구, 아래쪽 버너에서 불꽃이 올라오고 있다" data-cap="데운 공기는 부풀어 가벼워진다"></div>
   <p class="lead say" style="margin-top:6px">샤를(1746~1823)은 1780년대에 <b class="k">기구(풍선) 연구</b>에 빠져 있었습니다.
   수소·산소·질소 등 여러 기체로 풍선 실험을 하다가, 온도를 높이면
   <b class="k">기체의 종류와 상관없이 같은 비율로 부피가 커진다</b>는 것을 알아냈어요.
@@ -872,12 +874,13 @@ body.teacher .wlockmsg{display:none}
 </main>
 
 <div id="toast"></div>
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-19</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-21</span></footer>
 
 <script>
 "use strict";
 /* ═══════════ 페이지 데이터 ═══════════ */
 const SAVE='gas_charles_v1';
+const FIGS={'ga-bag-freezer':'img/ga-bag-freezer.jpg','ga-balloon':'img/ga-balloon.jpg'};
 const TABS=['open','explore','model','apply','check','sum','beyond'];
 
 /* 스포이트 물방울 위치: 교과서 실측(15.7℃→9.5cm … 40.6℃→11.4cm)의 직선 근사 */
@@ -1016,7 +1019,7 @@ function progChecks(){
  {label:'3단계 · 온도를 위·아래로 돌려 보기', ok:!!S.wcHi&&!!S.wcLo},
  {label:'3단계 · 빈칸 모두 채우기', ok:CLOZE_TOTAL>0&&Object.keys(S.cloze).length>=CLOZE_TOTAL},
  {label:'3단계 · 개념 확인 퀴즈', ok:!!S.mini.model},
- {label:'4단계 · 물 뿜는 인형 블록 완성', ok:(S.essays.block2||'').trim().length>=10},
+ {label:'4단계 · 봉지 여행 블록 완성', ok:(S.essays.block2||'').trim().length>=10},
  {label:'4단계 · 보일·샤를 구분 쓰기', ok:(S.essays.compare||'').trim().length>=10},
  {label:'5단계 · 확인 문제 완주', ok:S.best>0}
 

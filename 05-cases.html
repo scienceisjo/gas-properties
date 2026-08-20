@@ -545,6 +545,7 @@ body.teacher .wlockmsg{display:none}
   <button data-tab="sort"><span class="sn"><i>2</i></span>가려내기</button>
   <button data-tab="video"><span class="sn"><i>3</i></span>동영상 만들기</button>
   <button data-tab="share"><span class="sn"><i>4</i></span>발표·점검</button>
+  <button data-tab="check"><span class="sn"><i>5</i></span>확인하기</button>
   <span class="tab-sep"></span>
   <button data-tab="sum" class="optional"><span class="sn"><i>+</i></span>📝 개념 정리하기</button>
 
@@ -667,7 +668,7 @@ body.teacher .wlockmsg{display:none}
  </div>
 
  <div class="card" style="margin-top:16px">
-  <h3 class="card-t">🏁 단원 끝 — 물 뿜는 인형에게 안녕</h3>
+  <h3 class="card-t">🏁 단원 끝 — 봉지의 여행이 끝났습니다</h3>
   <p class="lead say" style="margin-top:6px">압력이 무엇인지에서 출발해, 보이지 않는 입자의 충돌로 기체의 압력을 설명했고,
   압력–부피, 온도–부피의 시소까지 확인했습니다. 물총도, 과자 봉지도, 생수병도, 국그릇도 —
   전부 <b class="k">같은 입자들의 이야기</b>였어요. 다음 단원에서 또 만납니다.</p>
@@ -678,6 +679,14 @@ body.teacher .wlockmsg{display:none}
 </main>
 
 <div id="toast"></div>
+<!-- 5 확인하기 -->
+<section class="panel" id="panel-check">
+ <div class="stepline"><span class="sbadge">STEP 5</span><span class="swhat">확인하기 · 단원 전체 점검</span></div>
+ <h2 class="sec">확인 문제</h2>
+ <p class="lead">이 단원 전체에서 고르게 나옵니다. 매번 이렇게 물으세요 — <b>무엇이 먼저 변했지?</b></p>
+ <div id="gameBox" style="margin-top:16px"></div>
+</section>
+
 <!-- + 개념 정리하기 -->
 <section class="panel" id="panel-sum">
  <div class="stepline"><span class="sbadge">정리</span><span class="swhat">단원 총정리 · 빈칸 채우기</span></div>
@@ -703,13 +712,60 @@ body.teacher .wlockmsg{display:none}
  <b>마이크는 크롬·엣지에서만</b> 되고 인터넷이 필요합니다. 안 되면 <b>빈칸 클릭</b>만으로도 수업이 굴러갑니다.</div></div>
 </section>
 
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-19</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-21</span></footer>
 
 <script>
 "use strict";
 /* ═══════════ 페이지 데이터 ═══════════ */
 const SAVE='gas_survey_v1';
-const TABS=['open','sort','video','share','sum'];
+const TABS=['open','sort','video','share','check','sum'];
+const GAME_QS=[
+ {id:'q1',difficulty:'하',
+  stem:'다음은 기체의 부피가 변한 현상이다. 부피를 바꾼 원인이 <b>나머지 넷과 다른</b> 하나는?',
+  ch:[{t:'높은 산에 오르니 과자 봉지가 부풀었다.'},
+      {t:'잠수부가 내뿜은 공기 방울이 위로 올라갈수록 커졌다.'},
+      {t:'찌그러진 탁구공을 뜨거운 물에 넣으니 펴졌다.',ok:1},
+      {t:'물속 깊이 내려간 페트병이 찌그러졌다.'},
+      {t:'비행기가 높이 오르자 기내의 페트병이 부풀었다.'}],
+  why:'③만 <b class="t3">온도</b>가 원인입니다 — 뜨거운 물이 공 속 공기를 데웠죠.<br>나머지 넷은 모두 <b class="t1">압력</b>이 원인입니다. 산·비행기는 올라가서 기압이 <b>작아졌고</b>, 물속은 내려가서 물의 압력이 <b>커졌습니다.</b><br>가려내는 요령은 하나 — <b>"무엇이 먼저 변했지?"</b>'},
+
+ {id:'q2',difficulty:'중',
+  stem:'뜨거운 음식을 담은 그릇이 <b>물기가 있는</b> 식탁 위에서 혼자 미끄러졌다. 이에 대한 설명으로 옳은 것은?',
+  ch:[{t:'그릇 바닥에 갇힌 공기가 데워져 부피가 늘어나며 그릇을 살짝 들어 올렸다.',ok:1},
+      {t:'그릇에서 나온 김이 옆으로 뿜어져 그릇을 밀어냈다.'},
+      {t:'물기가 없는 마른 식탁에서도 똑같이 잘 미끄러진다.'},
+      {t:'그릇 바닥의 공기 입자 수가 늘어나 부피가 커졌다.'},
+      {t:'식탁이 한쪽으로 기울어져 있었기 때문이다.'}],
+  why:'물기가 그릇 테두리를 막아 <b>공기가 갇히는 것</b>이 핵심 조건입니다. 그 공기가 데워져 <b class="t2">부피가 늘어나</b> 그릇을 살짝 띄우면 미끄러지죠.<br>③ 마른 식탁에서는 데워진 공기가 그냥 새어 나가 <b>안 미끄러집니다.</b><br>④ 데운다고 입자가 새로 생기지 않습니다 — 늘어난 것은 부피이지 입자 수가 아닙니다.'},
+
+ {id:'q3',difficulty:'중',
+  stem:'일정한 양의 기체를 ㉠<b>온도를 일정하게 두고 누를 때</b>와 ㉡<b>압력을 일정하게 두고 데울 때</b>, 두 경우에 <b>공통으로</b> 해당하는 것은?',
+  ch:[{t:'기체 입자의 수는 변하지 않는다.',ok:1},
+      {t:'기체 입자의 운동이 활발해진다.'},
+      {t:'기체 입자 사이의 거리가 가까워진다.'},
+      {t:'기체 입자 하나하나의 크기가 커진다.'},
+      {t:'기체의 부피가 줄어든다.'}],
+  why:'갇힌 기체이므로 <b>입자 수는 어느 경우에도 그대로</b>입니다. 이것이 이 단원을 관통하는 한 문장이에요.<br>② 운동이 활발해지는 것은 <b>㉡(온도)에서만</b>입니다 — 누른다고 빨라지지 않아요.<br>③ 거리가 가까워지는 것은 ㉠에서만, ⑤ 부피가 주는 것도 ㉠에서만입니다.<br>④ 입자의 크기는 언제나 그대로.'},
+
+ {id:'q4',difficulty:'중',
+  stem:'다음 중 부피를 바꾼 원인이 <b class="t3">온도</b>인 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
+  boxes:['하늘 높이 올라간 헬륨 풍선이 점점 커지다 터졌다',
+         '여름 한낮에 세워 둔 자전거 타이어가 더 팽팽해졌다',
+         '냉동실에 넣어 둔 과자 봉지가 쪼그라들었다'],
+  boxVerdicts:[false,true,true],
+  ch:[{t:'ㄱ'},{t:'ㄴ'},{t:'ㄱ, ㄴ'},{t:'ㄴ, ㄷ',ok:1},{t:'ㄱ, ㄴ, ㄷ'}],
+  why:'<b>ㄱ. 압력.</b> 위로 갈수록 바깥 <b>기압이 작아져</b> 풍선이 부풀다 터진 것입니다. 하늘 위는 오히려 <b>추운데도</b> 커졌다는 점이 힌트예요.<br><b>ㄴ. 온도.</b> 한낮의 열이 타이어 속 공기를 데웠습니다.<br><b>ㄷ. 온도.</b> 냉동실이 봉지 속 공기를 식혔습니다.<br>따라서 정답은 <b>ㄴ, ㄷ</b>.'},
+
+ {id:'q5',difficulty:'상',
+  stem:'기체의 부피 변화에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
+  boxes:['기체의 부피가 변해도 기체 입자의 수는 변하지 않는다',
+         '기체를 누르면 입자의 운동이 활발해져 부피가 줄어든다',
+         '온도를 높이면 입자의 운동이 활발해져 부피가 늘어난다'],
+  boxVerdicts:[true,false,true],
+  ch:[{t:'ㄱ'},{t:'ㄷ'},{t:'ㄱ, ㄴ'},{t:'ㄱ, ㄷ',ok:1},{t:'ㄱ, ㄴ, ㄷ'}],
+  why:'<b>ㄱ. 옳다.</b> 갇힌 기체의 입자 수는 어떤 경우에도 그대로입니다.<br><b>ㄴ. 옳지 않다.</b> <b class="t1">이 단원 최대의 함정</b>이에요. 누른다고 입자가 빨라지지는 <b>않습니다.</b> 운동을 활발하게 만드는 것은 <b>온도뿐</b>이고, 누를 때 달라지는 것은 <b>충돌의 빈도</b>입니다.<br><b>ㄷ. 옳다.</b> 온도가 운동성을 바꾸고, 그 힘에 밀려 부피가 늘어납니다.<br>따라서 정답은 <b>ㄱ, ㄷ</b>.'}
+];
+
 
 /* 판별 자료 — p=압력, t=온도 */
 const SORT_ITEMS=[
@@ -722,7 +778,7 @@ const SORT_ITEMS=[
  {e:'🥚',t:'냉장고 달걀을 바로 삶으면 껍데기가 터진다',a:'t',why:'공기 주머니가 갑자기 데워져 부피가 확 늘었다'},
  {e:'🍜',t:'뜨거운 국그릇이 식탁 위에서 미끄러진다',a:'t',why:'그릇 바닥의 공기가 데워져 부피가 늘며 그릇을 들어 올렸다'},
  {e:'🫁',t:'가슴 속 공간이 넓어지면 공기가 밀려 들어온다',a:'p',why:'폐 속 압력이 낮아져 공기가 들어온다 — 호흡'},
- {e:'🧸',t:'물 뿜는 인형에 뜨거운 물을 부으니 공기가 빠져나왔다',a:'t',why:'인형 속 공기가 데워져 부피가 늘었다'}
+ {e:'🍪',t:'냉동실에 둔 과자 봉지가 쪼그라들었다',a:'t',why:'봉지 속 공기가 식어 부피가 줄었다'}
 ];
 
 
