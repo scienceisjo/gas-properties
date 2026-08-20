@@ -863,7 +863,7 @@ body.teacher .wlockmsg{display:none}
 </main>
 
 <div id="toast"></div>
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-15</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-19</span></footer>
 
 <script>
 "use strict";
@@ -965,6 +965,7 @@ const GAME_QS=[
          '피스톤을 누르면 공기 입자의 운동이 빨라져 압력이 커진다',
          '피스톤을 눌러 부피가 줄면 입자가 벽에 충돌하는 횟수가 늘어난다'],
   boxVerdicts:[true,false,true],
+  svg:'<svg viewBox="0 0 560 175" role="img" aria-label="끝을 막은 주사기 속에 공기를 가두고 피스톤을 누르는 실험. 주사기 속에는 공기 입자들이 들어 있다."><rect x="180" y="62" width="180" height="62" rx="8" fill="#eef5f9" stroke="#41586c" stroke-width="2.4"/><rect x="160" y="80" width="22" height="26" rx="5" fill="#c8d6df" stroke="#41586c" stroke-width="2.2"/><text x="146" y="130" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5a7186">끝을 막음</text><circle cx="206" cy="92" r="3" fill="#5a9ab8"/><circle cx="232" cy="78" r="3" fill="#5a9ab8"/><circle cx="258" cy="96" r="3" fill="#5a9ab8"/><circle cx="240" cy="110" r="3" fill="#5a9ab8"/><circle cx="214" cy="112" r="3" fill="#5a9ab8"/><circle cx="266" cy="74" r="3" fill="#5a9ab8"/><circle cx="282" cy="100" r="3" fill="#5a9ab8"/><circle cx="224" cy="94" r="3" fill="#5a9ab8"/><line x1="300" y1="66" x2="300" y2="120" stroke="#41586c" stroke-width="5"/><rect x="303" y="86" width="96" height="14" rx="6" fill="#c8d6df" stroke="#41586c" stroke-width="2"/><rect x="399" y="72" width="12" height="42" rx="5" fill="#c8d6df" stroke="#41586c" stroke-width="2"/><defs><marker id="a77437" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#e0912b"/></marker></defs><line x1="462" y1="93" x2="418" y2="93" stroke="#e0912b" stroke-width="2.6" marker-end="url(#a77437)"/><text x="492" y="98" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#41586c" font-weight="700">누름</text><text x="240" y="48" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#5a7186">갇힌 공기</text><text x="280" y="165" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5a7186">※ 온도는 일정하게 유지한다</text></svg>',
   stem:'온도가 일정할 때, 공기를 가둔 주사기의 피스톤을 누르는 실험에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
   ch:[{t:'ㄱ'},{t:'ㄴ'},{t:'ㄱ, ㄷ',ok:1},{t:'ㄴ, ㄷ'},{t:'ㄱ, ㄴ, ㄷ'}],
   why:'<b>ㄱ. 옳다.</b> 막힌 주사기 — 입자는 드나들 수 없습니다.<br><b>ㄴ. 옳지 않다.</b> 이 단원 최대의 함정. 입자의 운동성은 <b>온도</b>만 바꿉니다. 부피가 줄어 <b>충돌이 잦아진 것</b>이지 입자가 빨라진 게 아니에요.<br><b>ㄷ. 옳다.</b> 좁아진 만큼 벽을 자주 만납니다.<br>따라서 정답은 <b>ㄱ, ㄷ</b>.'}
@@ -1237,6 +1238,19 @@ $$('textarea[data-essay]').forEach(t=>{
 (function(){
  const volR=$('#volR');if(!volR)return;
  function P(v){return PV/v;}
+ /* 실제 센서의 물리 —
+    ① 급히 누르면 기체가 순간적으로 데워져 압력이 등온값보다 치솟는다(단열 압축).
+       손을 멈추면 열이 벽으로 빠져나가며 등온값으로 가라앉는다(시상수 약 0.9초).
+    ② 여기에 센서 잡음(마지막 자리 흔들림)이 겹친다.
+    → '천천히 누르세요'가 진짜가 되는 이유. 기록은 안정된 등온값으로 저장된다. */
+ let exc=0, lastV=+volR.value, noiseP=0, nT=0;
+ function pNow(){return P(+volR.value)*(1+exc)+noiseP;}
+ function lcd(){
+ const p=pNow();
+ $('#lcdP').textContent=p.toFixed(3);
+ $('#roP').innerHTML=p.toFixed(3)+'<small> 기압</small>';
+ $('#lcdP').setAttribute('fill', Math.abs(exc)>0.02?'#ffd166':'#7fe8a0');
+ }
  function draw(){
  const v=+volR.value,p=P(v);
  /* 주사기: 몸통 x=60~440, 공기 기둥은 왼쪽(센서 쪽 아님) — 피스톤이 오른쪽에서 들어온다.
@@ -1256,12 +1270,32 @@ $$('textarea[data-essay]').forEach(t=>{
  sc+='<text x="250" y="216" text-anchor="middle" font-size="12" fill="#7b91a4">mL</text>';
  $('#scaleG').innerHTML=sc;
  $('#syrTitle').textContent='주사기 속 공기 '+v+' mL';
- $('#lcdP').textContent=p.toFixed(3);
  $('#volV').textContent=v+' mL';
  $('#roV').innerHTML=v+'<small> mL</small>';
- $('#roP').innerHTML=p.toFixed(3)+'<small> 기압</small>';
+ lcd();
  }
- volR.addEventListener('input',draw);
+ volR.addEventListener('input',()=>{
+ const v=+volR.value;
+ exc+= (lastV-v)*0.013;              /* 빨리 누를수록(한 번에 크게 변할수록) 크게 튄다 */
+ exc=Math.max(-0.35,Math.min(0.5,exc));
+ lastV=v; draw();
+ });
+ /* 센서 루프 — 과도응답 감쇠 + 잡음 */
+ function sense(dt){
+ exc*=Math.exp(-dt/0.9);
+ if(Math.abs(exc)<0.0004)exc=0;
+ nT-=dt;
+ if(nT<=0){noiseP=(Math.random()-0.5)*0.004;nT=0.12+Math.random()*0.1;}
+ lcd();
+ }
+ document.getElementById('syrSvg').__step=sense;   /* 검증용 수동 스텝 훅 */
+ let lastT=0;
+ (function sloop(t){
+ const dt=Math.min(.05,(t-lastT)/1000)||.016;lastT=t;
+ const vis=$('#panel-mbl').classList.contains('show')&&!document.body.classList.contains('cover-on');
+ if(vis&&!reduceMotion)sense(dt);
+ requestAnimationFrame(sloop);
+ })(0);
 
  /* 그래프 */
  const gcv=$('#graphCv'),gc=gcv.getContext('2d');
@@ -1332,7 +1366,11 @@ $$('textarea[data-essay]').forEach(t=>{
 
  const cv=$('#pistCv'),ctx=cv.getContext('2d');
  const W=660,H=330,PAD=24,R=6,N=20,SPEED=120;
- let els=[],hits=[];
+ /* 등온 강체구 기체 — 입자끼리 완전 탄성 충돌(운동에너지 보존).
+    '평균 빠르기' 계기판은 실측 rms(제곱평균제곱근)로 계산한다:
+    탄성충돌에서 rms는 정확히 보존되므로, 부피를 아무리 바꿔도 바늘이 안 움직인다.
+    → "부피가 줄면 입자가 빨라진다"는 오개념을 실측으로 반박. */
+ let els=[],hits=[],pistFlash=0;
  function build(){
  els=Array.from({length:N},()=>{
  const a=Math.random()*TAU;
@@ -1341,33 +1379,60 @@ $$('textarea[data-essay]').forEach(t=>{
  hits=[];
  }
  function wallX(){const pct=+$('#pvR').value;return PAD+(W-2*PAD)*pct/100;}
+ function collide(){
+ for(let i=0;i<els.length;i++)for(let j=i+1;j<els.length;j++){
+  const a=els[i],b=els[j];
+  const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,min=2*R;
+  if(d2>=min*min||d2===0)continue;
+  const d=Math.sqrt(d2),nx=dx/d,ny=dy/d;
+  const dvn=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
+  if(dvn>0){
+   a.vx-=dvn*nx;a.vy-=dvn*ny;
+   b.vx+=dvn*nx;b.vy+=dvn*ny;
+  }
+  const ov=(min-d)/2+0.1;
+  a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
+ }
+ }
  function step(dt){
  const now=performance.now()/1000,wx=wallX();
  els.forEach(e=>{
  e.x+=e.vx*dt;e.y+=e.vy*dt;
  if(e.x<PAD+R){e.x=PAD+R;e.vx=Math.abs(e.vx);hits.push(now);}
- if(e.x>wx-R){e.x=wx-R;e.vx=-Math.abs(e.vx);hits.push(now);}
+ if(e.x>wx-R){e.x=wx-R;e.vx=-Math.abs(e.vx);hits.push(now);pistFlash=Math.min(1,pistFlash+0.5);}
  if(e.y<PAD+R){e.y=PAD+R;e.vy=Math.abs(e.vy);hits.push(now);}
  if(e.y>H-PAD-R){e.y=H-PAD-R;e.vy=-Math.abs(e.vy);hits.push(now);}
  });
+ collide();
  while(hits.length&&now-hits[0]>1)hits.shift();
+ }
+ function rms(){
+ let s2=0;els.forEach(e=>{s2+=e.vx*e.vx+e.vy*e.vy;});
+ return Math.sqrt(s2/els.length);
+ }
+ function spdColor(v){
+ const t=Math.min(1,v/240);
+ return 'hsl('+Math.round(210-210*t)+',62%,'+Math.round(48-10*t)+'%)';
  }
  function draw(){
  const wx=wallX();
  ctx.clearRect(0,0,W,H);ctx.fillStyle='#f6fafd';ctx.fillRect(0,0,W,H);
  ctx.strokeStyle='#1c507e';ctx.lineWidth=5;
  ctx.strokeRect(PAD,PAD,wx-PAD,H-2*PAD);
- /* 피스톤 */
- ctx.fillStyle='#41586c';ctx.fillRect(wx,PAD,13,H-2*PAD);
+ /* 피스톤 — 입자가 부딪히는 순간 붉게 */
+ ctx.fillStyle=pistFlash>0?'rgba(178,58,48,'+(0.55+pistFlash*0.45)+')':'#41586c';
+ ctx.fillRect(wx,PAD,13,H-2*PAD);
+ pistFlash=Math.max(0,pistFlash-0.08);
  ctx.fillStyle='#7b91a4';ctx.fillRect(wx+13,H/2-8,W-PAD-wx-13,16);
- ctx.fillStyle='#3a7a3f';
- els.forEach(e=>{ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
+ els.forEach(e=>{
+ ctx.fillStyle=spdColor(Math.hypot(e.vx,e.vy));
+ ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
  ctx.fillStyle='#7b91a4';ctx.font='12.5px Pretendard, sans-serif';
- ctx.fillText('부피 '+$('#pvR').value+'% · 온도 일정',PAD+4,H-8);
+ ctx.fillText('부피 '+$('#pvR').value+'% · 온도 일정 — 색은 빠르기(파랑 느림 · 빨강 빠름)',PAD+4,H-8);
  }
  function readout(){
  $('#roN').innerHTML=N+'<small> 개</small>';
- $('#roSp').innerHTML='그대로<small> (온도 일정)</small>';
+ $('#roSp').innerHTML=Math.round(rms()/5)*5+'<small> (그대로)</small>';
  $('#roC').innerHTML=hits.length+'<small> 회</small>';
  }
  $('#pvR').addEventListener('input',()=>{
@@ -1380,6 +1445,7 @@ $$('textarea[data-essay]').forEach(t=>{
  ob.innerHTML='부피 60% — 충돌 횟수가 처음보다 눈에 띄게 늘었죠? 그런데 <b>입자 수와 평균 빠르기는 그대로</b>입니다. 아래가 열렸어요.';A.win();}
  });
  if(S.wbTried){$('#wbAfter').classList.add('open');$('#wbLockMsg').classList.add('gone');}
+ cv.__step=function(dt){step(dt);draw();readout();};   /* 검증용 수동 스텝 훅 */
  let last=0;
  function frame(t){
  const dt=Math.min(.04,(t-last)/1000)||.016;last=t;

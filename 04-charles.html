@@ -872,7 +872,7 @@ body.teacher .wlockmsg{display:none}
 </main>
 
 <div id="toast"></div>
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-15</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-19</span></footer>
 
 <script>
 "use strict";
@@ -1333,48 +1333,101 @@ $$('textarea[data-essay]').forEach(t=>{
  const cv=$('#chBox');if(!cv)return;
  const ctx=cv.getContext('2d');
  const W=660,H=330,PAD=24,R=6,N=20;
- let els=[];
- function speedOf(t){return 70+t*1.3;} /* 정성적 — 0℃ 느림, 80℃ 빠름 */
- function volPct(t){return Math.round((t+273)/293*80);} /* 20℃=80% 폭 */
+ /* 진짜 물리로 굴러가는 샤를 상자 —
+    · 입자 빠르기 v ∝ √T(켈빈): 20℃(293K)에서 120 → v=7.0·√(T+273)
+    · 피스톤은 대본 없이 자유롭다: 안쪽은 입자 충돌의 충격량, 바깥쪽은 일정한 힘(대기압).
+      두 힘이 비기는 자리에 피스톤이 저절로 멈춘다 → 부피 ∝ 절대온도(샤를 법칙 창발)
+    · 온도를 바꾸면 모든 입자의 속도를 √(T신/T구) 배 — 열이 드나든 것
+    · 입자끼리 완전 탄성 충돌. 피스톤의 미세한 떨림은 버그가 아니라 요동(실제 현상) */
+ const CSPD=7.0, BVISC=1.6, TSM=1.0;
+ let els=[],lastT=+$('#wtR').value;
+ let px=0,vx2Sm=0;                    /* 피스톤 위치 · ⟨vx²⟩ 이동평균 */
+ const FOUT=(function(){              /* 20℃·부피80%에서 힘이 비기도록 바깥 힘을 정한다 */
+  const vx2=CSPD*CSPD*(20+273)/2;     /* ⟨vx²⟩ = v²/2 */
+  const Ltarget=(W-2*PAD)*0.8;
+  return N*vx2/Ltarget;
+ })();
+ function speedOf(t){return CSPD*Math.sqrt(t+273);}
  function build(){
+ const sp=speedOf(lastT);
+ px=PAD+(W-2*PAD)*0.8;vx2Sm=sp*sp/2;
  els=Array.from({length:N},()=>{
  const a=Math.random()*TAU;
- return {x:PAD+R+Math.random()*(W*0.6),y:PAD+R+Math.random()*(H-2*PAD-2*R),a:a};});
+ return {x:PAD+R+Math.random()*(px-PAD-2*R),y:PAD+R+Math.random()*(H-2*PAD-2*R),
+ vx:Math.cos(a)*sp,vy:Math.sin(a)*sp};});
  }
- function wallX(){return PAD+(W-2*PAD)*volPct(+$('#wtR').value)/100;}
+ function collide(){
+ for(let i=0;i<els.length;i++)for(let j=i+1;j<els.length;j++){
+  const a=els[i],b=els[j];
+  const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,min=2*R;
+  if(d2>=min*min||d2===0)continue;
+  const d=Math.sqrt(d2),nx=dx/d,ny=dy/d;
+  const dvn=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
+  if(dvn>0){
+   a.vx-=dvn*nx;a.vy-=dvn*ny;
+   b.vx+=dvn*nx;b.vy+=dvn*ny;
+  }
+  const ov=(min-d)/2+0.1;
+  a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
+ }
+ }
  function step(dt){
- const sp=speedOf(+$('#wtR').value),wx=wallX();
  els.forEach(e=>{
- e.x+=Math.cos(e.a)*sp*dt;e.y+=Math.sin(e.a)*sp*dt;
- if(e.x<PAD+R){e.x=PAD+R;e.a=Math.PI-e.a;}
- if(e.x>wx-R){e.x=wx-R;e.a=Math.PI-e.a;}
- if(e.y<PAD+R){e.y=PAD+R;e.a=-e.a;}
- if(e.y>H-PAD-R){e.y=H-PAD-R;e.a=-e.a;}
+ e.x+=e.vx*dt;e.y+=e.vy*dt;
+ if(e.x<PAD+R){e.x=PAD+R;e.vx=Math.abs(e.vx);}
+ if(e.x>px-R){e.x=px-R;e.vx=-Math.abs(e.vx);}
+ if(e.y<PAD+R){e.y=PAD+R;e.vy=Math.abs(e.vy);}
+ if(e.y>H-PAD-R){e.y=H-PAD-R;e.vy=-Math.abs(e.vy);}
  });
+ collide();
+ /* 등온 준정적 피스톤 — 안쪽 압력은 기체분자운동론 그대로 F = N·⟨vx²⟩/L.
+    ⟨vx²⟩는 입자들의 실측값(충돌로 x·y 에너지가 오가며 자연스럽게 요동).
+    바깥의 일정한 힘과 차이 나는 만큼 점성 제한 속도로 움직인다(과감쇠).
+    평형 L = N·⟨vx²⟩/F_out ∝ 절대온도 → 샤를 법칙이 저절로 나온다. */
+ let vx2=0,v2=0;els.forEach(e=>{vx2+=e.vx*e.vx;v2+=e.vx*e.vx+e.vy*e.vy;});vx2/=els.length;v2/=els.length;
+ vx2Sm+=(vx2-vx2Sm)*Math.min(1,dt/TSM);   /* 요동 평활 — 20개 입자의 x·y 에너지 분배는 크게 출렁인다 */
+ /* 압력: 등분배 이론값(v²/2, 탄성충돌로 정확 보존) 70% + 실측 요동 30%
+    — 평형은 정확히 V ∝ 절대온도, 피스톤의 미세 떨림(요동)은 살아 있다 */
+ const Fin=N*(0.7*v2/2+0.3*vx2Sm)/(px-PAD);
+ px+=(Fin-FOUT)/BVISC*dt;
+ if(px>W-PAD-13)px=W-PAD-13;
+ if(px<PAD+80)px=PAD+80;
+ }
+ function rms(){
+ let s2=0;els.forEach(e=>{s2+=e.vx*e.vx+e.vy*e.vy;});
+ return Math.sqrt(s2/els.length);
+ }
+ function volPctNow(){return Math.round((px-PAD)/(W-2*PAD)*100);}
+ function spdColor(v){
+ const t=Math.min(1,v/240);
+ return 'hsl('+Math.round(210-210*t)+',62%,'+Math.round(48-10*t)+'%)';
  }
  function draw(){
- const t=+$('#wtR').value,wx=wallX();
+ const t=+$('#wtR').value;
  ctx.clearRect(0,0,W,H);ctx.fillStyle='#f6fafd';ctx.fillRect(0,0,W,H);
  ctx.strokeStyle='#1c507e';ctx.lineWidth=5;
- ctx.strokeRect(PAD,PAD,wx-PAD,H-2*PAD);
- ctx.fillStyle='#41586c';ctx.fillRect(wx,PAD,13,H-2*PAD);
+ ctx.strokeRect(PAD,PAD,px-PAD,H-2*PAD);
+ ctx.fillStyle='#41586c';ctx.fillRect(px,PAD,13,H-2*PAD);
  ctx.fillStyle='#7b91a4';ctx.font='11.5px Pretendard, sans-serif';
- ctx.fillText('→ 바깥 공기가 일정한 힘으로 밀어 줌 (압력 일정)',wx+20,H/2);
- const warm=Math.min(1,t/80);
- ctx.fillStyle='rgb('+Math.round(58+warm*140)+','+Math.round(122-warm*20)+','+Math.round(63-warm*20)+')';
- els.forEach(e=>{ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
+ ctx.fillText('→ 바깥 공기가 일정한 힘으로 밀어 줌 (압력 일정)',px+20,H/2);
+ els.forEach(e=>{
+ ctx.fillStyle=spdColor(Math.hypot(e.vx,e.vy));
+ ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
  ctx.fillStyle='#7b91a4';ctx.font='12.5px Pretendard, sans-serif';
- ctx.fillText('온도 '+t+' ℃ · 입자 20개',PAD+4,H-8);
+ ctx.fillText('온도 '+t+' ℃ · 입자 20개 — 피스톤은 스스로 자리를 찾습니다',PAD+4,H-8);
  }
  function readout(){
- const t=+$('#wtR').value;
- $('#roSp2').textContent=t<15?'둔함':t>45?'활발!':'보통';
- $('#roVol2').innerHTML=volPct(t)+'<small> %</small>';
+ const t=+$('#wtR').value,v=Math.round(rms());
+ $('#roSp2').textContent=v+(t<15?' (둔함)':t>45?' (활발!)':' (보통)');
+ $('#roVol2').innerHTML=volPctNow()+'<small> %</small>';
  }
  $('#wtR').addEventListener('input',()=>{
  const t=+$('#wtR').value;
  $('#wtV').textContent=t+' ℃';
- const wx=wallX();els.forEach(e=>{if(e.x>wx-R)e.x=wx-R-2;});
+ /* 열이 드나든다 — 모든 입자의 빠르기를 √(T신/T구) 배로 */
+ const k=Math.sqrt((t+273)/(lastT+273));lastT=t;
+ els.forEach(e=>{e.vx*=k;e.vy*=k;});
+ vx2Sm*=k*k;
  if(t>=50)S.wcHi=1;if(t<=10)S.wcLo=1;save();
  if(S.wcHi&&S.wcLo&&!$('#wcAfter').classList.contains('open')){
  $('#wcAfter').classList.add('open');$('#wcLockMsg').classList.add('gone');
@@ -1383,6 +1436,7 @@ $$('textarea[data-essay]').forEach(t=>{
  readout();draw();
  });
  if(S.wcHi&&S.wcLo){$('#wcAfter').classList.add('open');$('#wcLockMsg').classList.add('gone');}
+ cv.__step=function(dt){step(dt);draw();readout();};   /* 검증용 수동 스텝 훅 */
  let last=0;
  function frame(t){
  const dt=Math.min(.04,(t-last)/1000)||.016;last=t;

@@ -624,6 +624,8 @@ body.teacher .wlockmsg{display:none}
     </div>
    </div>
    <div class="readout">
+    <div class="r"><div class="lab2">누르는 힘(무게)</div><div class="v" id="roForce">–</div></div>
+    <div class="r"><div class="lab2">닿는 넓이</div><div class="v" id="roArea">–</div></div>
     <div class="r"><div class="lab2">눌린 깊이</div><div class="v" id="roDepth">–</div></div>
    </div>
    <div class="btn-row" style="margin-top:12px">
@@ -804,7 +806,7 @@ body.teacher .wlockmsg{display:none}
 </main>
 
 <div id="toast"></div>
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-15</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-19</span></footer>
 
 <script>
 "use strict";
@@ -1169,43 +1171,76 @@ $$('textarea[data-essay]').forEach(t=>{
 /* ── 2단계 스펀지 실험대 ── */
 (function(){
  const st={w:'full',d:'up'};
- const F={empty:1,full:4}, AREA={up:3.5,down:1};
+ /* 실제값 기반 —
+    · 500 mL 페트병: 빈 병 약 30 g, 물 가득 약 530 g (힘 = 무게)
+    · 닿는 넓이: 바닥(지름 약 6.5 cm) ≈ 33 cm², 뚜껑(지름 약 3 cm) ≈ 7 cm²
+    · 스펀지(폼)는 눌릴수록 굳어지는 비선형 재료 → 깊이 ∝ 압력^0.65 (겉보기 근사)
+    수식은 화면에 내보내지 않는다(지도서: 계산 금지) — 숫자는 무게·넓이·깊이만. */
+ const MASS={empty:30,full:530};            // g
+ const AREA={up:33,down:7};                 // cm^2
  const NAME={empty:'빈 병',full:'물 가득'},DIR={up:'바로',down:'거꾸로'};
- function depth(){return Math.round(F[st.w]/AREA[st.d]*11);}
+ function press(){return (MASS[st.w]/1000*9.8)/AREA[st.d];}      // N/cm^2 (내부 계산용)
+ function depth(){return Math.max(2,Math.round(56*Math.pow(press(),0.65)));}  // mm
 
- function draw(){
- const d=depth();
- $('#spTitle').textContent=(st.w==='full'?'물을 가득 채운 페트병':'빈 페트병')+' · '+(st.d==='up'?'바로 세우기':'거꾸로 세우기');
- /* 스펀지 — 병이 놓인 자리가 d 만큼 눌린다 */
- const top=196,W=460,bx=230,half=st.d==='up'?46:14;
- const sp=$('#spongeG');
- sp.innerHTML='<path d="M60 '+top+' L'+(bx-half-16)+' '+top
- +' Q'+(bx-half)+' '+top+' '+(bx-half+4)+' '+(top+d)
- +' L'+(bx+half-4)+' '+(top+d)
- +' Q'+(bx+half)+' '+top+' '+(bx+half+16)+' '+top
- +' L400 '+top+' L400 268 L60 268 Z" fill="#f5d789" stroke="#a8763f" stroke-width="2.5"/>'
+ let cur=depth(), raf=null;
+
+ function scene(dd){
+ const top=196,bx=230,half=st.d==='up'?46:14;
+ /* 스펀지 — 매끈한 눌림 곡선(가운데 평평, 어깨는 부드럽게) */
+ let pts='M60 '+top;
+ for(let x=66;x<=394;x+=6){
+  const y=top+dd*Math.exp(-Math.pow((x-bx)/(half*1.35),4));
+  pts+=' L'+x+' '+y.toFixed(1);
+ }
+ pts+=' L400 '+top+' L400 268 L60 268 Z';
+ $('#spongeG').innerHTML='<path d="'+pts+'" fill="#f5d789" stroke="#a8763f" stroke-width="2.5"/>'
  +'<text x="90" y="258" font-size="13" fill="#8a6a3a">스펀지</text>';
  /* 병 */
- const bg=$('#bottleG'),y0=top+d;
+ const bg=$('#bottleG'),y0=top+dd;
  if(st.d==='up'){
  bg.innerHTML='<rect x="'+(bx-42)+'" y="'+(y0-118)+'" width="84" height="118" rx="10" fill="'
  +(st.w==='full'?'#9cc4e8':'#eef4f9')+'" stroke="#1c507e" stroke-width="2.5"/>'
  +(st.w==='full'?'<rect x="'+(bx-42)+'" y="'+(y0-106)+'" width="84" height="106" rx="10" fill="#6aa3d8" opacity=".55"/>':'')
  +'<rect x="'+(bx-13)+'" y="'+(y0-140)+'" width="26" height="22" rx="4" fill="#e3eef6" stroke="#1c507e" stroke-width="2"/>'
- +'<rect x="'+(bx-15)+'" y="'+(y0-148)+'" width="30" height="10" rx="3" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>';
+ +'<rect x="'+(bx-15)+'" y="'+(y0-148)+'" width="30" height="10" rx="3" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>'
+ +'<text x="'+bx+'" y="'+(y0-58)+'" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c507e">'+MASS[st.w]+' g</text>';
  }else{
  bg.innerHTML='<rect x="'+(bx-15)+'" y="'+(y0-10)+'" width="30" height="10" rx="3" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>'
  +'<rect x="'+(bx-13)+'" y="'+(y0-32)+'" width="26" height="22" rx="4" fill="#e3eef6" stroke="#1c507e" stroke-width="2"/>'
  +'<rect x="'+(bx-42)+'" y="'+(y0-150)+'" width="84" height="118" rx="10" fill="'
  +(st.w==='full'?'#9cc4e8':'#eef4f9')+'" stroke="#1c507e" stroke-width="2.5"/>'
- +(st.w==='full'?'<rect x="'+(bx-42)+'" y="'+(y0-144)+'" width="84" height="106" rx="10" fill="#6aa3d8" opacity=".55"/>':'');
+ +(st.w==='full'?'<rect x="'+(bx-42)+'" y="'+(y0-144)+'" width="84" height="106" rx="10" fill="#6aa3d8" opacity=".55"/>':'')
+ +'<text x="'+bx+'" y="'+(y0-88)+'" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c507e">'+MASS[st.w]+' g</text>';
  }
- /* 깊이 표시 */
- $('#depthG').innerHTML=d>2?'<line x1="330" y1="'+top+'" x2="330" y2="'+(top+d)+'" stroke="#b23a30" stroke-width="2"/>'
+ /* 압력 화살표 — 닿는 면 아래, 길이 ∝ 압력(몰릴수록 길다) */
+ const aLen=Math.min(30,Math.max(5,56*Math.pow(press(),0.65)*0.62));
+ let arr='';
+ for(let x=bx-half+6;x<=bx+half-6;x+=11){
+  const ay=top+dd+2;
+  arr+='<line x1="'+x+'" y1="'+ay+'" x2="'+x+'" y2="'+(ay+aLen)+'" stroke="#b23a30" stroke-width="2" opacity=".8"/>'
+  +'<path d="M'+(x-3)+' '+(ay+aLen-4)+' L'+x+' '+(ay+aLen)+' L'+(x+3)+' '+(ay+aLen-4)+'" fill="none" stroke="#b23a30" stroke-width="2" opacity=".8"/>';
+ }
+ const d=depth();
+ $('#depthG').innerHTML=arr
+ +(dd>2?'<line x1="330" y1="'+top+'" x2="330" y2="'+(top+dd)+'" stroke="#b23a30" stroke-width="2"/>'
  +'<line x1="323" y1="'+top+'" x2="337" y2="'+top+'" stroke="#b23a30" stroke-width="2"/>'
- +'<line x1="323" y1="'+(top+d)+'" x2="337" y2="'+(top+d)+'" stroke="#b23a30" stroke-width="2"/>'
- +'<text x="344" y="'+(top+d/2+5)+'" font-size="13.5" font-weight="700" fill="#b23a30">'+d+' mm</text>':'';
- $('#roDepth').innerHTML=d+'<small> mm</small>';
+ +'<line x1="323" y1="'+(top+dd)+'" x2="337" y2="'+(top+dd)+'" stroke="#b23a30" stroke-width="2"/>'
+ +'<text x="344" y="'+(top+dd/2+5)+'" font-size="13.5" font-weight="700" fill="#b23a30">'+d+' mm</text>':'');
+ }
+
+ function draw(){
+ $('#spTitle').textContent=(st.w==='full'?'물을 가득 채운 페트병':'빈 페트병')+' · '+(st.d==='up'?'바로 세우기':'거꾸로 세우기');
+ $('#roForce').innerHTML=MASS[st.w]+'<small> g</small>';
+ $('#roArea').innerHTML=(st.d==='up'?'넓음 · 약 33':'좁음 · 약 7')+'<small> cm²</small>';
+ $('#roDepth').innerHTML=depth()+'<small> mm</small>';
+ if(raf)cancelAnimationFrame(raf);
+ const step=()=>{
+  const t=depth();
+  cur+=(t-cur)*0.16;
+  if(Math.abs(t-cur)<0.15){cur=t;scene(cur);raf=null;return;}
+  scene(cur);raf=requestAnimationFrame(step);
+ };
+ raf=requestAnimationFrame(step);
  }
 
  $('#segW').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
@@ -1232,7 +1267,7 @@ $$('textarea[data-essay]').forEach(t=>{
  S.rec.splice(+d.dataset.i,1);save();paintRec();});
  $('#recClear').addEventListener('click',()=>{S.rec=[];save();paintRec();});
 
- draw();paintRec();
+ scene(cur);draw();paintRec();
 })();
 
 /* ── 4단계 압력 바구니 ── */

@@ -727,10 +727,11 @@ body.teacher .wlockmsg{display:none}
       var p=A[i], b=bs[0];
       p.vy+=340*dt;
       p.x+=p.vx*dt; p.y+=p.vy*dt;
-      if(p.x<b.x+9){p.x=b.x+9; p.vx=-p.vx*0.6; hitA++;}
-      if(p.x>b.x+b.w-9){p.x=b.x+b.w-9; p.vx=-p.vx*0.6; hitA++;}
-      if(p.y<b.y+9){p.y=b.y+9; p.vy=-p.vy*0.6; hitA++;}
-      if(p.y>b.y+b.h-9){p.y=b.y+b.h-9; p.vy=-p.vy*0.55; p.vx*=0.82; hitA++;}
+      /* 세게 부딪힐 때만 충돌로 센다 — 바닥에 얹혀 있는 것은 충돌이 아니다 */
+      if(p.x<b.x+9){p.x=b.x+9; if(Math.abs(p.vx)>25)hitA++; p.vx=-p.vx*0.6;}
+      if(p.x>b.x+b.w-9){p.x=b.x+b.w-9; if(Math.abs(p.vx)>25)hitA++; p.vx=-p.vx*0.6;}
+      if(p.y<b.y+9){p.y=b.y+9; if(Math.abs(p.vy)>25)hitA++; p.vy=-p.vy*0.6;}
+      if(p.y>b.y+b.h-9){p.y=b.y+b.h-9; if(Math.abs(p.vy)>25)hitA++; p.vy=-p.vy*0.55; p.vx*=0.82;}
       p.vx*=Math.max(0,1-0.55*dt);
       if(Math.abs(p.vy)<12 && p.y>b.y+b.h-12){p.vy=0; p.y=b.y+b.h-9;}
     }
@@ -743,6 +744,24 @@ body.teacher .wlockmsg{display:none}
       if(q.y<c.y+8){q.y=c.y+8; q.vy=-q.vy; hitB++;}
       if(q.y>c.y+c.h-8){q.y=c.y+c.h-8; q.vy=-q.vy; hitB++;}
     }
+    /* 입자끼리 충돌 — 쇠구슬은 부딪힐 때마다 느려지고(반발 0.72), 기체는 속도를 잃지 않는다(탄성) */
+    function pair(list, rr, rest){
+      for(var i2=0;i2<list.length;i2++)for(var j2=i2+1;j2<list.length;j2++){
+        var p1=list[i2], p2=list[j2];
+        var ddx=p2.x-p1.x, ddy=p2.y-p1.y, dd2=ddx*ddx+ddy*ddy, mm=rr*2;
+        if(dd2>=mm*mm||dd2===0)continue;
+        var dd=Math.sqrt(dd2), nx2=ddx/dd, ny2=ddy/dd;
+        var dvn2=(p1.vx-p2.vx)*nx2+(p1.vy-p2.vy)*ny2;
+        if(dvn2>0){
+          var kk=dvn2*(1+rest)/2;
+          p1.vx-=kk*nx2; p1.vy-=kk*ny2;
+          p2.vx+=kk*nx2; p2.vy+=kk*ny2;
+        }
+        var ov2=(mm-dd)/2+0.1;
+        p1.x-=nx2*ov2; p1.y-=ny2*ov2; p2.x+=nx2*ov2; p2.y+=ny2*ov2;
+      }
+    }
+    pair(A,9,0.72); pair(B,8,1);
     cx.clearRect(0,0,W,H);
     var titles=['⚪ 쇠구슬 (모형)','🔵 기체 입자 (진짜)'];
     for(var k=0;k<2;k++){
@@ -961,7 +980,7 @@ body.teacher .wlockmsg{display:none}
 </main>
 
 <div id="toast"></div>
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-15</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-19</span></footer>
 
 <script>
 "use strict";
@@ -1032,6 +1051,7 @@ const GAME_QS=[
       {t:'공기 입자가 공 벽에 달라붙기 때문'}],
   why:'입자 수 ↑ → 충돌 ↑ → 압력 ↑. 그리고 입자가 <b>사방으로</b> 날아다니므로 압력도 사방으로 작용해 공이 <b>고르게</b> 부풉니다.<br>③ 입자의 크기는 변하지 않습니다 — 수가 늘어난 것뿐이에요.'},
  {id:'q4',difficulty:'중',
+  svg:'<svg viewBox="0 0 560 195" role="img" aria-label="공기가 든 풍선의 왼쪽을 손가락으로 누르자 오른쪽이 볼록 튀어나온 모습."><path d="M218 98 q6 -46 74 -52 q78 -7 96 34 q10 22 4 40 q18 2 22 18 q4 18 -14 24 q-24 8 -38 -4 q-26 22 -72 16 q-64 -8 -70 -48 q-2 -14 -2 -28 z" fill="#dbeaf3" stroke="#41586c" stroke-width="2.4"/><circle cx="238" cy="96" r="3.1" fill="#5a9ab8"/><circle cx="268" cy="78" r="3.1" fill="#5a9ab8"/><circle cx="300" cy="102" r="3.1" fill="#5a9ab8"/><circle cx="332" cy="84" r="3.1" fill="#5a9ab8"/><circle cx="360" cy="100" r="3.1" fill="#5a9ab8"/><circle cx="252" cy="118" r="3.1" fill="#5a9ab8"/><circle cx="292" cy="130" r="3.1" fill="#5a9ab8"/><circle cx="328" cy="120" r="3.1" fill="#5a9ab8"/><circle cx="310" cy="64" r="3.1" fill="#5a9ab8"/><circle cx="356" cy="70" r="3.1" fill="#5a9ab8"/><circle cx="246" cy="68" r="3.1" fill="#5a9ab8"/><circle cx="352" cy="132" r="3.1" fill="#5a9ab8"/><path d="M150 84 q34 -6 60 10 q8 6 4 14 q-4 8 -16 6 q-28 -4 -48 -12 z" fill="#f0cfa8" stroke="#a07040" stroke-width="2"/><defs><marker id="a98016" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#e0912b"/></marker></defs><line x1="180" y1="60" x2="214" y2="88" stroke="#e0912b" stroke-width="2.4" marker-end="url(#a98016)"/><text x="160" y="48" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#41586c" font-weight="700">손가락으로 누름</text><defs><marker id="a24631" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#e0912b"/></marker></defs><line x1="398" y1="128" x2="428" y2="142" stroke="#e0912b" stroke-width="2.4" marker-end="url(#a24631)"/><text x="452" y="160" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#41586c" font-weight="700">볼록!</text><text x="280" y="188" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5a7186">※ 풍선 입구는 묶여 있어 공기가 드나들 수 없다</text></svg>',
   stem:'공기가 들어 있는 풍선의 한쪽을 손가락으로 누르면 다른 쪽이 튀어나온다. 이를 옳게 설명한 것은?',
   ch:[{t:'눌린 곳의 공기 입자들이 다른 쪽으로 이동해 그쪽 벽에 충돌하며 힘을 가하기 때문',ok:1},
       {t:'공기 입자가 눌린 곳에서 터져 없어지기 때문'},
@@ -1316,6 +1336,11 @@ $$('textarea[data-essay]').forEach(t=>{
  const cv=$('#boxCv');if(!cv)return;
  const ctx=cv.getContext('2d');
  const W=660,H=380,PAD=26,R=6;
+ /* 실제 기체분자운동론(2D 강체구):
+    · 입자끼리 완전 탄성 충돌 — 총 운동에너지 보존, 속력 분포가 저절로
+      맥스웰-볼츠만 꼴로 퍼진다(처음엔 비슷한 속력 → 곧 느린 놈·빠른 놈 공존)
+    · 벽 충돌 반짝임은 충돌 세기(법선 속도)에 비례
+    · 속력을 색으로: 파랑(느림) → 초록 → 빨강(빠름) */
  let els=[],hits=[],flash={t:0,b:0,l:0,r:0},sideCnt={t:0,b:0,l:0,r:0};
  function build(n){
  els=Array.from({length:n},()=>{
@@ -1324,31 +1349,59 @@ $$('textarea[data-essay]').forEach(t=>{
  vx:Math.cos(a)*v,vy:Math.sin(a)*v};});
  hits=[];sideCnt={t:0,b:0,l:0,r:0};
  }
+ function collide(){
+ /* 등질량 강체구 탄성충돌 — 법선 방향 속도 성분 교환 */
+ for(let i=0;i<els.length;i++)for(let j=i+1;j<els.length;j++){
+  const a=els[i],b=els[j];
+  const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,min=2*R;
+  if(d2>=min*min||d2===0)continue;
+  const d=Math.sqrt(d2),nx=dx/d,ny=dy/d;
+  const dvn=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
+  if(dvn>0){ /* 가까워지는 중일 때만 */
+   a.vx-=dvn*nx;a.vy-=dvn*ny;
+   b.vx+=dvn*nx;b.vy+=dvn*ny;
+  }
+  const ov=(min-d)/2+0.1;      /* 겹침 해소 */
+  a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
+ }
+ }
  function step(dt){
  const now=performance.now()/1000;
  els.forEach(e=>{
  e.x+=e.vx*dt;e.y+=e.vy*dt;
- if(e.x<PAD+R){e.x=PAD+R;e.vx=Math.abs(e.vx);hits.push(now);flash.l=1;sideCnt.l++;}
- if(e.x>W-PAD-R){e.x=W-PAD-R;e.vx=-Math.abs(e.vx);hits.push(now);flash.r=1;sideCnt.r++;}
- if(e.y<PAD+R){e.y=PAD+R;e.vy=Math.abs(e.vy);hits.push(now);flash.t=1;sideCnt.t++;}
- if(e.y>H-PAD-R){e.y=H-PAD-R;e.vy=-Math.abs(e.vy);hits.push(now);flash.b=1;sideCnt.b++;}
+ if(e.x<PAD+R){e.x=PAD+R;e.vx=Math.abs(e.vx);hits.push(now);flash.l=Math.max(flash.l,.45+Math.min(.55,Math.abs(e.vx)/320));sideCnt.l++;}
+ if(e.x>W-PAD-R){e.x=W-PAD-R;e.vx=-Math.abs(e.vx);hits.push(now);flash.r=Math.max(flash.r,.45+Math.min(.55,Math.abs(e.vx)/320));sideCnt.r++;}
+ if(e.y<PAD+R){e.y=PAD+R;e.vy=Math.abs(e.vy);hits.push(now);flash.t=Math.max(flash.t,.45+Math.min(.55,Math.abs(e.vy)/320));sideCnt.t++;}
+ if(e.y>H-PAD-R){e.y=H-PAD-R;e.vy=-Math.abs(e.vy);hits.push(now);flash.b=Math.max(flash.b,.45+Math.min(.55,Math.abs(e.vy)/320));sideCnt.b++;}
  });
+ collide();
  while(hits.length&&now-hits[0]>1)hits.shift();
+ }
+ function spdColor(v){
+ const t=Math.min(1,v/240);                 /* 0 느림 → 1 빠름 */
+ return 'hsl('+Math.round(210-210*t)+',62%,'+Math.round(48-10*t)+'%)';
  }
  function draw(){
  ctx.clearRect(0,0,W,H);
  ctx.fillStyle='#f6fafd';ctx.fillRect(0,0,W,H);
- /* 벽 — 충돌하면 빨갛게 번쩍 */
+ /* 벽 — 충돌 세기만큼 빨갛게 번쩍 */
  function wall(x1,y1,x2,y2,f){
  ctx.strokeStyle=f>0?'rgba(178,58,48,'+(0.3+f*0.7)+')':'#1c507e';
  ctx.lineWidth=f>0?7:5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
  wall(PAD,PAD,W-PAD,PAD,flash.t);wall(PAD,H-PAD,W-PAD,H-PAD,flash.b);
  wall(PAD,PAD,PAD,H-PAD,flash.l);wall(W-PAD,PAD,W-PAD,H-PAD,flash.r);
  ['t','b','l','r'].forEach(k=>flash[k]=Math.max(0,flash[k]-0.06));
- ctx.fillStyle='#3a7a3f';
- els.forEach(e=>{ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
+ els.forEach(e=>{
+ ctx.fillStyle=spdColor(Math.hypot(e.vx,e.vy));
+ ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();});
+ /* 속력 색 안내 */
+ const gx=PAD+4,gy=H-16,gw=110;
+ const grad=ctx.createLinearGradient(gx,0,gx+gw,0);
+ grad.addColorStop(0,'hsl(210,62%,48%)');grad.addColorStop(.5,'hsl(105,62%,43%)');grad.addColorStop(1,'hsl(0,62%,38%)');
+ ctx.fillStyle=grad;ctx.fillRect(gx,gy,gw,7);
  ctx.fillStyle='#7b91a4';ctx.font='12.5px Pretendard, sans-serif';
- ctx.fillText('입자 '+els.length+'개 — 스스로 끊임없이 움직입니다',PAD+4,H-8);
+ ctx.fillText('느림',gx,gy-4);ctx.fillText('빠름',gx+gw-24,gy-4);
+ ctx.fillText('입자 '+els.length+'개 — 서로 부딪혀도 전체 움직임은 사라지지 않아요',gx+gw+14,gy+7);
  }
  function readout(){
  $('#roHit').innerHTML=hits.length+'<small> 회</small>';
@@ -1378,6 +1431,7 @@ $$('textarea[data-essay]').forEach(t=>{
  if(vis&&!reduceMotion){step(dt);draw();readout();}
  requestAnimationFrame(frame);
  }
+ cv.__step=function(dt){step(dt);draw();readout();};   /* 전체화면·검증용 수동 스텝 훅 */
  build(15);draw();paintRec();requestAnimationFrame(frame);
 })();
 
