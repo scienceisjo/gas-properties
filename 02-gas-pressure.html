@@ -274,6 +274,23 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:6px}
 .obscap{font-size:14px;color:var(--ink-mute);text-align:center;margin-top:8px;line-height:1.6}
 
+/* ── 미션 잠금 ── */
+#tabNav button.locked{opacity:.48;filter:grayscale(.6)}
+#tabNav button.locked .sn{position:relative}
+#tabNav button.locked .sn::after{content:'🔒';position:absolute;right:-8px;top:-9px;font-size:12px}
+#tabNav button.shake{animation:msnshake .4s}
+@keyframes msnshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}55%{transform:translateX(4px)}80%{transform:translateX(-2px)}}
+#tabNav button.justopen{animation:msnopen 1s}
+@keyframes msnopen{0%{box-shadow:0 0 0 0 rgba(240,170,60,.85)}100%{box-shadow:0 0 0 18px rgba(240,170,60,0)}}
+.msn-banner{display:flex;flex-wrap:wrap;align-items:center;gap:7px 16px;margin:14px 0 2px;padding:10px 15px;
+ border:1.5px dashed var(--line);border-radius:13px;background:rgba(255,253,247,.72);font-size:14.5px;color:var(--ink-dim)}
+.msn-banner .mt{font-weight:800;color:var(--accent)}
+.msn-banner .mi{display:inline-flex;align-items:center;gap:5px}
+.msn-banner .mi.on{color:#2f7d3f;font-weight:700}
+.msn-banner.alldone{border-style:solid;border-color:#7fae8a;background:#f2f8f1}
+.sum-guard{margin:14px 0 4px;padding:12px 16px;border-radius:13px;background:#fff6e6;border:1.5px solid var(--accent);
+ font-size:15px;line-height:1.7;color:var(--ink-dim)}
+
 /* ── 입자 상자 팝업 사슬 ── */
 .simstage{position:relative}
 .chainpops{position:absolute;left:10px;top:8px;right:10px;display:flex;flex-direction:column;gap:6px;
@@ -561,8 +578,9 @@ body.teacher .wlockmsg{display:none}
     <li><span class="sn">3</span><div><b>모형으로 보기</b> — 입자 상자에서 충돌 세어 보기</div></li>
     <li><span class="sn">4</span><div><b>적용하기</b> — 첫 번째 블록의 답 찾기</div></li>
     <li><span class="sn">5</span><div><b>확인하기</b> — 배운 것 점검</div></li>
-    <li class="opt"><span class="sn">+</span><div><b>더 알아보기</b> — 대기압을 잰 토리첼리</div></li>
+    <li class="opt"><span class="sn">+</span><div><b>더 알아보기</b> — 대기압을 잰 토리첼리 (언제든 자유)</div></li>
    </ol>
+   <p style="margin-top:11px;font-size:14px;color:var(--ink-mute);line-height:1.6">🎯 단계는 <b style="color:var(--ink)">미션</b>처럼 하나씩 열려요 — 앞 미션을 깨야 다음 문이 열립니다.<br>📝 <b style="color:var(--ink)">개념 정리</b>는 다섯 미션을 모두 깬 뒤, <b style="color:var(--ink)">선생님과 함께</b> 채웁니다.</p>
   </div>
   <div class="cover-cta">
    <button class="btn primary xl" id="coverGo">입자 상자 열기 🎈</button>
@@ -597,13 +615,13 @@ body.teacher .wlockmsg{display:none}
   <button data-tab="apply"><span class="sn"><i>4</i></span>적용하기</button>
   <button data-tab="check"><span class="sn"><i>5</i></span>확인하기</button>
   <span class="tab-sep"></span>
- <button data-tab="sum" class="optional"><span class="sn"><i>+</i></span>📝 개념 정리하기</button>
+ <button data-tab="sum" class="optional"><span class="sn"><i>+</i></span>📝 개념 정리하기 <small style="font-weight:400">🧑‍🏫</small></button>
   <button data-tab="beyond" class="optional"><span class="sn"><i>+</i></span>💡 더 알아보기</button>
 
  </nav>
 </header>
 
-<div class="prog-list" id="progList"><h4>남은 활동</h4><ul id="progItems"></ul></div>
+<div class="prog-list" id="progList"><h4>🎯 미션 목록</h4><ul id="progItems"></ul></div>
 
 <main>
 
@@ -1003,6 +1021,9 @@ body.teacher .wlockmsg{display:none}
 <!-- + 개념 정리하기 -->
 <section class="panel" id="panel-sum">
  <div class="stepline"><span class="sbadge">정리</span><span class="swhat">학습지 순서대로 · 빈칸 채우기</span></div>
+ <div class="sum-guard">🧑‍🏫 <b>여기는 선생님과 함께 여는 마지막 방!</b>
+ 다섯 미션을 모두 깬 사람만 들어올 수 있어요. 빈칸은 수업에서 선생님과 <b>하나씩 같이</b> 채웁니다 —
+ 미리 눌러서 답을 까 보면 재미가 없겠죠? 😉</div>
  <h2 class="sec">오늘 배운 개념, 빈칸으로 확인</h2>
  <p class="lead">빈칸을 <b>눌러서</b> 답을 확인하거나,
  <b>🎤 음성으로 답하기</b>를 켜고 <b>소리 내어 말하면</b> 저절로 채워집니다.</p>
@@ -1208,6 +1229,7 @@ function updateProgress(){
  if(ul)ul.innerHTML=c.map(x=>`<li class="${x.ok?'on':''}"><span class="mk">${x.ok?'✔':'○'}</span>${x.label}</li>`).join('');
  const done=tabDone();
  $$('#tabNav button').forEach(b=>b.classList.toggle('done',!!done[b.dataset.tab]));
+ checkMsnClear();paintLocks();paintMissions();
 }
 $('#progWrap').addEventListener('click',()=>$('#progList').classList.toggle('show'));
 document.addEventListener('click',e=>{
@@ -1215,8 +1237,72 @@ document.addEventListener('click',e=>{
  if(pl.classList.contains('show')&&!pl.contains(e.target)&&!$('#progWrap').contains(e.target))pl.classList.remove('show');
 });
 
+/* ── 미션 잠금 — 앞 미션을 깨야 다음 단계가 열린다. 교사 모드는 통과 ── */
+S.msn=S.msn||{};
+const MSN=[
+ {tab:'open',   name:'미션 1 · 내 생각 정하기',      items:[0]},
+ {tab:'explore',name:'미션 2 · 쇠구슬로 흉내 내기',  items:[1]},
+ {tab:'model',  name:'미션 3 · 입자 상자 정복',      items:[2,3,4]},
+ {tab:'apply',  name:'미션 4 · 배운 것으로 설명하기',items:[5,6]},
+ {tab:'check',  name:'미션 5 · 확인 문제 완주',      items:[7]}];   /* items = progChecks() 번호 */
+const teacherOn=()=>document.body.classList.contains('teacher');
+function msnDone(m,c){c=c||progChecks();return m.items.every(i=>c[i].ok);}
+function gateOf(id){
+ if(teacherOn()||id==='beyond')return null;
+ const c=progChecks();
+ if(id==='sum'){const m=MSN.find(x=>!msnDone(x,c));return m?{sum:true,m:m}:null;}
+ const k=MSN.findIndex(x=>x.tab===id);
+ if(k<=0)return null;
+ for(let i=0;i<k;i++)if(!msnDone(MSN[i],c))return {m:MSN[i]};
+ return null;
+}
+function landTab(){const c=progChecks();for(const m of MSN)if(!msnDone(m,c))return m.tab;return 'sum';}
+function paintLocks(){
+ $$('#tabNav button').forEach(b=>{
+ const locked=!!gateOf(b.dataset.tab), was=b.classList.contains('locked');
+ b.classList.toggle('locked',locked);
+ b.setAttribute('aria-disabled',locked?'true':'false');
+ if(was&&!locked){b.classList.remove('justopen');void b.offsetWidth;b.classList.add('justopen');}
+ });
+}
+function paintMissions(){
+ const c=progChecks();
+ MSN.forEach(m=>{
+ let bn=$('#msnb-'+m.tab);
+ if(!bn){const sl=$('#panel-'+m.tab+' .stepline');if(!sl)return;
+  bn=document.createElement('div');bn.className='msn-banner';bn.id='msnb-'+m.tab;
+  sl.insertAdjacentElement('afterend',bn);}
+ const ok=msnDone(m,c);
+ bn.classList.toggle('alldone',ok);
+ bn.innerHTML='<span class="mt">🎯 '+m.name+(ok?' — 완수! 🎉':'')+'</span>'
+  +m.items.map(i=>'<span class="mi'+(c[i].ok?' on':'')+'">'+(c[i].ok?'✅':'⬜')+' '
+  +c[i].label.replace(/^\d단계 · /,'')+'</span>').join('');
+ });
+}
+function checkMsnClear(){
+ const c=progChecks();
+ MSN.forEach((m,mi)=>{
+ if(!msnDone(m,c)||S.msn[m.tab])return;
+ S.msn[m.tab]=1;save();A.win();
+ const nxt=mi<MSN.length-1?MSN[mi+1]:null;
+ toast(nxt?'🎉 <b>'+m.name+'</b> 완수! — 「'+nxt.name.split(' · ')[1]+'」의 문이 열렸어요 🔓'
+          :'🏆 <b>다섯 미션을 모두 완수!</b> 이제 📝 개념 정리를 <b>선생님과 함께</b> 열 수 있어요');
+ });
+}
+/* 이미 깬 채로 접속한 사람(기존 진행)은 조용히 표시만 — 재축하 금지 */
+(function(){const c=progChecks();MSN.forEach(m=>{if(msnDone(m,c))S.msn[m.tab]=1;});save();})();
+
 function showTab(id,noScroll){
  if(!TABS.includes(id))return;
+ const g=gateOf(id);
+ if(g){
+ const b=$('#tabNav button[data-tab="'+id+'"]');
+ if(b){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');}
+ A.blip(210,.14,'sawtooth',.06);
+ toast(g.sum?'🧑‍🏫 <b>개념 정리하기</b>는 미션을 모두 깬 뒤 <b>선생님과 함께</b> 열어요! (남은 미션: '+g.m.name+')'
+           :'🔒 아직 잠긴 방이에요 — <b>'+g.m.name+'</b>부터 완수!');
+ return;
+ }
  $$('.panel').forEach(p=>p.classList.remove('show'));
  $('#panel-'+id).classList.add('show');
  $$('#tabNav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
@@ -1233,7 +1319,7 @@ function refreshCover(){
  if(cg&&any)cg.textContent='이어서 하기 ('+$('#progPct').textContent+') 🎈';
 }
 $('#coverGo').addEventListener('click',()=>{$('#cover').classList.add('hide');
- document.body.classList.remove('cover-on');A.ensure();A.pop();showTab(S.tab||TABS[0],true);});
+ document.body.classList.remove('cover-on');A.ensure();A.pop();showTab(gateOf(S.tab||TABS[0])?landTab():(S.tab||TABS[0]),true);});
 $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classList.remove('hide');
  document.body.classList.add('cover-on');});
 
@@ -1241,7 +1327,7 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  document.body.classList.toggle('teacher',localStorage.getItem(KEY)==='1');
  $('#tmodeBtn').addEventListener('click',()=>{
  const on=!document.body.classList.contains('teacher');
- document.body.classList.toggle('teacher',on);localStorage.setItem(KEY,on?'1':'0');
+ document.body.classList.toggle('teacher',on);localStorage.setItem(KEY,on?'1':'0');updateProgress();
  toast(on?'교사 모드 ON — 문장 설명과 교실 노트가 보입니다 🧑‍🏫':'학생 화면 — 키워드만 보입니다 🎒');});
 })();
 
