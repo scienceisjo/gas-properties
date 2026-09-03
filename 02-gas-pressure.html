@@ -283,6 +283,18 @@ body.lecture .modebtn{background:#eaf3ff;border-color:#7fa3c0;color:#1c507e}
 body.lecture .msn-banner,body.lecture .sum-guard,body.lecture #msnCoverNote{display:none}
 @media(max-width:680px){.modebtn{padding:0 8px;font-size:12.5px}}
 
+/* ── 눌러서 읽는 빈칸(왜 안 멈출까) ── */
+.cloze2{display:inline-block;min-width:150px;border-bottom:2.5px solid var(--sky-dk,#1c507e);border-radius:7px;
+ padding:1px 12px;text-align:center;cursor:pointer;color:transparent;position:relative;font-weight:700;
+ background:linear-gradient(100deg,rgba(63,136,197,.14) 30%,rgba(63,136,197,.38) 50%,rgba(63,136,197,.14) 70%);
+ background-size:200% 100%;animation:cz2glint 1.7s linear infinite}
+.cloze2::after{content:'👆 눌러서 확인';position:absolute;inset:0;display:grid;place-items:center;
+ color:var(--sky-dk,#1c507e);font-size:13px;font-weight:800;white-space:nowrap}
+.cloze2.revealed{color:var(--sky-dk,#1c507e);background:none;animation:none;cursor:default;
+ border-bottom-color:rgba(28,80,126,.35)}
+.cloze2.revealed::after{content:none}
+@keyframes cz2glint{0%{background-position:130% 0}100%{background-position:-70% 0}}
+
 /* ── 미션 잠금 ── */
 #tabNav button.locked{opacity:.48;filter:grayscale(.6)}
 #tabNav button.locked .sn{position:relative}
@@ -738,12 +750,12 @@ body.teacher .wlockmsg{display:none}
  </div>
  <div class="xsim-msg" id="blMsg">「흔들어 주기」를 눌러 양쪽에 똑같이 에너지를 넣어 보세요. 그리고 <b>손을 뗀 뒤</b>를 지켜보세요.</div>
 
- <div class="xsim-why"><div class="h">🤔 왜 기체 입자는 안 멈출까?</div>
- 쇠구슬은 부딪힐 때마다 <b>움직임의 일부가 열·소리로 빠져나갑니다.</b> 그래서 조금씩 느려지다 결국 멈추죠.<br>
- 기체 입자는 부딪혀도 <b>속도를 잃지 않습니다.</b>(완전 탄성 충돌) 잃을 것이 없으니 멈출 이유도 없어요.
+ <div class="xsim-why"><div class="h">🤔 왜 기체 입자는 안 멈출까? <small style="font-weight:400;opacity:.75">— 파란 칸을 눌러 확인!</small></div>
+ 쇠구슬은 부딪힐 때마다 <span class="cloze2">움직임의 일부가 열·소리로 빠져나갑니다</span> 그래서 조금씩 느려지다 결국 멈추죠.<br>
+ 기체 입자는 부딪혀도 <span class="cloze2">속도를 잃지 않습니다</span>(완전 탄성 충돌) 잃을 것이 없으니 멈출 이유도 없어요.
  게다가 기체 입자는 너무 가벼워서 중력의 영향도 거의 받지 않아, 바닥에 가라앉지도 않습니다.<br>
- 그래서 <b>아무도 건드리지 않는 풍선</b>도 며칠이 지나도록 팽팽한 겁니다 — 속에서는 지금 이 순간에도
- <b>수많은 입자가 쉴 새 없이 벽을 두드리고</b> 있어요. 그것이 기체의 압력이고, 결코 저절로 사라지지 않습니다.</div>
+ 그래서 <span class="cloze2">아무도 건드리지 않는 풍선</span>도 며칠이 지나도록 팽팽한 겁니다 — 속에서는 지금 이 순간에도
+ <span class="cloze2">수많은 입자가 쉴 새 없이 벽을 두드리고</span> 있어요. 그것이 기체의 압력이고, 결코 저절로 사라지지 않습니다.</div>
 
  <div class="note class"><span class="ic">💬</span><div><b>이야기 각본</b> — ① 「흔들어 주기」 → 양쪽 다 활발 ② 손을 떼고 기다림 → "왼쪽이 점점 느려지네요… 멈췄습니다." ③ "오른쪽은요?" → 그대로 ④ 충돌 카운터 비교 — 왼쪽은 증가가 멈추고 오른쪽은 계속 올라감 ⑤ 정리 — <b>"그래서 풍선은 며칠이 지나도 팽팽합니다."</b></div></div>
 </div>
@@ -1219,7 +1231,7 @@ function save(){try{localStorage.setItem(SAVE,JSON.stringify(S));}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem(SAVE));}catch(e){return null;}}
 let S=Object.assign({tab:TABS[0],visited:{},cloze:{},mini:{},essays:{},best:0},load()||{});
 S.visited=S.visited||{};S.cloze=S.cloze||{};S.mini=S.mini||{};S.essays=S.essays||{};
-S.hits=Array.isArray(S.hits)?S.hits:[];S.openPick=S.openPick||'';
+S.hits=Array.isArray(S.hits)?S.hits:[];S.openPick=S.openPick||'';S.cz2=S.cz2||{};
 let CLOZE_TOTAL=0;
 
 let toastT;
@@ -1232,6 +1244,7 @@ function progChecks(){
  {label:'1단계 · 내 생각 고르기', ok:!!S.openPick},
  {label:'2단계 · 가상 쇠구슬 15개·30개 모두 흔들기', ok:!!(S.vb15&&S.vb30)},
  {label:'2단계 · 관찰 기록 쓰기', ok:(S.essays.obs||'').trim().length>=10},
+ {label:'2단계 · 「왜 안 멈출까」 파란 칸 4곳 눌러 읽기', ok:Object.keys(S.cz2||{}).length>=4},
  {label:'3단계 · 입자 수 바꿔 3회 이상 기록', ok:(S.hits||[]).length>=3},
  {label:'3단계 · 빈칸 모두 채우기', ok:CLOZE_TOTAL>0&&Object.keys(S.cloze).length>=CLOZE_TOTAL},
  {label:'3단계 · 개념 확인 퀴즈', ok:!!S.mini.model},
@@ -1245,7 +1258,7 @@ function tabDone(){
  return {
 
  open:!!S.openPick,
- explore:!!(S.vb15&&S.vb30)&&(S.essays.obs||'').trim().length>=10,
+ explore:!!(S.vb15&&S.vb30)&&(S.essays.obs||'').trim().length>=10&&Object.keys(S.cz2||{}).length>=4,
  model:(S.hits||[]).length>=3&&CLOZE_TOTAL>0&&Object.keys(S.cloze).length>=CLOZE_TOTAL&&!!S.mini.model,
  apply:(S.essays.balloon||'').trim().length>=10&&(S.essays.block1||'').trim().length>=10,
  check:S.best>0,
@@ -1270,13 +1283,13 @@ document.addEventListener('click',e=>{
 
 /* ── 미션 잠금 — 앞 미션을 깨야 다음 단계가 열린다. 교사 모드는 통과 ── */
 S.msn=S.msn||{};
-if(S.msn.explore&&!(S.vb15&&S.vb30)){S.vb15=1;S.vb30=1;}   /* 옛 저장 호환 */
+if(S.msn.explore){if(!(S.vb15&&S.vb30)){S.vb15=1;S.vb30=1;}if(Object.keys(S.cz2||{}).length<4)S.cz2={0:1,1:1,2:1,3:1};}   /* 옛 저장 호환 */
 const MSN=[
  {tab:'open',   name:'미션 1 · 내 생각 정하기',      items:[0]},
- {tab:'explore',name:'미션 2 · 가상 쇠구슬 실험',    items:[1,2]},
- {tab:'model',  name:'미션 3 · 입자 상자 정복',      items:[3,4,5]},
- {tab:'apply',  name:'미션 4 · 배운 것으로 설명하기',items:[6,7]},
- {tab:'check',  name:'미션 5 · 확인 문제 완주',      items:[8]}];   /* items = progChecks() 번호 */
+ {tab:'explore',name:'미션 2 · 가상 쇠구슬 실험',    items:[1,2,3]},
+ {tab:'model',  name:'미션 3 · 입자 상자 정복',      items:[4,5,6]},
+ {tab:'apply',  name:'미션 4 · 배운 것으로 설명하기',items:[7,8]},
+ {tab:'check',  name:'미션 5 · 확인 문제 완주',      items:[9]}];   /* items = progChecks() 번호 */
 const teacherOn=()=>document.body.classList.contains('teacher');
 const lectureOn=()=>document.body.classList.contains('lecture');
 function msnDone(m,c){c=c||progChecks();return m.items.every(i=>c[i].ok);}
@@ -1558,6 +1571,7 @@ $$('textarea[data-essay]').forEach(t=>{
  balls.length=n;
  }
  function setN(n){curN=n;spawnTo(n);
+ balls.forEach(p=>{p.vx=(Math.random()-.5)*40;p.vy=0;});   /* 병을 바꿔 드는 셈 — 정지에서 공정하게 비교 */
  $('#vb15btn').classList.toggle('on',n===15);$('#vb30btn').classList.toggle('on',n===30);}
  function tryDone(){
  if(acc[curN]>=1.2&&!S['vb'+curN]){
@@ -1570,17 +1584,21 @@ $$('textarea[data-essay]').forEach(t=>{
  simT+=dt;
  const shaking=simT<shakeUntil;
  if(shaking){acc[curN]+=dt;tryDone();}
- const ax=shaking?Math.sin(simT*17)*8200:0;   /* 좌우로 세게 — 중력(520)보다 훨씬 크게 */
+ /* 흔드는 동안: 좌우 + 위아래로 세게 들썩여 쇠구슬이 병 «전체»를 날아다닌다.
+    벽·바닥 반발도 팽팽하게(0.88) — 손을 떼면 원래 값으로 돌아가 가라앉는다 */
+ const ax=shaking?Math.sin(simT*17)*8200:0;
+ const ay=shaking?Math.sin(simT*23+1.3)*3600:0;
+ const eW=shaking?0.88:0.65, eF=shaking?0.86:0.5, eC=shaking?0.88:0.6;
  for(const p of balls){
-  p.vx+=ax*dt;p.vy+=520*dt;
-  if(shaking){p.vx+=(Math.random()-.5)*3800*dt;p.vy+=(Math.random()-.5)*2600*dt;}
+  p.vx+=ax*dt;p.vy+=(520+ay)*dt;
+  if(shaking){p.vx+=(Math.random()-.5)*5600*dt;p.vy+=(Math.random()-.5)*5600*dt;}
   p.x+=p.vx*dt;p.y+=p.vy*dt;
-  if(p.x<BX.x+R){p.x=BX.x+R;p.vx=Math.abs(p.vx)*.65;}
+  if(p.x<BX.x+R){p.x=BX.x+R;p.vx=Math.abs(p.vx)*eW;}
   if(p.x>BX.x+BX.w-R){p.x=BX.x+BX.w-R;
    if(p.vx>30){palmHits.push(simT);palmImp.push({t:simT,j:p.vx});palmFlash=Math.min(1,.4+p.vx/520);}
-   p.vx=-Math.abs(p.vx)*.65;}
-  if(p.y<BX.y+R){p.y=BX.y+R;p.vy=Math.abs(p.vy)*.6;}
-  if(p.y>BX.y+BX.h-R){p.y=BX.y+BX.h-R;p.vy=-Math.abs(p.vy)*.5;p.vx*=.86;}
+   p.vx=-Math.abs(p.vx)*eW;}
+  if(p.y<BX.y+R){p.y=BX.y+R;p.vy=Math.abs(p.vy)*eC;}
+  if(p.y>BX.y+BX.h-R){p.y=BX.y+BX.h-R;p.vy=-Math.abs(p.vy)*eF;if(!shaking)p.vx*=.86;}
   if(!shaking){p.vx*=Math.max(0,1-.5*dt);
    if(Math.abs(p.vy)<14&&p.y>BX.y+BX.h-R-3)p.vy=0;}
  }
@@ -1591,7 +1609,7 @@ $$('textarea[data-essay]').forEach(t=>{
   if(d2>=min*min||d2===0)continue;
   const d=Math.sqrt(d2),nx=dx/d,ny=dy/d;
   const dvn=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
-  if(dvn>0){const k=dvn*0.86;
+  if(dvn>0){const k=dvn*(shaking?0.98:0.86);   /* 흔드는 동안엔 거의 탄성 — 에너지가 덜 죽는다 */
    a.vx-=k*nx;a.vy-=k*ny;b.vx+=k*nx;b.vy+=k*ny;}
   const ov=(min-d)/2+0.1;
   a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
@@ -1645,7 +1663,7 @@ $$('textarea[data-essay]').forEach(t=>{
  $('#vbShake').addEventListener('click',()=>{
  A.ensure();
  if(reduceMotion){acc[curN]+=1.3;tryDone();
-  bestF[curN]=curN===15?45:85;curF=bestF[curN];palmHits=new Array(curN===15?9:18).fill(0);
+  bestF[curN]=curN===15?95:195;curF=bestF[curN];palmHits=new Array(curN===15?10:20).fill(0);
   draw();readout();return;}
  shakeUntil=Math.max(shakeUntil,simT)+1.6;
  });
@@ -1663,6 +1681,23 @@ $$('textarea[data-essay]').forEach(t=>{
  cv.__state=function(){return {n:curN,f:curF,hits:palmHits.length,acc:Object.assign({},acc),
   best:Object.assign({},bestF),vb15:!!S.vb15,vb30:!!S.vb30};};
  setN(15);draw();readout();requestAnimationFrame(frame);
+})();
+
+/* ── 「왜 안 멈출까」 눌러서 읽기 ── */
+(function(){
+ const all=$$('.cloze2');if(!all.length)return;
+ S.cz2=S.cz2||{};
+ all.forEach((el,i)=>{
+ el.setAttribute('role','button');el.setAttribute('tabindex','0');
+ const reveal=silent=>{
+  if(el.classList.contains('revealed'))return;
+  el.classList.add('revealed');
+  if(!silent){S.cz2[i]=1;save();A.blip(680,.07);updateProgress();}
+ };
+ el.addEventListener('click',()=>reveal(false));
+ el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal(false);}});
+ if(S.cz2[i])reveal(true);
+ });
 })();
 
 /* ── 3단계 입자 상자 ── */
@@ -2018,7 +2053,12 @@ $$('textarea[data-essay]').forEach(t=>{
       });
       card.appendChild(row); card.appendChild(why);
     });
-    h.insertAdjacentElement('afterend', card);
+    /* 섹션(탭 패널)이면 그 안에 넣는다 — 밖(afterend)에 두면 모든 탭에서 보인다 */
+    if (h.tagName === 'SECTION'){
+      var cta = h.querySelector('.cta-row');
+      if (cta) cta.insertAdjacentElement('beforebegin', card);
+      else h.insertAdjacentElement('beforeend', card);
+    } else h.insertAdjacentElement('afterend', card);
   });
 })();
 </script>
