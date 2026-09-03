@@ -274,6 +274,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:6px}
 .obscap{font-size:14px;color:var(--ink-mute);text-align:center;margin-top:8px;line-height:1.6}
 
+/* ── 수업 방식 전환(혼자 탐구 ↔ 강의식) ── */
+.modebtn{height:40px;padding:0 13px;border-radius:12px;border:1.5px solid var(--line);cursor:pointer;
+ font-family:var(--body);font-weight:800;font-size:14px;color:var(--ink-dim);background:var(--paper-hi);
+ white-space:nowrap;transition:.15s}
+.modebtn:hover{border-color:var(--accent)}
+body.lecture .modebtn{background:#eaf3ff;border-color:#7fa3c0;color:#1c507e}
+body.lecture .msn-banner,body.lecture .sum-guard,body.lecture #msnCoverNote{display:none}
+@media(max-width:680px){.modebtn{padding:0 8px;font-size:12.5px}}
+
 /* ── 미션 잠금 ── */
 #tabNav button.locked{opacity:.48;filter:grayscale(.6)}
 #tabNav button.locked .sn{position:relative}
@@ -580,7 +589,7 @@ body.teacher .wlockmsg{display:none}
     <li><span class="sn">5</span><div><b>확인하기</b> — 배운 것 점검</div></li>
     <li class="opt"><span class="sn">+</span><div><b>더 알아보기</b> — 대기압을 잰 토리첼리 (언제든 자유)</div></li>
    </ol>
-   <p style="margin-top:11px;font-size:14px;color:var(--ink-mute);line-height:1.6">🎯 단계는 <b style="color:var(--ink)">미션</b>처럼 하나씩 열려요 — 앞 미션을 깨야 다음 문이 열립니다.<br>📝 <b style="color:var(--ink)">개념 정리</b>는 다섯 미션을 모두 깬 뒤, <b style="color:var(--ink)">선생님과 함께</b> 채웁니다.</p>
+   <p id="msnCoverNote" style="margin-top:11px;font-size:14px;color:var(--ink-mute);line-height:1.6">🎯 단계는 <b style="color:var(--ink)">미션</b>처럼 하나씩 열려요 — 앞 미션을 깨야 다음 문이 열립니다.<br>📝 <b style="color:var(--ink)">개념 정리</b>는 다섯 미션을 모두 깬 뒤, <b style="color:var(--ink)">선생님과 함께</b> 채웁니다.</p>
   </div>
   <div class="cover-cta">
    <button class="btn primary xl" id="coverGo">입자 상자 열기 🎈</button>
@@ -601,6 +610,7 @@ body.teacher .wlockmsg{display:none}
   </button>
   <div class="head-right">
    <a class="hbtn" href="index.html" title="단원 허브로">🎈</a>
+   <button class="modebtn" id="modeBtn" type="button">🎯 혼자 탐구</button>
    <button class="hbtn" id="tmodeBtn" title="교사 모드 — 문장 설명과 교실 노트 보기">🧑‍🏫</button>
    <div class="progress-mini" id="progWrap" title="진행도 — 누르면 남은 활동이 보여요">
     <div class="bar"><i id="progBar"></i></div><div class="pct" id="progPct">0%</div>
@@ -1268,9 +1278,10 @@ const MSN=[
  {tab:'apply',  name:'미션 4 · 배운 것으로 설명하기',items:[6,7]},
  {tab:'check',  name:'미션 5 · 확인 문제 완주',      items:[8]}];   /* items = progChecks() 번호 */
 const teacherOn=()=>document.body.classList.contains('teacher');
+const lectureOn=()=>document.body.classList.contains('lecture');
 function msnDone(m,c){c=c||progChecks();return m.items.every(i=>c[i].ok);}
 function gateOf(id){
- if(teacherOn()||id==='beyond')return null;
+ if(teacherOn()||lectureOn()||id==='beyond')return null;
  const c=progChecks();
  if(id==='sum'){const m=MSN.find(x=>!msnDone(x,c));return m?{sum:true,m:m}:null;}
  const k=MSN.findIndex(x=>x.tab===id);
@@ -1305,7 +1316,9 @@ function checkMsnClear(){
  const c=progChecks();
  MSN.forEach((m,mi)=>{
  if(!msnDone(m,c)||S.msn[m.tab])return;
- S.msn[m.tab]=1;save();A.win();
+ S.msn[m.tab]=1;save();
+ if(lectureOn())return;               /* 강의식: 조용히 표시만 — 축하 팡파르 없음 */
+ A.win();
  const nxt=mi<MSN.length-1?MSN[mi+1]:null;
  toast(nxt?'🎉 <b>'+m.name+'</b> 완수! — 「'+nxt.name.split(' · ')[1]+'」의 문이 열렸어요 🔓'
           :'🏆 <b>다섯 미션을 모두 완수!</b> 이제 📝 개념 정리를 <b>선생님과 함께</b> 열 수 있어요');
@@ -1313,6 +1326,26 @@ function checkMsnClear(){
 }
 /* 이미 깬 채로 접속한 사람(기존 진행)은 조용히 표시만 — 재축하 금지 */
 (function(){const c=progChecks();MSN.forEach(m=>{if(msnDone(m,c))S.msn[m.tab]=1;});save();})();
+
+/* ── 수업 방식: 🎯 혼자 탐구(미션 잠금) ↔ 🧑‍🏫 강의식(전부 개방) ──
+   버튼 하나로만 바꾼다 — 비밀번호 같은 잠금장치는 두지 않는다. */
+const MODE_KEY='gas_gaspressure_mode';
+function paintMode(){
+ const b=$('#modeBtn');if(!b)return;
+ b.textContent=lectureOn()?'🧑‍🏫 강의식 수업':'🎯 혼자 탐구';
+ b.title=lectureOn()?'지금: 강의식 — 모든 단계 개방. 누르면 혼자 탐구(미션 잠금)로 전환'
+                    :'지금: 혼자 탐구 — 미션을 깨야 다음이 열림. 누르면 강의식(전부 개방)으로 전환';
+}
+document.body.classList.toggle('lecture',localStorage.getItem(MODE_KEY)==='lecture');
+$('#modeBtn').addEventListener('click',()=>{
+ const lec=!lectureOn();
+ document.body.classList.toggle('lecture',lec);
+ localStorage.setItem(MODE_KEY,lec?'lecture':'solo');
+ paintMode();updateProgress();
+ toast(lec?'🧑‍🏫 <b>강의식 수업 모드</b> — 모든 단계가 열려 있어요. 화면을 따라오세요!'
+          :'🎯 <b>혼자 탐구 모드</b> — 미션을 하나씩 깨야 다음 단계가 열려요!');
+});
+paintMode();
 
 function showTab(id,noScroll){
  if(!TABS.includes(id))return;
