@@ -320,6 +320,64 @@ body.lecture .msn-banner,body.lecture .sum-guard,body.lecture #msnCoverNote{disp
  padding:7px 12px;font-size:14px;line-height:1.55;color:var(--ink-dim);box-shadow:0 3px 10px rgba(23,52,80,.18);
  opacity:0;transform:translateY(-7px);transition:opacity .3s,transform .3s}
 .cpop.on{opacity:1;transform:none}
+/* ── 🎮 압력 챌린지 ── */
+.pg-card{border-color:var(--gold);background:linear-gradient(180deg,#fff8ee,#f3f8fd)}
+.pg-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pg-head .badge{background:#fdf0dc;border-color:var(--gold);color:#8a5a12}
+.pg-gauge{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.pg-bar{position:relative;flex:1 1 240px;height:36px;border-radius:11px;background:#e2ecf4;
+ border:1.5px solid var(--line);overflow:hidden}
+.pg-fill{position:absolute;left:0;top:0;bottom:0;width:0;
+ background:linear-gradient(90deg,#6aa9dc,#f2b134 60%,#d9534f);transition:width .08s linear}
+.pg-goal{position:absolute;top:-2px;bottom:-2px;left:0;border-left:3px dashed var(--danger);pointer-events:none}
+.pg-goal span{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;
+ color:var(--danger);white-space:nowrap;text-shadow:0 0 4px #fff,0 0 4px #fff}
+.pg-bar.hot{box-shadow:0 0 0 3px rgba(217,83,79,.28)}
+.pg-now{font-family:var(--mono);font-size:31px;font-weight:800;line-height:1;color:var(--c1);
+ min-width:92px;text-align:right}
+.pg-now small{display:block;font-family:var(--body);font-size:11.5px;color:var(--ink-mute);font-weight:600;margin-top:4px}
+.pg-read{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.pg-read>div{flex:1 1 92px;background:var(--paper-hi);border:1.5px solid var(--line-soft);border-radius:10px;
+ padding:7px 9px;text-align:center}
+.pg-read .k{font-size:11.5px;color:var(--ink-mute);line-height:1.35}
+.pg-read .v{font-family:var(--mono);font-size:18px;font-weight:800;line-height:1.3}
+.pg-read .v small{font-family:var(--body);font-size:11px;font-weight:600;color:var(--ink-mute)}
+.pg-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.pg-shake{flex:2 1 200px;font-family:var(--jua);font-size:21px;color:#fff;border:none;border-radius:14px;
+ cursor:pointer;padding:13px 18px;background:linear-gradient(178deg,#f0a93c,#d9822b 55%,#b4661d);
+ box-shadow:0 6px 0 -1px #8f5116;user-select:none;-webkit-user-select:none;
+ -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.pg-shake small{display:block;font-family:var(--body);font-size:12.5px;font-weight:700;opacity:.92;margin-top:2px}
+.pg-shake:active{transform:translateY(4px);box-shadow:0 2px 0 -1px #8f5116}
+.pg-shake[disabled]{opacity:.45;box-shadow:none;cursor:default}
+.pg-add{flex:1 1 150px;font-family:var(--jua);font-size:17px;color:#fff;border:none;border-radius:14px;
+ cursor:pointer;padding:13px 16px;background:linear-gradient(178deg,#5fa3d8,#2f7cba 55%,#1c507e);
+ box-shadow:0 6px 0 -1px #163f63;touch-action:manipulation}
+.pg-add small{display:block;font-family:var(--body);font-size:12px;font-weight:700;opacity:.92;margin-top:2px}
+.pg-add:active{transform:translateY(4px);box-shadow:0 2px 0 -1px #163f63}
+.pg-add[disabled]{opacity:.45;box-shadow:none;cursor:default}
+.pg-msg{margin-top:12px;padding:11px 14px;border-radius:11px;font-size:14.5px;line-height:1.62;
+ border:1.5px dashed var(--line);background:var(--paper-hi);color:var(--ink-dim)}
+.pg-msg.warn{border-style:solid;border-color:var(--gold);background:#fdf3e3;color:#8a5a12}
+.pg-msg.good{border-style:solid;border-color:var(--ok);background:#eef7f1;color:#1f6435;font-weight:700}
+.pg-msg b{color:inherit;font-weight:800}
+.pg-quiz{margin-top:13px;padding:14px 16px;border-radius:13px;border:2px solid var(--sky);background:#eef6fd}
+.pg-quiz[hidden]{display:none}
+.pg-q{font-family:var(--jua);font-size:17px;line-height:1.55;margin-bottom:4px}
+.pg-c{display:block;width:100%;text-align:left;font-family:var(--body);font-size:15.5px;font-weight:600;
+ color:var(--ink);background:var(--paper-hi);border:1.5px solid var(--line);border-radius:11px;
+ padding:10px 14px;margin-top:8px;cursor:pointer}
+.pg-c:hover{border-color:var(--accent)}
+.pg-c.ok{background:#e6f4ea;border-color:var(--ok);color:#1f6435;font-weight:800}
+.pg-c.no{background:#fbeceb;border-color:var(--danger);color:var(--danger)}
+.pg-c[disabled]{cursor:default}
+.pg-why{margin-top:11px;font-size:14.5px;line-height:1.62;color:var(--ink-dim)}
+.pg-why b{color:var(--ink)}
+.pg-medals{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.pg-medal{flex:1 1 120px;text-align:center;padding:9px 8px;border-radius:11px;font-size:13.5px;font-weight:700;
+ border:1.5px dashed var(--line);background:var(--paper-hi);color:var(--ink-mute)}
+.pg-medal.on{border-style:solid;border-color:var(--ok);background:#eef7f1;color:#1f6435}
+.pg-medal.cur{border-style:solid;border-color:var(--gold);background:#fdf3e3;color:#8a5a12}
 .cpop.dim{opacity:.6}
 .cpop b{color:var(--accent)}
 .cpop.key{border-color:var(--accent);background:#fff6e6}
@@ -988,6 +1046,61 @@ body.teacher .wlockmsg{display:none}
  </div>
 
  <div class="miniquiz" data-quiz="model"></div>
+
+ <div class="card pg-card" id="pgCard" style="margin-top:18px">
+  <div class="pg-head">
+   <h3 class="card-t" style="margin:0">🎮 압력 챌린지 — 목표 압력에 도달하라</h3>
+   <span class="badge" id="pgRoundBadge">라운드 1 / 3</span>
+  </div>
+  <p class="lead say" style="margin-top:9px"><b class="k">🫨 흔들기</b>를 연타하면 입자가 빨라져 벽을 더 자주, 더 세게 두드립니다 — 압력계가 올라가죠.
+  손을 멈추면 <b class="k">보통 빠르기로 되돌아갑니다</b>(입자가 멈추는 게 아니에요).
+  그런데 사람이 흔들 수 있는 빠르기에는 <b class="k">한계</b>가 있습니다.
+  더 큰 압력이 필요하면 남은 방법은 하나 — <b class="k">입자 수를 늘리는 것</b>. 퀴즈를 맞히면 입자를 넣을 수 있어요.</p>
+
+  <div class="pg-gauge">
+   <div class="pg-bar" id="pgBar">
+    <div class="pg-fill" id="pgFill"></div>
+    <div class="pg-goal" id="pgGoalMark"><span id="pgGoalTxt">목표 340</span></div>
+   </div>
+   <div class="pg-now"><span id="pgP">0</span><small>압력계 (보통=100)</small></div>
+  </div>
+
+  <div class="simstage" style="margin-top:11px"><canvas id="pgCv" width="640" height="290"
+   aria-label="상자 안에서 기체 입자들이 사방으로 날아다니며 네 벽에 부딪힌다. 흔들기를 연타하면 입자가 빨라지고 벽이 더 자주 반짝인다."></canvas></div>
+
+  <div class="pg-read">
+   <div><div class="k">입자 수</div><div class="v" id="pgN">20<small>개</small></div></div>
+   <div><div class="k">1초 벽 충돌</div><div class="v" id="pgHit">0<small>회</small></div></div>
+   <div><div class="k">빠르기 <small>(보통=100)</small></div><div class="v" id="pgV">100</div></div>
+   <div><div class="k">이 입자 수의 최대 압력</div><div class="v" id="pgCap">502</div></div>
+  </div>
+
+  <div class="pg-btns">
+   <button type="button" class="pg-shake" id="pgShake">🫨 흔들기<small>연타! (스페이스바도 됩니다)</small></button>
+   <button type="button" class="pg-add" id="pgAdd">➕ 입자 넣기<small>압력 퀴즈 풀기</small></button>
+  </div>
+
+  <div class="pg-msg" id="pgMsg">연타해서 압력계를 <b>목표선</b>까지 올려 보세요 — 목표를 넘긴 채 잠깐만 버티면 통과입니다.</div>
+
+  <div class="pg-quiz" id="pgQuiz" hidden>
+   <div class="pg-q" id="pgQText"></div>
+   <div id="pgQChoices"></div>
+   <div class="pg-why" id="pgQWhy" hidden></div>
+  </div>
+
+  <div class="pg-medals">
+   <div class="pg-medal cur" id="pgM0">라운드 1 · 목표 340</div>
+   <div class="pg-medal" id="pgM1">라운드 2 · 목표 560</div>
+   <div class="pg-medal" id="pgM2">라운드 3 · 목표 880</div>
+  </div>
+
+  <div class="note class" style="margin-top:12px"><span class="ic">💬</span><div><b>지도 노트</b> —
+  라운드 2에서 아이들이 «손이 아프도록 연타해도 안 되는» 순간을 반드시 겪게 하세요.
+  그때 «압력을 키우는 길은 빠르기만이 아니다»가 몸으로 들어옵니다.
+  <b>「최대 압력」 칸</b>이 입자 수에 거의 비례해 오르는 것도 함께 짚어 주세요 —
+  입자를 2배로 넣으면 부딪히는 횟수가 2배가 되니까요.
+  (빠르기는 압력을 더 가파르게 올리지만, 그 정량 관계는 중1 범위 밖입니다. 「더 빠르면 더 자주·더 세게 부딪힌다」까지만.)</div></div>
+ </div>
  <div class="cta-row"><button class="btn primary" data-go="apply">4단계 · 첫 번째 블록의 답 →</button></div>
 </section>
 
@@ -1913,6 +2026,319 @@ $$('textarea[data-essay]').forEach(t=>{
  if(o.T!=null){$('#tmpR').value=o.T;setT(o.T);$('#tmpV').textContent=tName(o.T)+' ('+o.T+')';}
  if(o.wall)setWall(o.wall);};
  spawn(15);draw();paintRec();requestAnimationFrame(frame);
+})();
+
+/* ── 🎮 압력 챌린지 — 3단계 입자 상자와 같은 물리 엔진·같은 눈금 ── */
+(function(){
+ const cv=$('#pgCv');if(!cv)return;
+ const ctx=cv.getContext('2d');
+ const W=640,H=290,CX=W/2,CY=H/2,HW=250,HH=110,R=6;
+ /* 압력 = 벽이 받은 충격량 ÷ 시간 ÷ 둘레 (3단계 상자와 같은 정의).
+    지수는 「입자 15개·온도 100」을 100으로 잡은 상대값 → 지수 = N × T ÷ 15.
+    넓이·둘레는 입자 «중심»이 실제로 움직이는 영역(반지름 R 만큼 안쪽)으로 잰다 —
+    겉치수로 재면 압력이 14% 부풀어 3단계 압력계와 눈금이 어긋난다 */
+ const V0=127,TMIN=100,TMAX=360,BOOST=34,COOL=1.2;
+ const VRMS0=V0*Math.sqrt(1.0161);
+ const AREA=(2*HW-2*R)*(2*HH-2*R), PER=2*((2*HW-2*R)+(2*HH-2*R));
+ const PREF=15*(V0*V0*1.0161)/(2*AREA);
+ const WIN=2.0;
+ const GOALS=[340,560,880],HOLD=.7,N0=20,NMIN=10,NMAX=90,PLUS=10,MINUS=8;
+
+ const PGQ=[
+  {q:'기체의 압력이 생기는 까닭으로 옳은 것은?',
+   c:['기체 입자가 벽에 충돌하며 힘을 가하기 때문','기체 입자가 무거워서 아래로 눌리기 때문','기체 입자가 벽에 달라붙어 잡아당기기 때문'],
+   w:'압력을 만드는 것은 <b>입자의 충돌</b>입니다. 부딪힌 입자는 벽에 붙지 않고 튕겨 나오죠.'},
+  {q:'용기의 크기와 온도를 그대로 두고 입자 수만 2배로 늘리면 압력은?',
+   c:['커진다','작아진다','변하지 않는다'],
+   w:'입자가 많아지면 1초 동안의 <b>충돌 횟수</b>가 늘어 압력이 커집니다.'},
+  {q:'기체의 압력은 어느 방향으로 작용할까?',
+   c:['위·아래·옆 모든 방향','아래쪽으로만','옆쪽으로만'],
+   w:'입자가 사방으로 날아다니므로 압력도 <b>모든 방향</b>으로 작용합니다.'},
+  {q:'축구공에 공기를 더 넣었다. 공 속 입자 하나하나의 빠르기는?',
+   c:['거의 그대로다','빨라진다','느려진다'],
+   w:'빠르기를 바꾸는 것은 <b>온도</b>입니다. 공기를 넣으면 입자의 <b>수</b>만 늘어요.'},
+  {q:'같은 통에서 온도만 높이면 1초 동안의 벽 충돌 횟수는?',
+   c:['늘어난다','줄어든다','변하지 않는다'],
+   w:'온도가 높아지면 입자가 빨라져 벽을 <b>더 자주, 더 세게</b> 두드립니다.'},
+  {q:'찌그러진 축구공에 공기를 넣으면 사방으로 부푸는 까닭은?',
+   c:['기체의 압력이 모든 방향으로 작용하기 때문','공기가 무거워 아래로 눌리기 때문','공 껍질이 스스로 펴지기 때문'],
+   w:'한 방향으로만 밀었다면 한쪽만 펴졌겠죠. 고르게 부푸는 것이 <b>모든 방향</b>이라는 증거입니다.'},
+  {q:'기체 입자가 쉬지 않고 움직이는 까닭은?',
+   c:['스스로 끊임없이 운동하기 때문','누군가 흔들어 주어야만 움직이기 때문','바람이 불어 밀어 주기 때문'],
+   w:'쇠구슬은 흔들어야 움직이지만, <b>기체 입자는 스스로</b> 끊임없이 운동합니다.'},
+  {q:'입자 수가 같을 때 압력을 더 크게 하려면?',
+   c:['온도를 높여 입자를 더 빠르게 한다','용기를 더 크게 만든다','입자를 더 무겁게 만든다'],
+   w:'충돌이 <b>잦고 세질수록</b> 압력이 커집니다. 온도를 올리면 둘 다 커지죠.'},
+  {q:'압력계 눈금이 2배가 되었다면, 벽에서 일어난 일은?',
+   c:['충돌이 더 잦아지거나 더 세졌다','충돌이 줄어들었다','충돌과는 관계가 없다'],
+   w:'압력계는 결국 <b>벽이 받는 충돌</b>을 재는 눈금입니다.'},
+  {q:'풍선을 손으로 누르면, 풍선 속 기체가 미는 곳은?',
+   c:['닿아 있는 안쪽 벽 어디든 모두','바닥 쪽만','손이 닿은 자리만'],
+   w:'기체는 <b>닿는 모든 면</b>을 밉니다 — 그래서 눌린 자리 말고 옆구리가 불룩해지죠.'}
+ ];
+
+ let els=[],hits=[],imps=[],flash={t:0,b:0,l:0,r:0};
+ let T=TMIN,pIdx=0,simT=0,shake=0,rd=0,holdT=0,capT=0,hinted=false;
+ let qOrder=[],qAt=0,quizOn=false,clearedAll=false,last=0;
+
+ S.pg=Object.assign({done:0,best:0,ok:0,no:0},S.pg||{});
+
+ /* 입자에 크기가 있으면 서로 부딪혀 벽으로 더 자주 튕긴다 — 2D 강체구 압축인자로 보정.
+    이 보정을 빼면 화면의 「최대 압력」이 실제 압력계보다 7~9% 낮게 떠서 서로 어긋난다 */
+ const capOf=function(n){
+  const eta=n*Math.PI*R*R/AREA;
+  return Math.round(n*TMAX/15*(1+eta*eta/8)/((1-eta)*(1-eta)));
+ };
+ const needFor=function(g){let k=NMIN;while(k<NMAX&&capOf(k)<g)k++;return k;};
+ /* 학생에게 보이는 「빠르기」는 언제나 속력 지수(보통=100). 속력은 온도의 제곱근에 비례한다 */
+ const vIdx=t=>Math.round(Math.sqrt((t==null?T:t)/100)*100);
+ const goal=()=>GOALS[Math.min(rd,GOALS.length-1)];
+
+ function speedFor(){return V0*Math.sqrt(T/100)*(0.78+Math.random()*0.44);}
+ function bounds(){return {L:CX-HW+R,Rt:CX+HW-R,Tp:CY-HH+R,Bt:CY+HH-R};}
+ function spawn(k,edge){
+  const b=bounds();
+  for(let i=0;i<k;i++){
+   const a=Math.random()*TAU,v=speedFor();
+   const x=edge?b.L+8:b.L+Math.random()*(b.Rt-b.L);
+   els.push({x:x,y:b.Tp+Math.random()*(b.Bt-b.Tp),vx:Math.cos(a)*v,vy:Math.sin(a)*v,born:simT});
+  }
+ }
+ function thermostat(){
+  if(!els.length)return;
+  let v2=0;els.forEach(e=>v2+=e.vx*e.vx+e.vy*e.vy);
+  const f=VRMS0*Math.sqrt(T/100)/Math.sqrt(v2/els.length);
+  if(isFinite(f)&&f>0)els.forEach(e=>{e.vx*=f;e.vy*=f;});
+ }
+ function setN(n){
+  n=Math.max(NMIN,Math.min(NMAX,n));
+  if(n>els.length)spawn(n-els.length,true); else els.length=n;
+  thermostat();paintRead();
+ }
+ function collide(){
+  const bd=bounds();let bumped=false;
+  for(let i=0;i<els.length;i++)for(let j=i+1;j<els.length;j++){
+   const a=els[i],b=els[j];
+   const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,mn=2*R;
+   if(d2>=mn*mn||d2===0)continue;
+   const d=Math.sqrt(d2),nx=dx/d,ny=dy/d;
+   const dvn=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
+   if(dvn>0){a.vx-=dvn*nx;a.vy-=dvn*ny;b.vx+=dvn*nx;b.vy+=dvn*ny;}
+   const ov=(mn-d)/2+0.1;
+   a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;bumped=true;
+  }
+  /* 밀려나다 벽을 넘은 입자는 조용히 되돌린다 — 여기서 다시 「충돌」로 세면 압력이 부풀어 오른다 */
+  if(bumped)els.forEach(e=>{
+   if(e.x<bd.L)e.x=bd.L; else if(e.x>bd.Rt)e.x=bd.Rt;
+   if(e.y<bd.Tp)e.y=bd.Tp; else if(e.y>bd.Bt)e.y=bd.Bt;
+  });
+ }
+ function step(dt){
+  simT+=dt;const now=simT,b=bounds();
+  T+=(TMIN-T)*Math.min(1,dt/COOL);            /* 흔들기를 멈추면 보통 온도로 식는다 */
+  thermostat();
+  shake=Math.max(0,shake-dt*4.5);
+  els.forEach(e=>{
+   e.x+=e.vx*dt;e.y+=e.vy*dt;
+   if(e.x<b.L){e.x=b.L;e.vx=Math.abs(e.vx);hits.push(now);imps.push({t:now,j:2*Math.abs(e.vx)});flash.l=Math.max(flash.l,.45+Math.min(.55,Math.abs(e.vx)/380));}
+   if(e.x>b.Rt){e.x=b.Rt;e.vx=-Math.abs(e.vx);hits.push(now);imps.push({t:now,j:2*Math.abs(e.vx)});flash.r=Math.max(flash.r,.45+Math.min(.55,Math.abs(e.vx)/380));}
+   if(e.y<b.Tp){e.y=b.Tp;e.vy=Math.abs(e.vy);hits.push(now);imps.push({t:now,j:2*Math.abs(e.vy)});flash.t=Math.max(flash.t,.45+Math.min(.55,Math.abs(e.vy)/380));}
+   if(e.y>b.Bt){e.y=b.Bt;e.vy=-Math.abs(e.vy);hits.push(now);imps.push({t:now,j:2*Math.abs(e.vy)});flash.b=Math.max(flash.b,.45+Math.min(.55,Math.abs(e.vy)/380));}
+  });
+  collide();
+  while(hits.length&&now-hits[0]>1)hits.shift();
+  while(imps.length&&now-imps[0].t>WIN)imps.shift();
+  let J=0;for(const im of imps)J+=im.j;
+  const raw=(J/WIN/PER)/PREF*100;
+  pIdx+=(raw-pIdx)*Math.min(1,dt*2.5);
+  judge(dt);
+ }
+ function spdColor(v){
+  const t=Math.min(1,v/300);
+  return 'hsl('+Math.round(210-210*t)+',62%,'+Math.round(48-10*t)+'%)';
+ }
+ function draw(){
+  const ox=shake?(Math.random()-.5)*shake*11:0, oy=shake?(Math.random()-.5)*shake*11:0;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#f6fafd';ctx.fillRect(0,0,W,H);
+  ctx.save();ctx.translate(ox,oy);
+  const L=CX-HW,Rt=CX+HW,Tp=CY-HH,Bt=CY+HH;
+  const reach=pIdx>=goal();
+  const base=reach?'#2c7a44':'#1c507e';
+  function wl(x1,y1,x2,y2,f){
+   ctx.strokeStyle=f>0?'rgba(178,58,48,'+(0.3+f*0.7)+')':base;
+   ctx.lineWidth=f>0?7:5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  }
+  wl(L,Tp,Rt,Tp,flash.t);wl(L,Bt,Rt,Bt,flash.b);wl(L,Tp,L,Bt,flash.l);wl(Rt,Tp,Rt,Bt,flash.r);
+  ['t','b','l','r'].forEach(k=>flash[k]=Math.max(0,flash[k]-0.06));
+  els.forEach(e=>{
+   const v=Math.hypot(e.vx,e.vy);
+   if(simT-e.born<0.55){ctx.beginPath();ctx.arc(e.x,e.y,R+5,0,TAU);
+    ctx.fillStyle='rgba(58,122,63,'+(0.34*(1-(simT-e.born)/0.55))+')';ctx.fill();}
+   ctx.fillStyle=spdColor(v);ctx.beginPath();ctx.arc(e.x,e.y,R,0,TAU);ctx.fill();
+  });
+  ctx.restore();
+  ctx.fillStyle='#7b91a4';ctx.font='12.5px Pretendard, sans-serif';
+  ctx.fillText('입자 '+els.length+'개 · 빠르기 '+vIdx()+' (보통 100 · 흔들어 낼 수 있는 최대 '+vIdx(TMAX)+')',14,H-13);
+  if(reach){ctx.fillStyle='#2c7a44';ctx.font='700 13.5px Pretendard, sans-serif';
+   ctx.fillText('목표 돌파! 유지 중 '+Math.min(HOLD,holdT).toFixed(1)+' / '+HOLD.toFixed(1)+'초',14,22);}
+ }
+ function msg(html,kind){const m=$('#pgMsg');m.innerHTML=html;m.className='pg-msg'+(kind?' '+kind:'');}
+ function paintRead(){
+  $('#pgN').innerHTML=els.length+'<small>개</small>';
+  $('#pgCap').textContent=capOf(els.length);
+ }
+ function paintLive(){
+  $('#pgHit').innerHTML=hits.length+'<small>회</small>';
+  let v2=0;els.forEach(e=>v2+=e.vx*e.vx+e.vy*e.vy);
+  $('#pgV').textContent=els.length?Math.round(Math.sqrt(v2/els.length)/VRMS0*100):'–';
+  const p=Math.round(pIdx),g=goal(),full=g*1.5;
+  $('#pgP').textContent=p;
+  $('#pgFill').style.width=Math.min(100,pIdx/full*100)+'%';
+  $('#pgGoalMark').style.left=Math.min(100,g/full*100)+'%';
+  $('#pgGoalTxt').textContent='목표 '+g;
+  $('#pgBar').classList.toggle('hot',pIdx>=g);
+ }
+ function paintMedals(){
+  for(let i=0;i<3;i++){
+   const el=$('#pgM'+i);if(!el)continue;
+   el.classList.toggle('on',rd>i||clearedAll);
+   el.classList.toggle('cur',rd===i&&!clearedAll);
+   el.textContent=(rd>i||clearedAll?'✅ ':'')+'라운드 '+(i+1)+' · 목표 '+GOALS[i];
+  }
+  $('#pgRoundBadge').textContent=clearedAll?'🏆 3라운드 완주':'라운드 '+(rd+1)+' / 3';
+ }
+ function judge(dt){
+  if(quizOn||clearedAll)return;
+  const g=goal();
+  if(pIdx>=g){
+   holdT+=dt;
+   if(holdT>=HOLD)roundClear();
+  }else holdT=0;
+  /* 아무리 연타해도 안 되는 순간을 잡아 준다 — 이 게임의 핵심 장면 */
+  if(T>TMAX*0.86&&pIdx<g*0.97){capT+=dt;}else capT=0;
+  if(capT>1.8&&!hinted){
+   hinted=true;A.blip(300,.18,'triangle',.12);
+   if(capOf(els.length)<g)
+    msg('🚧 <b>손이 낼 수 있는 최고 빠르기</b>인데도 목표에 못 미쳐요. 입자 '+els.length+'개로 낼 수 있는 최대 압력은 <b>'+capOf(els.length)+'</b> — 목표 '+g+'에는 <b>절대</b> 닿지 않습니다.<br>남은 방법은 하나뿐 — <b>➕ 입자 넣기</b>로 충돌할 입자를 늘리세요!','warn');
+   else
+    msg('😤 거의 다 왔어요! 입자 '+els.length+'개로 <b>'+capOf(els.length)+'</b>까지 갈 수 있으니 조금만 더 빠르게 연타해 보세요.<br>손이 아프면 <b>➕ 입자 넣기</b>로 편하게 가도 됩니다 — 압력을 키우는 길은 두 가지니까요.','warn');
+  }
+ }
+ function roundClear(){
+  holdT=0;capT=0;hinted=false;
+  A.win();
+  if(rd>=GOALS.length-1){
+   clearedAll=true;
+   S.pg.done=3;S.pg.best=Math.max(S.pg.best,Math.round(pIdx));save();
+   msg('🏆 <b>3라운드 완주!</b> 압력을 키우는 두 가지 길을 모두 썼어요 — <b>입자를 더 빠르게(🫨 흔들기)</b>, 그리고 <b>입자를 더 많이(➕)</b>.<br>마지막 압력계 <b>'+Math.round(pIdx)+'</b> — 입자 '+els.length+'개가 빠르기 '+vIdx()+'로 벽을 두드린 결과입니다. 입자 수를 2배로 늘리면 압력도 <b>대략 2배</b>가 되죠.','good');
+   if(typeof toast==='function')toast('🏆 압력 챌린지 완주! 입자 수와 빠르기, 둘 다 압력을 키웁니다','good');
+   $('#pgShake').disabled=false;$('#pgAdd').disabled=false;
+  }else{
+   rd++;
+   S.pg.done=Math.max(S.pg.done,rd);S.pg.best=Math.max(S.pg.best,Math.round(pIdx));save();
+   const need=needFor(goal());
+   msg('🎉 <b>라운드 '+rd+' 통과!</b> 다음 목표는 <b>'+goal()+'</b>입니다.'
+    +(capOf(els.length)<goal()?'<br>지금 입자 '+els.length+'개로는 최대 <b>'+capOf(els.length)+'</b>까지밖에 못 가요 — 최소 <b>'+need+'개</b>는 필요합니다.':'<br>연타를 이어 가세요!'),'good');
+   if(typeof toast==='function')toast('🎉 라운드 '+rd+' 통과! 다음 목표 '+goal(),'good');
+  }
+  paintMedals();
+ }
+
+ /* ── 연타 ── */
+ function shakeOnce(){
+  if(quizOn)return;
+  T=Math.min(TMAX,T+BOOST);thermostat();
+  shake=Math.min(1,shake+.5);
+  A.blip(150+Math.random()*40,.03,'square',.05);
+ }
+ const sb=$('#pgShake');
+ sb.addEventListener('pointerdown',e=>{e.preventDefault();A.ensure();shakeOnce();});
+ sb.addEventListener('click',e=>e.preventDefault());
+ addEventListener('keydown',e=>{
+  if(e.code!=='Space'&&e.key!==' ')return;
+  if(!cv.offsetParent)return;
+  const t=e.target;
+  if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+  if(t===sb||document.activeElement===sb||isNear()){e.preventDefault();A.ensure();shakeOnce();}
+ });
+ function isNear(){
+  const r=$('#pgCard').getBoundingClientRect();
+  return r.top<innerHeight*0.75&&r.bottom>innerHeight*0.25;
+ }
+
+ /* ── 퀴즈 ── */
+ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+ function nextQuiz(){
+  if(quizOn)return;
+  if(qAt>=qOrder.length){qOrder=shuffle(PGQ.map((_,i)=>i));qAt=0;}
+  const q=PGQ[qOrder[qAt++]];
+  quizOn=true;
+  $('#pgShake').disabled=true;$('#pgAdd').disabled=true;
+  const box=$('#pgQuiz');box.hidden=false;
+  $('#pgQText').textContent='Q. '+q.q;
+  const why=$('#pgQWhy');why.hidden=true;why.innerHTML='💡 '+q.w;
+  const host=$('#pgQChoices');host.innerHTML='';
+  const idx=shuffle(q.c.map((_,i)=>i));
+  idx.forEach(i=>{
+   const b=document.createElement('button');
+   b.type='button';b.className='pg-c';b.textContent=q.c[i];
+   b.addEventListener('click',()=>{
+    if(b.disabled)return;
+    [...host.children].forEach(x=>x.disabled=true);
+    why.hidden=false;
+    if(i===0){
+     b.classList.add('ok');A.correct();
+     S.pg.ok++;save();
+     setN(els.length+PLUS);
+     msg('✅ <b>정답!</b> 입자 <b>+'+PLUS+'개</b> — 이제 '+els.length+'개입니다. 낼 수 있는 최대 압력이 <b>'+capOf(els.length)+'</b>로 올랐어요.','good');
+    }else{
+     b.classList.add('no');
+     [...host.children].forEach(x=>{if(x.textContent===q.c[0])x.classList.add('ok');});
+     A.wrong();
+     S.pg.no++;save();
+     const before=els.length;
+     setN(els.length-MINUS);
+     msg('❌ <b>아쉬워요.</b> 입자가 <b>−'+(before-els.length)+'개</b> 빠져나가 '+els.length+'개가 되었습니다. 해설을 읽고 다시 도전하세요.','warn');
+    }
+    hinted=false;capT=0;
+    setTimeout(()=>{
+     box.hidden=true;quizOn=false;
+     $('#pgShake').disabled=false;$('#pgAdd').disabled=false;
+    },2600);
+   });
+   host.appendChild(b);
+  });
+  box.scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
+ $('#pgAdd').addEventListener('click',()=>{A.ensure();nextQuiz();});
+
+ /* ── 루프 ── */
+ function frame(ts){
+  requestAnimationFrame(frame);
+  if(!last)last=ts;
+  let dt=(ts-last)/1000;last=ts;
+  if(!cv.offsetParent)return;                 /* 다른 탭이면 쉰다 */
+  dt=Math.max(0.001,Math.min(0.25,dt));
+  /* 프레임이 끊기는 기기에서도 «실제 시간»만큼 흐르도록 잘게 나눠 적분한다 —
+     한 번에 큰 dt 로 밀면 입자가 벽을 뚫고, 기기가 느릴수록 압력이 덜 올라 불공평해진다 */
+  for(let rem=dt;rem>1e-4;){const h=Math.min(rem,1/120);step(h);rem-=h;}
+  draw();paintLive();
+ }
+ spawn(N0);thermostat();paintRead();paintMedals();paintLive();draw();
+ requestAnimationFrame(frame);
+
+ /* 검증용 훅 */
+ cv.__pg=function(o){
+  if(!o)return {n:els.length,p:pIdx,T:T,rd:rd,hits:hits.length,cap:capOf(els.length),
+                goal:goal(),clear:clearedAll,quiz:quizOn,hold:holdT};
+  if(o.shake)for(let i=0;i<o.shake;i++)shakeOnce();
+  if(o.n!=null)setN(o.n);
+  if(o.step)for(let i=0;i<o.step;i++){step(1/60);}
+  if(o.draw)draw();
+  paintLive();
+  return null;
+ };
 })();
 
 /* 구름 배경 */
