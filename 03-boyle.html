@@ -327,6 +327,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .score-box{background:var(--paper-hi);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;text-align:center}
 .score-box .lab2{font-size:11.5px;color:var(--ink-mute)}
 .score-box .num{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--accent)}
+/* ── 서술형(자기 채점) ── */
+.eq-ta{width:100%;min-height:104px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-family:var(--body);
+ font-size:15.5px;line-height:1.6;color:var(--ink);background:var(--paper-hi);resize:vertical;margin-top:10px;box-sizing:border-box}
+.eq-keys{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eq-key{font-size:12.5px;padding:3px 10px;border-radius:99px;border:1.5px solid var(--line);color:var(--ink-mute);background:var(--paper-hi)}
+.eq-key.on{border-color:var(--ok);color:var(--ok);font-weight:700}
+.eq-rub{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(32,116,143,.06)}
+.eq-rub[hidden]{display:none}
+.eq-h{font-weight:800;font-size:14.5px;color:var(--ink-dim);margin:4px 0 6px}
+.eq-model{font-size:15px;line-height:1.65;padding:10px 12px;border-radius:10px;background:var(--paper-hi);border:1px solid var(--line);margin:0 0 12px}
+.eq-item{display:flex;align-items:flex-start;gap:9px;font-size:14.5px;line-height:1.5;padding:6px 0;cursor:pointer}
+.eq-item input{margin-top:4px;width:17px;height:17px;accent-color:var(--ok);flex:none}
+.eq-item .p{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--ink-mute);white-space:nowrap}
+.eq-rej{font-size:13.5px;color:var(--ink-mute);margin-top:8px;display:none;line-height:1.55}
+body.teacher .eq-rej{display:block}
+.eq-sum{margin-top:10px;font-weight:800;color:var(--ink-dim)}
 .mq-lv{font-family:var(--jua);font-size:13px;padding:3px 11px;border-radius:99px;border:1.5px solid}
 .mq-lv[data-lv="하"]{color:var(--ok);border-color:#7fae83;background:rgba(44,122,68,.08)}
 .mq-lv[data-lv="중"]{color:#8f5312;border-color:var(--c3);background:rgba(196,113,30,.08)}
@@ -900,81 +916,118 @@ const QUIZ_SETS={
 };
 
 const GAME_QS=[
- {id:'q1',difficulty:'하',
-  stem:'온도가 일정할 때, 일정한 양의 기체에 대한 설명으로 옳은 것은?',
-  ch:[{t:'부피가 줄어들면 기체의 압력이 커진다.',ok:1},
-      {t:'부피가 줄어들면 기체의 압력도 작아진다.'},
-      {t:'부피가 변해도 압력은 변하지 않는다.'},
-      {t:'부피가 늘어나면 기체 입자 수가 늘어난다.'},
-      {t:'부피가 줄어들면 입자의 운동이 빨라진다.'}],
-  why:'부피 ↓ → 충돌 잦아짐 → <b>압력 ↑</b>. 시소처럼 반대로 움직입니다.<br>④ 입자 수는 그대로 — 갇힌 기체입니다.<br>⑤ 운동성은 <b>온도</b>만 바꿉니다.'},
- {id:'q2',difficulty:'중',
-  svg:'<svg viewBox="0 0 560 200" role="img" aria-label="주사기와 압력 센서로 측정한 결과 표. 부피 40 밀리리터에서 1.0 기압, 30 밀리리터에서 약 1.3 기압, 20 밀리리터에서 약 2.0 기압.">'
-   +'<rect x="80" y="30" width="400" height="140" fill="#f9fcfe" stroke="#9db7cc" stroke-width="1.6"/>'
-   +'<rect x="81" y="31" width="398" height="40" fill="#e3eef6"/>'
-   +'<line x1="80" y1="71" x2="480" y2="71" stroke="#9db7cc" stroke-width="1.4"/>'
-   +'<line x1="80" y1="120" x2="480" y2="120" stroke="#9db7cc" stroke-width="1.4"/>'
-   +'<line x1="230" y1="30" x2="230" y2="170" stroke="#9db7cc" stroke-width="1.4"/>'
-   +'<line x1="313" y1="30" x2="313" y2="170" stroke="#9db7cc" stroke-width="1.4"/>'
-   +'<line x1="396" y1="30" x2="396" y2="170" stroke="#9db7cc" stroke-width="1.4"/>'
-   +'<text x="155" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">구분</text>'
-   +'<text x="271" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">처음</text>'
-   +'<text x="354" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">A</text>'
-   +'<text x="438" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">B</text>'
-   +'<text x="155" y="100" text-anchor="middle" font-size="14.5" fill="#41586c">부피 (mL)</text>'
-   +'<text x="271" y="100" text-anchor="middle" font-size="15" font-weight="700" fill="#3f64b5">40</text>'
-   +'<text x="354" y="100" text-anchor="middle" font-size="15" font-weight="700" fill="#3f64b5">30</text>'
-   +'<text x="438" y="100" text-anchor="middle" font-size="15" font-weight="700" fill="#3f64b5">20</text>'
-   +'<text x="155" y="150" text-anchor="middle" font-size="14.5" fill="#41586c">압력 (기압)</text>'
-   +'<text x="271" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#b23a30">1.0</text>'
-   +'<text x="354" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#b23a30">약 1.3</text>'
-   +'<text x="438" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#b23a30">약 2.0</text>'
-   +'<text x="280" y="192" text-anchor="middle" font-size="12.5" fill="#7b91a4">※ 온도는 일정하고, 주사기 속 공기의 양은 변하지 않았다.</text></svg>',
-  stem:'표는 주사기 속 공기의 부피를 바꾸며 압력 센서로 측정한 결과이다. 이에 대한 설명으로 옳은 것은?',
-  ch:[{t:'부피가 절반이 되자 압력은 약 2배가 되었다.',ok:1},
-      {t:'부피가 절반이 되자 압력도 절반이 되었다.'},
-      {t:'B에서 주사기 속 공기 입자 수는 처음의 절반이다.'},
-      {t:'A에서 공기 입자의 운동이 처음보다 빨라졌다.'},
-      {t:'부피와 압력은 관계가 없다.'}],
-  why:'40 mL → 20 mL로 부피가 <b>절반</b>이 되자 압력은 1.0 → 약 2.0 기압으로 <b>2배</b>. 부피가 줄어드는 만큼 압력이 커지는 관계가 숫자로 보입니다.<br>③ 입자는 빠져나가지 않았습니다 — 좁아졌을 뿐.<br>④ 온도가 일정하니 운동성은 그대로입니다.'},
- {id:'q3',difficulty:'중',
-  svg:'<svg viewBox="0 0 560 210" role="img" aria-label="압력과 부피 그래프 세 개. (가)는 오른쪽 아래로 휘어지며 감소하는 곡선, (나)는 오른쪽 위로 올라가는 직선, (다)는 수평인 직선.">'
-   +'<g transform="translate(30,20)"><text x="70" y="0" text-anchor="middle" font-size="14" font-weight="700" fill="#41586c">(가)</text>'
-   +'<line x1="10" y1="150" x2="150" y2="150" stroke="#41586c" stroke-width="1.6"/><line x1="10" y1="150" x2="10" y2="15" stroke="#41586c" stroke-width="1.6"/>'
-   +'<path d="M22 30 Q45 110 140 138" fill="none" stroke="#b23a30" stroke-width="3"/>'
-   +'<text x="80" y="172" text-anchor="middle" font-size="12" fill="#7b91a4">압력</text><text x="-2" y="10" font-size="12" fill="#7b91a4">부피</text></g>'
-   +'<g transform="translate(220,20)"><text x="70" y="0" text-anchor="middle" font-size="14" font-weight="700" fill="#41586c">(나)</text>'
-   +'<line x1="10" y1="150" x2="150" y2="150" stroke="#41586c" stroke-width="1.6"/><line x1="10" y1="150" x2="10" y2="15" stroke="#41586c" stroke-width="1.6"/>'
-   +'<line x1="16" y1="140" x2="140" y2="30" stroke="#3f64b5" stroke-width="3"/>'
-   +'<text x="80" y="172" text-anchor="middle" font-size="12" fill="#7b91a4">압력</text><text x="-2" y="10" font-size="12" fill="#7b91a4">부피</text></g>'
-   +'<g transform="translate(410,20)"><text x="70" y="0" text-anchor="middle" font-size="14" font-weight="700" fill="#41586c">(다)</text>'
-   +'<line x1="10" y1="150" x2="150" y2="150" stroke="#41586c" stroke-width="1.6"/><line x1="10" y1="150" x2="10" y2="15" stroke="#41586c" stroke-width="1.6"/>'
-   +'<line x1="16" y1="80" x2="140" y2="80" stroke="#3a7a3f" stroke-width="3"/>'
-   +'<text x="80" y="172" text-anchor="middle" font-size="12" fill="#7b91a4">압력</text><text x="-2" y="10" font-size="12" fill="#7b91a4">부피</text></g></svg>',
-  stem:'온도가 일정할 때, 일정한 양의 기체의 압력(가로축)과 부피(세로축) 관계를 나타낸 그래프로 가장 알맞은 것은?',
-  ch:[{t:'(가) — 압력이 커질수록 부피가 줄어드는 곡선',ok:1},
-      {t:'(나) — 압력이 커질수록 부피가 늘어나는 직선'},
-      {t:'(다) — 압력이 변해도 부피가 일정한 직선'},
-      {t:'(가)와 (다) 모두 가능하다'},
-      {t:'세 그래프 모두 가능하다'}],
-  why:'압력이 커질수록 부피가 <b>줄어들되</b>, 절반·3분의 1로 줄어드는 정도가 점점 완만해져 <b>(가)처럼 휘어진 곡선</b>이 됩니다. 우리 실험 그래프와 같은 모양이죠.<br>정확한 수식은 고등학교에서 — 지금은 방향과 모양까지면 충분합니다.'},
- {id:'q4',difficulty:'중',
-  stem:'생활 속 현상 중, 기체의 압력과 부피 관계(온도 일정)로 설명할 수 있는 것으로 가장 알맞은 것은?',
-  ch:[{t:'높은 산에 올라가니 과자 봉지가 부풀었다.',ok:1},
-      {t:'찌그러진 탁구공을 뜨거운 물에 넣으니 펴졌다.'},
-      {t:'여름철 생수병을 냉장고에 넣으니 찌그러졌다.'},
-      {t:'겨울철 헬륨 풍선이 실내에 들어오니 팽팽해졌다.'},
-      {t:'뜨거운 음식을 담은 그릇이 식탁에서 미끄러졌다.'}],
-  why:'①은 <b>바깥 압력이 작아져</b> 부피가 늘어난 것 — 압력·부피 관계입니다.<br>②③④⑤는 모두 <b>온도</b>가 변해 부피가 변한 현상이에요. 다음 차시의 주인공이니 기억해 두세요.'},
- {id:'q5',difficulty:'상',
-  boxes:['피스톤을 누르는 동안 주사기 속 공기 입자의 수는 변하지 않는다',
-         '피스톤을 누르면 공기 입자의 운동이 빨라져 압력이 커진다',
-         '피스톤을 눌러 부피가 줄면 입자가 벽에 충돌하는 횟수가 늘어난다'],
-  boxVerdicts:[true,false,true],
-  svg:'<svg viewBox="0 0 560 175" role="img" aria-label="끝을 막은 주사기 속에 공기를 가두고 피스톤을 누르는 실험. 주사기 속에는 공기 입자들이 들어 있다."><rect x="180" y="62" width="180" height="62" rx="8" fill="#eef5f9" stroke="#41586c" stroke-width="2.4"/><rect x="160" y="80" width="22" height="26" rx="5" fill="#c8d6df" stroke="#41586c" stroke-width="2.2"/><text x="146" y="130" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5a7186">끝을 막음</text><circle cx="206" cy="92" r="3" fill="#5a9ab8"/><circle cx="232" cy="78" r="3" fill="#5a9ab8"/><circle cx="258" cy="96" r="3" fill="#5a9ab8"/><circle cx="240" cy="110" r="3" fill="#5a9ab8"/><circle cx="214" cy="112" r="3" fill="#5a9ab8"/><circle cx="266" cy="74" r="3" fill="#5a9ab8"/><circle cx="282" cy="100" r="3" fill="#5a9ab8"/><circle cx="224" cy="94" r="3" fill="#5a9ab8"/><line x1="300" y1="66" x2="300" y2="120" stroke="#41586c" stroke-width="5"/><rect x="303" y="86" width="96" height="14" rx="6" fill="#c8d6df" stroke="#41586c" stroke-width="2"/><rect x="399" y="72" width="12" height="42" rx="5" fill="#c8d6df" stroke="#41586c" stroke-width="2"/><defs><marker id="a77437" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#e0912b"/></marker></defs><line x1="462" y1="93" x2="418" y2="93" stroke="#e0912b" stroke-width="2.6" marker-end="url(#a77437)"/><text x="492" y="98" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#41586c" font-weight="700">누름</text><text x="240" y="48" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#5a7186">갇힌 공기</text><text x="280" y="165" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5a7186">※ 온도는 일정하게 유지한다</text></svg>',
-  stem:'온도가 일정할 때, 공기를 가둔 주사기의 피스톤을 누르는 실험에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
-  ch:[{t:'ㄱ'},{t:'ㄴ'},{t:'ㄱ, ㄷ',ok:1},{t:'ㄴ, ㄷ'},{t:'ㄱ, ㄴ, ㄷ'}],
-  why:'<b>ㄱ. 옳다.</b> 막힌 주사기 — 입자는 드나들 수 없습니다.<br><b>ㄴ. 옳지 않다.</b> 이 단원 최대의 함정. 입자의 운동성은 <b>온도</b>만 바꿉니다. 부피가 줄어 <b>충돌이 잦아진 것</b>이지 입자가 빨라진 게 아니에요.<br><b>ㄷ. 옳다.</b> 좁아진 만큼 벽을 자주 만납니다.<br>따라서 정답은 <b>ㄱ, ㄷ</b>.'}
+ {id:"b1",
+  difficulty:"하",
+  intent:"온도가 일정할 때 압력을 높이면 부피가 줄어드는 것을, 입자 수·크기·빠르기 변화 오개념과 구별하는지 확인한다.",
+  stem:"온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 일어나는 일로 옳은 것은?",
+  ch:[{t:"기체의 부피가 작아진다.",ok:1},{t:"기체 입자의 수가 줄어든다.",ok:0},{t:"기체 입자 하나하나가 작아진다.",ok:0},{t:"기체 입자가 더 빨라진다.",ok:0},{t:"기체 입자 사이의 거리는 변하지 않는다.",ok:0}],
+  why:"압력을 크게 하면 <b>부피가 작아집니다</b> — 입자 사이의 거리가 좁아질 뿐, 입자의 수·크기는 그대로예요. 빠르기를 바꾸는 것은 온도인데 온도는 일정하니 빠르기도 그대로입니다."},
+
+ {id:"b2",
+  difficulty:"하",
+  intent:"주사기·압력 센서 실험 표에서 부피와 압력의 관계를 읽고 입자 수 불변을 아는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 118\" width=\"560\" height=\"118\" role=\"img\" aria-label=\"주사기 속 공기 부피 40·30·20 mL일 때 압력 센서 값 1.0·1.3·2.0기압.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"14\" width=\"230\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">주사기 속 공기의 부피(mL)</text><rect x=\"290\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">40</text><rect x=\"360\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">30</text><rect x=\"430\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">20</text><rect x=\"60\" y=\"44\" width=\"230\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">압력 센서 값(기압)</text><rect x=\"290\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">1.0</text><rect x=\"360\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">1.3</text><rect x=\"430\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">2.0</text><text x=\"280\" y=\"100\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 주사기 끝을 막고 피스톤을 천천히 눌렀다. 온도는 변하지 않았다.</text></svg>",
+  stem:"표는 주사기 끝을 막고 피스톤을 천천히 누르며 공기의 부피와 압력을 잰 결과이다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["부피가 줄어들수록 압력이 커진다.", "부피가 40 mL에서 20 mL로 절반이 되면 압력은 약 2배가 된다.", "주사기 속 공기 입자의 수가 줄어들어 압력이 변한 것이다."],
+  boxVerdicts:[true, true, false],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:1},{t:"ㄱ, ㄷ",ok:0},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"40 → 30 → 20 mL에 압력 1.0 → 1.3 → 2.0기압 — 부피가 줄수록 압력이 커지고(ㄱ ○), 절반이 되니 약 2배(ㄴ ○). 주사기 끝을 막았으니 입자는 <b>한 개도 드나들지 않았습니다</b>(ㄷ ✗). 같은 수의 입자가 좁은 공간에 갇힌 것뿐이에요."},
+
+ {id:"b3",
+  difficulty:"중",
+  intent:"온도 일정 조건에서 압력–부피 그래프의 모양(휘어진 곡선)을 고르는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 180\" width=\"560\" height=\"180\" role=\"img\" aria-label=\"압력(가로)–부피(세로) 그래프 후보 다섯. (가) 오른쪽으로 갈수록 완만해지며 내려가는 휘어진 곡선, (나) 오르는 직선, (다) 내려가는 직선, (라) 수평 직선, (마) 오르는 곡선.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><line x1=\"26\" y1=\"150\" x2=\"102\" y2=\"150\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><line x1=\"26\" y1=\"150\" x2=\"26\" y2=\"60\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><polyline points=\"32,66.0 39,81.51351351351352 46,92.0909090909091 53,99.76470588235294 60,105.58620689655172 67,110.15384615384616 74,113.83333333333333 81,116.86075949367088 88,119.3953488372093 95,121.54838709677419\" fill=\"none\" stroke=\"#b23a30\" stroke-width=\"2.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"64.0\" y=\"166\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">압력</text><text x=\"18\" y=\"54\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">부피</text><text x=\"64.0\" y=\"42\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(가)</text><line x1=\"136\" y1=\"150\" x2=\"212\" y2=\"150\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><line x1=\"136\" y1=\"150\" x2=\"136\" y2=\"60\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><polyline points=\"142,140 206,70\" fill=\"none\" stroke=\"#b23a30\" stroke-width=\"2.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"174.0\" y=\"166\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">압력</text><text x=\"128\" y=\"54\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">부피</text><text x=\"174.0\" y=\"42\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(나)</text><line x1=\"246\" y1=\"150\" x2=\"322\" y2=\"150\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><line x1=\"246\" y1=\"150\" x2=\"246\" y2=\"60\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><polyline points=\"252,70 316,140\" fill=\"none\" stroke=\"#b23a30\" stroke-width=\"2.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"284.0\" y=\"166\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">압력</text><text x=\"238\" y=\"54\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">부피</text><text x=\"284.0\" y=\"42\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(다)</text><line x1=\"356\" y1=\"150\" x2=\"432\" y2=\"150\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><line x1=\"356\" y1=\"150\" x2=\"356\" y2=\"60\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><polyline points=\"362,104 426,104\" fill=\"none\" stroke=\"#b23a30\" stroke-width=\"2.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"394.0\" y=\"166\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">압력</text><text x=\"348\" y=\"54\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">부피</text><text x=\"394.0\" y=\"42\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(라)</text><line x1=\"466\" y1=\"150\" x2=\"542\" y2=\"150\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><line x1=\"466\" y1=\"150\" x2=\"466\" y2=\"60\" stroke=\"#2e2315\" stroke-width=\"1.6\"/><polyline points=\"472,144.0 479,143.08641975308643 486,140.34567901234567 493,135.77777777777777 500,129.3827160493827 507,121.1604938271605 514,111.11111111111111 521,99.23456790123457 528,85.53086419753086 535,70.0\" fill=\"none\" stroke=\"#b23a30\" stroke-width=\"2.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"504.0\" y=\"166\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">압력</text><text x=\"458\" y=\"54\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"11\" fill=\"#5c4a33\">부피</text><text x=\"504.0\" y=\"42\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(마)</text></svg>",
+  stem:"온도가 일정할 때, 일정한 양의 기체의 압력(가로축)과 부피(세로축)의 관계를 나타낸 그래프로 가장 알맞은 것은?",
+  ch:[{t:"(마)",ok:0},{t:"(가)",ok:1},{t:"(나)",ok:0},{t:"(다)",ok:0},{t:"(라)",ok:0}],
+  why:"압력이 커질수록 부피는 <b>줄어들되</b>, 처음엔 확 줄고 갈수록 조금씩 줄어 <b>오른쪽으로 완만해지는 휘어진 곡선</b>이 됩니다(가). (다)처럼 직선으로 내려가면 어느 압력에서 부피가 0이 되어 버려 실제와 맞지 않아요."},
+
+ {id:"b4",
+  difficulty:"중",
+  intent:"부피가 줄 때 압력이 커지는 까닭을 입자 사이 거리와 충돌 횟수로 설명하고 빠르기 불변을 아는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 262\" width=\"560\" height=\"262\" role=\"img\" aria-label=\"(가) 피스톤을 누르기 전 넓은 공간에 입자 12개. (나) 피스톤을 누른 뒤 좁아진 공간에 같은 입자 12개.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"50\" width=\"170\" height=\"150\" fill=\"#f7f3e8\" stroke=\"#8a6a3a\" stroke-width=\"2.5\"/><rect x=\"60\" y=\"40\" width=\"170\" height=\"10\" fill=\"#c9702a\"/><rect x=\"140\" y=\"6\" width=\"10\" height=\"34\" fill=\"#c9702a\"/><circle cx=\"78\" cy=\"66\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"115\" cy=\"95\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"152\" cy=\"124\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"189\" cy=\"153\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"86\" cy=\"182\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"123\" cy=\"87\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"160\" cy=\"116\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"197\" cy=\"145\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"94\" cy=\"174\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"131\" cy=\"79\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"168\" cy=\"108\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"205\" cy=\"137\" r=\"6\" fill=\"#3a7a3f\"/><text x=\"145\" y=\"228\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(가) 누르기 전</text><rect x=\"330\" y=\"116\" width=\"170\" height=\"84\" fill=\"#f7f3e8\" stroke=\"#8a6a3a\" stroke-width=\"2.5\"/><rect x=\"330\" y=\"106\" width=\"170\" height=\"10\" fill=\"#c9702a\"/><rect x=\"410\" y=\"72\" width=\"10\" height=\"34\" fill=\"#c9702a\"/><circle cx=\"348\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"385\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"422\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"459\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"356\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"393\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"430\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"467\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"364\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"401\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"438\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"475\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><text x=\"415\" y=\"228\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(나) 피스톤을 누른 뒤</text><line x1=\"280.0\" y1=\"120.0\" x2=\"320.0\" y2=\"120.0\" stroke=\"#2e2315\" stroke-width=\"2\" stroke-linecap=\"round\"/><polygon points=\"328.0,120.0 313.6,124.8 313.6,115.2\" fill=\"#2e2315\"/><text x=\"280\" y=\"250\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 입자의 수(12개)와 온도는 같다</text></svg>",
+  stem:"그림은 온도를 일정하게 하고 피스톤을 눌러 기체의 부피를 줄인 모습이다. (나)에서 기체 입자에게 일어난 일로 옳은 것은?",
+  ch:[{t:"입자 하나하나의 크기가 작아졌다.",ok:0},{t:"입자들이 바닥에 가라앉아 움직이지 않게 되었다.",ok:0},{t:"입자 사이의 거리가 좁아져 같은 시간 동안 벽에 더 자주 충돌한다.",ok:1},{t:"입자가 눌려서 더 빨리 움직이게 되었다.",ok:0},{t:"입자의 수가 줄어들었다.",ok:0}],
+  why:"공간이 좁아지면 <b>같은 수의 입자</b>가 벽까지 갈 거리가 짧아져 <b>더 자주 충돌</b>합니다 — 그래서 압력이 커져요. 온도가 그대로이니 빠르기는 변하지 않고, 입자의 수·크기도 변하지 않습니다."},
+
+ {id:"b5",
+  difficulty:"중",
+  intent:"산 위에서 봉지가 부푸는 현상을 기압 감소와 부피 증가로 설명하는지 확인한다.",
+  stem:"높은 산에 올라가면 과자 봉지가 빵빵하게 부풀어 오른다. 그 까닭으로 옳은 것은?",
+  ch:[{t:"산 위에서는 봉지 속 기체 입자의 수가 늘어나기 때문이다.",ok:0},{t:"산 위에서는 봉지 속 기체 입자가 더 빨라지기 때문이다.",ok:0},{t:"산 위의 공기가 봉지 안으로 새어 들어오기 때문이다.",ok:0},{t:"산 위는 공기의 압력이 낮아 봉지를 누르는 힘이 약해져 봉지 속 기체의 부피가 커지기 때문이다.",ok:1},{t:"산 위는 기온이 높아 봉지 속 기체가 데워지기 때문이다.",ok:0}],
+  why:"높이 올라갈수록 공기가 적어 <b>기압이 낮아집니다</b>. 봉지를 바깥에서 누르던 힘이 약해지니 속 기체의 <b>부피가 커져</b> 부풀어요. 봉지는 밀봉되어 있어 입자가 드나들지 않고, 산 위는 오히려 춥습니다."},
+
+ {id:"b6",
+  difficulty:"중",
+  intent:"물속 깊이에 따른 압력 변화와 폐 속 공기의 부피 변화를 연결하는지 확인한다.",
+  stem:"프리다이빙 선수가 숨을 참고 물속으로 내려갔다가 올라온다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["깊이 내려갈수록 물이 누르는 압력이 커진다.", "깊이 내려갈수록 폐 속 공기의 부피는 커진다.", "다시 올라올 때는 폐 속 공기의 부피가 커진다."],
+  boxVerdicts:[true, false, true],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:0},{t:"ㄱ, ㄷ",ok:1},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"깊이 내려갈수록 위에서 누르는 물이 많아져 <b>압력이 커지고</b>(ㄱ ○), 폐 속 공기는 <b>눌려 부피가 작아집니다</b>(ㄴ ✗). 올라오면 압력이 작아져 부피가 다시 커지죠(ㄷ ○). 물속에서 올라오는 공기 방울이 점점 커지는 것과 같은 원리예요."},
+
+ {id:"b7",
+  difficulty:"하",
+  intent:"물속 기포가 올라오며 커지는 현상을 압력 감소로 설명하는지 확인한다.",
+  stem:"물속에서 올라오는 공기 방울은 수면에 가까워질수록 점점 커진다. 그 까닭으로 옳은 것은?",
+  ch:[{t:"위로 갈수록 물의 온도가 크게 높아지기 때문이다.",ok:0},{t:"올라오면서 주변의 물이 공기 방울 속으로 들어가기 때문이다.",ok:0},{t:"올라오면서 공기 방울 속 입자 수가 늘어나기 때문이다.",ok:0},{t:"올라오면서 공기 방울 속 입자가 점점 빨라지기 때문이다.",ok:0},{t:"위로 갈수록 물이 누르는 압력이 작아져 공기 방울의 부피가 커지기 때문이다.",ok:1}],
+  why:"수면에 가까울수록 위에서 누르는 물이 적어 <b>압력이 작아지고</b>, 방울 속 공기의 <b>부피가 커집니다</b>. 방울 속 입자의 수와 빠르기는 그대로예요."},
+
+ {id:"b8",
+  difficulty:"상",
+  intent:"표의 규칙(부피 절반 → 압력 2배)으로 빈칸을 추정하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 90\" width=\"560\" height=\"90\" role=\"img\" aria-label=\"부피 60·40·20 mL일 때 압력 0.67·1.0·㉠기압.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"14\" width=\"230\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">주사기 속 공기의 부피(mL)</text><rect x=\"290\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">60</text><rect x=\"360\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">40</text><rect x=\"430\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">20</text><rect x=\"60\" y=\"44\" width=\"230\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">압력 센서 값(기압)</text><rect x=\"290\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">0.67</text><rect x=\"360\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">1.0</text><rect x=\"430\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">㉠</text></svg>",
+  stem:"표는 온도가 일정할 때 주사기 속 공기의 부피를 바꾸며 압력을 잰 것이다. ㉠에 들어갈 값으로 가장 알맞은 것은?",
+  ch:[{t:"2.0",ok:1},{t:"4.0",ok:0},{t:"0.5",ok:0},{t:"1.3",ok:0},{t:"1.5",ok:0}],
+  why:"60 → 40 mL로 줄 때 0.67 → 1.0기압, 40 → 20 mL로 <b>절반</b>이 되면 압력은 <b>2배</b>인 <b>2.0기압</b>이 됩니다. 부피가 줄어드는 만큼 압력이 커지는 규칙이 표 전체에 이어져 있어요."},
+
+ {id:"b9",
+  difficulty:"중",
+  intent:"호흡을 폐 속 부피·압력 변화로 설명하는지 확인한다.",
+  stem:"숨을 들이쉴 때 공기가 폐로 들어오는 과정에 대한 설명으로 옳은 것은?",
+  ch:[{t:"숨을 쉬는 동안 폐 속 공기 입자의 수는 변하지 않는다.",ok:0},{t:"가슴 속 공간이 넓어져 폐 속 공기의 압력이 낮아지면 바깥 공기가 밀려 들어온다.",ok:1},{t:"폐가 스스로 공기를 빨아들이는 힘을 내기 때문에 들어온다.",ok:0},{t:"가슴 속 공간이 좁아져 폐 속 압력이 높아지면 공기가 들어온다.",ok:0},{t:"폐 속 공기의 온도가 높아져 부피가 커지면서 공기가 들어온다.",ok:0}],
+  why:"가슴 속 공간이 <b>넓어지면</b> 폐 속 공기의 부피가 커지고 <b>압력이 낮아집니다</b>. 그러면 압력이 더 높은 바깥 공기가 폐로 밀려 들어와요. 폐가 «빨아들이는» 것이 아니라 압력 차이로 공기가 움직이는 것입니다."},
+
+ {id:"b10",
+  difficulty:"하",
+  intent:"실험에서 온도를 일정하게 유지하는 까닭(변인 통제)을 아는지 확인한다.",
+  stem:"주사기 실험에서 피스톤을 급하게 누르지 않고 천천히 눌러 온도가 변하지 않게 하였다. 이렇게 한 까닭으로 옳은 것은?",
+  ch:[{t:"입자의 수를 일정하게 유지하기 위해서",ok:0},{t:"피스톤이 부러지지 않게 하기 위해서",ok:0},{t:"부피의 변화가 압력 때문인지 온도 때문인지 구별하기 위해서",ok:1},{t:"압력 센서가 큰 값을 재지 못하기 때문에",ok:0},{t:"주사기 속 공기가 새어 나가지 않게 하기 위해서",ok:0}],
+  why:"온도가 변하면 그것만으로도 부피가 변하므로, 압력의 영향만 보려면 <b>온도를 일정하게</b> 두어야 합니다. 급하게 누르면 공기가 순간적으로 데워져 센서값이 널뛰어요."},
+
+ {id:"b11",
+  difficulty:"상",
+  intent:"보일의 J자 관 상황을 압력·부피·입자 수로 해석하는지 확인한다.",
+  stem:"한쪽 끝이 막힌 J자 모양 유리관의 막힌 쪽에 공기를 가두고, 열린 쪽으로 수은을 더 부었다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["수은을 더 부을수록 갇힌 공기가 받는 압력이 커진다.", "수은을 더 부을수록 갇힌 공기의 부피가 작아진다.", "수은을 더 부을수록 갇힌 공기 입자의 수가 줄어든다."],
+  boxVerdicts:[true, true, false],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:1},{t:"ㄱ, ㄷ",ok:0},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"수은을 더 부으면 갇힌 공기를 누르는 <b>압력이 커지고</b>(ㄱ ○), 공기는 <b>눌려 부피가 작아집니다</b>(ㄴ ○). 막힌 쪽이라 입자는 빠져나갈 수 없어 수는 그대로예요(ㄷ ✗). 보일은 이 장치로 압력과 부피의 관계를 알아냈습니다."},
+
+ {id:"e1",
+  difficulty:"중",
+  type:"essay",
+  intent:"부피가 줄 때 압력이 커지는 까닭을 입자의 거리·충돌로 서술하고, 빠르기 불변을 언급하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 262\" width=\"560\" height=\"262\" role=\"img\" aria-label=\"(가) 피스톤을 누르기 전 넓은 공간에 입자 12개. (나) 피스톤을 누른 뒤 좁아진 공간에 같은 입자 12개.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"50\" width=\"170\" height=\"150\" fill=\"#f7f3e8\" stroke=\"#8a6a3a\" stroke-width=\"2.5\"/><rect x=\"60\" y=\"40\" width=\"170\" height=\"10\" fill=\"#c9702a\"/><rect x=\"140\" y=\"6\" width=\"10\" height=\"34\" fill=\"#c9702a\"/><circle cx=\"78\" cy=\"66\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"115\" cy=\"95\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"152\" cy=\"124\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"189\" cy=\"153\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"86\" cy=\"182\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"123\" cy=\"87\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"160\" cy=\"116\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"197\" cy=\"145\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"94\" cy=\"174\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"131\" cy=\"79\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"168\" cy=\"108\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"205\" cy=\"137\" r=\"6\" fill=\"#3a7a3f\"/><text x=\"145\" y=\"228\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(가) 누르기 전</text><rect x=\"330\" y=\"116\" width=\"170\" height=\"84\" fill=\"#f7f3e8\" stroke=\"#8a6a3a\" stroke-width=\"2.5\"/><rect x=\"330\" y=\"106\" width=\"170\" height=\"10\" fill=\"#c9702a\"/><rect x=\"410\" y=\"72\" width=\"10\" height=\"34\" fill=\"#c9702a\"/><circle cx=\"348\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"385\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"422\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"459\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"356\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"393\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"430\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"467\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"364\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"401\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"438\" cy=\"132\" r=\"6\" fill=\"#3a7a3f\"/><circle cx=\"475\" cy=\"161\" r=\"6\" fill=\"#3a7a3f\"/><text x=\"415\" y=\"228\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(나) 피스톤을 누른 뒤</text><line x1=\"280.0\" y1=\"120.0\" x2=\"320.0\" y2=\"120.0\" stroke=\"#2e2315\" stroke-width=\"2\" stroke-linecap=\"round\"/><polygon points=\"328.0,120.0 313.6,124.8 313.6,115.2\" fill=\"#2e2315\"/><text x=\"280\" y=\"250\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 입자의 수(12개)와 온도는 같다</text></svg>",
+  stem:"그림은 온도를 일정하게 하고 피스톤을 눌러 기체의 부피를 줄인 모습이다. (나)에서 기체의 압력이 커지는 까닭을 입자 사이의 <b>거리</b>와 <b>충돌</b>이라는 낱말을 넣어 서술하시오. (입자의 빠르기가 어떻게 되는지도 함께 쓸 것)",
+  model:"피스톤을 눌러 부피가 줄면 같은 수의 입자가 좁은 공간에 갇혀 입자 사이의 거리가 좁아진다. 그러면 입자가 벽까지 가는 거리가 짧아져 같은 시간 동안 벽에 충돌하는 횟수가 늘어나므로 압력이 커진다. 온도가 일정하므로 입자의 빠르기는 변하지 않는다.",
+  rubric:[{t:"부피가 줄어 입자 사이의 거리가 좁아진다고 씀",p:2},{t:"벽에 충돌하는 횟수가 늘어 압력이 커진다고 씀",p:2},{t:"온도가 일정하므로 입자의 빠르기는 변하지 않는다고 씀",p:2}],
+  reject:["입자가 눌려 빨라져서 압력이 커진다고 쓴 답", "입자의 수가 늘어난다고 쓴 답", "입자가 작아진다고 쓴 답"],
+  keys:["거리", "충돌"],
+  lines:4,
+  why:""},
+
+ {id:"e2",
+  difficulty:"상",
+  type:"essay",
+  intent:"실험 표에서 규칙을 찾고, 그 규칙으로 생활 속 현상을 설명하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 118\" width=\"560\" height=\"118\" role=\"img\" aria-label=\"주사기 속 공기 부피 40·30·20 mL일 때 압력 센서 값 1.0·1.3·2.0기압.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"14\" width=\"230\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">주사기 속 공기의 부피(mL)</text><rect x=\"290\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">40</text><rect x=\"360\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">30</text><rect x=\"430\" y=\"14\" width=\"70\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"34.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">20</text><rect x=\"60\" y=\"44\" width=\"230\" height=\"30\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">압력 센서 값(기압)</text><rect x=\"290\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">1.0</text><rect x=\"360\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">1.3</text><rect x=\"430\" y=\"44\" width=\"70\" height=\"30\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"64.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">2.0</text><text x=\"280\" y=\"100\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 주사기 끝을 막고 피스톤을 천천히 눌렀다. 온도는 변하지 않았다.</text></svg>",
+  stem:"표는 주사기 속 공기의 부피를 바꾸며 압력을 잰 결과이다. ① 표에서 알 수 있는 <b>압력</b>과 <b>부피</b>의 관계를 수치를 들어 쓰고, ② 그 관계로 「높은 산에 올라가면 과자 봉지가 부푸는 까닭」을 서술하시오.",
+  model:"① 부피가 40 mL에서 20 mL로 절반이 되자 압력은 1.0기압에서 2.0기압으로 2배가 되었다. 온도가 일정할 때 기체의 부피가 줄어들면 압력이 커지고, 거꾸로 압력이 작아지면 부피가 커진다. ② 높은 산은 공기가 적어 기압이 낮으므로 봉지를 바깥에서 누르는 압력이 작아지고, 그 결과 봉지 속 기체의 부피가 커져 봉지가 부푼다.",
+  rubric:[{t:"표의 수치(40 → 20 mL, 1.0 → 2.0기압 등)를 들어 관계를 씀",p:2},{t:"부피가 줄면 압력이 커진다(압력이 작아지면 부피가 커진다)고 정리함",p:2},{t:"산 위는 기압이 낮아 봉지 속 기체의 부피가 커진다고 적용함",p:2}],
+  reject:["산 위가 더워서라고 쓴 답", "봉지 속 공기가 늘어나서라고 쓴 답", "표를 근거로 들지 않은 답"],
+  keys:["압력", "부피"],
+  lines:5,
+  why:""}
 ];
 
 
@@ -1150,6 +1203,7 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  }
  function paintQ(){
  const q=GAME_QS[idx];
+ if(q.type==='essay')return paintEssay();
  host.innerHTML=`<div class="card">
   <div class="game-hud">
    <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
@@ -1180,7 +1234,9 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  }else{o.classList.add('wrong');o.classList.add('locked');
   fb.className='mq-fb no show';fb.innerHTML='❌ 아직이에요. 자료와 발문을 다시 읽어 보세요.';A.wrong();}
  }));
- $('#gameNext').addEventListener('click',()=>{
+ $('#gameNext').addEventListener('click',advance);
+ }
+ function advance(){
  if(idx<GAME_QS.length-1){idx++;paintQ();}
  else{
   if(scoreNow>(S.best||0))S.best=scoreNow;
@@ -1192,7 +1248,47 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
    <div class="cta-row" style="justify-content:center"><button class="btn" id="gameRetry">다시 풀기 ↺</button></div></div>`;
   $('#gameRetry').addEventListener('click',paintIntro);
  }
- });
+ }
+ function paintEssay(){
+ const q=GAME_QS[idx];S.eq=S.eq||{};
+ const saved=S.eq[q.id]||'',total=q.rubric.reduce((a,r)=>a+r.p,0);
+ host.innerHTML=`<div class="card">
+  <div class="game-hud">
+   <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
+   <span class="mq-lv" data-lv="${q.difficulty}">난이도 ${q.difficulty}</span>
+   <span class="mq-lv" style="color:var(--accent2)">서술형 · 자기 채점</span>
+   <span class="score-box" style="margin-left:auto"><span class="lab2">점수</span><span class="num">${scoreNow}</span></span>
+  </div>
+  <p class="mq-text" style="margin-top:14px;font-size:17px;font-weight:700;line-height:1.7">${q.stem}</p>
+  ${q.svg?`<div class="qfig">${q.svg}</div>`:''}
+  <textarea class="eq-ta" id="eqTa" rows="${q.lines||4}" placeholder="내 문장으로 써 보세요 — 꼭 들어갈 낱말: ${q.keys.join(', ')}"></textarea>
+  <div class="eq-keys" id="eqKeys"></div>
+  <div class="cta-row" style="justify-content:flex-start" id="eqOpenRow"><button class="btn primary" id="eqOpen">✍️ 다 썼어요 — 채점 기준 열기</button></div>
+  <div class="eq-rub" id="eqRub" hidden>
+   <div class="eq-h">✍️ 모범 답안</div><div class="eq-model">${q.model}</div>
+   <div class="eq-h">✅ 채점 기준 — 내 답에 들어 있으면 체크</div>
+   ${q.rubric.map(r=>`<label class="eq-item"><input type="checkbox" data-p="${r.p}"><span>${r.t}</span><span class="p">${r.p}점</span></label>`).join('')}
+   ${q.reject&&q.reject.length?`<div class="eq-rej">🧑‍🏫 불인정·감점 예 — ${q.reject.join(' · ')}</div>`:''}
+   <div class="eq-sum" id="eqSum">0점 / ${total}점</div>
+   <div class="cta-row" style="justify-content:flex-start"><button class="btn primary" id="eqDone">채점 완료 → 다음</button></div>
+  </div>
+ </div>`;
+ const ta=$('#eqTa'),keys=$('#eqKeys');ta.value=saved;
+ function paintKeys(){keys.innerHTML=q.keys.map(k=>'<span class="eq-key'+(ta.value.indexOf(k)>=0?' on':'')+'">'+(ta.value.indexOf(k)>=0?'✓ ':'')+k+'</span>').join('');}
+ ta.addEventListener('input',()=>{S.eq[q.id]=ta.value;save();paintKeys();});paintKeys();
+ function pts(){let p=0;$$('.eq-item input',host).forEach(c=>{if(c.checked)p+=+c.dataset.p;});return p;}
+ $$('.eq-item input',host).forEach(c=>c.addEventListener('change',()=>{$('#eqSum').textContent=pts()+'점 / '+total+'점';}));
+ $('#eqOpen').addEventListener('click',()=>{
+  if(ta.value.trim().length<10){toast('먼저 <b>한두 문장</b>이라도 써 본 뒤 열어요 ✍️');return;}
+  $('#eqRub').hidden=false;$('#eqOpenRow').style.display='none';A.pop();});
+ let done=false;
+ $('#eqDone').addEventListener('click',()=>{
+  if(done)return;done=true;
+  const p=pts(),pass=p/total>=0.6;
+  if(pass){scoreNow+=20;A.correct();}else A.wrong();
+  toast(pass?'서술형 <b>'+p+'점 / '+total+'점</b> — 통과! ✅':'서술형 <b>'+p+'점 / '+total+'점</b> — 모범 답안과 견주어 보완해 보세요 ✍️',pass?'good':'');
+  advance();
+  host.scrollIntoView({block:'start',behavior:'smooth'});});
  }
  paintIntro();
 })();

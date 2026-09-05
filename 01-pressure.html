@@ -327,6 +327,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .score-box{background:var(--paper-hi);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;text-align:center}
 .score-box .lab2{font-size:11.5px;color:var(--ink-mute)}
 .score-box .num{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--accent)}
+/* ── 서술형(자기 채점) ── */
+.eq-ta{width:100%;min-height:104px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-family:var(--body);
+ font-size:15.5px;line-height:1.6;color:var(--ink);background:var(--paper-hi);resize:vertical;margin-top:10px;box-sizing:border-box}
+.eq-keys{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eq-key{font-size:12.5px;padding:3px 10px;border-radius:99px;border:1.5px solid var(--line);color:var(--ink-mute);background:var(--paper-hi)}
+.eq-key.on{border-color:var(--ok);color:var(--ok);font-weight:700}
+.eq-rub{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(32,116,143,.06)}
+.eq-rub[hidden]{display:none}
+.eq-h{font-weight:800;font-size:14.5px;color:var(--ink-dim);margin:4px 0 6px}
+.eq-model{font-size:15px;line-height:1.65;padding:10px 12px;border-radius:10px;background:var(--paper-hi);border:1px solid var(--line);margin:0 0 12px}
+.eq-item{display:flex;align-items:flex-start;gap:9px;font-size:14.5px;line-height:1.5;padding:6px 0;cursor:pointer}
+.eq-item input{margin-top:4px;width:17px;height:17px;accent-color:var(--ok);flex:none}
+.eq-item .p{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--ink-mute);white-space:nowrap}
+.eq-rej{font-size:13.5px;color:var(--ink-mute);margin-top:8px;display:none;line-height:1.55}
+body.teacher .eq-rej{display:block}
+.eq-sum{margin-top:10px;font-weight:800;color:var(--ink-dim)}
 .mq-lv{font-family:var(--jua);font-size:13px;padding:3px 11px;border-radius:99px;border:1.5px solid}
 .mq-lv[data-lv="하"]{color:var(--ok);border-color:#7fae83;background:rgba(44,122,68,.08)}
 .mq-lv[data-lv="중"]{color:#8f5312;border-color:var(--c3);background:rgba(196,113,30,.08)}
@@ -844,61 +860,118 @@ const QUIZ_SETS={
 };
 
 const GAME_QS=[
- {id:'q1',difficulty:'하',
-  stem:'압력에 대한 설명으로 옳은 것은?',
-  ch:[{t:'일정한 면적에 작용하는 힘을 압력이라고 한다.',ok:1},
-      {t:'압력은 물체의 무게와 항상 같다.'},
-      {t:'힘이 작용하는 면적이 넓을수록 압력이 커진다.'},
-      {t:'작용하는 힘이 클수록 압력은 작아진다.'},
-      {t:'압력은 고체에서만 나타난다.'}],
-  why:'압력의 정의는 <b>일정한 면적에 작용하는 힘</b>입니다.<br>② 같은 무게라도 면적에 따라 압력이 달라집니다.<br>③ 면적이 <b>좁을수록</b> 커집니다.<br>④ 힘이 <b>클수록</b> 커집니다.<br>⑤ 다음 시간에 보겠지만 기체에서도 압력이 나타납니다.'},
- {id:'q2',difficulty:'중',
-  svg:'<svg viewBox="0 0 560 220" role="img" aria-label="스펀지 위에 벽돌을 올린 두 상황. (가)는 같은 벽돌을 눕혀 놓은 것과 세워 놓은 것, (나)는 눕힌 벽돌 한 개와 눕힌 벽돌 두 개를 쌓은 것.">'
-   +'<text x="140" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">(가) 같은 벽돌, 다른 방향</text>'
-   +'<rect x="30" y="160" width="220" height="18" rx="4" fill="#f0dcae" stroke="#8a5f24" stroke-width="1.6"/>'
-   +'<rect x="48" y="126" width="76" height="34" rx="3" fill="#d98a72" stroke="#b23a30" stroke-width="2"/>'
-   +'<text x="86" y="205" text-anchor="middle" font-size="13.5" fill="#41586c">A 눕힘</text>'
-   +'<rect x="168" y="84" width="34" height="76" rx="3" fill="#d98a72" stroke="#b23a30" stroke-width="2"/>'
-   +'<text x="185" y="205" text-anchor="middle" font-size="13.5" fill="#41586c">B 세움</text>'
-   +'<text x="420" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">(나) 같은 방향, 다른 개수</text>'
-   +'<rect x="310" y="160" width="220" height="18" rx="4" fill="#f0dcae" stroke="#8a5f24" stroke-width="1.6"/>'
-   +'<rect x="326" y="126" width="76" height="34" rx="3" fill="#d98a72" stroke="#b23a30" stroke-width="2"/>'
-   +'<text x="364" y="205" text-anchor="middle" font-size="13.5" fill="#41586c">C 한 개</text>'
-   +'<rect x="444" y="126" width="76" height="34" rx="3" fill="#d98a72" stroke="#b23a30" stroke-width="2"/>'
-   +'<rect x="444" y="92" width="76" height="34" rx="3" fill="#d98a72" stroke="#b23a30" stroke-width="2"/>'
-   +'<text x="482" y="205" text-anchor="middle" font-size="13.5" fill="#41586c">D 두 개</text>'
-   +'<text x="280" y="218" text-anchor="middle" font-size="12.5" fill="#7b91a4">※ 벽돌은 모두 같은 것이다.</text></svg>',
-  stem:'그림 (가), (나)에서 스펀지에 작용하는 압력을 옳게 비교한 것은?',
-  ch:[{t:'(가) A>B, (나) C>D'},
-      {t:'(가) A&lt;B, (나) C&lt;D',ok:1},
-      {t:'(가) A=B, (나) C&lt;D'},
-      {t:'(가) A&lt;B, (나) C=D'},
-      {t:'(가) A=B, (나) C=D'}],
-  why:'(가) 무게(힘)는 같고 <b>세운 B의 면적이 좁으므로</b> B의 압력이 큽니다.<br>(나) 면적은 같고 <b>두 개를 쌓은 D의 힘이 크므로</b> D의 압력이 큽니다.<br>같은 물체라도 <b>어떻게 놓느냐</b>에 따라 압력이 달라진다 — 이것이 (가)의 핵심입니다.'},
- {id:'q3',svg:"<svg viewBox=\"0 0 560 172\" role=\"img\" aria-label=\"생활 속 압력 이용 다섯 가지. 눈썰매·트럭 타이어·뻘배는 면적을 넓혀 압력을 줄인 예이고, 주사기 바늘과 축구화 징은 면적을 좁혀 압력을 크게 한 예이다.\"><rect x=\"8\" y=\"8\" width=\"544\" height=\"156\" rx=\"12\" fill=\"#eef4f9\" stroke=\"#9db7cc\" stroke-width=\"1.4\"/><text x=\"280\" y=\"26\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" fill=\"#41586c\">같은 힘이라도 — 면적을 어떻게 하느냐에 따라 압력이 달라진다</text><rect x=\"18\" y=\"34\" width=\"96\" height=\"112\" rx=\"11\" fill=\"#f7fbfe\" stroke=\"#3f88c5\" stroke-width=\"1.8\"/><text x=\"66\" y=\"72\" text-anchor=\"middle\" font-size=\"30\">🛷</text><text x=\"66\" y=\"103\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" font-weight=\"700\" fill=\"#1e2c39\">눈썰매</text><text x=\"66\" y=\"126\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#3f88c5\">면적 넓히기</text><text x=\"66\" y=\"141\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#3f88c5\">→ 압력 작게</text><rect x=\"126\" y=\"34\" width=\"96\" height=\"112\" rx=\"11\" fill=\"#f7fbfe\" stroke=\"#3f88c5\" stroke-width=\"1.8\"/><text x=\"174\" y=\"72\" text-anchor=\"middle\" font-size=\"30\">🚚</text><text x=\"174\" y=\"103\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" font-weight=\"700\" fill=\"#1e2c39\">트럭 타이어</text><text x=\"174\" y=\"126\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#3f88c5\">면적 넓히기</text><text x=\"174\" y=\"141\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#3f88c5\">→ 압력 작게</text><rect x=\"234\" y=\"34\" width=\"96\" height=\"112\" rx=\"11\" fill=\"#f7fbfe\" stroke=\"#3f88c5\" stroke-width=\"1.8\"/><text x=\"282\" y=\"72\" text-anchor=\"middle\" font-size=\"30\">🛶</text><text x=\"282\" y=\"103\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" font-weight=\"700\" fill=\"#1e2c39\">뻘배</text><text x=\"282\" y=\"126\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#3f88c5\">면적 넓히기</text><text x=\"282\" y=\"141\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#3f88c5\">→ 압력 작게</text><rect x=\"342\" y=\"34\" width=\"96\" height=\"112\" rx=\"11\" fill=\"#f7fbfe\" stroke=\"#b23a30\" stroke-width=\"1.8\"/><text x=\"390\" y=\"72\" text-anchor=\"middle\" font-size=\"30\">💉</text><text x=\"390\" y=\"103\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" font-weight=\"700\" fill=\"#1e2c39\">주사기 바늘</text><text x=\"390\" y=\"126\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#b23a30\">면적 좁히기</text><text x=\"390\" y=\"141\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#b23a30\">→ 압력 크게</text><rect x=\"450\" y=\"34\" width=\"96\" height=\"112\" rx=\"11\" fill=\"#f7fbfe\" stroke=\"#b23a30\" stroke-width=\"1.8\"/><text x=\"498\" y=\"72\" text-anchor=\"middle\" font-size=\"30\">👟</text><text x=\"498\" y=\"103\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" font-weight=\"700\" fill=\"#1e2c39\">축구화 징</text><text x=\"498\" y=\"126\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#b23a30\">면적 좁히기</text><text x=\"498\" y=\"141\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#b23a30\">→ 압력 크게</text></svg>",difficulty:'중',
-  stem:'생활 속 압력 이용에 대한 설명으로 옳지 <u>않은</u> 것은?',
-  ch:[{t:'눈썰매는 힘이 작용하는 면적을 넓혀 눈에 빠지지 않게 한다.'},
-      {t:'주사기 바늘 끝은 뾰족하게 만들어 압력을 크게 한다.'},
-      {t:'트럭은 넓고 많은 타이어로 바닥이 받는 압력을 줄인다.'},
-      {t:'축구화의 뾰족한 징은 압력을 작게 해서 미끄러지지 않게 한다.',ok:1},
-      {t:'갯벌의 뻘배는 힘이 작용하는 면적을 넓혀 압력을 줄인 것이다.'}],
-  why:'축구화의 징은 끝이 뾰족해 <b>압력을 크게</b> 만들어 땅에 파고들게 한 것입니다. "미끄러지지 않게"라는 목적은 맞지만 <b>압력을 작게 해서가 아니라 크게 해서</b>죠.<br>나머지는 모두 옳습니다 — 넓히면 압력이 작아지고(①③⑤), 좁히면 커집니다(②).'},
- {id:'q4',svg:"<svg viewBox=\"0 0 560 210\" role=\"img\" aria-label=\"같은 풍선을 누름못 한 개 위에 올리면 터지고, 누름못 서른 개를 촘촘히 깔고 올리면 터지지 않는다. 힘은 같지만 힘이 나뉘어 작용하는 면적이 넓어졌기 때문이다.\"><rect x=\"8\" y=\"8\" width=\"544\" height=\"194\" rx=\"12\" fill=\"#eef4f9\" stroke=\"#9db7cc\" stroke-width=\"1.4\"/><text x=\"148\" y=\"30\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"14\" font-weight=\"700\" fill=\"#b23a30\">(가) 누름못 1개 — 펑! 터짐</text><path d=\"M120 104 Q148 66 176 104 Q186 122 148 122 Q110 122 120 104 Z\" fill=\"#f2b8ae\" stroke=\"#b23a30\" stroke-width=\"2\"/><text x=\"196\" y=\"88\" font-size=\"20\">💥</text><text x=\"84\" y=\"88\" font-size=\"20\">💥</text><line x1=\"148.0\" y1=\"128\" x2=\"148.0\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"144.0,128 152.0,128 148.0,119\" fill=\"#41586c\"/><rect x=\"96\" y=\"144\" width=\"106\" height=\"12\" rx=\"3\" fill=\"#dfe9f2\" stroke=\"#9db7cc\" stroke-width=\"1.4\"/><text x=\"148\" y=\"176\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#41586c\">힘이 한 점에 몰림</text><text x=\"148\" y=\"192\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"12.5\" font-weight=\"700\" fill=\"#b23a30\">면적 좁다 → 압력 매우 큼</text><line x1=\"266\" y1=\"40\" x2=\"266\" y2=\"180\" stroke=\"#c3d4e2\" stroke-width=\"1.4\" stroke-dasharray=\"5 5\"/><text x=\"430\" y=\"30\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"14\" font-weight=\"700\" fill=\"#2c7a44\">(나) 누름못 30개 — 멀쩡</text><ellipse cx=\"430\" cy=\"106\" rx=\"86\" ry=\"24\" fill=\"#bfe3c8\" stroke=\"#2c7a44\" stroke-width=\"2\"/><line x1=\"330.0\" y1=\"128\" x2=\"330.0\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"326.0,128 334.0,128 330.0,119\" fill=\"#41586c\"/><line x1=\"336.9\" y1=\"128\" x2=\"336.9\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"332.9,128 340.9,128 336.9,119\" fill=\"#41586c\"/><line x1=\"343.8\" y1=\"128\" x2=\"343.8\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"339.8,128 347.8,128 343.8,119\" fill=\"#41586c\"/><line x1=\"350.7\" y1=\"128\" x2=\"350.7\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"346.7,128 354.7,128 350.7,119\" fill=\"#41586c\"/><line x1=\"357.6\" y1=\"128\" x2=\"357.6\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"353.6,128 361.6,128 357.6,119\" fill=\"#41586c\"/><line x1=\"364.5\" y1=\"128\" x2=\"364.5\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"360.5,128 368.5,128 364.5,119\" fill=\"#41586c\"/><line x1=\"371.4\" y1=\"128\" x2=\"371.4\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"367.4,128 375.4,128 371.4,119\" fill=\"#41586c\"/><line x1=\"378.3\" y1=\"128\" x2=\"378.3\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"374.3,128 382.3,128 378.3,119\" fill=\"#41586c\"/><line x1=\"385.2\" y1=\"128\" x2=\"385.2\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"381.2,128 389.2,128 385.2,119\" fill=\"#41586c\"/><line x1=\"392.1\" y1=\"128\" x2=\"392.1\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"388.1,128 396.1,128 392.1,119\" fill=\"#41586c\"/><line x1=\"399.0\" y1=\"128\" x2=\"399.0\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"395.0,128 403.0,128 399.0,119\" fill=\"#41586c\"/><line x1=\"405.9\" y1=\"128\" x2=\"405.9\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"401.9,128 409.9,128 405.9,119\" fill=\"#41586c\"/><line x1=\"412.8\" y1=\"128\" x2=\"412.8\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"408.8,128 416.8,128 412.8,119\" fill=\"#41586c\"/><line x1=\"419.7\" y1=\"128\" x2=\"419.7\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"415.7,128 423.7,128 419.7,119\" fill=\"#41586c\"/><line x1=\"426.6\" y1=\"128\" x2=\"426.6\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"422.6,128 430.6,128 426.6,119\" fill=\"#41586c\"/><line x1=\"433.5\" y1=\"128\" x2=\"433.5\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"429.5,128 437.5,128 433.5,119\" fill=\"#41586c\"/><line x1=\"440.4\" y1=\"128\" x2=\"440.4\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"436.4,128 444.4,128 440.4,119\" fill=\"#41586c\"/><line x1=\"447.3\" y1=\"128\" x2=\"447.3\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"443.3,128 451.3,128 447.3,119\" fill=\"#41586c\"/><line x1=\"454.2\" y1=\"128\" x2=\"454.2\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"450.2,128 458.2,128 454.2,119\" fill=\"#41586c\"/><line x1=\"461.1\" y1=\"128\" x2=\"461.1\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"457.1,128 465.1,128 461.1,119\" fill=\"#41586c\"/><line x1=\"468.0\" y1=\"128\" x2=\"468.0\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"464.0,128 472.0,128 468.0,119\" fill=\"#41586c\"/><line x1=\"474.9\" y1=\"128\" x2=\"474.9\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"470.9,128 478.9,128 474.9,119\" fill=\"#41586c\"/><line x1=\"481.8\" y1=\"128\" x2=\"481.8\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"477.8,128 485.8,128 481.8,119\" fill=\"#41586c\"/><line x1=\"488.7\" y1=\"128\" x2=\"488.7\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"484.7,128 492.7,128 488.7,119\" fill=\"#41586c\"/><line x1=\"495.6\" y1=\"128\" x2=\"495.6\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"491.6,128 499.6,128 495.6,119\" fill=\"#41586c\"/><line x1=\"502.5\" y1=\"128\" x2=\"502.5\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"498.5,128 506.5,128 502.5,119\" fill=\"#41586c\"/><line x1=\"509.4\" y1=\"128\" x2=\"509.4\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"505.4,128 513.4,128 509.4,119\" fill=\"#41586c\"/><line x1=\"516.3\" y1=\"128\" x2=\"516.3\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"512.3,128 520.3,128 516.3,119\" fill=\"#41586c\"/><line x1=\"523.2\" y1=\"128\" x2=\"523.2\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"519.2,128 527.2,128 523.2,119\" fill=\"#41586c\"/><line x1=\"530.1\" y1=\"128\" x2=\"530.1\" y2=\"144\" stroke=\"#6b7f90\" stroke-width=\"2\"/><polygon points=\"526.1,128 534.1,128 530.1,119\" fill=\"#41586c\"/><rect x=\"320\" y=\"144\" width=\"220\" height=\"12\" rx=\"3\" fill=\"#dfe9f2\" stroke=\"#9db7cc\" stroke-width=\"1.4\"/><text x=\"430\" y=\"176\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#41586c\">같은 힘을 30개가 나눠 받음</text><text x=\"430\" y=\"192\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"12.5\" font-weight=\"700\" fill=\"#2c7a44\">면적 넓다 → 압력 작음</text></svg>",difficulty:'중',
-  stem:'누름못 1개 위에 올린 풍선은 터졌지만, 같은 누름못 30개를 촘촘히 깔고 그 위에 올린 풍선은 터지지 않았다. 그 까닭으로 옳은 것은?',
-  ch:[{t:'누름못이 많으면 못 끝이 무뎌지기 때문'},
-      {t:'힘이 작용하는 면적이 넓어져 압력이 작아지기 때문',ok:1},
-      {t:'풍선을 누르는 힘이 커지기 때문'},
-      {t:'풍선 속 공기가 빠져나가기 때문'},
-      {t:'누름못이 많으면 풍선이 가벼워지기 때문'}],
-  why:'풍선의 무게(힘)는 그대로지만 <b>못 끝 30개가 힘을 나눠 받아</b> 일정한 면적에 작용하는 힘이 작아집니다. 못 하나하나가 받는 압력이 풍선을 뚫을 만큼 크지 않게 된 것이죠.'},
- {id:'q5',svg:"<svg viewBox=\"0 0 560 268\" role=\"img\" aria-label=\"같은 페트병을 세 가지 방법으로 스펀지 위에 올린 그림. 물을 채워 바로 세운 것, 물을 채워 거꾸로 세운 것, 비운 채 거꾸로 세운 것이며 스펀지가 눌린 깊이가 서로 다르다.\"><rect x=\"6\" y=\"6\" width=\"548\" height=\"256\" rx=\"12\" fill=\"#eef4f9\" stroke=\"#9db7cc\" stroke-width=\"1.4\"/><text x=\"280\" y=\"26\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13\" fill=\"#41586c\">같은 페트병 — 무게(힘)와 닿는 면적을 바꾸어 가며 스펀지에 올렸다</text><rect x=\"79.0\" y=\"102\" width=\"54\" height=\"74\" rx=\"6\" fill=\"#dff0fa\" stroke=\"#3f88c5\" stroke-width=\"2\"/><rect x=\"95.0\" y=\"76\" width=\"22\" height=\"26\" rx=\"4\" fill=\"#dff0fa\" stroke=\"#3f88c5\" stroke-width=\"2\"/><rect x=\"82.0\" y=\"107\" width=\"48\" height=\"66\" rx=\"4\" fill=\"#7fc6e8\" opacity=\"0.85\"/><rect x=\"16\" y=\"176\" width=\"180\" height=\"26\" rx=\"4\" fill=\"#f0dcae\" stroke=\"#8a5f24\" stroke-width=\"1.6\"/><path d=\"M79.0 176 L79.0 181 L133.0 181 L133.0 176\" fill=\"#d9bf88\" stroke=\"#8a5f24\" stroke-width=\"1.4\"/><text x=\"106\" y=\"222\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13.5\" font-weight=\"700\" fill=\"#1e2c39\">(가) 물 가득 · 바로</text><text x=\"106\" y=\"239\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#41586c\">무겁다 · 닿는 면 넓다</text><rect x=\"269.0\" y=\"150\" width=\"22\" height=\"26\" rx=\"4\" fill=\"#dff0fa\" stroke=\"#3f88c5\" stroke-width=\"2\"/><rect x=\"253.0\" y=\"76\" width=\"54\" height=\"74\" rx=\"6\" fill=\"#dff0fa\" stroke=\"#3f88c5\" stroke-width=\"2\"/><rect x=\"256.0\" y=\"79\" width=\"48\" height=\"68\" rx=\"4\" fill=\"#7fc6e8\" opacity=\"0.85\"/><rect x=\"190\" y=\"176\" width=\"180\" height=\"26\" rx=\"4\" fill=\"#f0dcae\" stroke=\"#8a5f24\" stroke-width=\"1.6\"/><path d=\"M269.0 176 L269.0 189 L291.0 189 L291.0 176\" fill=\"#d9bf88\" stroke=\"#8a5f24\" stroke-width=\"1.4\"/><text x=\"280\" y=\"222\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13.5\" font-weight=\"700\" fill=\"#1e2c39\">(나) 물 가득 · 거꾸로</text><text x=\"280\" y=\"239\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#41586c\">무겁다 · 닿는 면 좁다</text><rect x=\"443.0\" y=\"150\" width=\"22\" height=\"26\" rx=\"4\" fill=\"#dff0fa\" stroke=\"#3f88c5\" stroke-width=\"2\"/><rect x=\"427.0\" y=\"76\" width=\"54\" height=\"74\" rx=\"6\" fill=\"#dff0fa\" stroke=\"#3f88c5\" stroke-width=\"2\"/><rect x=\"364\" y=\"176\" width=\"180\" height=\"26\" rx=\"4\" fill=\"#f0dcae\" stroke=\"#8a5f24\" stroke-width=\"1.6\"/><path d=\"M443.0 176 L443.0 183 L465.0 183 L465.0 176\" fill=\"#d9bf88\" stroke=\"#8a5f24\" stroke-width=\"1.4\"/><text x=\"454\" y=\"222\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"13.5\" font-weight=\"700\" fill=\"#1e2c39\">(다) 빈 병 · 거꾸로</text><text x=\"454\" y=\"239\" text-anchor=\"middle\" font-family=\"Pretendard, sans-serif\" font-size=\"11.5\" fill=\"#41586c\">가볍다 · 닿는 면 좁다</text></svg>",difficulty:'상',
-  boxes:['페트병의 무게가 클수록 스펀지가 깊이 눌린다',
-         '물을 가득 채운 페트병은 거꾸로 세우면 바로 세울 때보다 스펀지가 깊이 눌린다',
-         '빈 페트병을 거꾸로 세우면, 물을 가득 채워 바로 세울 때보다 항상 깊이 눌린다'],
-  boxVerdicts:[true,true,false],
-  stem:'스펀지 위에 페트병을 여러 방법으로 올려놓는 실험에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
-  ch:[{t:'ㄱ'},{t:'ㄷ'},{t:'ㄱ, ㄴ',ok:1},{t:'ㄴ, ㄷ'},{t:'ㄱ, ㄴ, ㄷ'}],
-  why:'<b>ㄱ. 옳다.</b> 같은 방향이라면 무거울수록(힘이 클수록) 깊이 눌립니다.<br><b>ㄴ. 옳다.</b> 같은 무게라도 거꾸로 세우면 힘을 받는 면적(뚜껑)이 좁아 압력이 커집니다.<br><b>ㄷ. 옳지 않다.</b> 빈 병을 거꾸로 세우면 면적은 좁지만 힘이 아주 작습니다. 힘과 면적이 <b>둘 다 달라지면</b> 어느 쪽이 깊이 눌릴지 단정할 수 없어요 — 그래서 실험에서 "한 번에 하나만" 바꾼 것입니다.<br>따라서 정답은 <b>ㄱ, ㄴ</b>.'}
+ {id:"p1",
+  difficulty:"하",
+  intent:"압력의 뜻(일정한 면적에 작용하는 힘)을 무게·힘·면적과 구별하는지 확인한다.",
+  stem:"압력에 대한 설명으로 옳은 것은?",
+  ch:[{t:"일정한 면적에 작용하는 힘이다.",ok:1},{t:"물체의 무게 그 자체를 뜻한다.",ok:0},{t:"힘이 작용하는 면적의 넓이를 뜻한다.",ok:0},{t:"물체가 움직이는 빠르기를 뜻한다.",ok:0},{t:"물체의 부피가 클수록 커지는 양이다.",ok:0}],
+  why:"압력은 <b>일정한 면적에 작용하는 힘</b>입니다(압력 = 힘 ÷ 면적). 무게(힘)만도, 면적만도 아니고 <b>둘을 함께</b> 따져야 하는 양이에요."},
+
+ {id:"p2",
+  difficulty:"하",
+  intent:"양쪽 힘이 같은데도 아픔이 다른 까닭을 면적으로 설명하는지 확인한다(힘 차이 오개념 차단).",
+  svg:"<svg viewBox=\"0 0 560 195\" width=\"560\" height=\"195\" role=\"img\" aria-label=\"연필을 두 손가락 사이에 끼워 양쪽에서 누르는 그림. 왼손가락은 뾰족한 연필심 쪽, 오른손가락은 뭉툭한 지우개 쪽에 닿아 있고, 두 손가락이 미는 힘은 같다는 화살표가 그려져 있다.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"150\" y=\"96\" width=\"250\" height=\"16\" rx=\"3\" fill=\"#f2c94c\" stroke=\"#9a7b1e\" stroke-width=\"1.5\"/><polygon points=\"150,96 118,104 150,112\" fill=\"#e9d8b0\" stroke=\"#9a7b1e\" stroke-width=\"1.5\"/><polygon points=\"128,101.5 118,104 128,106.5\" fill=\"#333\"/><rect x=\"400\" y=\"94\" width=\"18\" height=\"20\" rx=\"4\" fill=\"#e88a8a\" stroke=\"#9a4a4a\" stroke-width=\"1.5\"/><ellipse cx=\"92\" cy=\"104\" rx=\"26\" ry=\"18\" fill=\"#f6d2b8\" stroke=\"#c99a7a\" stroke-width=\"1.5\"/><ellipse cx=\"450\" cy=\"104\" rx=\"26\" ry=\"18\" fill=\"#f6d2b8\" stroke=\"#c99a7a\" stroke-width=\"1.5\"/><line x1=\"60.0\" y1=\"104.0\" x2=\"82.0\" y2=\"104.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"90.0,104.0 75.6,108.8 75.6,99.2\" fill=\"#b23a30\"/><line x1=\"482.0\" y1=\"104.0\" x2=\"460.0\" y2=\"104.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"452.0,104.0 466.4,99.2 466.4,108.8\" fill=\"#b23a30\"/><text x=\"92\" y=\"146\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#5c4a33\">왼손가락</text><text x=\"450\" y=\"146\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#5c4a33\">오른손가락</text><text x=\"134\" y=\"80\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#2e2315\" font-weight=\"800\">뾰족한 쪽</text><text x=\"409\" y=\"80\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#2e2315\" font-weight=\"800\">뭉툭한 쪽</text><text x=\"280\" y=\"40\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">연필을 두 손가락 사이에 끼우고 양쪽에서 누른다</text><text x=\"280\" y=\"178\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 두 손가락이 연필을 미는 힘(빨간 화살표)은 서로 같다</text></svg>",
+  stem:"그림과 같이 연필을 두 손가락 사이에 끼우고 양쪽에서 눌렀더니 뾰족한 쪽에 닿은 손가락이 훨씬 아팠다. 그 까닭으로 옳은 것은?",
+  ch:[{t:"뾰족한 쪽을 더 세게 누르기 때문이다.",ok:0},{t:"두 손가락이 받는 힘은 같지만, 뾰족한 쪽은 닿는 면적이 좁아 압력이 크기 때문이다.",ok:1},{t:"뾰족한 쪽에는 연필심의 무게가 더 실리기 때문이다.",ok:0},{t:"뭉툭한 쪽에는 힘이 작용하지 않기 때문이다.",ok:0},{t:"압력은 힘과 관계없이 물체의 모양만으로 정해지기 때문이다.",ok:0}],
+  why:"연필을 사이에 끼우고 누르면 양쪽 손가락이 받는 <b>힘은 같습니다</b>. 다른 것은 <b>닿는 면적</b> — 뾰족한 쪽은 면적이 아주 좁아 같은 힘이 한 점에 몰리고, 압력이 커져 아픕니다."},
+
+ {id:"p3",
+  difficulty:"하",
+  intent:"스펀지 실험 표에서 무게·면적 두 변인이 압력에 미치는 영향을 읽어 내는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 170\" width=\"560\" height=\"170\" role=\"img\" aria-label=\"스펀지 위에 페트병을 올린 실험 결과 표. 빈 병·바로 세움(33 cm²) 3 mm, 빈 병·거꾸로(7 cm²) 7 mm, 물 가득·바로 17 mm, 물 가득·거꾸로 46 mm.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"70\" y=\"14\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"120.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">병</text><rect x=\"170\" y=\"14\" width=\"110\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"225.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">놓는 방향</text><rect x=\"280\" y=\"14\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"330.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">닿는 면적</text><rect x=\"380\" y=\"14\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"430.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">눌린 깊이</text><rect x=\"70\" y=\"42\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"120.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">빈 병</text><rect x=\"170\" y=\"42\" width=\"110\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"225.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">바로 세움</text><rect x=\"280\" y=\"42\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"330.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">33 cm²</text><rect x=\"380\" y=\"42\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"430.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">3 mm</text><rect x=\"70\" y=\"70\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"120.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">빈 병</text><rect x=\"170\" y=\"70\" width=\"110\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"225.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">거꾸로 세움</text><rect x=\"280\" y=\"70\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"330.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">7 cm²</text><rect x=\"380\" y=\"70\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"430.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">7 mm</text><rect x=\"70\" y=\"98\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"120.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">물 가득</text><rect x=\"170\" y=\"98\" width=\"110\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"225.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">바로 세움</text><rect x=\"280\" y=\"98\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"330.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">33 cm²</text><rect x=\"380\" y=\"98\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"430.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">17 mm</text><rect x=\"70\" y=\"126\" width=\"100\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"120.0\" y=\"145.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">물 가득</text><rect x=\"170\" y=\"126\" width=\"110\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"225.0\" y=\"145.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">거꾸로 세움</text><rect x=\"280\" y=\"126\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"330.0\" y=\"145.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">7 cm²</text><rect x=\"380\" y=\"126\" width=\"100\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"430.0\" y=\"145.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\">46 mm</text></svg>",
+  stem:"표는 스펀지 위에 페트병을 무게와 놓는 방향을 바꾸어 올려놓고 눌린 깊이를 잰 결과이다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["같은 병이면 거꾸로 세워 닿는 면적이 좁을 때 더 깊이 눌린다.", "같은 방향이면 물을 가득 채운 병이 더 깊이 눌린다.", "눌린 깊이는 병의 무게와는 관계가 없다."],
+  boxVerdicts:[true, true, false],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:1},{t:"ㄱ, ㄷ",ok:0},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"빈 병 3 → 7 mm, 물 가득 17 → 46 mm — 거꾸로 세워 <b>면적이 좁아지면</b> 더 깊이 눌립니다(ㄱ ○). 바로 세움 3 → 17 mm, 거꾸로 7 → 46 mm — <b>무게가 크면</b> 더 깊이 눌리죠(ㄴ ○, ㄷ ✗). 압력을 바꾸는 손잡이는 <b>힘과 면적</b> 둘입니다."},
+
+ {id:"p4",
+  difficulty:"중",
+  intent:"힘이 같을 때 면적이 1/4이 되면 압력이 4배가 됨을 계산하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 250\" width=\"560\" height=\"250\" role=\"img\" aria-label=\"같은 벽돌을 (가) 넓은 면(200 cm²)으로 눕혀 놓은 모습과 (나) 좁은 면(50 cm²)으로 세워 놓은 모습.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"120\" width=\"180\" height=\"60\" rx=\"4\" fill=\"#c97a5a\" stroke=\"#7a3f2a\" stroke-width=\"2\"/><rect x=\"360\" y=\"60\" width=\"60\" height=\"120\" rx=\"4\" fill=\"#c97a5a\" stroke=\"#7a3f2a\" stroke-width=\"2\"/><line x1=\"40\" y1=\"182\" x2=\"280\" y2=\"182\" stroke=\"#2e2315\" stroke-width=\"3\"/><line x1=\"340\" y1=\"182\" x2=\"460\" y2=\"182\" stroke=\"#2e2315\" stroke-width=\"3\"/><text x=\"150\" y=\"105\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(가) 넓은 면으로 놓기</text><text x=\"390\" y=\"45\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(나) 좁은 면으로 세우기</text><text x=\"150\" y=\"205\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#5c4a33\">닿는 면적 200 cm²</text><text x=\"390\" y=\"205\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#5c4a33\">닿는 면적 50 cm²</text><text x=\"280\" y=\"235\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 같은 벽돌이다 — 바닥을 누르는 힘(무게)은 (가)와 (나)가 같다</text></svg>",
+  stem:"그림은 같은 벽돌을 (가) 넓은 면(200 cm²)으로 눕혀 놓았을 때와 (나) 좁은 면(50 cm²)으로 세워 놓았을 때이다. 바닥이 받는 압력을 옳게 비교한 것은?",
+  ch:[{t:"(가)와 (나)가 같다.",ok:0},{t:"(나)가 (가)의 2배이다.",ok:0},{t:"(나)가 (가)의 4배이다.",ok:1},{t:"(가)가 (나)의 2배이다.",ok:0},{t:"(가)가 (나)의 4배이다.",ok:0}],
+  why:"벽돌의 무게(힘)는 그대로인데 닿는 면적이 200 → 50 cm²로 <b>1/4</b>이 되었습니다. 압력 = 힘 ÷ 면적이므로 (나)의 압력은 (가)의 <b>4배</b>예요. 힘이 같으면 면적이 좁을수록 압력이 큽니다."},
+
+ {id:"p5",
+  difficulty:"중",
+  intent:"압력 = 힘 ÷ 면적으로 값을 구하고 단위(N/m², Pa)를 아는지 확인한다.",
+  stem:"바닥 면적이 2 m²인 상자가 바닥을 40 N의 힘으로 누르고 있다. 상자가 바닥에 가하는 압력은? (1 N/m² = 1 Pa)",
+  ch:[{t:"80 N/m²",ok:0},{t:"2000 N/m²",ok:0},{t:"0.05 N/m²",ok:0},{t:"20 N/m²",ok:1},{t:"40 N/m²",ok:0}],
+  why:"압력 = 힘 ÷ 면적 = 40 N ÷ 2 m² = <b>20 N/m²</b>. 1 m²마다 20 N의 힘이 작용한다는 뜻이고, 20 Pa(파스칼)이라고도 씁니다."},
+
+ {id:"p6",
+  difficulty:"하",
+  intent:"면적을 좁혀 압력을 크게 만드는 생활 속 예를 가려내는지 확인한다.",
+  stem:"압력을 <b>크게</b> 하여 이용하는 예만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["못의 뾰족한 끝", "눈 위에서 신는 설피", "스케이트 날"],
+  boxVerdicts:[true, false, true],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:0},{t:"ㄱ, ㄷ",ok:1},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"못 끝과 스케이트 날은 <b>면적을 좁혀 압력을 키워</b> 잘 박히고 얼음을 파고들게 합니다(ㄱ·ㄷ ○). 설피는 반대로 <b>면적을 넓혀 압력을 줄여</b> 눈에 빠지지 않게 하죠(ㄴ ✗)."},
+
+ {id:"p7",
+  difficulty:"하",
+  intent:"면적을 넓혀 압력을 줄이는 원리를 생활 속 장면에 적용하는지 확인한다.",
+  stem:"갯벌에서는 널빤지를 타고 다니고, 무거운 짐을 싣는 트럭은 넓은 타이어를 여러 개 단다. 이렇게 하는 까닭으로 옳은 것은?",
+  ch:[{t:"닿는 면적을 좁혀 압력을 키우기 위해서",ok:0},{t:"누르는 힘(무게)을 줄이기 위해서",ok:0},{t:"바닥과의 마찰을 없애기 위해서",ok:0},{t:"물체의 부피를 줄이기 위해서",ok:0},{t:"닿는 면적을 넓혀 압력을 줄이기 위해서",ok:1}],
+  why:"무게는 그대로이지만 <b>닿는 면적을 넓히면 압력이 작아져</b> 갯벌이나 도로가 덜 눌립니다. 힘을 줄인 것이 아니라 <b>면적으로</b> 압력을 조절한 것이에요."},
+
+ {id:"p8",
+  difficulty:"중",
+  intent:"못의 개수가 늘면 힘이 나뉘어 각 끝의 압력이 작아짐을 추론하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 228\" width=\"560\" height=\"228\" role=\"img\" aria-label=\"(가) 판 위에 누름못 1개를 세우고 풍선을 올리면 터진다. (나) 같은 판에 누름못 30개를 촘촘히 세우고 같은 풍선을 올리면 터지지 않는다.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"60\" y=\"150\" width=\"190\" height=\"14\" rx=\"3\" fill=\"#c9b08a\" stroke=\"#8a6a3a\" stroke-width=\"1.5\"/><polygon points=\"152.0,150 155.0,128 158.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><ellipse cx=\"155\" cy=\"92\" rx=\"52\" ry=\"40\" fill=\"#f28c8c\" stroke=\"#b23a30\" stroke-width=\"2\"/><text x=\"155\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(가) 누름못 1개</text><text x=\"155\" y=\"190\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#b23a30\" font-weight=\"800\">풍선이 터진다</text><rect x=\"310\" y=\"150\" width=\"190\" height=\"14\" rx=\"3\" fill=\"#c9b08a\" stroke=\"#8a6a3a\" stroke-width=\"1.5\"/><polygon points=\"321.0,150 324.0,128 327.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"333.5,150 336.5,128 339.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"346.0,150 349.0,128 352.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"358.5,150 361.5,128 364.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"371.0,150 374.0,128 377.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"383.5,150 386.5,128 389.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"396.0,150 399.0,128 402.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"408.5,150 411.5,128 414.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"421.0,150 424.0,128 427.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"433.5,150 436.5,128 439.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"446.0,150 449.0,128 452.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"458.5,150 461.5,128 464.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"471.0,150 474.0,128 477.0,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><polygon points=\"483.5,150 486.5,128 489.5,150\" fill=\"#8d99a6\" stroke=\"#4e5a66\" stroke-width=\"1\"/><ellipse cx=\"405\" cy=\"88\" rx=\"52\" ry=\"40\" fill=\"#8fd0a0\" stroke=\"#2c7a44\" stroke-width=\"2\"/><text x=\"405\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(나) 누름못 30개를 촘촘히</text><text x=\"405\" y=\"190\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#2c7a44\" font-weight=\"800\">풍선이 터지지 않는다</text><text x=\"280\" y=\"212\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 두 풍선은 같은 풍선이고, 같은 힘으로 살짝 눌러 올려놓는다</text></svg>",
+  stem:"그림과 같이 누름못 1개 위에 올린 풍선은 터졌지만, 같은 누름못 30개를 촘촘히 깔고 같은 힘으로 올린 풍선은 터지지 않았다. 그 까닭으로 옳은 것은?",
+  ch:[{t:"30개일 때는 누르는 힘이 여러 못 끝에 나뉘어 한 곳이 받는 압력이 작아지기 때문이다.",ok:1},{t:"30개일 때는 못 끝이 서로 부딪혀 무뎌지기 때문이다.",ok:0},{t:"30개일 때는 풍선의 고무가 더 두꺼워지기 때문이다.",ok:0},{t:"1개일 때는 풍선 속 공기가 더 많기 때문이다.",ok:0},{t:"못의 개수는 풍선이 받는 압력과 관계가 없기 때문이다.",ok:0}],
+  why:"누르는 힘은 같은데 못이 30개면 그 힘이 <b>30개의 끝에 나뉘어</b> 한 끝이 받는 힘이 작아지고, 닿는 면적도 전체로는 넓어져 <b>압력이 작아집니다</b>. 못 1개는 모든 힘이 한 점에 몰려 압력이 커서 터져요."},
+
+ {id:"p9",
+  difficulty:"중",
+  intent:"힘과 면적이 모두 다른 세 물체의 압력을 계산해 비교하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 118\" width=\"560\" height=\"118\" role=\"img\" aria-label=\"물체 A, B, C가 바닥을 누르는 힘과 닿는 면적 표. A 10 N·5 cm², B 20 N·20 cm², C 30 N·10 cm².\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"90\" y=\"14\" width=\"150\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"165.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">물체</text><rect x=\"240\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"280.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">A</text><rect x=\"320\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"360.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">B</text><rect x=\"400\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"440.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">C</text><rect x=\"90\" y=\"42\" width=\"150\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"165.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">바닥을 누르는 힘</text><rect x=\"240\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"280.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">10 N</text><rect x=\"320\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"360.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">20 N</text><rect x=\"400\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"440.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">30 N</text><rect x=\"90\" y=\"70\" width=\"150\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"165.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">바닥에 닿는 면적</text><rect x=\"240\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"280.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">5 cm²</text><rect x=\"320\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"360.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">20 cm²</text><rect x=\"400\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"440.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">10 cm²</text></svg>",
+  stem:"표는 물체 A~C가 바닥을 누르는 힘과 바닥에 닿는 면적을 나타낸 것이다. 바닥이 받는 압력이 가장 큰 물체는?",
+  ch:[{t:"B",ok:0},{t:"C",ok:1},{t:"A와 B (같고 가장 크다)",ok:0},{t:"셋 다 같다",ok:0},{t:"A",ok:0}],
+  why:"압력 = 힘 ÷ 면적으로 구하면 A는 10 ÷ 5 = 2, B는 20 ÷ 20 = 1, C는 30 ÷ 10 = <b>3 (N/cm²)</b>입니다. 힘이 가장 큰 C가 이번엔 압력도 가장 크지만, 힘만 보고 답하면 안 돼요 — B는 힘이 A의 2배인데 압력은 절반입니다."},
+
+ {id:"p10",
+  difficulty:"상",
+  intent:"힘(무게)은 같고 면적만 다른 상황에서 압력과 현상을 바르게 연결하는지 확인한다.",
+  stem:"같은 사람이 (가) 바닥이 넓은 운동화를 신고 모래밭에 섰을 때와 (나) 굽이 뾰족한 구두를 신고 섰을 때를 비교하였다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["모래를 누르는 힘은 (가)와 (나)가 같다.", "모래가 받는 압력은 (나)가 (가)보다 크다.", "(나)가 모래에 더 깊이 빠지는 것은 누르는 힘이 더 크기 때문이다."],
+  boxVerdicts:[true, true, false],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:1},{t:"ㄱ, ㄷ",ok:0},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"같은 사람이므로 모래를 누르는 힘(몸무게)은 <b>같습니다</b>(ㄱ ○). 뾰족한 굽은 닿는 면적이 좁아 <b>압력이 크고</b>(ㄴ ○), 그래서 더 깊이 빠지는 것이지 힘이 커서가 아닙니다(ㄷ ✗)."},
+
+ {id:"p11",
+  difficulty:"하",
+  intent:"실험에서 한 가지 조건만 바꾸는 까닭(변인 통제)을 아는지 확인한다.",
+  stem:"스펀지 실험에서 병을 놓는 방향은 그대로 두고 병의 무게만 다르게 하여 눌린 깊이를 비교하였다. 이렇게 한 까닭으로 옳은 것은?",
+  ch:[{t:"병을 넘어지지 않게 세우기 위해서",ok:0},{t:"실험을 한 번에 끝내기 위해서",ok:0},{t:"무게가 압력에 미치는 영향만 따로 보기 위해서",ok:1},{t:"닿는 면적이 압력에 미치는 영향을 보기 위해서",ok:0},{t:"스펀지가 더 깊이 눌리게 하기 위해서",ok:0}],
+  why:"알고 싶은 것이 <b>무게의 영향</b>이면 무게만 바꾸고 나머지(방향 = 닿는 면적)는 같게 해야 결과의 차이를 무게 탓으로 말할 수 있습니다. 둘 다 바꾸면 무엇 때문인지 알 수 없어요."},
+
+ {id:"e1",
+  difficulty:"중",
+  type:"essay",
+  intent:"양쪽 힘이 같음을 전제로, 면적 차이가 압력 차이를 만든다는 논리를 서술하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 195\" width=\"560\" height=\"195\" role=\"img\" aria-label=\"연필을 두 손가락 사이에 끼워 양쪽에서 누르는 그림. 왼손가락은 뾰족한 연필심 쪽, 오른손가락은 뭉툭한 지우개 쪽에 닿아 있고, 두 손가락이 미는 힘은 같다는 화살표가 그려져 있다.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"150\" y=\"96\" width=\"250\" height=\"16\" rx=\"3\" fill=\"#f2c94c\" stroke=\"#9a7b1e\" stroke-width=\"1.5\"/><polygon points=\"150,96 118,104 150,112\" fill=\"#e9d8b0\" stroke=\"#9a7b1e\" stroke-width=\"1.5\"/><polygon points=\"128,101.5 118,104 128,106.5\" fill=\"#333\"/><rect x=\"400\" y=\"94\" width=\"18\" height=\"20\" rx=\"4\" fill=\"#e88a8a\" stroke=\"#9a4a4a\" stroke-width=\"1.5\"/><ellipse cx=\"92\" cy=\"104\" rx=\"26\" ry=\"18\" fill=\"#f6d2b8\" stroke=\"#c99a7a\" stroke-width=\"1.5\"/><ellipse cx=\"450\" cy=\"104\" rx=\"26\" ry=\"18\" fill=\"#f6d2b8\" stroke=\"#c99a7a\" stroke-width=\"1.5\"/><line x1=\"60.0\" y1=\"104.0\" x2=\"82.0\" y2=\"104.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"90.0,104.0 75.6,108.8 75.6,99.2\" fill=\"#b23a30\"/><line x1=\"482.0\" y1=\"104.0\" x2=\"460.0\" y2=\"104.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"452.0,104.0 466.4,99.2 466.4,108.8\" fill=\"#b23a30\"/><text x=\"92\" y=\"146\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#5c4a33\">왼손가락</text><text x=\"450\" y=\"146\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#5c4a33\">오른손가락</text><text x=\"134\" y=\"80\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#2e2315\" font-weight=\"800\">뾰족한 쪽</text><text x=\"409\" y=\"80\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#2e2315\" font-weight=\"800\">뭉툭한 쪽</text><text x=\"280\" y=\"40\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">연필을 두 손가락 사이에 끼우고 양쪽에서 누른다</text><text x=\"280\" y=\"178\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 두 손가락이 연필을 미는 힘(빨간 화살표)은 서로 같다</text></svg>",
+  stem:"그림과 같이 연필을 두 손가락 사이에 끼우고 양쪽에서 눌렀다. 두 손가락이 받는 힘은 같은데도 뾰족한 쪽 손가락이 훨씬 아픈 까닭을 <b>면적</b>과 <b>압력</b>이라는 낱말을 넣어 서술하시오.",
+  model:"두 손가락이 연필을 서로 미는 힘은 같다. 그런데 뾰족한 쪽은 손가락에 닿는 면적이 매우 좁아 같은 힘이 좁은 곳에 몰리므로 압력이 크고, 뭉툭한 쪽은 닿는 면적이 넓어 압력이 작다. 압력은 일정한 면적에 작용하는 힘이므로 면적이 좁은 뾰족한 쪽이 더 아프다.",
+  rubric:[{t:"두 손가락이 받는 힘은 같다고 씀",p:2},{t:"뾰족한 쪽은 닿는 면적이 좁다고 씀",p:2},{t:"면적이 좁아 압력이 커서 아프다고 연결함",p:2}],
+  reject:["뾰족한 쪽에 더 큰 힘이 작용한다고 쓴 답", "아픈 까닭을 연필심의 무게나 단단함으로 쓴 답"],
+  keys:["면적", "압력"],
+  lines:4,
+  why:""},
+
+ {id:"e2",
+  difficulty:"상",
+  type:"essay",
+  intent:"같은 원리(압력 = 힘 ÷ 면적)를 반대 방향으로 이용하는 두 사례를 비교 서술하는지 확인한다.",
+  stem:"눈 위에서 신는 설피와 못의 뾰족한 끝은 둘 다 압력을 이용하지만 방향이 반대이다. 두 물건이 각각 닿는 <b>면적</b>을 어떻게 바꾸어 <b>압력</b>을 어떻게 만드는지, 힘이 같을 때 면적과 압력의 관계를 넣어 비교하여 서술하시오.",
+  model:"설피는 발이 눈에 닿는 면적을 넓혀 같은 몸무게가 넓게 퍼지게 하므로 압력이 작아져 눈에 빠지지 않는다. 못은 끝을 뾰족하게 만들어 닿는 면적을 아주 좁힘으로써 같은 힘이 한 점에 몰리게 하여 압력을 크게 만들어 벽에 잘 박히게 한다. 힘이 같을 때 면적이 넓을수록 압력은 작아지고, 면적이 좁을수록 압력은 커진다.",
+  rubric:[{t:"설피는 면적을 넓혀 압력을 줄인다고 씀",p:2},{t:"못은 면적을 좁혀 압력을 키운다고 씀",p:2},{t:"힘이 같을 때 면적이 좁을수록 압력이 크다(넓을수록 작다)는 관계를 정리함",p:2}],
+  reject:["설피가 무게를 줄인다고 쓴 답", "못이 힘을 키운다고 쓴 답", "면적 언급 없이 «압력을 크게/작게 한다»만 쓴 답"],
+  keys:["면적", "압력"],
+  lines:5,
+  why:""}
 ];
 
 /* 분류 활동 자료 — hi=압력 크게, lo=압력 작게 */
@@ -1085,6 +1158,7 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  }
  function paintQ(){
  const q=GAME_QS[idx];
+ if(q.type==='essay')return paintEssay();
  host.innerHTML=`<div class="card">
   <div class="game-hud">
    <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
@@ -1115,7 +1189,9 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  }else{o.classList.add('wrong');o.classList.add('locked');
   fb.className='mq-fb no show';fb.innerHTML='❌ 아직이에요. 자료와 발문을 다시 읽어 보세요.';A.wrong();}
  }));
- $('#gameNext').addEventListener('click',()=>{
+ $('#gameNext').addEventListener('click',advance);
+ }
+ function advance(){
  if(idx<GAME_QS.length-1){idx++;paintQ();}
  else{
   if(scoreNow>(S.best||0))S.best=scoreNow;
@@ -1127,7 +1203,47 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
    <div class="cta-row" style="justify-content:center"><button class="btn" id="gameRetry">다시 풀기 ↺</button></div></div>`;
   $('#gameRetry').addEventListener('click',paintIntro);
  }
- });
+ }
+ function paintEssay(){
+ const q=GAME_QS[idx];S.eq=S.eq||{};
+ const saved=S.eq[q.id]||'',total=q.rubric.reduce((a,r)=>a+r.p,0);
+ host.innerHTML=`<div class="card">
+  <div class="game-hud">
+   <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
+   <span class="mq-lv" data-lv="${q.difficulty}">난이도 ${q.difficulty}</span>
+   <span class="mq-lv" style="color:var(--accent2)">서술형 · 자기 채점</span>
+   <span class="score-box" style="margin-left:auto"><span class="lab2">점수</span><span class="num">${scoreNow}</span></span>
+  </div>
+  <p class="mq-text" style="margin-top:14px;font-size:17px;font-weight:700;line-height:1.7">${q.stem}</p>
+  ${q.svg?`<div class="qfig">${q.svg}</div>`:''}
+  <textarea class="eq-ta" id="eqTa" rows="${q.lines||4}" placeholder="내 문장으로 써 보세요 — 꼭 들어갈 낱말: ${q.keys.join(', ')}"></textarea>
+  <div class="eq-keys" id="eqKeys"></div>
+  <div class="cta-row" style="justify-content:flex-start" id="eqOpenRow"><button class="btn primary" id="eqOpen">✍️ 다 썼어요 — 채점 기준 열기</button></div>
+  <div class="eq-rub" id="eqRub" hidden>
+   <div class="eq-h">✍️ 모범 답안</div><div class="eq-model">${q.model}</div>
+   <div class="eq-h">✅ 채점 기준 — 내 답에 들어 있으면 체크</div>
+   ${q.rubric.map(r=>`<label class="eq-item"><input type="checkbox" data-p="${r.p}"><span>${r.t}</span><span class="p">${r.p}점</span></label>`).join('')}
+   ${q.reject&&q.reject.length?`<div class="eq-rej">🧑‍🏫 불인정·감점 예 — ${q.reject.join(' · ')}</div>`:''}
+   <div class="eq-sum" id="eqSum">0점 / ${total}점</div>
+   <div class="cta-row" style="justify-content:flex-start"><button class="btn primary" id="eqDone">채점 완료 → 다음</button></div>
+  </div>
+ </div>`;
+ const ta=$('#eqTa'),keys=$('#eqKeys');ta.value=saved;
+ function paintKeys(){keys.innerHTML=q.keys.map(k=>'<span class="eq-key'+(ta.value.indexOf(k)>=0?' on':'')+'">'+(ta.value.indexOf(k)>=0?'✓ ':'')+k+'</span>').join('');}
+ ta.addEventListener('input',()=>{S.eq[q.id]=ta.value;save();paintKeys();});paintKeys();
+ function pts(){let p=0;$$('.eq-item input',host).forEach(c=>{if(c.checked)p+=+c.dataset.p;});return p;}
+ $$('.eq-item input',host).forEach(c=>c.addEventListener('change',()=>{$('#eqSum').textContent=pts()+'점 / '+total+'점';}));
+ $('#eqOpen').addEventListener('click',()=>{
+  if(ta.value.trim().length<10){toast('먼저 <b>한두 문장</b>이라도 써 본 뒤 열어요 ✍️');return;}
+  $('#eqRub').hidden=false;$('#eqOpenRow').style.display='none';A.pop();});
+ let done=false;
+ $('#eqDone').addEventListener('click',()=>{
+  if(done)return;done=true;
+  const p=pts(),pass=p/total>=0.6;
+  if(pass){scoreNow+=20;A.correct();}else A.wrong();
+  toast(pass?'서술형 <b>'+p+'점 / '+total+'점</b> — 통과! ✅':'서술형 <b>'+p+'점 / '+total+'점</b> — 모범 답안과 견주어 보완해 보세요 ✍️',pass?'good':'');
+  advance();
+  host.scrollIntoView({block:'start',behavior:'smooth'});});
  }
  paintIntro();
 })();

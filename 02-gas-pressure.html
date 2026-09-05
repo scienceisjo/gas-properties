@@ -435,6 +435,22 @@ body.lecture .msn-banner,body.lecture .sum-guard,body.lecture #msnCoverNote{disp
 .score-box{background:var(--paper-hi);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;text-align:center}
 .score-box .lab2{font-size:11.5px;color:var(--ink-mute)}
 .score-box .num{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--accent)}
+/* ── 서술형(자기 채점) ── */
+.eq-ta{width:100%;min-height:104px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-family:var(--body);
+ font-size:15.5px;line-height:1.6;color:var(--ink);background:var(--paper-hi);resize:vertical;margin-top:10px;box-sizing:border-box}
+.eq-keys{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eq-key{font-size:12.5px;padding:3px 10px;border-radius:99px;border:1.5px solid var(--line);color:var(--ink-mute);background:var(--paper-hi)}
+.eq-key.on{border-color:var(--ok);color:var(--ok);font-weight:700}
+.eq-rub{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(32,116,143,.06)}
+.eq-rub[hidden]{display:none}
+.eq-h{font-weight:800;font-size:14.5px;color:var(--ink-dim);margin:4px 0 6px}
+.eq-model{font-size:15px;line-height:1.65;padding:10px 12px;border-radius:10px;background:var(--paper-hi);border:1px solid var(--line);margin:0 0 12px}
+.eq-item{display:flex;align-items:flex-start;gap:9px;font-size:14.5px;line-height:1.5;padding:6px 0;cursor:pointer}
+.eq-item input{margin-top:4px;width:17px;height:17px;accent-color:var(--ok);flex:none}
+.eq-item .p{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--ink-mute);white-space:nowrap}
+.eq-rej{font-size:13.5px;color:var(--ink-mute);margin-top:8px;display:none;line-height:1.55}
+body.teacher .eq-rej{display:block}
+.eq-sum{margin-top:10px;font-weight:800;color:var(--ink-dim)}
 .mq-lv{font-family:var(--jua);font-size:13px;padding:3px 11px;border-radius:99px;border:1.5px solid}
 .mq-lv[data-lv="하"]{color:var(--ok);border-color:#7fae83;background:rgba(44,122,68,.08)}
 .mq-lv[data-lv="중"]{color:#8f5312;border-color:var(--c3);background:rgba(196,113,30,.08)}
@@ -1256,64 +1272,119 @@ const QUIZ_SETS={
 };
 
 const GAME_QS=[
- {id:'q1',difficulty:'하',
-  stem:'기체의 압력에 대한 설명으로 옳은 것은?',
-  ch:[{t:'일정한 면적에 기체 입자가 충돌해서 가하는 힘이다.',ok:1},
-      {t:'기체의 무게가 바닥을 누르는 힘이다.'},
-      {t:'아래 방향으로만 작용한다.'},
-      {t:'입자 수가 많아지면 작아진다.'},
-      {t:'기체 입자가 서로 끌어당기는 힘이다.'}],
-  why:'기체의 압력 = <b>입자의 충돌이 가하는 힘</b>.<br>②⑤ 무게도, 입자끼리의 힘도 아닙니다.<br>③ 입자가 사방으로 운동하므로 <b>모든 방향</b>으로 작용합니다.<br>④ 입자 수가 많아지면 충돌이 잦아져 <b>커집니다</b>.'},
- {id:'q2',difficulty:'중',
-  svg:'<svg viewBox="0 0 560 230" role="img" aria-label="쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다.">'
-   +'<text x="150" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">(가) 쇠구슬 15개</text>'
-   +'<rect x="80" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/>'
-   +'<rect x="128" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>'
-   +'<g fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4">'
-   +'<circle cx="110" cy="90" r="7"/><circle cx="150" cy="76" r="7"/><circle cx="188" cy="98" r="7"/>'
-   +'<circle cx="122" cy="130" r="7"/><circle cx="166" cy="122" r="7"/><circle cx="198" cy="150" r="7"/>'
-   +'<circle cx="104" cy="162" r="7"/><circle cx="146" cy="158" r="7"/></g>'
-   +'<text x="410" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#41586c">(나) 쇠구슬 30개</text>'
-   +'<rect x="340" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/>'
-   +'<rect x="388" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/>'
-   +'<g fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4">'
-   +'<circle cx="366" cy="82" r="7"/><circle cx="396" cy="70" r="7"/><circle cx="430" cy="86" r="7"/><circle cx="458" cy="74" r="7"/>'
-   +'<circle cx="356" cy="112" r="7"/><circle cx="386" cy="104" r="7"/><circle cx="418" cy="116" r="7"/><circle cx="452" cy="106" r="7"/>'
-   +'<circle cx="368" cy="144" r="7"/><circle cx="400" cy="136" r="7"/><circle cx="432" cy="148" r="7"/><circle cx="462" cy="140" r="7"/>'
-   +'<circle cx="356" cy="170" r="7"/><circle cx="392" cy="166" r="7"/><circle cx="426" cy="172" r="7"/></g>'
-   +'<text x="280" y="215" text-anchor="middle" font-size="12.5" fill="#7b91a4">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg>',
-  stem:'그림과 같이 쇠구슬을 넣은 두 페트병을 같은 빠르기로 흔들었다. 이에 대한 설명으로 옳은 것은?',
-  ch:[{t:'(나)에서 손바닥에 느껴지는 힘이 더 크다 — 쇠구슬의 충돌 횟수가 더 많기 때문이다.',ok:1},
-      {t:'(가)에서 손바닥에 느껴지는 힘이 더 크다 — 쇠구슬이 더 자유롭게 움직이기 때문이다.'},
-      {t:'두 병의 느낌은 같다 — 흔드는 빠르기가 같기 때문이다.'},
-      {t:'쇠구슬은 아래쪽 벽에만 부딪힌다.'},
-      {t:'이 실험으로는 기체의 압력을 설명할 수 없다.'}],
-  why:'쇠구슬이 많을수록 벽에 <b>충돌하는 횟수가 늘어</b> 손바닥에 더 큰 힘이 느껴집니다. 기체 입자 수가 많을수록 압력이 커지는 것과 같은 원리죠.<br>④ 흔들면 사방으로 부딪힙니다 — 양손 모두에서 느껴지는 것이 증거.<br>③ 빠르기를 같게 한 것은 <b>비교 조건을 맞추기 위해서</b>지, 결과가 같아지는 이유가 아닙니다.'},
- {id:'q3',difficulty:'중',
-  stem:'찌그러진 축구공에 공기를 넣으면 사방으로 고르게 부풀어 오른다. 그 까닭으로 옳은 것은?',
-  ch:[{t:'공기 입자 수가 늘어 충돌이 잦아지고, 압력이 모든 방향으로 작용하기 때문',ok:1},
-      {t:'공기가 무거워져 공 아래쪽을 채우기 때문'},
-      {t:'공기 입자의 크기가 커지기 때문'},
-      {t:'공 껍질이 공기를 빨아들이기 때문'},
-      {t:'공기 입자가 공 벽에 달라붙기 때문'}],
-  why:'입자 수 ↑ → 충돌 ↑ → 압력 ↑. 그리고 입자가 <b>사방으로</b> 날아다니므로 압력도 사방으로 작용해 공이 <b>고르게</b> 부풉니다.<br>③ 입자의 크기는 변하지 않습니다 — 수가 늘어난 것뿐이에요.'},
- {id:'q4',difficulty:'중',
-  svg:'<svg viewBox="0 0 560 195" role="img" aria-label="공기가 든 풍선의 왼쪽을 손가락으로 누르자 오른쪽이 볼록 튀어나온 모습."><path d="M218 98 q6 -46 74 -52 q78 -7 96 34 q10 22 4 40 q18 2 22 18 q4 18 -14 24 q-24 8 -38 -4 q-26 22 -72 16 q-64 -8 -70 -48 q-2 -14 -2 -28 z" fill="#dbeaf3" stroke="#41586c" stroke-width="2.4"/><circle cx="238" cy="96" r="3.1" fill="#5a9ab8"/><circle cx="268" cy="78" r="3.1" fill="#5a9ab8"/><circle cx="300" cy="102" r="3.1" fill="#5a9ab8"/><circle cx="332" cy="84" r="3.1" fill="#5a9ab8"/><circle cx="360" cy="100" r="3.1" fill="#5a9ab8"/><circle cx="252" cy="118" r="3.1" fill="#5a9ab8"/><circle cx="292" cy="130" r="3.1" fill="#5a9ab8"/><circle cx="328" cy="120" r="3.1" fill="#5a9ab8"/><circle cx="310" cy="64" r="3.1" fill="#5a9ab8"/><circle cx="356" cy="70" r="3.1" fill="#5a9ab8"/><circle cx="246" cy="68" r="3.1" fill="#5a9ab8"/><circle cx="352" cy="132" r="3.1" fill="#5a9ab8"/><path d="M150 84 q34 -6 60 10 q8 6 4 14 q-4 8 -16 6 q-28 -4 -48 -12 z" fill="#f0cfa8" stroke="#a07040" stroke-width="2"/><defs><marker id="a98016" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#e0912b"/></marker></defs><line x1="180" y1="60" x2="214" y2="88" stroke="#e0912b" stroke-width="2.4" marker-end="url(#a98016)"/><text x="160" y="48" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#41586c" font-weight="700">손가락으로 누름</text><defs><marker id="a24631" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#e0912b"/></marker></defs><line x1="398" y1="128" x2="428" y2="142" stroke="#e0912b" stroke-width="2.4" marker-end="url(#a24631)"/><text x="452" y="160" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#41586c" font-weight="700">볼록!</text><text x="280" y="188" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5a7186">※ 풍선 입구는 묶여 있어 공기가 드나들 수 없다</text></svg>',
-  stem:'공기가 들어 있는 풍선의 한쪽을 손가락으로 누르면 다른 쪽이 튀어나온다. 이를 옳게 설명한 것은?',
-  ch:[{t:'눌린 곳의 공기 입자들이 다른 쪽으로 이동해 그쪽 벽에 충돌하며 힘을 가하기 때문',ok:1},
-      {t:'공기 입자가 눌린 곳에서 터져 없어지기 때문'},
-      {t:'풍선 고무가 스스로 늘어나기 때문'},
-      {t:'눌린 곳의 압력이 사라지기 때문'},
-      {t:'공기가 풍선 밖으로 빠져나가기 때문'}],
-  why:'입자는 없어지지 않습니다. 눌린 공간을 떠나 <b>다른 쪽으로 이동해 그쪽 벽을 두드리니</b> 그 부분이 튀어나오는 것이죠. 압력이 모든 방향으로 작용한다는 사실이 여기서도 확인됩니다.'},
- {id:'q5',difficulty:'상',
-  boxes:['기체의 압력은 기체 입자가 벽에 충돌해서 가하는 힘이다',
-         '쇠구슬 모형에서 쇠구슬처럼, 기체 입자도 다른 힘이 흔들어 주어야 움직인다',
-         '용기 속 기체 입자의 수가 많을수록 기체의 압력이 커진다'],
-  boxVerdicts:[true,false,true],
-  stem:'기체의 압력에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 있는 대로 고른 것은?',
-  ch:[{t:'ㄱ'},{t:'ㄴ'},{t:'ㄱ, ㄷ',ok:1},{t:'ㄴ, ㄷ'},{t:'ㄱ, ㄴ, ㄷ'}],
-  why:'<b>ㄱ. 옳다.</b> 기체 압력의 정의 그대로입니다.<br><b>ㄴ. 옳지 않다.</b> 쇠구슬은 흔들어야 움직이지만 <b>기체 입자는 스스로 끊임없이 운동</b>합니다. 모형과 실제의 결정적 차이였죠.<br><b>ㄷ. 옳다.</b> 입자 수 ↑ → 충돌 ↑ → 압력 ↑.<br>따라서 정답은 <b>ㄱ, ㄷ</b>.'}
+ {id:"g1",
+  difficulty:"하",
+  intent:"기체 압력의 뜻(입자의 충돌이 가하는 힘)을 무게·인력과 구별하는지 확인한다.",
+  stem:"기체의 압력에 대한 설명으로 옳은 것은?",
+  ch:[{t:"일정한 면적에 기체 입자가 충돌하여 가하는 힘이다.",ok:1},{t:"기체의 무게가 바닥을 누르는 힘이다.",ok:0},{t:"기체 입자들이 서로 끌어당기는 힘이다.",ok:0},{t:"기체가 한쪽으로 흐를 때만 생기는 힘이다.",ok:0},{t:"용기의 벽이 기체를 안쪽으로 조이는 힘이다.",ok:0}],
+  why:"기체의 압력은 끊임없이 날아다니는 <b>입자가 벽에 충돌</b>해서 가하는 힘입니다. 무게도, 입자끼리의 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요."},
+
+ {id:"g2",
+  difficulty:"하",
+  intent:"쇠구슬 모형에서 개수(입자 수)와 손바닥이 받는 힘(압력)을 충돌 횟수로 연결하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 230\" width=\"560\" height=\"230\" role=\"img\" aria-label=\"쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><text x=\"150\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"15\" fill=\"#5c4a33\" font-weight=\"800\">(가) 쇠구슬 15개</text><rect x=\"80\" y=\"52\" width=\"140\" height=\"130\" rx=\"18\" fill=\"#f1f7fc\" stroke=\"#1c507e\" stroke-width=\"2.5\"/><rect x=\"128\" y=\"40\" width=\"44\" height=\"14\" rx=\"4\" fill=\"#3f88c5\" stroke=\"#1c507e\" stroke-width=\"2\"/><circle cx=\"101\" cy=\"89\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"138\" cy=\"142\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"175\" cy=\"95\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"108\" cy=\"148\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"145\" cy=\"101\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"182\" cy=\"154\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"115\" cy=\"107\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"152\" cy=\"160\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"189\" cy=\"113\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"122\" cy=\"166\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"159\" cy=\"119\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"196\" cy=\"72\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"129\" cy=\"125\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"166\" cy=\"78\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"99\" cy=\"131\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><text x=\"410\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"15\" fill=\"#5c4a33\" font-weight=\"800\">(나) 쇠구슬 30개</text><rect x=\"340\" y=\"52\" width=\"140\" height=\"130\" rx=\"18\" fill=\"#f1f7fc\" stroke=\"#1c507e\" stroke-width=\"2.5\"/><rect x=\"388\" y=\"40\" width=\"44\" height=\"14\" rx=\"4\" fill=\"#3f88c5\" stroke=\"#1c507e\" stroke-width=\"2\"/><circle cx=\"369\" cy=\"145\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"406\" cy=\"98\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"443\" cy=\"151\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"376\" cy=\"104\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"413\" cy=\"157\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"450\" cy=\"110\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"383\" cy=\"163\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"420\" cy=\"116\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"457\" cy=\"69\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"390\" cy=\"122\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"427\" cy=\"75\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"360\" cy=\"128\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"397\" cy=\"81\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"434\" cy=\"134\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"367\" cy=\"87\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"404\" cy=\"140\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"441\" cy=\"93\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"374\" cy=\"146\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"411\" cy=\"99\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"448\" cy=\"152\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"381\" cy=\"105\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"418\" cy=\"158\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"455\" cy=\"111\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"388\" cy=\"164\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"425\" cy=\"117\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"358\" cy=\"70\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"395\" cy=\"123\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"432\" cy=\"76\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"365\" cy=\"129\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"402\" cy=\"82\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><text x=\"280\" y=\"215\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#96805c\">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg>",
+  stem:"그림과 같이 쇠구슬을 넣은 두 페트병을 같은 빠르기로 흔들었다. 손바닥에 느껴지는 힘이 더 큰 쪽과 그 까닭을 옳게 짝 지은 것은?",
+  ch:[{t:"(가) — 쇠구슬 하나하나가 더 세게 부딪히기 때문",ok:0},{t:"(나) — 쇠구슬이 벽에 부딪히는 횟수가 더 많기 때문",ok:1},{t:"(나) — 쇠구슬이 더 빨라지기 때문",ok:0},{t:"같다 — 흔드는 빠르기가 같기 때문",ok:0},{t:"(가) — 쇠구슬이 더 자유롭게 움직이기 때문",ok:0}],
+  why:"흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 <b>개수</b> — 30개면 벽에 부딪히는 <b>횟수가 많아</b> 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요."},
+
+ {id:"g3",
+  difficulty:"중",
+  intent:"쇠구슬 모형과 실제 기체 입자의 결정적 차이(스스로 운동)를 아는지 확인한다.",
+  stem:"쇠구슬을 넣은 페트병 모형과 실제 기체 입자를 비교한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["쇠구슬은 사람이 흔들어야 움직이지만, 기체 입자는 아무도 흔들지 않아도 스스로 끊임없이 움직인다.", "페트병을 흔들면 쇠구슬이 사방으로 부딪혀 양쪽 손바닥 모두에서 힘이 느껴진다.", "흔들기를 멈추면 쇠구슬이 가라앉듯, 기체 입자도 시간이 지나면 바닥에 가라앉아 멈춘다."],
+  boxVerdicts:[true, true, false],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:1},{t:"ㄱ, ㄷ",ok:0},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"모형의 한계가 바로 ㄷ입니다. 쇠구슬은 흔들어야 움직이고 멈추면 가라앉지만, <b>기체 입자는 스스로 끊임없이 운동</b>하며 절대 가라앉지 않아요(ㄱ ○, ㄷ ✗). 흔들면 사방으로 부딪히는 것은 실제 기체와 닮은 점입니다(ㄴ ○)."},
+
+ {id:"g4",
+  difficulty:"하",
+  intent:"기체의 압력이 모든 방향으로 작용함을 입자 운동과 연결하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 252\" width=\"560\" height=\"252\" role=\"img\" aria-label=\"상자 속 기체 입자들이 저마다 다른 방향으로 날아다니고, 위·아래·왼쪽·오른쪽 네 벽을 미는 빨간 화살표가 모두 그려져 있다.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"150\" y=\"40\" width=\"260\" height=\"150\" rx=\"8\" fill=\"#f7f3e8\" stroke=\"#8a6a3a\" stroke-width=\"2.5\"/><circle cx=\"200\" cy=\"80\" r=\"7\" fill=\"#3a7a3f\"/><line x1=\"206.6\" y1=\"84.5\" x2=\"219.8\" y2=\"93.6\" stroke=\"#2f6ea8\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><polygon points=\"224.8,96.9 213.8,93.8 217.9,87.9\" fill=\"#2f6ea8\"/><circle cx=\"330\" cy=\"70\" r=\"7\" fill=\"#3a7a3f\"/><line x1=\"324.1\" y1=\"75.4\" x2=\"312.3\" y2=\"86.2\" stroke=\"#2f6ea8\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><polygon points=\"307.9,90.3 313.4,80.3 318.3,85.6\" fill=\"#2f6ea8\"/><circle cx=\"250\" cy=\"140\" r=\"7\" fill=\"#3a7a3f\"/><line x1=\"252.9\" y1=\"132.5\" x2=\"258.7\" y2=\"117.6\" stroke=\"#2f6ea8\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><polygon points=\"260.9,112.0 260.3,123.4 253.6,120.8\" fill=\"#2f6ea8\"/><circle cx=\"360\" cy=\"150\" r=\"7\" fill=\"#3a7a3f\"/><line x1=\"352.8\" y1=\"146.5\" x2=\"338.5\" y2=\"139.4\" stroke=\"#2f6ea8\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><polygon points=\"333.1,136.7 344.4,138.3 341.2,144.7\" fill=\"#2f6ea8\"/><circle cx=\"300\" cy=\"105\" r=\"7\" fill=\"#3a7a3f\"/><line x1=\"293.1\" y1=\"100.9\" x2=\"279.4\" y2=\"92.6\" stroke=\"#2f6ea8\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><polygon points=\"274.3,89.5 285.4,92.0 281.7,98.2\" fill=\"#2f6ea8\"/><circle cx=\"215\" cy=\"165\" r=\"7\" fill=\"#3a7a3f\"/><line x1=\"212.4\" y1=\"172.6\" x2=\"207.2\" y2=\"187.7\" stroke=\"#2f6ea8\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><polygon points=\"205.3,193.4 205.4,182.0 212.2,184.3\" fill=\"#2f6ea8\"/><line x1=\"280.0\" y1=\"40.0\" x2=\"280.0\" y2=\"18.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"280.0,10.0 284.8,24.4 275.2,24.4\" fill=\"#b23a30\"/><line x1=\"280.0\" y1=\"190.0\" x2=\"280.0\" y2=\"212.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"280.0,220.0 275.2,205.6 284.8,205.6\" fill=\"#b23a30\"/><line x1=\"150.0\" y1=\"115.0\" x2=\"128.0\" y2=\"115.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"120.0,115.0 134.4,110.2 134.4,119.8\" fill=\"#b23a30\"/><line x1=\"410.0\" y1=\"115.0\" x2=\"432.0\" y2=\"115.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"440.0,115.0 425.6,119.8 425.6,110.2\" fill=\"#b23a30\"/><text x=\"280\" y=\"238\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#2e2315\" font-weight=\"800\">입자가 사방으로 날아다니며 네 벽을 모두 두드린다 → 압력은 모든 방향</text></svg>",
+  stem:"그림은 상자 속 기체 입자의 움직임을 나타낸 것이다. 기체의 압력이 작용하는 방향에 대한 설명으로 옳은 것은?",
+  ch:[{t:"압력은 상자의 옆면에만 작용한다.",ok:0},{t:"입자가 부딪히는 순간에만 한 방향으로 작용한다.",ok:0},{t:"입자가 사방으로 날아다니므로 압력은 모든 방향으로 작용한다.",ok:1},{t:"기체는 무거우므로 압력은 아래쪽으로만 작용한다.",ok:0},{t:"입자가 위로 떠오르므로 압력은 위쪽으로만 작용한다.",ok:0}],
+  why:"입자는 위·아래·옆 가리지 않고 날아다니며 <b>네 벽을 모두</b> 두드립니다. 그래서 기체의 압력은 <b>모든 방향</b>으로 작용해요. 튜브가 사방으로 부풀어 오르는 것이 그 증거입니다."},
+
+ {id:"g5",
+  difficulty:"중",
+  intent:"입자 상자 기록표에서 입자 수·충돌 횟수·압력의 관계와 빠르기 불변을 읽어 내는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 165\" width=\"560\" height=\"165\" role=\"img\" aria-label=\"입자 상자 기록표. 입자 수 15·30·60개일 때 1초 벽 충돌 11·21·43회, 압력계 100·200·400, 평균 빠르기는 모두 100.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"70\" y=\"14\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">입자 수(개)</text><rect x=\"250\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">15</text><rect x=\"330\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">30</text><rect x=\"410\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">60</text><rect x=\"70\" y=\"42\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">1초 벽 충돌(회)</text><rect x=\"250\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">11</text><rect x=\"330\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">21</text><rect x=\"410\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">43</text><rect x=\"70\" y=\"70\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">압력계(보통=100)</text><rect x=\"250\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><rect x=\"330\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">200</text><rect x=\"410\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">400</text><rect x=\"70\" y=\"98\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">평균 빠르기(보통=100)</text><rect x=\"250\" y=\"98\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><rect x=\"330\" y=\"98\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><rect x=\"410\" y=\"98\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><text x=\"280\" y=\"150\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 같은 크기의 상자, 같은 온도에서 입자 수만 바꾸었다</text></svg>",
+  stem:"표는 같은 크기의 상자에서 온도는 그대로 두고 입자 수만 바꾸며 기록한 것이다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["입자 수가 2배가 되면 압력계 눈금도 약 2배가 된다.", "입자 수가 늘어나면 입자 하나하나의 빠르기도 빨라진다.", "입자 수가 늘어나면 1초 동안 벽에 충돌하는 횟수가 늘어 압력이 커진다."],
+  boxVerdicts:[true, false, true],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:0},{t:"ㄱ, ㄷ",ok:1},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"15 → 30 → 60개에 압력계 100 → 200 → 400(ㄱ ○). 그 까닭은 충돌 횟수 11 → 21 → 43회로 <b>충돌이 잦아졌기</b> 때문이에요(ㄷ ○). 평균 빠르기는 100으로 <b>꿈쩍도 안 했습니다</b> — 빠르기를 바꾸는 것은 온도뿐이죠(ㄴ ✗)."},
+
+ {id:"g6",
+  difficulty:"중",
+  intent:"축구공에 공기를 넣을 때 입자에게 일어나는 일(수 증가, 빠르기 불변)을 아는지 확인한다.",
+  stem:"찌그러진 축구공에 펌프로 공기를 넣었더니 공이 단단해졌다. 공 속 기체 입자에게 일어난 일로 옳은 것은?",
+  ch:[{t:"입자 하나하나의 크기가 커져 공을 채웠다.",ok:0},{t:"입자들이 서로 달라붙어 단단한 덩어리가 되었다.",ok:0},{t:"입자들이 모두 공의 안쪽 벽에 달라붙었다.",ok:0},{t:"입자의 수가 늘어나 벽에 충돌하는 횟수가 많아졌다.",ok:1},{t:"입자 하나하나가 더 빨라져 세게 부딪히게 되었다.",ok:0}],
+  why:"공기를 넣는다는 것은 <b>입자를 더 넣는 것</b>입니다. 입자 수가 늘어 충돌이 잦아지고 압력이 커져 공이 단단해져요. 온도를 바꾼 게 아니니 입자의 빠르기는 그대로이고, 입자의 크기가 변하거나 서로 달라붙는 일도 없습니다."},
+
+ {id:"g7",
+  difficulty:"중",
+  intent:"풍선 한쪽을 누르면 반대쪽이 튀어나오는 현상을 압력의 방향으로 설명하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 245\" width=\"560\" height=\"245\" role=\"img\" aria-label=\"(가) 공기가 든 둥근 풍선. (나) 같은 풍선의 왼쪽을 손가락으로 누르자 반대쪽이 불룩 튀어나온 모습.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><ellipse cx=\"150\" cy=\"120\" rx=\"70\" ry=\"82\" fill=\"#f7b3c2\" stroke=\"#c96b8a\" stroke-width=\"2\"/><path d=\"M 350 60 C 390 30, 450 40, 470 80 C 510 90, 516 150, 480 180 C 450 215, 380 210, 355 180 C 340 160, 370 140, 356 120 C 342 100, 335 80, 350 60 Z\" fill=\"#f7b3c2\" stroke=\"#c96b8a\" stroke-width=\"2\"/><ellipse cx=\"336\" cy=\"120\" rx=\"26\" ry=\"16\" fill=\"#f6d2b8\" stroke=\"#c99a7a\" stroke-width=\"1.5\"/><line x1=\"302.0\" y1=\"120.0\" x2=\"320.0\" y2=\"120.0\" stroke=\"#b23a30\" stroke-width=\"3\" stroke-linecap=\"round\"/><polygon points=\"328.0,120.0 313.6,124.8 313.6,115.2\" fill=\"#b23a30\"/><text x=\"470\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#b23a30\" font-weight=\"800\">이쪽이 튀어나옴</text><line x1=\"490.0\" y1=\"40.0\" x2=\"497.4\" y2=\"73.2\" stroke=\"#b23a30\" stroke-width=\"2\" stroke-linecap=\"round\"/><polygon points=\"499.0,80.0 492.1,68.6 500.3,66.8\" fill=\"#b23a30\"/><text x=\"150\" y=\"225\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(가) 그냥 둔 풍선</text><text x=\"420\" y=\"225\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13\" fill=\"#2e2315\" font-weight=\"800\">(나) 한쪽을 손가락으로 누른 풍선</text></svg>",
+  stem:"그림과 같이 공기가 들어 있는 풍선의 한쪽을 손가락으로 누르면 다른 쪽이 불룩 튀어나온다. 그 까닭으로 옳은 것은?",
+  ch:[{t:"누른 쪽의 입자들이 반대쪽으로 도망가 한곳에 몰리기 때문이다.",ok:0},{t:"손가락의 힘이 고무를 타고 반대쪽으로 전달되기 때문이다.",ok:0},{t:"누른 쪽의 공기가 빠져나가 풍선이 가벼워지기 때문이다.",ok:0},{t:"풍선의 고무가 스스로 늘어나는 성질이 있기 때문이다.",ok:0},{t:"누르면 풍선 속 기체의 압력이 커지고, 이 압력이 모든 방향으로 작용해 다른 쪽 벽도 밀리기 때문이다.",ok:1}],
+  why:"풍선을 누르면 속 기체의 압력이 커지는데, 이 압력은 <b>모든 방향으로</b> 작용합니다. 그래서 눌리지 않은 쪽 벽이 밀려 불룩해져요. 입자가 한쪽으로 «도망가 몰리는» 것이 아니라 여전히 사방으로 날아다니며 모든 벽을 두드립니다."},
+
+ {id:"g8",
+  difficulty:"상",
+  intent:"입자 수와 빠르기가 각각 압력에 미치는 영향을 자료로 종합 추론하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 118\" width=\"560\" height=\"118\" role=\"img\" aria-label=\"압력 챌린지 표. 입자 20개일 때 흔들어 낼 수 있는 최대 압력 502, 30개 771, 40개 1052. 라운드 2 목표는 560.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"70\" y=\"14\" width=\"220\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"180.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">입자 수(개)</text><rect x=\"290\" y=\"14\" width=\"70\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">20</text><rect x=\"360\" y=\"14\" width=\"70\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">30</text><rect x=\"430\" y=\"14\" width=\"70\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">40</text><rect x=\"70\" y=\"42\" width=\"220\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"180.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">흔들어 낼 수 있는 최대 압력</text><rect x=\"290\" y=\"42\" width=\"70\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"325.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">502</text><rect x=\"360\" y=\"42\" width=\"70\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"395.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">771</text><rect x=\"430\" y=\"42\" width=\"70\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"465.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">1052</text><text x=\"280\" y=\"100\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#b23a30\" font-weight=\"800\">※ 압력 챌린지 라운드 2의 목표 압력은 560</text></svg>",
+  stem:"표는 압력 챌린지에서 입자 수에 따라 흔들어 낼 수 있는 최대 압력을 정리한 것이다. 이에 대한 설명으로 옳은 것만을 <보기>에서 있는 대로 고른 것은?",
+  boxes:["흔들기를 연타하면 압력이 오르는 것은 입자가 빨라져 벽에 더 자주, 더 세게 부딪히기 때문이다.", "입자 20개로는 아무리 빨리 흔들어도 라운드 2의 목표 560에 이를 수 없다.", "입자 수를 늘려도 빠르기가 그대로이면 압력은 변하지 않는다."],
+  boxVerdicts:[true, true, false],
+  ch:[{t:"ㄱ",ok:0},{t:"ㄱ, ㄴ",ok:1},{t:"ㄱ, ㄷ",ok:0},{t:"ㄴ, ㄷ",ok:0},{t:"ㄱ, ㄴ, ㄷ",ok:0}],
+  why:"연타는 입자를 빠르게 해 충돌을 <b>잦고 세게</b> 만듭니다(ㄱ ○). 20개의 최대가 502이니 560은 불가능 — <b>입자를 늘려야</b> 하죠(ㄴ ○). 빠르기가 같아도 입자 수가 늘면 충돌 횟수가 늘어 압력이 커집니다. 표에서 20 → 30 → 40개에 최대 압력이 502 → 771 → 1052로 오른 것이 증거예요(ㄷ ✗)."},
+
+ {id:"g9",
+  difficulty:"하",
+  intent:"기체 입자의 기본 성질(간격·힘·운동)을 아는지 확인한다.",
+  stem:"기체 입자의 성질에 대한 설명으로 옳지 <u>않은</u> 것은?",
+  ch:[{t:"입자들은 서로 강하게 붙잡고 있어 제자리에서만 진동한다.",ok:1},{t:"아무도 흔들어 주지 않아도 입자는 쉬지 않고 움직인다.",ok:0},{t:"입자 사이의 거리가 매우 멀다.",ok:0},{t:"입자 사이에 서로 붙잡는 힘이 거의 없다.",ok:0},{t:"입자는 저마다 다른 방향으로 활발하게 움직인다.",ok:0}],
+  why:"서로 강하게 붙잡고 제자리에서 진동하는 것은 <b>고체</b> 입자의 모습입니다. 기체 입자는 <b>멀찍이 떨어져</b>, 붙잡는 힘이 거의 없어 <b>자유롭게</b> 날아다녀요."},
+
+ {id:"g10",
+  difficulty:"중",
+  intent:"생활 속 기체 압력 현상의 설명에서 방향·입자 수·기압 개념을 바르게 적용하는지 확인한다.",
+  stem:"생활 속 기체의 압력에 대한 설명으로 옳지 <u>않은</u> 것은?",
+  ch:[{t:"자동차 에어백은 순간적으로 채운 기체의 압력이 몸을 받쳐 충격을 줄인다.",ok:0},{t:"물놀이 튜브에 공기를 넣으면 위쪽만 부풀어 오른다.",ok:1},{t:"높은 산에 오르면 공기의 양이 줄어 공기의 압력(기압)이 작아진다.",ok:0},{t:"풍선 놀이 틀은 기체가 차서 압력이 커지면 팽팽하게 부푼다.",ok:0},{t:"축구공에 공기를 넣으면 입자 수가 늘어 압력이 커지고 공이 단단해진다.",ok:0}],
+  why:"기체의 압력은 <b>모든 방향</b>으로 작용하므로 튜브는 위쪽만이 아니라 <b>사방으로</b> 부풉니다. 나머지는 모두 입자 수·압력·기압을 바르게 연결한 설명이에요."},
+
+ {id:"g11",
+  difficulty:"중",
+  intent:"압력이 커진 까닭을 «입자 수 증가»와 «빠르기 증가»로 구별해 설명하는지 확인한다.",
+  stem:"입자 상자에서 온도는 그대로 두고 공기를 더 넣었더니 압력계가 올라갔다. 이때 상자 속 입자에게 일어난 일로 옳은 것은?",
+  ch:[{t:"입자 하나하나가 무거워져 벽을 세게 눌렀다.",ok:0},{t:"입자들이 한쪽 벽에 뭉쳐 그 벽만 세게 밀었다.",ok:0},{t:"입자의 수가 늘어 충돌이 잦아졌고, 입자의 빠르기는 그대로이다.",ok:1},{t:"입자의 수는 그대로이고 입자가 빨라져 충돌이 세졌다.",ok:0},{t:"입자의 수와 빠르기가 모두 늘어났다.",ok:0}],
+  why:"공기를 넣으면 <b>수</b>가 늘어날 뿐, 온도를 바꾸지 않았으니 <b>빠르기는 변하지 않습니다</b>. 입자 상자의 «평균 빠르기» 칸이 꿈쩍도 하지 않던 것을 떠올리세요. 압력이 오른 것은 충돌 <b>횟수</b>가 늘었기 때문이에요."},
+
+ {id:"e1",
+  difficulty:"중",
+  type:"essay",
+  intent:"쇠구슬 모형으로 기체 압력의 원리를 설명하고 모형의 한계를 함께 서술하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 230\" width=\"560\" height=\"230\" role=\"img\" aria-label=\"쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><text x=\"150\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"15\" fill=\"#5c4a33\" font-weight=\"800\">(가) 쇠구슬 15개</text><rect x=\"80\" y=\"52\" width=\"140\" height=\"130\" rx=\"18\" fill=\"#f1f7fc\" stroke=\"#1c507e\" stroke-width=\"2.5\"/><rect x=\"128\" y=\"40\" width=\"44\" height=\"14\" rx=\"4\" fill=\"#3f88c5\" stroke=\"#1c507e\" stroke-width=\"2\"/><circle cx=\"101\" cy=\"89\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"138\" cy=\"142\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"175\" cy=\"95\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"108\" cy=\"148\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"145\" cy=\"101\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"182\" cy=\"154\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"115\" cy=\"107\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"152\" cy=\"160\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"189\" cy=\"113\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"122\" cy=\"166\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"159\" cy=\"119\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"196\" cy=\"72\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"129\" cy=\"125\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"166\" cy=\"78\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"99\" cy=\"131\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><text x=\"410\" y=\"30\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"15\" fill=\"#5c4a33\" font-weight=\"800\">(나) 쇠구슬 30개</text><rect x=\"340\" y=\"52\" width=\"140\" height=\"130\" rx=\"18\" fill=\"#f1f7fc\" stroke=\"#1c507e\" stroke-width=\"2.5\"/><rect x=\"388\" y=\"40\" width=\"44\" height=\"14\" rx=\"4\" fill=\"#3f88c5\" stroke=\"#1c507e\" stroke-width=\"2\"/><circle cx=\"369\" cy=\"145\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"406\" cy=\"98\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"443\" cy=\"151\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"376\" cy=\"104\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"413\" cy=\"157\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"450\" cy=\"110\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"383\" cy=\"163\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"420\" cy=\"116\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"457\" cy=\"69\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"390\" cy=\"122\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"427\" cy=\"75\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"360\" cy=\"128\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"397\" cy=\"81\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"434\" cy=\"134\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"367\" cy=\"87\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"404\" cy=\"140\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"441\" cy=\"93\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"374\" cy=\"146\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"411\" cy=\"99\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"448\" cy=\"152\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"381\" cy=\"105\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"418\" cy=\"158\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"455\" cy=\"111\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"388\" cy=\"164\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"425\" cy=\"117\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"358\" cy=\"70\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"395\" cy=\"123\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"432\" cy=\"76\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"365\" cy=\"129\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><circle cx=\"402\" cy=\"82\" r=\"7\" fill=\"#8d99a6\" stroke=\"#5c6b78\" stroke-width=\"1.4\"/><text x=\"280\" y=\"215\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12.5\" fill=\"#96805c\">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg>",
+  stem:"그림의 쇠구슬 페트병 모형으로 「기체 입자 수가 많을수록 압력이 커지는 까닭」을 <b>충돌</b>이라는 낱말을 넣어 설명하고, 이 모형이 실제 기체와 다른 점 한 가지를 「<b>스스로</b>」라는 낱말을 넣어 서술하시오.",
+  model:"같은 빠르기로 흔들 때 쇠구슬이 30개인 병이 15개인 병보다 손바닥에 더 큰 힘이 느껴진다. 쇠구슬이 많을수록 벽에 충돌하는 횟수가 많기 때문이다. 기체도 입자 수가 많을수록 벽에 충돌하는 횟수가 늘어 압력이 커진다. 그러나 쇠구슬은 사람이 흔들어야 움직이고 멈추면 가라앉지만, 기체 입자는 아무도 흔들지 않아도 스스로 끊임없이 움직인다는 점이 다르다.",
+  rubric:[{t:"쇠구슬(입자)이 많을수록 벽에 충돌하는 횟수가 많아 힘(압력)이 커진다고 씀",p:3},{t:"쇠구슬은 흔들어야 움직이지만 기체 입자는 스스로 끊임없이 움직인다는 차이를 씀",p:3}],
+  reject:["쇠구슬이 많으면 더 빨라져서라고 쓴 답", "기체 입자도 흔들어 주어야 움직인다고 쓴 답"],
+  keys:["충돌", "스스로"],
+  lines:4,
+  why:""},
+
+ {id:"e2",
+  difficulty:"상",
+  type:"essay",
+  intent:"기록표를 근거로 입자 수와 압력의 관계를 정리하고, 압력의 방향까지 넣어 현상을 설명하는지 확인한다.",
+  svg:"<svg viewBox=\"0 0 560 165\" width=\"560\" height=\"165\" role=\"img\" aria-label=\"입자 상자 기록표. 입자 수 15·30·60개일 때 1초 벽 충돌 11·21·43회, 압력계 100·200·400, 평균 빠르기는 모두 100.\" style=\"max-width:560px;width:100%;height:auto;display:block;margin:0 auto\"><rect x=\"70\" y=\"14\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">입자 수(개)</text><rect x=\"250\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">15</text><rect x=\"330\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">30</text><rect x=\"410\" y=\"14\" width=\"80\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"33.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">60</text><rect x=\"70\" y=\"42\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">1초 벽 충돌(회)</text><rect x=\"250\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">11</text><rect x=\"330\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">21</text><rect x=\"410\" y=\"42\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"61.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">43</text><rect x=\"70\" y=\"70\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">압력계(보통=100)</text><rect x=\"250\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><rect x=\"330\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">200</text><rect x=\"410\" y=\"70\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"89.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">400</text><rect x=\"70\" y=\"98\" width=\"180\" height=\"28\" fill=\"#efe6d3\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"160.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\" font-weight=\"800\">평균 빠르기(보통=100)</text><rect x=\"250\" y=\"98\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"290.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><rect x=\"330\" y=\"98\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"370.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><rect x=\"410\" y=\"98\" width=\"80\" height=\"28\" fill=\"#fdfbf6\" stroke=\"#c1ac82\" stroke-width=\"1.4\"/><text x=\"450.0\" y=\"117.0\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"13.5\" fill=\"#2e2315\">100</text><text x=\"280\" y=\"150\" text-anchor=\"middle\" font-family=\"Gowun Dodum, Pretendard, sans-serif\" font-size=\"12\" fill=\"#96805c\">※ 같은 크기의 상자, 같은 온도에서 입자 수만 바꾸었다</text></svg>",
+  stem:"표는 입자 상자에서 입자 수만 바꾸며 기록한 것이다. 이 표를 근거로 「찌그러진 축구공에 공기를 넣으면 공이 <b>모든 방향</b>으로 고르게 부풀어 단단해지는 까닭」을 <b>충돌</b>이라는 낱말을 넣어 서술하시오.",
+  model:"표에서 입자 수가 15 → 30 → 60개로 늘자 1초 동안의 벽 충돌 횟수가 11 → 21 → 43회로 늘고 압력계도 100 → 200 → 400으로 커졌다. 즉 입자 수가 많을수록 충돌이 잦아져 압력이 커진다. 축구공에 공기를 넣으면 공 속 입자 수가 늘어 충돌이 잦아지고 압력이 커지는데, 입자가 사방으로 날아다니므로 이 압력은 모든 방향으로 작용한다. 그래서 공은 한쪽만이 아니라 모든 방향으로 고르게 부풀어 단단해진다.",
+  rubric:[{t:"표의 수치를 들어 입자 수가 늘면 충돌 횟수가 늘고 압력이 커진다고 씀",p:2},{t:"공기를 넣으면 공 속 입자 수가 늘어 압력이 커진다고 축구공에 적용함",p:2},{t:"입자가 사방으로 움직여 압력이 모든 방향으로 작용하므로 고르게 부푼다고 씀",p:2}],
+  reject:["공기를 넣으면 입자가 빨라져서라고 쓴 답", "압력이 아래쪽(또는 한쪽)으로 작용한다고 쓴 답", "표를 근거로 들지 않은 답"],
+  keys:["충돌", "모든 방향"],
+  lines:5,
+  why:""}
 ];
 
 
@@ -1579,6 +1650,7 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  }
  function paintQ(){
  const q=GAME_QS[idx];
+ if(q.type==='essay')return paintEssay();
  host.innerHTML=`<div class="card">
   <div class="game-hud">
    <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
@@ -1609,7 +1681,9 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
  }else{o.classList.add('wrong');o.classList.add('locked');
   fb.className='mq-fb no show';fb.innerHTML='❌ 아직이에요. 자료와 발문을 다시 읽어 보세요.';A.wrong();}
  }));
- $('#gameNext').addEventListener('click',()=>{
+ $('#gameNext').addEventListener('click',advance);
+ }
+ function advance(){
  if(idx<GAME_QS.length-1){idx++;paintQ();}
  else{
   if(scoreNow>(S.best||0))S.best=scoreNow;
@@ -1621,7 +1695,47 @@ $('#brandBtn').addEventListener('click',()=>{refreshCover();$('#cover').classLis
    <div class="cta-row" style="justify-content:center"><button class="btn" id="gameRetry">다시 풀기 ↺</button></div></div>`;
   $('#gameRetry').addEventListener('click',paintIntro);
  }
- });
+ }
+ function paintEssay(){
+ const q=GAME_QS[idx];S.eq=S.eq||{};
+ const saved=S.eq[q.id]||'',total=q.rubric.reduce((a,r)=>a+r.p,0);
+ host.innerHTML=`<div class="card">
+  <div class="game-hud">
+   <span class="badge">문제 ${idx+1} / ${GAME_QS.length}</span>
+   <span class="mq-lv" data-lv="${q.difficulty}">난이도 ${q.difficulty}</span>
+   <span class="mq-lv" style="color:var(--accent2)">서술형 · 자기 채점</span>
+   <span class="score-box" style="margin-left:auto"><span class="lab2">점수</span><span class="num">${scoreNow}</span></span>
+  </div>
+  <p class="mq-text" style="margin-top:14px;font-size:17px;font-weight:700;line-height:1.7">${q.stem}</p>
+  ${q.svg?`<div class="qfig">${q.svg}</div>`:''}
+  <textarea class="eq-ta" id="eqTa" rows="${q.lines||4}" placeholder="내 문장으로 써 보세요 — 꼭 들어갈 낱말: ${q.keys.join(', ')}"></textarea>
+  <div class="eq-keys" id="eqKeys"></div>
+  <div class="cta-row" style="justify-content:flex-start" id="eqOpenRow"><button class="btn primary" id="eqOpen">✍️ 다 썼어요 — 채점 기준 열기</button></div>
+  <div class="eq-rub" id="eqRub" hidden>
+   <div class="eq-h">✍️ 모범 답안</div><div class="eq-model">${q.model}</div>
+   <div class="eq-h">✅ 채점 기준 — 내 답에 들어 있으면 체크</div>
+   ${q.rubric.map(r=>`<label class="eq-item"><input type="checkbox" data-p="${r.p}"><span>${r.t}</span><span class="p">${r.p}점</span></label>`).join('')}
+   ${q.reject&&q.reject.length?`<div class="eq-rej">🧑‍🏫 불인정·감점 예 — ${q.reject.join(' · ')}</div>`:''}
+   <div class="eq-sum" id="eqSum">0점 / ${total}점</div>
+   <div class="cta-row" style="justify-content:flex-start"><button class="btn primary" id="eqDone">채점 완료 → 다음</button></div>
+  </div>
+ </div>`;
+ const ta=$('#eqTa'),keys=$('#eqKeys');ta.value=saved;
+ function paintKeys(){keys.innerHTML=q.keys.map(k=>'<span class="eq-key'+(ta.value.indexOf(k)>=0?' on':'')+'">'+(ta.value.indexOf(k)>=0?'✓ ':'')+k+'</span>').join('');}
+ ta.addEventListener('input',()=>{S.eq[q.id]=ta.value;save();paintKeys();});paintKeys();
+ function pts(){let p=0;$$('.eq-item input',host).forEach(c=>{if(c.checked)p+=+c.dataset.p;});return p;}
+ $$('.eq-item input',host).forEach(c=>c.addEventListener('change',()=>{$('#eqSum').textContent=pts()+'점 / '+total+'점';}));
+ $('#eqOpen').addEventListener('click',()=>{
+  if(ta.value.trim().length<10){toast('먼저 <b>한두 문장</b>이라도 써 본 뒤 열어요 ✍️');return;}
+  $('#eqRub').hidden=false;$('#eqOpenRow').style.display='none';A.pop();});
+ let done=false;
+ $('#eqDone').addEventListener('click',()=>{
+  if(done)return;done=true;
+  const p=pts(),pass=p/total>=0.6;
+  if(pass){scoreNow+=20;A.correct();}else A.wrong();
+  toast(pass?'서술형 <b>'+p+'점 / '+total+'점</b> — 통과! ✅':'서술형 <b>'+p+'점 / '+total+'점</b> — 모범 답안과 견주어 보완해 보세요 ✍️',pass?'good':'');
+  advance();
+  host.scrollIntoView({block:'start',behavior:'smooth'});});
  }
  paintIntro();
 })();
