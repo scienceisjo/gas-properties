@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<title>강의 · 압력과 부피 — 온도가 일정할 때</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   core.css — 소비 전력 강의 덱 공통 (Apple DESIGN.md 언어)
+   무대 1920×1080 · 면 색이 구획 · 액션 블루 하나 · UI 그림자 없음
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  /* 면 */
+  --c-white:#ffffff; --c-parchment:#f5f5f7; --c-black:#000000; --c-dark:#1d1d1f; --c-graphite:#272729;
+  /* 글자 */
+  --ink:#1d1d1f; --ink-2:#6e6e73; --ink-3:#86868b; --on-dark:#f5f5f7; --on-dark-2:#a1a1a6; --on-dark-3:#6e6e73;
+  --hair:#e0e0e0; --hair-dark:#3a3a3c;
+  /* 행동 */
+  --action:#0066cc; --action-dark:#2997ff;
+  /* 에너지 — 어두운 면 기본값(밝은 면에서 아래 .slide[data-tile] 규칙이 덮어씀) */
+  --elec:#64D2FF; --light:#FFD60A; --heat:#FF6A3D; --sound:#BF5AF2; --kin:#30D158;
+  /* 에너지 — 면과 무관하게 고정된 두 벌(그림 속에서 직접 고를 때) */
+  --elec-hi:#64D2FF; --light-hi:#FFD60A; --heat-hi:#FF6A3D; --sound-hi:#BF5AF2; --kin-hi:#30D158;
+  --elec-lo:#0077B6; --light-lo:#9A7400; --heat-lo:#C4391B; --sound-lo:#8A3FC0; --kin-lo:#1E8B3E;
+  /* 글꼴 */
+  --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Display","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  /* 움직임 */
+  --ease-out:cubic-bezier(.2,.8,.2,1); --ease-inout:cubic-bezier(.65,0,.35,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#000}
+body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  word-break:keep-all;overflow-wrap:break-word;-webkit-user-select:none;user-select:none;font-feature-settings:"ss03"}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ── 무대 ── */
+#viewport{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#000;contain:layout paint}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;isolation:isolate}
+.slide.is-on{display:block}
+.slide.is-out{display:block;z-index:1}
+.slide.is-on{z-index:2}
+
+/* ── 면(타일) ── 다크: 에너지가 빛나는 무대 / 라이트: 정의와 타이포 */
+.slide[data-tile="black"]{background:var(--c-black);color:var(--on-dark)}
+.slide[data-tile="dark"]{background:var(--c-dark);color:var(--on-dark)}
+.slide[data-tile="graphite"]{background:var(--c-graphite);color:var(--on-dark)}
+.slide[data-tile="light"]{background:var(--c-white);color:var(--ink)}
+.slide[data-tile="parchment"]{background:var(--c-parchment);color:var(--ink)}
+.slide[data-tile="light"],.slide[data-tile="parchment"]{
+  --elec:var(--elec-lo); --light:var(--light-lo); --heat:var(--heat-lo); --sound:var(--sound-lo); --kin:var(--kin-lo);
+  --t2:var(--ink-2); --t3:var(--ink-3); --hl:var(--hair); --act:var(--action);
+}
+.slide[data-tile="black"],.slide[data-tile="dark"],.slide[data-tile="graphite"]{
+  --t2:var(--on-dark-2); --t3:var(--on-dark-3); --hl:var(--hair-dark); --act:var(--action-dark);
+}
+
+/* ── 글자 체계 (무대 px) — 최소 24px ── */
+.t-hero{font-size:168px;font-weight:600;line-height:1.02;letter-spacing:-.035em}
+.t-display{font-size:120px;font-weight:600;line-height:1.05;letter-spacing:-.03em}
+.t-title{font-size:84px;font-weight:600;line-height:1.1;letter-spacing:-.025em}
+.t-head{font-size:60px;font-weight:600;line-height:1.14;letter-spacing:-.022em}
+.t-lead{font-size:44px;font-weight:400;line-height:1.3;letter-spacing:-.012em}
+.t-airy{font-size:40px;font-weight:300;line-height:1.4;letter-spacing:-.005em}
+.t-label{font-size:34px;font-weight:600;line-height:1.2;letter-spacing:-.01em}
+.t-body{font-size:32px;font-weight:400;line-height:1.47;letter-spacing:-.01em}
+.t-cap{font-size:26px;font-weight:400;line-height:1.35;letter-spacing:-.005em}
+.t-eyebrow{font-size:30px;font-weight:600;line-height:1.2;letter-spacing:.01em;color:var(--t2)}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum","ss03";letter-spacing:-.02em}
+.mute{color:var(--t2)} .mute2{color:var(--t3)}
+.c-elec{color:var(--elec)} .c-light{color:var(--light)} .c-heat{color:var(--heat)} .c-sound{color:var(--sound)} .c-kin{color:var(--kin)}
+.unit{font-weight:400;letter-spacing:0;margin-left:.12em}
+.center{text-align:center}
+
+/* 배치 도우미 — 슬라이드 조각이 자유롭게 쓴다 */
+.abs{position:absolute}
+.fill{position:absolute;inset:0}
+.full-svg{position:absolute;inset:0;width:1920px;height:1080px;overflow:visible}
+.row{display:flex;align-items:center}
+.col{display:flex;flex-direction:column}
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:9999px;padding:12px 26px;font-size:28px;font-weight:600}
+.pill.ghost{border:2px solid currentColor}
+.chip-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:9999px;padding:16px 34px;font-size:30px;font-weight:600;
+  background:var(--act);color:#fff;transition:transform .15s var(--ease-out)}
+.chip-btn:active{transform:scale(.95)}
+.card{border-radius:18px;border:1px solid var(--hl);padding:32px}
+svg text{font-family:var(--font)}
+
+/* ── 선언형 등장: data-in(들어올 때) / data-step="k"(k번째 클릭) / data-out="k" ── */
+[data-in],[data-step]{opacity:0}
+[data-fx="draw"],[data-fx="draw"] :is(path,line,polyline,polygon,circle,ellipse,rect){stroke-dasharray:1 1;stroke-dashoffset:1}
+[data-fx="draw"]{opacity:1}
+svg [data-in],svg [data-step],svg .tb{transform-box:fill-box;transform-origin:center}
+.tb{transform-box:fill-box;transform-origin:center}
+.tb-bl{transform-box:fill-box;transform-origin:left bottom}
+.tb-b{transform-box:fill-box;transform-origin:center bottom}
+
+/* ── HUD (Apple 원형 칩) ── */
+#hud{position:fixed;right:22px;bottom:18px;display:flex;align-items:center;gap:8px;z-index:50;opacity:0;transform:translateY(8px);
+  transition:opacity .35s var(--ease-out),transform .35s var(--ease-out);pointer-events:none}
+#hud.show{opacity:1;transform:none;pointer-events:auto}
+#hud button{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(210,210,215,.64);color:#1d1d1f;
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);transition:transform .15s var(--ease-out)}
+#hud button:active{transform:scale(.92)}
+#hud button svg{width:20px;height:20px}
+#hud .count{min-width:84px;height:44px;border-radius:9999px;display:grid;place-items:center;padding:0 16px;background:rgba(210,210,215,.64);color:#1d1d1f;
+  font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
+#progress{position:fixed;left:0;right:0;bottom:0;height:3px;z-index:40;background:transparent}
+#progress i{display:block;height:100%;width:0;background:rgba(255,255,255,.38);transition:width .5s var(--ease-out),background .4s}
+body.on-light #progress i{background:rgba(0,0,0,.22)}
+#stepdots{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:9px;z-index:40;opacity:0;transition:opacity .35s}
+#stepdots.show{opacity:1}
+#stepdots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .3s,transform .3s}
+#stepdots i.on{background:rgba(255,255,255,.9);transform:scale(1.15)}
+body.on-light #stepdots i{background:rgba(0,0,0,.16)} body.on-light #stepdots i.on{background:rgba(0,0,0,.62)}
+
+/* ── 덮개(노트·전체보기·도움말) ── */
+.overlay{position:fixed;inset:0;z-index:60;display:none}
+.overlay.show{display:block}
+#notes{position:fixed;left:0;right:0;bottom:0;height:36vh;z-index:55;transform:translateY(102%);transition:transform .45s var(--ease-out);
+  background:rgba(22,22,23,.86);color:#f5f5f7;-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  padding:22px 40px 26px;overflow:auto;border-top:1px solid rgba(255,255,255,.08)}
+#notes.show{transform:none}
+#notes .nh{display:flex;align-items:baseline;gap:14px;margin-bottom:10px;font-size:15px;color:#a1a1a6;font-weight:600;letter-spacing:.01em}
+#notes .nh b{color:#f5f5f7;font-size:18px}
+#notes .nh .nx{margin-left:auto;font-weight:400}
+#notes p{font-size:clamp(17px,1.55vw,24px);line-height:1.6;margin:0 0 .7em;color:#e8e8ed;max-width:1500px}
+#notes p .pn{display:inline-block;font-size:.66em;font-weight:700;color:#2997ff;margin-right:.6em;vertical-align:.12em}
+#notes p b{color:#fff;font-weight:700}
+#notes p .cue{display:inline-block;margin-top:.3em;padding:2px 12px;border-radius:9999px;background:rgba(41,151,255,.18);color:#8cc8ff;font-size:.85em}
+
+#overview{background:rgba(0,0,0,.72);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);overflow:auto;padding:56px 5vw}
+#overview h2{color:#f5f5f7;font-size:28px;font-weight:600;letter-spacing:-.01em;margin-bottom:22px}
+#overview .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+#overview .ov{position:relative;aspect-ratio:16/9;border-radius:11px;padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;
+  border:1px solid rgba(255,255,255,.1);transition:transform .2s var(--ease-out)}
+#overview .ov:active{transform:scale(.97)}
+#overview .ov.cur{outline:3px solid #2997ff;outline-offset:3px}
+#overview .ov .n{font-size:14px;font-weight:700;opacity:.6;font-variant-numeric:tabular-nums}
+#overview .ov .tt{font-size:19px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+#overview .ov[data-tile="black"],#overview .ov[data-tile="dark"],#overview .ov[data-tile="graphite"]{background:#1d1d1f;color:#f5f5f7}
+#overview .ov[data-tile="light"]{background:#fff;color:#1d1d1f}
+#overview .ov[data-tile="parchment"]{background:#f5f5f7;color:#1d1d1f}
+
+#help{background:rgba(0,0,0,.6);display:none;place-items:center}
+#help.show{display:grid}
+#help .box{background:#fff;color:#1d1d1f;border-radius:18px;padding:34px 40px;min-width:520px}
+#help h3{font-size:24px;font-weight:600;margin-bottom:16px;letter-spacing:-.01em}
+#help table{border-collapse:collapse;font-size:17px}
+#help td{padding:7px 18px 7px 0;border-bottom:1px solid #f0f0f0}
+#help kbd{display:inline-block;min-width:30px;padding:3px 9px;border-radius:8px;background:#f5f5f7;border:1px solid #e0e0e0;font:600 15px var(--font);text-align:center}
+#blank{position:fixed;inset:0;z-index:70;display:none}
+#blank.black{display:block;background:#000} #blank.white{display:block;background:#fff}
+
+/* 정지 화면(검증 스크린샷) — 크롬 UI 숨김 */
+html.still #hud,html.still #progress,html.still #stepdots{display:none!important}
+html.still *{cursor:none!important}
+/* 격자 보기(?grid=1) */
+#gridov{position:absolute;inset:0;z-index:30;pointer-events:none;display:none;
+  background-image:linear-gradient(rgba(255,0,80,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(255,0,80,.25) 1px,transparent 1px);
+  background-size:120px 120px}
+html.grid #gridov{display:block}
+html.grid #gridov::after{content:"";position:absolute;inset:80px 120px;border:2px dashed rgba(255,0,80,.6)}
+
+@media (prefers-reduced-motion: reduce){ .slide *{scroll-behavior:auto} }
+
+/* ── 소리 단추·알림 ── */
+#hud button.off{opacity:.55}
+#sfxToast{position:fixed;left:50%;bottom:78px;transform:translate(-50%,8px);z-index:80;padding:10px 22px;border-radius:9999px;background:rgba(29,29,31,.86);color:#f5f5f7;
+  font-size:16px;font-weight:600;letter-spacing:-.01em;opacity:0;pointer-events:none;transition:opacity .25s var(--ease-out),transform .25s var(--ease-out);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
+#sfxToast.show{opacity:1;transform:translate(-50%,0)}
+html.still #sfxToast{display:none}
+
+/* ── 학생 모드(?s=1): 대본 숨김 ── */
+html.student #notes{display:none!important}
+
+/* ── 장면 머리(제목) ── */
+.hd{position:absolute;left:120px;top:78px;right:120px;z-index:3}
+.hd .eb{font-size:28px;font-weight:600;letter-spacing:.01em;color:var(--t2);margin-bottom:10px}
+.hd .eb b{color:var(--act);font-weight:700;margin-right:.35em}
+.hd h2{font-size:66px;font-weight:600;line-height:1.1;letter-spacing:-.028em}
+.hd h2 .soft{color:var(--t2);font-weight:400}
+
+/* ── 개념정리 학습지 카드 · 빈칸(번호 = 학습지 빈칸 번호 ①~㉖) ── */
+.ws-card{position:absolute;border-radius:18px;padding:30px 44px 26px;background:#f5f5f7;z-index:3}
+.slide[data-tile="parchment"] .ws-card{background:#fff}
+.slide[data-tile="black"] .ws-card,.slide[data-tile="dark"] .ws-card,.slide[data-tile="graphite"] .ws-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.ws-card .ws-h{display:flex;align-items:baseline;gap:18px;margin-bottom:6px}
+.ws-card .ws-h b{font-size:40px;font-weight:700;letter-spacing:-.02em}
+.ws-card .ws-h span{font-size:28px;color:var(--t2)}
+.ws-row{display:grid;grid-template-columns:110px 1fr;gap:22px;align-items:baseline;font-size:38px;line-height:1.55;padding:12px 0;border-top:1px solid var(--hl)}
+.ws-row:first-of-type{border-top:0}
+.ws-row .tm{font-size:26px;font-weight:600;color:var(--t2);letter-spacing:.01em}
+.ws-line{font-size:38px;line-height:1.6}
+.bk{position:relative;display:inline-block;min-width:3.4em;margin:0 .2em;padding:0 .3em;text-align:center;line-height:1.3;white-space:nowrap;
+  border-bottom:4px solid #c7c7cc}
+.slide[data-tile="black"] .bk,.slide[data-tile="dark"] .bk,.slide[data-tile="graphite"] .bk{border-bottom-color:#48484a}
+.bk .a{display:inline-block;font-weight:700;color:var(--act)}
+.bk .n{position:absolute;left:-.62em;top:-.55em;min-width:1.25em;height:1.25em;padding:0 .2em;border-radius:9999px;background:var(--act);color:#fff;
+  font-size:.6em;font-weight:700;line-height:1.25em;text-align:center;font-variant-numeric:tabular-nums}
+.bk.wide{min-width:5.6em}
+.qbox{position:absolute;border-radius:18px;border:1px solid var(--hl);padding:26px 34px;font-size:32px;line-height:1.5}
+.qbox .qh{font-size:26px;font-weight:600;color:var(--t2);margin-bottom:6px}
+.say-line{position:absolute;left:120px;right:120px;text-align:center;font-size:44px;font-weight:600;letter-spacing:-.02em;z-index:3}
+.fine{position:absolute;left:120px;bottom:40px;font-size:24px;color:var(--t3);z-index:3}
+
+/* ── 10_gas.css ── */
+/* ── 기체 압력 강의 덱 공용 색·글자 — 의미마다 색 하나(같은 뜻은 어느 장에서나 같은 색) ──
+   힘 = 보라(--sound) · 압력 = 붉은 주황(--heat) · 입자 = 초록(--kin) · 운동 방향 화살표 = 하늘(--elec)
+   면적·부피(양·크기) = 앰버(--light) · 빈칸 답 = 액션 블루(--act) — 면(밝음/어두움)에 따라 저절로 짙고 옅게 바뀜 */
+.c-force{color:var(--sound)} .c-press{color:var(--heat)} .c-part{color:var(--kin)} .c-motion{color:var(--elec)} .c-amt{color:var(--light)}
+.gx-ro{position:absolute;font-size:34px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.gx-ro small{font-size:26px;font-weight:400;color:var(--t2);margin-left:.3em}
+.gx-cap{position:absolute;font-size:28px;font-weight:400;color:var(--t2);letter-spacing:-.005em}
+.gx-tag{position:absolute;display:inline-flex;align-items:center;gap:10px;padding:8px 22px;border-radius:9999px;font-size:28px;font-weight:600;border:2px solid currentColor}
+.gx-eq{position:absolute;font-weight:600;letter-spacing:-.025em;white-space:nowrap}
+.slide[data-tile="light"],.slide[data-tile="parchment"]{--flash:#1d1d1f}
+.slide[data-tile="black"],.slide[data-tile="dark"],.slide[data-tile="graphite"]{--flash:#f5f5f7}
+.gx-eq .f{color:var(--sound)} .gx-eq .a{color:var(--light)} .gx-eq .p{color:var(--heat)}
+
+/* ── 07_table.html ── */
+
+#d3_07_table .cell{position:absolute;height:72px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:700;background:#fff;border-radius:12px;font-variant-numeric:tabular-nums}
+#d3_07_table .cell.hd2{background:transparent;justify-content:flex-start;font-size:30px;font-weight:600;color:var(--t2);padding-left:6px}
+#d3_07_table .cell.ans{color:var(--light)}
+
+/* ── 09_life.html ── */
+
+#d3_09_life .s09-h{font-size:28px;font-weight:600;color:var(--t2)}
+
+/* ── 11_sentence.html ── */
+
+#d3_11_sentence .s11-line{display:inline-block;vertical-align:bottom;min-height:1.5em;border-bottom:4px solid #c7c7cc;padding:0 .3em;text-align:center}
+#d3_11_sentence .s11-uw{display:inline;background:linear-gradient(#c7c7cc,#c7c7cc) 0 96%/100% 4px no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+#d3_11_sentence .s11-a2{display:inline;color:var(--act);font-weight:700;line-height:1.9;font-size:.92em}
+#d3_11_sentence .s11-a{display:inline-block;color:var(--act);font-weight:700;line-height:1.3;font-size:.92em}
+
+/* ── 12_recap.html ── */
+
+#d3_12_recap .rc{position:absolute;top:290px;width:540px;height:540px;border-radius:18px;background:#fff;padding:34px 36px;display:flex;flex-direction:column;gap:14px}
+#d3_12_recap .rc .no{font-size:26px;font-weight:700;color:var(--act)}
+#d3_12_recap .rc h3{font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+#d3_12_recap .rc p{font-size:34px;line-height:1.45}
+#d3_12_recap .rc p.m{color:var(--t2);font-size:30px}
+#d3_12_recap .rc .big{margin-top:auto;font-size:50px;font-weight:700;letter-spacing:-.025em;white-space:nowrap}
+
+</style>
+</head>
+<body>
+<!-- 덱 전체가 함께 쓰는 SVG 정의(필터·그라데이션). 장면 SVG 에서 url(#이름) 으로 참조 -->
+<svg id="gdefs" width="0" height="0" style="position:absolute;width:0;height:0" aria-hidden="true" focusable="false">
+<defs>
+  <!-- 빛 번짐: 원래 모양 + 흐린 사본 -->
+  <filter id="glow-s" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glow-m" x="-80%" y="-80%" width="260%" height="260%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glow-l" x="-100%" y="-100%" width="300%" height="300%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="18" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glow-xl" x="-150%" y="-150%" width="400%" height="400%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="36" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <!-- 번짐만(후광 층) -->
+  <filter id="bloom-m" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="bloom-l" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="40"/></filter>
+  <!-- 애플의 단 하나의 그림자: 면 위에 놓인 제품(오브젝트)에만 -->
+  <filter id="product-shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="3" dy="5" stdDeviation="15" flood-color="#000" flood-opacity=".22"/></filter>
+  <!-- 열 아지랑이 일렁임(작은 영역에만) — JS 가 baseFrequency/seed 를 바꿔 움직임 -->
+  <filter id="heat-haze" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence id="heat-haze-turb" type="fractalNoise" baseFrequency="0.012 0.06" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <!-- 에너지 조각 광원(원형 방사) — 색마다 -->
+  <radialGradient id="rg-elec"><stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="#64D2FF"/><stop offset="1" stop-color="#64D2FF" stop-opacity="0"/></radialGradient>
+  <radialGradient id="rg-light"><stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="#FFD60A"/><stop offset="1" stop-color="#FFD60A" stop-opacity="0"/></radialGradient>
+  <radialGradient id="rg-heat"><stop offset="0" stop-color="#fff1e8"/><stop offset=".28" stop-color="#FF6A3D"/><stop offset="1" stop-color="#FF6A3D" stop-opacity="0"/></radialGradient>
+  <radialGradient id="rg-sound"><stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="#BF5AF2"/><stop offset="1" stop-color="#BF5AF2" stop-opacity="0"/></radialGradient>
+  <radialGradient id="rg-kin"><stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="#30D158"/><stop offset="1" stop-color="#30D158" stop-opacity="0"/></radialGradient>
+  <!-- 제품 재질 -->
+  <linearGradient id="lg-white-plastic" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#eeeef0"/><stop offset="1" stop-color="#d4d4d9"/></linearGradient>
+  <linearGradient id="lg-graphite" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a5a5f"/><stop offset=".5" stop-color="#3a3a3d"/><stop offset="1" stop-color="#1f1f21"/></linearGradient>
+  <linearGradient id="lg-silver" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f4f6"/><stop offset=".45" stop-color="#c9c9ce"/><stop offset=".55" stop-color="#b3b3b8"/><stop offset="1" stop-color="#e2e2e6"/></linearGradient>
+  <linearGradient id="lg-glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff" stop-opacity=".30"/><stop offset=".35" stop-color="#ffffff" stop-opacity=".06"/><stop offset=".8" stop-color="#ffffff" stop-opacity=".02"/><stop offset="1" stop-color="#ffffff" stop-opacity=".18"/></linearGradient>
+</defs>
+</svg>
+
+<div id="viewport"><div id="stage">
+<!-- ═══ 01_cover.html ═══ -->
+<section class="slide" id="d3_01_cover" data-tile="black" data-title="표지" data-notes="P1" data-say="주사기 끝을 막고 피스톤을 누르면 부피가 줄어드는 장면으로 시작합니다. 이때 압력은 어떻게 될까요?">
+  <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_01_cover-syr"></g></svg>
+  <div class="abs t-eyebrow center" style="left:0;width:1920px;top:690px" data-in="1200">VI. 기체의 성질 · 2. 기체의 압력과 부피</div>
+  <div class="abs t-display center" style="left:0;width:1920px;top:734px" data-in="1400">압력과 부피</div>
+  <div class="abs t-lead center mute" style="left:0;width:1920px;top:880px" data-in="1800">온도가 일정할 때</div>
+</section>
+<!-- ═══ 02_hook.html ═══ -->
+<section class="slide" id="d3_02_hook" data-tile="dark" data-title="누를수록 점점 힘들다" data-notes="P2" data-say="학생이 먼저 「압력이 커진다」를 말하게 두고, 이번 시간은 온도가 일정할 때만 본다고 못 박아 둡니다.">
+  <div class="hd" data-in><div class="eb">생각 열기</div><h2>누를수록 점점 힘들다</h2></div>
+  <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_02_hook-syr"></g></svg>
+  <div class="abs" style="left:450px;top:760px;font-size:36px;font-weight:600" data-step="1">부피 <span class="num c-amt" style="font-size:64px;font-weight:700;margin:0 8px"><span id="d3_02_hook-v">40</span></span> mL</div>
+  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:60px;font-weight:600;letter-spacing:-.028em" data-step="2">압력과 부피 사이에는 어떤 관계가 있을까?</div>
+</section>
+<!-- ═══ 03_review.html ═══ -->
+<section class="slide" id="d3_03_review" data-tile="black" data-title="되짚기 — 기체의 압력" data-notes="P3" data-say="지난 시간의 결론 한 줄: 압력은 입자가 벽에 충돌해서 가하는 힘이고, 충돌이 잦을수록 커진다. 빈칸 ① 충돌 · ② 횟수 · ③ 방향.">
+  <div class="hd" data-in><div class="eb">A · 개념 정리</div><h2>기체의 압력이란</h2></div>
+  <div class="ws-card" style="left:120px;top:300px;width:880px" data-in="300">
+    <div class="ws-h"><b>되짚기</b></div>
+    <div class="ws-line">기체의 압력은 기체 입자가 그릇의 벽에 <span class="bk"><span class="a" data-step="1" data-fx="pop">충돌</span><span class="n">1</span></span>하면서 가하는 힘이다.</div>
+    <div class="ws-line" style="margin-top:12px">같은 시간 동안 벽에 부딪히는 <span class="bk"><span class="a" data-step="2" data-fx="pop">횟수</span><span class="n">2</span></span>가 많을수록 압력은 커진다.</div>
+    <div class="ws-line" style="margin-top:12px">기체의 압력은 위·아래·옆 가릴 것 없이 모든 <span class="bk"><span class="a" data-step="3" data-fx="pop">방향</span><span class="n">3</span></span>으로 작용한다.</div>
+  </div>
+  <svg class="full-svg" viewBox="0 0 1920 1080">
+    <rect x="1060" y="330" width="660" height="380" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
+    <g id="d3_03_review-box"></g>
+  </svg>
+  <div class="abs" style="left:1060px;top:756px;font-size:34px;font-weight:600" data-step="2">1초 동안 벽 충돌 <span class="num" style="font-size:52px;font-weight:700;margin:0 8px"><span id="d3_03_review-n">0</span></span> 번</div>
+  <div class="abs mute" style="left:1060px;top:840px;width:660px;font-size:28px;line-height:1.4" data-step="3">기체는 모든 방향으로 민다 — 벽 안쪽 어디에나 부딪힌다</div>
+</section>
+<!-- ═══ 04_relation.html ═══ -->
+<section class="slide" id="d3_04_relation" data-tile="light" data-title="오늘의 관계" data-notes="P4" data-say="수식(반비례)은 쓰지 않아요. 「압력이 2배면 부피는 약 절반」까지만. 여기서 「압력」은 피스톤을 누르는(바깥에서 가하는) 압력이에요. 빈칸 ④ 작아진다 · ⑤ 커진다 · ⑥ 절반.">
+  <div class="hd" data-in><div class="eb">오늘의 관계</div><h2>온도가 일정할 때</h2></div>
+  <div class="ws-card" style="left:120px;top:270px;width:1680px;padding:24px 44px" data-in="300">
+    <div class="ws-line" style="font-size:38px">일정한 양의 기체에 가하는 압력을 크게 하면 부피는 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">작아진다</span><span class="n">4</span></span>.</div>
+    <div class="ws-line" style="font-size:38px;margin-top:4px">반대로 압력을 작게 하면 부피는 <span class="bk"><span class="a" data-step="2" data-fx="pop">커진다</span><span class="n">5</span></span>.</div>
+    <div class="ws-line" style="font-size:38px;margin-top:4px">압력이 2배가 되면 부피는 약 <span class="bk"><span class="a" data-step="3" data-fx="pop">절반</span><span class="n">6</span></span>이 된다.</div>
+  </div>
+  <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_04_relation-syr"></g></svg>
+  <div class="abs" style="left:330px;top:900px;font-size:36px;font-weight:600">누르는 압력 <span class="num c-press" style="font-size:60px;font-weight:700;margin:0 8px"><span id="d3_04_relation-p">1.0</span></span> 기압</div>
+  <div class="abs" style="left:900px;top:900px;font-size:36px;font-weight:600">부피 <span class="num c-amt" style="font-size:60px;font-weight:700;margin:0 8px"><span id="d3_04_relation-v">40</span></span> mL</div>
+  <div class="abs c-press" style="left:1290px;top:912px;font-size:38px;font-weight:700" id="d3_04_relation-tag"></div>
+</section>
+<!-- ═══ 05_why.html ═══ -->
+<section class="slide" id="d3_05_why" data-tile="dark" data-title="입자로 설명하기" data-notes="P5" data-say="입자는 10개 그대로, 빠르기도 그대로 — 방만 좁아졌어요. 피스톤 면에 부딪히는 횟수는 실제 시뮬레이션에서 센 값이라 조금씩 출렁여도 「약 2배」로 읽으면 됩니다. 빈칸 ⑦ 가까워진다 · ⑧ 늘어난다 · ⑨ 커진다.">
+  <div class="hd" data-in><div class="eb">왜 그럴까</div><h2>입자로 설명하기</h2></div>
+  <div class="ws-card" style="left:120px;top:300px;width:780px" data-in="300">
+    <div class="ws-line">부피가 줄어들면 입자 사이의 거리가 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">가까워진다</span><span class="n">7</span></span>.</div>
+    <div class="ws-line" style="margin-top:12px">좁아진 방에서 같은 시간 동안 벽에 충돌하는 횟수가 <span class="bk wide"><span class="a" data-step="2" data-fx="pop">늘어난다</span><span class="n">8</span></span>.</div>
+    <div class="ws-line" style="margin-top:12px">충돌이 곧 압력이므로 기체의 압력이 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">커진다</span><span class="n">9</span></span>.</div>
+  </div>
+  <svg class="full-svg" viewBox="0 0 1920 1080">
+    <g id="d3_05_why-syr"></g>
+    <g id="d3_05_why-bars" data-step="3" data-fx="fade">
+      <rect x="1000" y="880" width="560" height="22" rx="11" fill="rgba(255,255,255,.1)"/><rect id="d3_05_why-b1" x="1000" y="880" width="0" height="22" rx="11" fill="var(--on-dark)"/>
+      <rect x="1000" y="930" width="560" height="22" rx="11" fill="rgba(255,255,255,.1)"/><rect id="d3_05_why-b2" x="1000" y="930" width="0" height="22" rx="11" fill="var(--on-dark)"/>
+      <text x="984" y="899" text-anchor="end" style="font-size:26px;font-weight:600;fill:var(--on-dark-2)">40 mL</text><text x="984" y="949" text-anchor="end" style="font-size:26px;font-weight:600;fill:var(--on-dark-2)">20 mL</text>
+      <text x="1000" y="866" style="font-size:26px;fill:var(--on-dark-2)">피스톤 면(넓이 그대로)에 1초에 부딪힌 횟수</text>
+      <text x="1580" y="946" style="font-size:30px;font-weight:700;fill:var(--heat)">= 압력 ↑</text>
+    </g>
+  </svg>
+  <div class="abs" style="left:1000px;top:690px;width:760px;font-size:32px;line-height:1.4;font-weight:600" data-step="1">입자 <span class="c-part" style="font-weight:700">10개</span> · 빠르기(화살표 길이) 그대로<br><span style="font-weight:400;color:var(--on-dark-2)">방만 좁아져 입자 사이의 거리가 가까워진다</span></div>
+  <div class="abs" style="left:1000px;top:788px;font-size:32px;font-weight:600" data-step="2">피스톤 면에 1초에 평균 <span class="num" style="font-size:44px;font-weight:700;margin:0 4px"><span id="d3_05_why-r1">0.0</span></span> 번 → <span class="num" style="font-size:44px;font-weight:700;margin:0 4px"><span id="d3_05_why-r2">재는 중</span></span> 번</div>
+</section>
+<!-- ═══ 06_unchanged.html ═══ -->
+<section class="slide" id="d3_06_unchanged" data-tile="black" data-title="변하지 않는 것" data-notes="P6" data-say="단원 최대 오개념: 「부피가 줄면 입자가 빨리 움직여서 압력이 커진다」. 계기판에서 평균 빠르기가 그대로인 것을 직접 보게 합니다. 빈칸 ⑩ 수 · ⑪ 크기 · ⑫ 빠르기 · ⑬ 온도.">
+  <div class="hd" data-in><div class="eb">변하지 않는 것</div><h2>피스톤이 못 바꾸는 것</h2></div>
+  <div class="ws-card" style="left:120px;top:300px;width:800px" data-in="300">
+    <div class="ws-line">부피를 줄여도 기체 입자의 <span class="bk"><span class="a" data-step="1" data-fx="pop">수</span><span class="n">10</span></span>는 변하지 않는다. 피스톤은 입자를 만들지도 없애지도 못한다.</div>
+    <div class="ws-line" style="margin-top:12px">입자 하나하나의 <span class="bk"><span class="a" data-step="2" data-fx="pop">크기</span><span class="n">11</span></span>도 변하지 않는다.</div>
+    <div class="ws-line" style="margin-top:12px">입자의 평균 <span class="bk"><span class="a" data-step="3" data-fx="pop">빠르기</span><span class="n">12</span></span>도 그대로다 — 빠르기를 바꾸는 것은 <span class="bk"><span class="a" data-step="4" data-fx="pop">온도</span><span class="n">13</span></span>뿐이다.</div>
+  </div>
+  <svg class="full-svg" viewBox="0 0 1920 1080">
+    <g id="d3_06_unchanged-syr"></g>
+    <g data-step="1" data-fx="fade">
+      <text x="1330" y="722" text-anchor="middle" style="font-size:30px;font-weight:700;fill:var(--amt,var(--light))">40 mL</text><text x="1530" y="722" text-anchor="middle" style="font-size:30px;font-weight:700;fill:var(--light)">20 mL</text>
+      <text x="1000" y="796" style="font-size:32px;font-weight:600;fill:var(--on-dark)">입자 수</text>
+      <text x="1330" y="796" text-anchor="middle" class="num" style="font-size:38px;font-weight:700;fill:var(--kin)">10 개</text><text x="1530" y="796" text-anchor="middle" class="num" style="font-size:38px;font-weight:700;fill:var(--kin)">10 개</text>
+    </g>
+    <g data-step="2" data-fx="fade">
+      <text x="1000" y="866" style="font-size:32px;font-weight:600;fill:var(--on-dark)">입자 크기</text>
+      <circle cx="1330" cy="856" r="9" fill="var(--kin)"/><circle cx="1530" cy="856" r="9" fill="var(--kin)"/>
+    </g>
+    <g data-step="3" data-fx="fade">
+      <text x="1000" y="936" style="font-size:32px;font-weight:600;fill:var(--on-dark)">평균 빠르기</text>
+      <text x="1330" y="936" text-anchor="middle" class="num" style="font-size:38px;font-weight:700;fill:var(--elec)">100</text>
+      <text id="d3_06_unchanged-sp" x="1530" y="936" text-anchor="middle" class="num" style="font-size:38px;font-weight:700;fill:var(--elec)">100</text>
+      <text x="1620" y="936" style="font-size:24px;fill:var(--on-dark-2)">(보통 = 100)</text>
+    </g>
+    <text x="1400" y="988" text-anchor="middle" data-step="4" data-fx="fade" style="font-size:28px;font-weight:700;fill:var(--on-dark)">온도를 높였더니 (예) — 지금까지는 온도가 일정했다</text>
+    <g data-step="4" data-fx="fade">
+      <rect x="1740" y="700" width="22" height="170" rx="11" fill="rgba(255,255,255,.14)"/><rect id="d3_06_unchanged-th" x="1740" y="800" width="22" height="70" rx="11" fill="var(--on-dark)"/>
+      <circle cx="1751" cy="884" r="26" fill="var(--on-dark)"/>
+      <text x="1751" y="672" text-anchor="middle" style="font-size:28px;font-weight:700;fill:var(--on-dark)">온도</text>
+    </g>
+  </svg>
+</section>
+<!-- ═══ 07_table.html ═══ -->
+<section class="slide" id="d3_07_table" data-tile="parchment" data-title="표에서 규칙 찾기" data-notes="P7" data-say="첫 칸(1기압 · 40 mL)을 보고 규칙을 찾게 합니다. 값은 이상적인 값이에요(실제 센서 값은 조금씩 달라집니다). 빈칸 ⑭ 절반 · ⑮ 4분의 1 · ⑯ 작아진다.">
+  <div class="hd" data-in><div class="eb">A · 표 → 그래프</div><h2>압력을 바꾸며 부피를 재면</h2></div>
+  <div class="abs mute" style="left:120px;top:256px;width:830px;font-size:26px;line-height:1.4" data-in="300">주사기에 공기 40 mL를 가두고 피스톤을 천천히 눌렀다. 압력 센서가 읽은 값(이상적인 값)이다. 첫 칸을 보고 규칙을 찾아 나머지 칸을 채워 보자.</div>
+  <div id="d3_07_table-tbl"></div>
+  <div class="ws-card" style="left:980px;top:262px;width:820px;padding:24px 40px" data-in="400">
+    <div class="ws-h"><b>알아낸 것</b></div>
+    <div class="ws-line" style="font-size:36px">압력이 2배가 되면 부피는 <span class="bk"><span class="a" data-step="1" data-fx="pop">절반</span><span class="n">14</span></span>이 되고,</div>
+    <div class="ws-line" style="font-size:36px">압력이 4배가 되면 부피는 <span class="bk wide"><span class="a" data-step="2" data-fx="pop">4분의 1</span><span class="n">15</span></span>이 된다.</div>
+    <div class="ws-line" style="font-size:36px">즉 압력이 커질수록 기체의 부피는 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">작아진다</span><span class="n">16</span></span>.</div>
+  </div>
+  <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_07_table-syr"></g></svg>
+  <div class="abs" style="left:330px;top:900px;font-size:34px;font-weight:600">압력 센서 <span class="num c-press" style="font-size:56px;font-weight:700;margin:0 8px"><span id="d3_07_table-p">1</span></span> 기압</div>
+  <div class="abs" style="left:900px;top:900px;font-size:34px;font-weight:600">부피 <span class="num c-amt" style="font-size:56px;font-weight:700;margin:0 8px"><span id="d3_07_table-v">40</span></span> mL</div>
+</section>
+<!-- ═══ 08_graph.html ═══ -->
+<section class="slide" id="d3_08_graph" data-tile="light" data-title="표를 그래프로" data-notes="P8" data-say="반비례라는 말은 쓰지 않아요. 「직선이 아니라 오른쪽 아래로 휘어지는 곡선」, 「가로축에 닿지 않는다」까지만. 빈칸 ⑰ 곡선 · ⑱ 닿지 않는다.">
+  <div class="hd" data-in><div class="eb">A · 표 → 그래프</div><h2>점을 찍고 이어 보면</h2></div>
+  <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_08_graph-g"></g></svg>
+  <div class="ws-card" style="left:1200px;top:300px;width:600px;padding:26px 36px" data-in="400">
+    <div class="ws-h"><b>그래프 모양</b></div>
+    <div class="ws-line" style="font-size:36px">점을 이어 보면 직선이 아니라 오른쪽 아래로 휘어지는 <span class="bk"><span class="a" data-step="2" data-fx="pop">곡선</span><span class="n">17</span></span>이다.</div>
+    <div class="ws-line" style="font-size:36px;margin-top:10px">부피가 0이 되는 일은 없으므로 곡선은 가로축에 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">닿지 않는다</span><span class="n">18</span></span>.</div>
+  </div>
+  <div class="abs mute" style="left:1200px;top:640px;width:600px;font-size:28px;line-height:1.45" data-in="600">가로축 한 칸 = 1기압<br>세로축 한 칸 = 5 mL</div>
+</section>
+<!-- ═══ 09_life.html ═══ -->
+<section class="slide" id="d3_09_life" data-tile="parchment" data-title="생활에서 찾기" data-notes="P9" data-say="온도 변화는 생각하지 않고 압력만 봅니다(온도는 다음 시간에). 표는 학생이 먼저 채운 뒤 한 줄씩 확인해요.">
+  <div class="hd" data-in><div class="eb">A · 생활에서 찾기</div><h2>생활 속 압력과 부피</h2></div>
+  <div class="abs s09-h" style="left:410px;top:262px" data-in="300">상황</div>
+  <div class="abs s09-h" style="left:1130px;top:262px" data-in="300">작용하는 압력</div>
+  <div class="abs s09-h" style="left:1520px;top:262px" data-in="300">기체의 부피</div>
+  <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_09_life-rows"></g></svg>
+  <div class="abs mute" style="left:120px;top:920px;font-size:28px" data-in="800">온도 변화는 생각하지 않고 압력만 본다</div>
+</section>
+<!-- ═══ 10_breath.html ═══ -->
+<section class="slide" id="d3_10_breath" data-tile="dark" data-title="들숨과 날숨" data-notes="P10" data-say="가슴 속 공간(부피)이 변하면 폐 속 압력이 바깥보다 낮아지거나 높아져 공기가 드나듭니다. 그림은 원리를 보이는 단순한 모형이에요.">
+  <div class="hd" data-in><div class="eb">A · 생활에서 찾기</div><h2>들숨과 날숨</h2></div>
+  <div class="abs" style="left:120px;top:300px;width:560px" data-step="1">
+    <div style="font-size:60px;font-weight:600;letter-spacing:-.025em;color:var(--kin)">들숨</div>
+    <div style="font-size:36px;line-height:1.6;margin-top:6px">공간이 <b class="c-amt">커진다</b><br>폐 속 압력이 <b class="c-press">낮아진다</b><br>공기가 들어온다</div>
+  </div>
+  <div class="abs" style="left:120px;top:660px;width:560px" data-step="2">
+    <div style="font-size:60px;font-weight:600;letter-spacing:-.025em;color:var(--elec)">날숨</div>
+    <div style="font-size:36px;line-height:1.6;margin-top:6px">공간이 <b class="c-amt">줄어든다</b><br>폐 속 압력이 <b class="c-press">높아진다</b><br>공기가 나간다</div>
+  </div>
+  <svg class="full-svg" viewBox="0 0 1920 1080">
+    <rect x="740" y="310" width="440" height="430" rx="40" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
+    <rect x="936" y="220" width="48" height="92" fill="rgba(255,255,255,.10)"/>
+    <g id="d3_10_breath-box" transform="translate(1160 330) rotate(90)"></g>
+    <rect id="d3_10_breath-dia" x="756" y="590" width="408" height="18" rx="9" fill="#c99a7a"/>
+    <text x="960" y="196" text-anchor="middle" style="font-size:26px;fill:var(--on-dark-2)">코와 입</text>
+    <text x="740" y="296" style="font-size:28px;font-weight:700;fill:var(--on-dark)">폐 (가슴 속 공간)</text>
+    <g id="d3_10_breath-flow"></g>
+    <text x="960" y="778" text-anchor="middle" style="font-size:26px;fill:var(--on-dark-2)">가로막(아래로 내려가면 공간이 커진다)</text>
+    <text x="960" y="822" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--on-dark)">부피가 변해 압력 차가 생긴다</text>
+    <text x="960" y="860" text-anchor="middle" style="font-size:24px;fill:var(--on-dark-2)">(실제 압력 차는 아주 작다 — 그림은 크게 그렸다)</text>
+    <g id="d3_10_breath-in" opacity="0"></g>
+    <g id="d3_10_breath-out" opacity="0"></g>
+    <g>
+      <rect x="1300" y="330" width="34" height="380" rx="8" fill="rgba(255,255,255,.08)"/><rect id="d3_10_breath-bar" x="1300" y="470" width="34" height="240" rx="8" fill="var(--heat)"/>
+      <path d="M1284 470H1350" stroke="var(--on-dark)" stroke-width="3" stroke-dasharray="6 6"/>
+      <text x="1362" y="480" style="font-size:26px;fill:var(--on-dark)">바깥 압력</text>
+      <text x="1317" y="312" text-anchor="middle" style="font-size:26px;font-weight:700;fill:var(--heat)">폐 속 압력</text>
+    </g>
+  </svg>
+</section>
+<!-- ═══ 11_sentence.html ═══ -->
+<section class="slide" id="d3_11_sentence" data-tile="light" data-title="한 문장으로 정리" data-notes="P11" data-say="학생이 먼저 학습지에 써 본 뒤 모범 문장을 보여 줍니다. 조건(온도가 일정할 때 · 일정한 양의 기체)까지 넣었는지 확인하세요.">
+  <div class="hd" data-in><div class="eb">한 문장으로 정리</div><h2>오늘 알아낸 것을 내 문장으로</h2></div>
+  <div class="ws-card" style="left:120px;top:290px;width:1680px;padding:40px 56px" data-in="300">
+    <div class="ws-line" style="font-size:40px;line-height:1.9">온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 <span class="s11-line" style="width:340px"><span class="s11-a" data-step="1" data-fx="pop">작아진다</span></span>.</div>
+    <div class="ws-line" style="font-size:40px;line-height:1.9;margin-top:8px">왜냐하면 <span class="s11-uw"><span class="s11-a2" data-step="2" data-fx="pop">부피가 작아질수록 입자 사이의 거리가 가까워져 벽에 충돌하는 횟수가 늘어나 기체의 압력이 커지기</span></span> 때문이다.</div>
+  </div>
+  <div class="abs" style="left:120px;top:700px;width:1680px;font-size:32px;line-height:1.5;font-weight:600" data-step="2">기체가 미는 압력이 바깥에서 누르는 압력과 같아질 때까지 부피가 줄어든다.</div>
+  <div class="abs mute" style="left:120px;top:790px;width:1680px;font-size:30px;line-height:1.5" data-in="700">예시 문장이에요. 「부피가 줄면 입자가 빨라져서」는 틀린 설명 — 입자의 빠르기는 그대로!</div>
+</section>
+<!-- ═══ 12_recap.html ═══ -->
+<section class="slide" id="d3_12_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P12" data-say="마지막 줄로 처음의 과자 봉지를 되받습니다. 온도 이야기는 다음 시간이에요.">
+  <div class="hd" data-in><div class="eb">정리</div><h2>오늘 배운 것</h2></div>
+  <div id="d3_12_recap-cards"></div>
+  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">산 위 과자 봉지가 부푼 까닭 — 바깥 <span class="c-press">압력</span>이 작아졌기 때문이다</div>
+  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">제작 : 과학을 사랑하는 선생님 · © 2026 · All rights reserved · 최종 업데이트: 2026-09-30</div>
+</section>
+<div id="gridov"></div>
+</div></div>
+
+<script>window.NOTES = {"P1": "오늘은 압력과 부피 사이의 관계를 알아봅니다. 주사기 끝을 막고 피스톤을 눌러 본 적 있나요? 눌렀더니 부피가 줄어들었죠. 이때 압력은 어떻게 될까요?", "P2": "주사기 끝을 막고 피스톤을 누르면 누를수록 점점 힘들어져요. 압력과 부피 사이에는 어떤 관계가 있을까요? 오늘은 온도가 일정할 때만 봅니다.", "P3": "먼저 되짚어 볼게요. 기체의 압력은 기체 입자가 그릇의 벽에 충돌하면서 가하는 힘입니다. 같은 시간 동안 벽에 부딪히는 횟수가 많을수록 압력이 커지고, 모든 방향으로 작용해요. 학습지 1번부터 3번 빈칸입니다.", "P4": "오늘의 관계입니다. 온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 작아지고, 압력을 작게 하면 부피는 커집니다. 압력이 2배가 되면 부피는 약 절반이 돼요.", "P5": "왜 그럴까요? 부피가 줄어들면 입자 사이의 거리가 가까워지고, 좁아진 방에서는 같은 시간 동안 벽에 충돌하는 횟수가 늘어납니다. 충돌이 곧 압력이므로 기체의 압력이 커져요. 입자끼리는 부딪히지 않는 단순한 그림이라, 좁아진 방에서는 벽까지 오가는 거리가 짧아져서 충돌이 잦아진다고 생각하면 됩니다. 피스톤 면에 부딪히는 횟수를 세어 봅시다.", "P6": "부피를 줄여도 변하지 않는 것이 있어요. 입자의 수, 입자 하나하나의 크기, 입자의 평균 빠르기입니다. 피스톤은 입자를 만들지도 없애지도 못하고, 빠르기를 바꾸는 것은 온도뿐이에요. 부피가 줄어들 때 입자가 빨라진다고 생각하면 안 됩니다.", "P7": "실제로 재어 볼게요. 주사기에 공기 40 mL를 가두고 피스톤을 천천히 눌렀을 때 압력 센서가 읽은 값입니다. 압력이 1, 2, 4, 5기압일 때 부피는 각각 얼마일까요? 첫 칸을 보고 규칙을 찾아 나머지를 채워 보세요.", "P8": "표의 값을 그래프에 찍어 볼까요. 가로축은 한 칸에 1기압, 세로축은 한 칸에 5 mL입니다. 점을 이어 보면 직선이 아니라 오른쪽 아래로 휘어지는 곡선이에요. 부피가 0이 되는 일은 없으므로 곡선은 가로축에 닿지 않습니다.", "P9": "생활에서 찾아봅시다. 각 상황에서 기체에 작용하는 압력과 기체의 부피가 어떻게 되는지 표에 적어 보세요. 높은 산에 올라간 과자 봉지는 바깥 공기의 압력이 작아져서 부피가 커진 거예요. 온도 변화는 생각하지 않고 압력만 봅니다.", "P10": "우리 몸에서도 같은 일이 일어납니다. 숨을 들이쉴 때는 가슴 속 공간이 커져 폐 속 압력이 낮아지고, 그 차이로 공기가 들어옵니다. 내쉴 때는 반대예요. 부피가 변해 압력 차가 생기는 거죠.", "P11": "오늘 알아낸 것을 조건까지 넣어 내 문장으로 적어 봅시다. 바깥에서 누르는 압력을 크게 하면, 기체가 미는 압력이 바깥 압력과 같아질 때까지 부피가 줄어드는 거예요. 온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 어떻게 되고, 왜 그런지까지 써 보세요.", "P12": "정리합니다. 온도가 일정할 때 압력이 커지면 부피는 작아지고, 압력이 2배면 부피는 약 절반입니다. 입자 수와 빠르기는 그대로이고 달라지는 것은 충돌의 횟수예요. 처음의 과자 봉지는 산 위에서 바깥의 압력이 작아져서 부풀었던 거죠."};</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   core.js — 강의 덱 엔진
+   · 1920×1080 무대를 화면에 맞춰 배율(레터박스)
+   · 장면(scene) = 도입(enter, 저절로) + 빌드 단계(go(k), 클릭마다)
+   · 되돌아가기·건너뛰기는 "처음 상태로 복원 → 순간 재생"이라 언제나 같은 모습
+   · 애니메이션 도구는 ctx 가 쥐고 있어 장면을 떠나면 저절로 정리됨
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  const SW = 1920, SH = 1080;
+  const Q = new URLSearchParams(location.search);
+  const STILL = Q.get('still') === '1';
+  /* 학생 모드(?s=1): 대본(노트) 숨김 — 허브 「칠판 다시보기」용. sc_teacher=1 이 저장된 기기는 그대로 교사 화면 */
+  let TEACHER_DEV = false; try { TEACHER_DEV = localStorage.getItem('sc_teacher') === '1'; } catch (e) {}
+  const STUDENT = Q.get('s') === '1' && !TEACHER_DEV;
+  if (STUDENT) document.documentElement.classList.add('student');
+  const REDUCED = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (STILL || Q.get('clean') === '1') document.documentElement.classList.add('still');
+  if (Q.get('grid') === '1') document.documentElement.classList.add('grid');
+  if (Q.get('log') === '1') {   // 검증용: 콘솔 수준을 앞머리로 남김(console.py 가 읽음)
+    const oe = console.error.bind(console), ow = console.warn.bind(console);
+    const txt = a => a.map(x => (x && x.stack) ? String(x.stack).split(String.fromCharCode(10)).slice(0, 2).join(' | ') : (typeof x === 'object' ? (() => { try { return JSON.stringify(x); } catch (e) { return String(x); } })() : String(x))).join(' ');
+    console.error = (...a) => oe('[ERR] ' + txt(a));
+    console.warn = (...a) => ow('[WARN] ' + txt(a));
+    window.addEventListener('error', e => oe('[ERR] uncaught ' + (e.message || '') + ' @' + (e.lineno || '')));
+    window.addEventListener('unhandledrejection', e => oe('[ERR] rejection ' + ((e.reason && e.reason.stack) || e.reason)));
+  }
+
+  /* ── 곡선 ── */
+  const EASE = {
+    out: 'cubic-bezier(.2,.8,.2,1)', outQuint: 'cubic-bezier(.22,1,.36,1)', inOut: 'cubic-bezier(.65,0,.35,1)',
+    in: 'cubic-bezier(.55,0,.75,.1)', spring: 'cubic-bezier(.34,1.56,.64,1)', soft: 'cubic-bezier(.25,.1,.25,1)', linear: 'linear',
+  };
+  const JE = {
+    linear: t => t,
+    out: t => 1 - Math.pow(1 - t, 3),
+    outQuint: t => 1 - Math.pow(1 - t, 5),
+    inOut: t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+    in: t => t * t * t,
+    soft: t => t * t * (3 - 2 * t),
+    spring: t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+    elastic: t => (t === 0 || t === 1) ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * (2 * Math.PI) / 3) + 1,
+  };
+
+  /* ── 등장 모양(선언형·ctx.reveal 공용) ── svg 요소에는 blur(필터) 빼고 */
+  const REVEAL = {
+    rise:  { k: [{ opacity: 0, transform: 'translateY(28px)', filter: 'blur(12px)' }, { opacity: 1, transform: 'translateY(0px)', filter: 'blur(0px)' }], dur: 900 },
+    fade:  { k: [{ opacity: 0 }, { opacity: 1 }], dur: 700 },
+    blur:  { k: [{ opacity: 0, transform: 'scale(1.06)', filter: 'blur(24px)' }, { opacity: 1, transform: 'scale(1)', filter: 'blur(0px)' }], dur: 1100 },
+    scale: { k: [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'scale(1)' }], dur: 900 },
+    pop:   { k: [{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'scale(1)' }], dur: 750, ease: 'spring' },
+    left:  { k: [{ opacity: 0, transform: 'translateX(-64px)' }, { opacity: 1, transform: 'translateX(0px)' }], dur: 900 },
+    right: { k: [{ opacity: 0, transform: 'translateX(64px)' }, { opacity: 1, transform: 'translateX(0px)' }], dur: 900 },
+    down:  { k: [{ opacity: 0, transform: 'translateY(-28px)' }, { opacity: 1, transform: 'translateY(0px)' }], dur: 900 },
+    up:    { k: [{ opacity: 0, transform: 'translateY(72px)' }, { opacity: 1, transform: 'translateY(0px)' }], dur: 1000 },
+    draw:  { k: [{ opacity: 1, strokeDashoffset: 1 }, { opacity: 1, strokeDashoffset: 0 }], dur: 1200, ease: 'inOut' },
+    wipe:  { k: [{ opacity: 1, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 0% 0 0)' }], dur: 1000, ease: 'inOut' },
+    none:  { k: [{ opacity: 1 }, { opacity: 1 }], dur: 1 },
+  };
+  const isSVG = el => el instanceof SVGElement && !(el instanceof SVGSVGElement);
+  const GEOM = 'path,line,polyline,polygon,circle,ellipse,rect';
+  const noFilter = k => k.map(f => { const g = Object.assign({}, f); delete g.filter; return g; });
+
+  const STUB = { finished: Promise.resolve(), cancel() {}, finish() {}, pause() {}, play() {}, playbackRate: 1, effect: null };
+
+  /* ═════════ 장면 도구 상자 ═════════ */
+  class Ctx {
+    constructor(root, idx) {
+      this.root = root; this.idx = idx; this.instant = false; this.alive = true;
+      this.reduced = REDUCED; this.still = STILL; this.E = EASE; this.JE = JE; this.data = {};
+      this._anims = []; this._loops = []; this._timers = []; this._waits = []; this._tweens = []; this._sfxT = []; this._disp = [];
+    }
+    /** 효과음: SFX.play(name, a, b) 를 delay ms 뒤에. 순간 모드(되돌리기·복원)·건너뛰기·장면 나감이면 조용히 */
+    sfx(name, delay = 0, a, b) {
+      if (STILL || this.instant || !this.alive || !window.SFX) return;
+      if (delay > 0) { const id = setTimeout(() => { if (this.alive && !this.instant) SFX.play(name, a, b); }, delay); this._sfxT.push(id); }
+      else SFX.play(name, a, b);
+    }
+    /** 이어지는 소리('fan'|'hum'|'boil') — 장면을 떠나면 저절로 멎는다. 반환: {level(v), whine(v), stop()} */
+    sfxLoop(kind, o) { const h = window.SFX ? SFX.loop(kind, o) : null; if (h) this._disp.push(() => h.stop()); return h; }
+    onDispose(fn) { this._disp.push(fn); }
+    $(s) { return this.root.querySelector(s); }
+    $$(s) { return Array.from(this.root.querySelectorAll(s)); }
+    _el(el) { return typeof el === 'string' ? this.$(el) : el; }
+    _els(els) { if (typeof els === 'string') return this.$$(els); if (!els) return []; return (els.length !== undefined && !(els instanceof Element)) ? Array.from(els) : [els]; }
+
+    /** Web Animations 한 방. o: {dur, delay, ease, fill, iter, dir, composite}. 순간 모드면 바로 끝 상태 */
+    a(el, kf, o = {}) {
+      el = this._el(el);
+      if (!el || !this.alive) return STUB;
+      const infinite = o.iter === Infinity;
+      const inst = this.instant && !infinite;
+      const an = el.animate(kf, {
+        duration: inst ? 0 : (o.dur ?? 700), delay: inst ? 0 : (o.delay ?? 0),
+        easing: EASE[o.ease] || o.ease || EASE.out, fill: o.fill || 'both',
+        iterations: o.iter ?? 1, direction: o.dir || 'normal', composite: o.composite || 'replace',
+      });
+      if (inst) { try { an.finish(); } catch (e) {} }
+      this._anims.push(an);
+      return an;
+    }
+    /** 여러 요소에 시차(stagger ms)를 두고 같은 애니 */
+    all(els, kf, o = {}) {
+      return this._els(els).map((e, i) => this.a(e, typeof kf === 'function' ? kf(e, i) : kf, Object.assign({}, o, { delay: (o.delay || 0) + i * (o.stagger || 0) })));
+    }
+    /** 등장: fx = rise|fade|blur|scale|pop|left|right|down|up|draw|wipe */
+    reveal(el, fx = 'rise', o = {}) {
+      const els = this._els(el); const out = [];
+      els.forEach((e, i) => {
+        const P = REVEAL[fx] || REVEAL.rise;
+        const d = Object.assign({ dur: P.dur, ease: P.ease || 'out' }, o);
+        if (o.stagger) d.delay = (o.delay || 0) + i * o.stagger;
+        // 효과음: 학습지 빈칸 답이 채워지면 「띠링」, pop·up 등장이면 「톡」
+        if (!this.instant) {
+          const sk = (e.classList && e.classList.contains('a') && e.parentElement && e.parentElement.classList.contains('bk')) ? 'blank' : ((fx === 'pop' || fx === 'up') ? 'pop' : null);
+          if (sk) this.sfx(sk, d.delay || 0);
+        }
+        if (fx === 'draw') {
+          const geo = (e.matches && e.matches(GEOM)) ? [e] : Array.from(e.querySelectorAll(GEOM));
+          this.a(e, [{ opacity: 1 }, { opacity: 1 }], { dur: 1, delay: d.delay });
+          geo.forEach(g => { if (!g.hasAttribute('pathLength')) g.setAttribute('pathLength', '1'); out.push(this.a(g, P.k, d)); });
+        } else {
+          out.push(this.a(e, isSVG(e) ? noFilter(P.k) : P.k, d));
+        }
+      });
+      return out.length === 1 ? out[0] : { finished: Promise.all(out.map(x => x.finished)), list: out };
+    }
+    /** 사라짐(기본: 흐려지며 살짝 위로) */
+    hide(el, o = {}) {
+      return this.all(el, isSVG(this._els(el)[0] || document.body) ? [{ opacity: 1 }, { opacity: 0 }] : [{ opacity: 1, filter: 'blur(0px)' }, { opacity: 0, filter: 'blur(8px)' }],
+        Object.assign({ dur: 500, ease: 'out' }, o));
+    }
+    /** 기다리기(순간 모드면 곧장) */
+    wait(ms) {
+      if (this.instant || !this.alive) return Promise.resolve();
+      return new Promise(res => { const w = { res }; w.t = setTimeout(() => { const i = this._waits.indexOf(w); if (i >= 0) this._waits.splice(i, 1); res(); }, ms); this._waits.push(w); });
+    }
+    /** JS 트윈 — WAAPI 로 못 움직이는 것(속성·viewBox·path d·숫자). fn(p, rawT) */
+    tween(dur, fn, o = {}) {
+      const ease = typeof o.ease === 'function' ? o.ease : (JE[o.ease] || JE.out);
+      if (this.instant || !this.alive) { if (this.alive) fn(1, 1); return Promise.resolve(); }
+      const delay = o.delay || 0;
+      return new Promise(res => {
+        let start = null, done = false, id = 0;
+        const tw = {
+          finish: () => { if (done) return; done = true; cancelAnimationFrame(id); try { fn(1, 1); } catch (e) { console.error(e); } res(); },
+          kill: () => { if (done) return; done = true; cancelAnimationFrame(id); res(); },
+        };
+        this._tweens.push(tw);
+        if (!o.noInit) { try { fn(0, 0); } catch (e) { console.error(e); } }
+        const tick = now => {
+          if (done) return;
+          if (start === null) start = now + delay;
+          const t = (now - start) / dur;
+          if (t < 0) { id = requestAnimationFrame(tick); return; }
+          if (t >= 1) { tw.finish(); return; }
+          try { fn(ease(t), t); } catch (e) { console.error(e); tw.kill(); return; }
+          id = requestAnimationFrame(tick);
+        };
+        id = requestAnimationFrame(tick);
+      });
+    }
+    /** 숫자 굴리기. o.fmt(v) 로 모양 */
+    count(el, from, to, o = {}) {
+      el = this._el(el); if (!el) return Promise.resolve();
+      const fmt = o.fmt || (v => Math.round(v).toLocaleString('ko-KR'));
+      if (to !== from) this.sfx('counter', o.delay || 0, o.dur ?? 1200);
+      return this.tween(o.dur ?? 1200, p => { el.textContent = fmt(from + (to - from) * p); }, Object.assign({ ease: 'outQuint' }, o));
+    }
+    /** 선 그리기(pathLength=1 을 붙여 stroke-dashoffset 1→0) */
+    draw(el, o = {}) { return this.reveal(el, 'draw', o); }
+    /** SVG 카메라 — viewBox 를 [x,y,w,h] 로 옮김 */
+    camera(svg, to, o = {}) {
+      svg = this._el(svg); if (!svg) return Promise.resolve();
+      const from = (svg.getAttribute('viewBox') || `0 0 ${SW} ${SH}`).split(/[\s,]+/).map(Number);
+      this.sfx('whoosh', o.delay || 0, o.dur ?? 1400, .55);
+      return this.tween(o.dur ?? 1400, p => { svg.setAttribute('viewBox', from.map((v, i) => (v + (to[i] - v) * p).toFixed(2)).join(' ')); }, Object.assign({ ease: 'inOut' }, o));
+    }
+    /** 장면이 살아 있는 동안 도는 고리. fn(t초, dt초). 반환값.stop() */
+    loop(fn) {
+      const L = { on: true, t: 0, last: null, id: 0 };
+      const tick = now => {
+        if (!L.on || !this.alive) return;
+        const dt = L.last === null ? 0 : Math.min(0.05, (now - L.last) / 1000);
+        L.last = now; L.t += dt;
+        try { fn(L.t, dt); } catch (e) { console.error('[loop]', e); L.on = false; return; }
+        L.id = requestAnimationFrame(tick);
+      };
+      L.stop = () => { L.on = false; cancelAnimationFrame(L.id); };
+      L.id = requestAnimationFrame(tick);
+      this._loops.push(L);
+      return L;
+    }
+    timer(fn, ms) { const id = setTimeout(() => { if (this.alive) fn(); }, this.instant ? 0 : ms); this._timers.push(id); return id; }
+    every(fn, ms) { const id = setInterval(() => { if (this.alive) fn(); }, ms); this._timers.push(id); return id; }
+    /** 지금 도는 것을 끝 상태로(클릭이 애니 도중에 오면) */
+    hurry() {
+      this.instant = true;
+      this._sfxT.splice(0).forEach(id => clearTimeout(id));      // 아직 울리기 전인 효과음은 접는다
+      this._anims.forEach(a => { try { const t = a.effect && a.effect.getComputedTiming(); if (t && t.iterations !== Infinity && a.playState !== 'finished') a.finish(); } catch (e) {} });
+      this._tweens.slice().forEach(tw => tw.finish());
+      this._waits.splice(0).forEach(w => { clearTimeout(w.t); w.res(); });
+    }
+    dispose() {
+      this.alive = false;
+      this._sfxT.splice(0).forEach(id => clearTimeout(id));
+      this._disp.splice(0).forEach(fn => { try { fn(); } catch (e) {} });
+      this._loops.forEach(l => l.stop());
+      this._timers.forEach(id => clearTimeout(id));
+      this._tweens.slice().forEach(tw => tw.kill());
+      this._waits.splice(0).forEach(w => { clearTimeout(w.t); w.res(); });
+    }
+  }
+
+  /* ═════════ SVG 도우미 ═════════ */
+  const NS = 'http://www.w3.org/2000/svg';
+  const U = {
+    NS,
+    el(tag, attrs = {}, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; },
+    lerp: (a, b, t) => a + (b - a) * t,
+    clamp: (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)),
+    rand: (a = 0, b = 1) => a + Math.random() * (b - a),
+    /** 결정적 난수(검증 화면이 매번 같게): U.rng(seed)() */
+    rng(seed = 1) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; },
+    uid: (() => { let n = 0; return (p = 'u') => `${p}${(++n).toString(36)}`; })(),
+    E: EASE, JE,
+  };
+
+  /* ═════════ 덱 ═════════ */
+  const scenes = {};
+  const Deck = {
+    scene(id, def) { scenes[id] = def; },
+    list: [], i: -1, k: 0, ctx: null, busy: null, U, EASE, JE, Ctx, STILL, REDUCED, STUDENT,
+  };
+  window.Deck = Deck; window.U = U;
+
+  let stage, viewport, hud, prog, dots, notesEl, ovEl, helpEl, blankEl;
+  const fit = () => {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const s = Math.min(vw / SW, vh / SH);
+    stage.style.transform = `translate(${(vw - SW * s) / 2 - vw / 2}px, ${(vh - SH * s) / 2 - vh / 2}px) scale(${s})`;
+    Deck.scale = s;
+  };
+  const defOf = sec => scenes[sec.id] || {};
+  const stepsOf = sec => {
+    if (sec.__steps != null) return sec.__steps;
+    let m = +(defOf(sec).steps || 0);
+    const tmp = document.createElement('div'); tmp.innerHTML = sec.__pristine;
+    tmp.querySelectorAll('[data-step]').forEach(e => { m = Math.max(m, +e.getAttribute('data-step') || 0); });
+    tmp.querySelectorAll('[data-out]').forEach(e => { m = Math.max(m, +e.getAttribute('data-out') || 0); });
+    return (sec.__steps = m);
+  };
+  const safe = async (fn, c) => { try { await fn(); } catch (e) { if (c && c.alive) console.error(`[scene ${c.root.id}]`, e); } };
+
+  function runDecl(c, k) {
+    if (k === 0) {
+      c.$$('[data-in]').forEach(el => {
+        const v = el.getAttribute('data-in'); const delay = +(el.dataset.delay || (v && !isNaN(+v) ? v : 0));
+        c.reveal(el, el.dataset.fx || 'rise', { delay, dur: el.dataset.dur ? +el.dataset.dur : undefined, ease: el.dataset.ease || undefined });
+      });
+    } else {
+      c.$$(`[data-step="${k}"]`).forEach(el => {
+        c.reveal(el, el.dataset.fx || 'rise', { delay: +(el.dataset.delay || 0), dur: el.dataset.dur ? +el.dataset.dur : undefined, ease: el.dataset.ease || undefined });
+      });
+      c.$$(`[data-out="${k}"]`).forEach(el => c.hide(el, { delay: +(el.dataset.outDelay || 0) }));
+    }
+  }
+
+  async function show(i, k = 0, opt = {}) {
+    const n = Deck.list.length; if (!n) return;
+    i = Math.max(0, Math.min(n - 1, i));
+    const to = Deck.list[i]; const from = Deck.i >= 0 ? Deck.list[Deck.i] : null;
+    k = Math.max(0, Math.min(stepsOf(to), k));
+    const instant = !!opt.instant || STILL;
+    if (Deck.ctx) { Deck.ctx.hurry(); Deck.ctx.dispose(); }
+    Deck.busy = null;
+
+    if (from && from !== to) {
+      from.classList.remove('is-on');
+      if (instant || opt.cut) { from.classList.remove('is-out'); from.innerHTML = ''; }
+      else {
+        from.classList.add('is-out');
+        const done = () => { if (!from.classList.contains('is-on')) { from.classList.remove('is-out'); from.innerHTML = ''; } };
+        setTimeout(done, 700);
+      }
+    }
+    to.getAnimations && to.getAnimations().forEach(a => a.cancel());
+    to.innerHTML = to.__pristine;
+    to.classList.remove('is-out'); to.classList.add('is-on');
+    Deck.i = i; Deck.k = k;
+    const tile = to.getAttribute('data-tile') || 'dark';
+    document.body.classList.toggle('on-light', tile === 'light' || tile === 'parchment');
+    if (from && from !== to && !instant && !opt.cut) {
+      to.animate([{ opacity: 0, transform: 'scale(1.015)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 620, easing: EASE.out });
+      if (window.SFX) SFX.play('slide');
+    }
+    const c = new Ctx(to, i); Deck.ctx = c;
+    const def = defOf(to);
+    const run = (async () => {
+      c.instant = instant;
+      runDecl(c, 0);
+      if (def.enter) await safe(() => def.enter(c), c);
+      for (let s = 1; s <= k; s++) {
+        if (!c.alive) return;
+        c.instant = true; runDecl(c, s);
+        if (def.go) await safe(() => def.go(c, s), c);
+      }
+      c.instant = STILL;
+    })();
+    Deck.busy = run; ui();
+    await run;
+    if (Deck.busy === run) Deck.busy = null;
+    if (STILL) markReady();
+    try { history.replaceState(null, '', `#${i + 1}${k ? '.' + k : ''}`); } catch (e) {}
+  }
+  async function stepTo(k) {
+    const c = Deck.ctx, sec = Deck.list[Deck.i]; if (!c) return;
+    Deck.k = k; ui();
+    if (window.SFX && !STILL) SFX.play('step');
+    c.instant = STILL; runDecl(c, k);
+    const def = defOf(sec);
+    const run = def.go ? safe(() => def.go(c, k), c) : Promise.resolve();
+    Deck.busy = run;
+    await run;
+    if (Deck.busy === run) { Deck.busy = null; c.instant = STILL; }
+    try { history.replaceState(null, '', `#${Deck.i + 1}${k ? '.' + k : ''}`); } catch (e) {}
+  }
+  Deck.next = () => {
+    if (Deck.busy && Deck.ctx) { Deck.ctx.hurry(); return; }
+    const sec = Deck.list[Deck.i];
+    if (Deck.k < stepsOf(sec)) stepTo(Deck.k + 1);
+    else if (Deck.i < Deck.list.length - 1) show(Deck.i + 1, 0);
+  };
+  Deck.prev = () => {
+    if (Deck.k > 0) show(Deck.i, Deck.k - 1, { instant: true });
+    else if (Deck.i > 0) show(Deck.i - 1, stepsOf(Deck.list[Deck.i - 1]), { instant: true });
+  };
+  Deck.go = (i, k = 0, opt) => show(i, k, opt);
+  Deck.goId = (id, k = 0) => { const i = Deck.list.findIndex(s => s.id === id); if (i >= 0) show(i, k); };
+  /** 지금 단계 다시 보기(R) */
+  Deck.replay = async () => {
+    const k = Deck.k;
+    if (k === 0) { const i = Deck.i; Deck.i = -1; await show(i, 0, { cut: true }); }
+    else { await show(Deck.i, k - 1, { instant: true }); stepTo(k); }
+  };
+  Deck.steps = sec => stepsOf(sec || Deck.list[Deck.i]);
+
+  function markReady() {
+    const fin = () => { document.documentElement.dataset.ready = '1'; };
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(fin, 60));
+  }
+
+  /* ── 화면 바깥 UI ── */
+  const ICON = {
+    prev: '<svg viewBox="0 0 20 20"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    next: '<svg viewBox="0 0 20 20"><path d="M7.5 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    grid: '<svg viewBox="0 0 20 20"><g fill="currentColor"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></g></svg>',
+    notes: '<svg viewBox="0 0 20 20"><path d="M4 5h12M4 10h12M4 15h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    full: '<svg viewBox="0 0 20 20"><path d="M3.5 8V3.5H8M12 3.5h4.5V8M16.5 12v4.5H12M8 16.5H3.5V12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    replay: '<svg viewBox="0 0 20 20"><path d="M4.5 10a5.5 5.5 0 1 0 1.8-4.1M4.5 3.8v3.4h3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    sound: '<svg viewBox="0 0 20 20"><path d="M3.5 8h3l4-3.5v11L6.5 12h-3z" fill="currentColor"/><path d="M13.5 7.2a4 4 0 0 1 0 5.6M15.6 5a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    mute: '<svg viewBox="0 0 20 20"><path d="M3.5 8h3l4-3.5v11L6.5 12h-3z" fill="currentColor"/><path d="M13.5 7.5l4.5 5M18 7.5l-4.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  };
+  function syncSound() {
+    const b = hud && hud.querySelector('[data-a="sound"]'); if (!b) return;
+    const on = !window.SFX || SFX.isOn();
+    b.innerHTML = on ? ICON.sound : ICON.mute; b.classList.toggle('off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  function buildChrome() {
+    hud = document.createElement('div'); hud.id = 'hud';
+    hud.innerHTML = `<button data-a="replay" aria-label="이 단계 다시 보기(R)">${ICON.replay}</button>${STUDENT ? '' : `<button data-a="notes" aria-label="대본 보기(T)">${ICON.notes}</button>`}<button data-a="grid" aria-label="전체 보기(O)">${ICON.grid}</button><button data-a="prev" aria-label="이전">${ICON.prev}</button><span class="count" id="count">1 / 1</span><button data-a="next" aria-label="다음">${ICON.next}</button><button data-a="sound" aria-label="소리 켜기/끄기(M)">${ICON.sound}</button><button data-a="full" aria-label="전체 화면(F)">${ICON.full}</button>`;
+    document.body.appendChild(hud); syncSound();
+    hud.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; e.stopPropagation(); act(b.dataset.a); });
+    prog = document.createElement('div'); prog.id = 'progress'; prog.innerHTML = '<i></i>'; document.body.appendChild(prog);
+    dots = document.createElement('div'); dots.id = 'stepdots'; document.body.appendChild(dots);
+    notesEl = document.createElement('div'); notesEl.id = 'notes'; document.body.appendChild(notesEl);
+    ovEl = document.createElement('div'); ovEl.id = 'overview'; ovEl.className = 'overlay'; document.body.appendChild(ovEl);
+    helpEl = document.createElement('div'); helpEl.id = 'help'; helpEl.className = 'overlay';
+    helpEl.innerHTML = `<div class="box"><h3>강의 조작</h3><table>
+      <tr><td><kbd>→</kbd> <kbd>Space</kbd> 화면 클릭</td><td>다음(빌드 단계 → 다음 장)</td></tr>
+      <tr><td><kbd>←</kbd> 오른쪽 클릭</td><td>이전</td></tr>
+      <tr><td><kbd>R</kbd></td><td>이 단계 애니메이션 다시 보기</td></tr>
+      <tr><td><kbd>N</kbd></td><td>발표자 노트(대본)</td></tr>
+      <tr><td><kbd>O</kbd></td><td>전체 보기</td></tr>
+      <tr><td><kbd>F</kbd></td><td>전체 화면</td></tr>
+      <tr><td><kbd>M</kbd></td><td>소리 켜기/끄기</td></tr>
+      <tr><td><kbd>B</kbd> / <kbd>W</kbd></td><td>검은 화면 / 흰 화면</td></tr>
+      <tr><td>숫자 + <kbd>Enter</kbd></td><td>그 장으로 이동</td></tr>
+      <tr><td>좌우로 밀기</td><td>전자칠판에서 넘기기</td></tr></table></div>`;
+    document.body.appendChild(helpEl);
+    helpEl.addEventListener('click', () => helpEl.classList.remove('show'));
+    blankEl = document.createElement('div'); blankEl.id = 'blank'; document.body.appendChild(blankEl);
+    blankEl.addEventListener('click', () => { blankEl.className = ''; });
+  }
+  function act(a) {
+    if (a === 'next') Deck.next(); else if (a === 'prev') Deck.prev();
+    else if (a === 'notes') toggleNotes(); else if (a === 'grid') toggleOverview();
+    else if (a === 'full') toggleFull(); else if (a === 'replay') Deck.replay();
+    else if (a === 'sound') { if (window.SFX) SFX.toggle(); syncSound(); }
+  }
+  function ui() {
+    const n = Deck.list.length, sec = Deck.list[Deck.i]; if (!sec || !hud) return;
+    const st = stepsOf(sec);
+    hud.querySelector('#count').textContent = `${Deck.i + 1} / ${n}`;
+    prog.firstChild.style.width = `${((Deck.i + (st ? Deck.k / (st + 1) : 0)) / Math.max(1, n - 1)) * 100}%`;
+    dots.innerHTML = st ? Array.from({ length: st + 1 }, (_, j) => `<i class="${j <= Deck.k ? 'on' : ''}"></i>`).join('') : '';
+    if (notesEl.classList.contains('show')) renderNotes();
+    if (ovEl.classList.contains('show')) renderOverview();
+  }
+  function md(s) { return s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
+  function renderNotes() {
+    const sec = Deck.list[Deck.i]; const N = window.NOTES || {};
+    const keys = (sec.dataset.notes || '').split(/[\s,]+/).filter(Boolean);
+    const nx = Deck.list[Deck.i + 1];
+    const st = stepsOf(sec);
+    const extra = sec.dataset.say ? `<p>${md(sec.dataset.say)}</p>` : '';
+    notesEl.innerHTML = `<div class="nh"><b>${Deck.i + 1}. ${sec.dataset.title || sec.id}</b><span>${st ? `단계 ${Deck.k} / ${st}` : ''}</span><span class="nx">${nx ? '다음 → ' + (nx.dataset.title || '') : '마지막 장'}</span></div>` +
+      keys.map(key => N[key] ? `<p><span class="pn">${key}</span>${md(N[key])}</p>` : '').join('') + extra;
+  }
+  function toggleNotes() { notesEl.classList.toggle('show'); if (notesEl.classList.contains('show')) renderNotes(); }
+  function renderOverview() {
+    ovEl.innerHTML = `<h2>전체 보기 · ${Deck.list.length}장</h2><div class="grid">` + Deck.list.map((s, i) =>
+      `<button class="ov ${i === Deck.i ? 'cur' : ''}" data-i="${i}" data-tile="${s.getAttribute('data-tile') || 'dark'}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="tt">${s.dataset.title || s.id}</span></button>`).join('') + '</div>';
+  }
+  function toggleOverview() {
+    const on = !ovEl.classList.contains('show');
+    ovEl.classList.toggle('show', on); if (on) renderOverview();
+  }
+  function toggleFull() {
+    const d = document;
+    if (!d.fullscreenElement) (d.documentElement.requestFullscreen || d.documentElement.webkitRequestFullscreen || (() => {})).call(d.documentElement);
+    else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+  }
+
+  let hudTimer = 0;
+  function pokeHud() { if (STILL) return; hud.classList.add('show'); dots.classList.add('show'); clearTimeout(hudTimer); hudTimer = setTimeout(() => { hud.classList.remove('show'); dots.classList.remove('show'); }, 2600); }
+
+  function bind() {
+    let jump = '';
+    document.addEventListener('keydown', e => {
+      if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]')) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const key = e.key;
+      if (helpEl.classList.contains('show')) { helpEl.classList.remove('show'); e.preventDefault(); return; }
+      if (blankEl.className && key !== 'b' && key !== 'B' && key !== 'w' && key !== 'W') { blankEl.className = ''; e.preventDefault(); return; }
+      if (/^[0-9]$/.test(key)) { jump += key; return; }
+      if (key === 'Enter' && jump) { show(+jump - 1, 0); jump = ''; e.preventDefault(); return; }
+      jump = '';
+      if (ovEl.classList.contains('show') && (key === 'Escape' || key === 'o' || key === 'O')) { toggleOverview(); e.preventDefault(); return; }
+      switch (key) {
+        case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown': case 'Enter': Deck.next(); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'Backspace': Deck.prev(); break;
+        case 'Home': show(0, 0); break;
+        case 'End': show(Deck.list.length - 1, 0); break;
+        case 'n': case 'N': case 't': case 'T': if (!STUDENT) toggleNotes(); break;
+        case 'o': case 'O': toggleOverview(); break;
+        case 'f': case 'F': toggleFull(); break;
+        case 'm': case 'M': act('sound'); break;
+        case 'r': case 'R': Deck.replay(); break;
+        case 'b': case 'B': blankEl.className = blankEl.className === 'black' ? '' : 'black'; break;
+        case 'w': case 'W': blankEl.className = blankEl.className === 'white' ? '' : 'white'; break;
+        case 'h': case 'H': case '?': helpEl.classList.add('show'); break;
+        case 'Escape': notesEl.classList.remove('show'); break;
+        default: return;
+      }
+      e.preventDefault();
+    });
+    ovEl.addEventListener('click', e => { const b = e.target.closest('.ov'); if (b) { ovEl.classList.remove('show'); show(+b.dataset.i, 0); } else ovEl.classList.remove('show'); });
+    // 무대 클릭·밀기
+    let down = null;
+    viewport.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, t: performance.now(), inter: !!e.target.closest('button,a,input,select,textarea,label,[data-interactive]') }; pokeHud(); });
+    viewport.addEventListener('pointerup', e => {
+      if (!down) return; const dx = e.clientX - down.x, dy = e.clientY - down.y; const d0 = down; down = null;
+      if (d0.inter) return;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.3) { dx < 0 ? Deck.next() : Deck.prev(); return; }
+      if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && e.button === 0) {
+        const r = stage.getBoundingClientRect();
+        (e.clientX - r.left < r.width * 0.12) ? Deck.prev() : Deck.next();
+      }
+    });
+    viewport.addEventListener('contextmenu', e => { if (e.target.closest('[data-interactive]')) return; e.preventDefault(); Deck.prev(); });
+    document.addEventListener('mousemove', pokeHud, { passive: true });
+    window.addEventListener('resize', fit);
+  }
+
+  function boot() {
+    viewport = document.getElementById('viewport'); stage = document.getElementById('stage');
+    Deck.list = Array.from(stage.querySelectorAll(':scope > section.slide'));
+    // 한 번만: 장면별 build(root) → 처음 상태 저장
+    Deck.list.forEach(sec => {
+      const def = defOf(sec);
+      if (def.build) { try { def.build(sec, U); } catch (e) { console.error(`[build ${sec.id}]`, e); } }
+      sec.querySelectorAll('[data-fx="draw"]').forEach(g => {
+        const geo = g.matches(GEOM) ? [g] : Array.from(g.querySelectorAll(GEOM));
+        geo.forEach(x => { if (!x.hasAttribute('pathLength')) x.setAttribute('pathLength', '1'); });
+      });
+      sec.__pristine = sec.innerHTML;
+      sec.innerHTML = '';
+    });
+    buildChrome(); fit(); bind();
+    const h = (location.hash || '').replace('#', '').split('.');
+    let si = Q.has('p') ? (+Q.get('p') - 1) : (h[0] ? +h[0] - 1 : 0);
+    let sk = Q.has('k') ? +Q.get('k') : (h[1] ? +h[1] : 0);
+    if (Q.has('id')) { const j = Deck.list.findIndex(s => s.id === Q.get('id')); if (j >= 0) si = j; }
+    if (!(si >= 0)) si = 0;
+    if (sk === -1 || Q.get('k') === 'last') sk = 99;
+    if (Q.get('play') === '1' && sk > 0 && !STILL) { show(si, sk - 1, { instant: true }).then(() => stepTo(Math.min(sk, stepsOf(Deck.list[si])))); }
+    else show(si, sk, { instant: sk > 0 });
+    if (!STILL) setTimeout(pokeHud, 400);
+  }
+  Deck.boot = boot;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 0));
+  else setTimeout(boot, 0);
+})();
+
+</script>
+<script>
+/* ── 00_registry.js ── */
+try{
+/* ═══════════════════════════════════════════════════════════════
+   objects/00_registry.js — 오브젝트(OBJ)·공용 효과(FX) 등록소
+   규약(모든 objects/*.js 가 따름):
+   · OBJ.def(name, {box:[w,h], svg(o), drive?(ctx, el, o), doc})
+       svg(o)  → 문자열. 최상위는 <g class="o-name" id="o.id"> 하나. 좌표는 (0,0)~box 안.
+                 그라데이션·필터 id 는 반드시 `${o.id}-무엇` 으로(같은 오브젝트가 여러 장에 나와도 안 겹치게).
+                 움직이는 부품에는 class="p-부품" 을 붙인다(ctx.$('#id .p-blades')).
+                 색은 에너지 변수(var(--heat) 등)를 style 로 — 면(밝음/어두움)에 따라 저절로 바뀜.
+       drive() → 움직임 조종기. ctx.loop/ctx.a/ctx.tween 만 써서(장면을 떠나면 저절로 멈춤) 부품을 움직이고
+                 {speed(v,ms), glow(v,ms), …} 같은 메서드를 가진 객체를 돌려준다.
+   · OBJ.place(name, {x,y,s,rot, ...o}) → <g transform="translate scale">{svg}</g>
+       바깥 g 에 자리(transform 속성), 안쪽 g 는 비워 두어 CSS 애니메이션(등장·확대)이 자리를 덮어쓰지 않게.
+   · FX.이름(ctx, 부모g, opts) → 공용 모션 효과. 반환값은 조종기(set…/stop).
+   ═══════════════════════════════════════════════════════════════ */
+window.OBJ = (function () {
+  const R = {};
+  const api = {
+    R,
+    def(name, spec) { R[name] = spec; api[name] = spec; return spec; },
+    svg(name, o = {}) { if (!R[name]) { console.error('OBJ 없음:', name); return ''; } o.id = o.id || U.uid(name); return R[name].svg(o); },
+    place(name, o = {}) {
+      const x = o.x || 0, y = o.y || 0, s = o.s == null ? 1 : o.s, rot = o.rot || 0;
+      const tf = `translate(${x} ${y})${s !== 1 ? ` scale(${s})` : ''}${rot ? ` rotate(${rot})` : ''}`;
+      return `<g transform="${tf}"${o.wrapId ? ` id="${o.wrapId}"` : ''}${o.wrapClass ? ` class="${o.wrapClass}"` : ''}>${api.svg(name, o)}</g>`;
+    },
+    drive(name, ctx, el, o = {}) {
+      if (!R[name] || !R[name].drive) return null;
+      el = typeof el === 'string' ? ctx.$(el) : el;
+      if (!el) { console.error('OBJ.drive 대상 없음:', name); return null; }
+      return R[name].drive(ctx, el, o);
+    },
+  };
+  return api;
+})();
+window.FX = window.FX || {};
+
+}catch(e){console.error("[object 00_registry.js]",e)}
+/* ── 03_sfx.js ── */
+try{
+/* ═══════════════════════════════════════════════════════════════
+   03_sfx.js — 효과음(WebAudio 합성). 소리 파일 0개 · 오프라인 OK
+   · 장면에서는 c.sfx('blank', 지연ms) · c.sfxLoop('fan') 로 부른다(core.js 가 순간 모드·건너뛰기·장면 나감을 알아서 처리)
+   · 브라우저 정책상 첫 클릭·키 입력 뒤부터 소리가 난다. M 키·HUD 단추로 켜고 끔(기기에 기억). 학생 모드(?s=1)는 기본 꺼짐
+   · 점검: ?sfx=demo → 모든 소리를 눌러 들어 보는 패널 / SFX.analyze('blank') → 오프라인 렌더로 세기·길이 점검
+   · 주소 도우미: ?sound=1|0 강제 켜기·끄기 · ?nosfx=1 완전 끔 · ?sfxtest=1 클릭 없이 잠금 해제(자동 점검용)
+   ═══════════════════════════════════════════════════════════════ */
+window.SFX = (function () {
+  'use strict';
+  const Q = new URLSearchParams(location.search);
+  const D = window.Deck || {};
+  const OFF = !!D.STILL || Q.get('nosfx') === '1';
+  const KEY = 'sc_sfx';
+  const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  let on = !D.STUDENT;
+  try { const s = localStorage.getItem(KEY); if (s === '1' || s === '0') on = s === '1'; } catch (e) {}
+  if (Q.get('sound') === '1') on = true; else if (Q.get('sound') === '0') on = false;
+  let ac = null, out = null, X = null, unlocked = Q.get('sfxtest') === '1', broken = false;
+  const pending = new Set();
+
+  /* ── 잡음(결정적) ── */
+  function noiseBuf(actx) {
+    const n = Math.floor(actx.sampleRate * 2), b = actx.createBuffer(1, n, actx.sampleRate), d = b.getChannelData(0);
+    let s = 12345;
+    for (let i = 0; i < n; i++) { s = (s * 1664525 + 1013904223) >>> 0; d[i] = s / 2147483648 - 1; }
+    return b;
+  }
+  function ensure() {
+    if (OFF || broken || !unlocked) return null;
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) { broken = true; return null; }
+      try { ac = new AC(); } catch (e) { broken = true; return null; }
+      const comp = ac.createDynamicsCompressor();
+      comp.threshold.value = -14; comp.knee.value = 18; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .18;
+      out = ac.createGain(); out.gain.value = on ? .9 : 0;
+      out.connect(comp); comp.connect(ac.destination);
+      X = { ac, dest: out, nz: noiseBuf(ac) };
+    }
+    if (ac.state === 'suspended' && on && !document.hidden) ac.resume().catch(() => {});
+    return X;
+  }
+
+  /* ── 소리 부품 ── */
+  function env(g, t, a, d, peak) {
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(Math.max(0.0002, peak), t + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+  }
+  function route(x, node, pan) {
+    if (pan && x.ac.createStereoPanner) { const p = x.ac.createStereoPanner(); p.pan.value = clamp(pan, -1, 1); node.connect(p); p.connect(x.dest); return; }
+    node.connect(x.dest);
+  }
+  /** 톤: f(→f2) Hz, a 올림 s, d 사라짐 s, g 세기, type, vib[Hz, 깊이Hz], lp 저역통과, pan */
+  function tone(x, t, o) {
+    const ac = x.ac, osc = ac.createOscillator(), g = ac.createGain();
+    const a = o.a ?? .004, d = o.d ?? .3;
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(o.f, t);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + a + d);
+    if (o.vib) {
+      const l = ac.createOscillator(), lg = ac.createGain();
+      l.frequency.value = o.vib[0]; lg.gain.value = o.vib[1]; l.connect(lg); lg.connect(osc.frequency); l.start(t); l.stop(t + a + d + .06);
+    }
+    env(g, t, a, d, o.g ?? .2);
+    osc.connect(g);
+    let last = g;
+    if (o.lp) { const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = o.lp; g.connect(f); last = f; }
+    route(x, last, o.pan);
+    osc.start(t); osc.stop(t + a + d + .07);
+  }
+  /** 잡음: type(bandpass|highpass|lowpass), f(→f2) Hz, q */
+  function noise(x, t, o) {
+    const ac = x.ac, s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    const a = o.a ?? .003, d = o.d ?? .1;
+    s.buffer = x.nz; s.loop = true;
+    f.type = o.type || 'bandpass'; f.frequency.setValueAtTime(o.f || 2000, t);
+    if (o.f2) f.frequency.exponentialRampToValueAtTime(o.f2, t + a + d);
+    f.Q.value = o.q ?? 1;
+    env(g, t, a, d, o.g ?? .15);
+    s.connect(f); f.connect(g); route(x, g, o.pan);
+    s.start(t, (t * 7.13) % 1.5); s.stop(t + a + d + .07);
+  }
+  const PART = [[1, 1, 1], [2.76, .3, .55], [5.4, .1, .3], [8.93, .04, .18]];
+  function bell(x, t, f, g = .3, d = 1.1) { PART.forEach(([r, w, k]) => tone(x, t, { f: f * r, a: .002, d: d * k, g: g * w })); }
+  function tickAt(x, t, f, g) {
+    tone(x, t, { f, a: .001, d: .014, g });
+    noise(x, t, { a: .001, d: .006, g: g * .9, type: 'bandpass', f: f * 1.6, q: 1.5 });
+  }
+
+  /* ═════════ 소리 목록: (x, t, a, b) ═════════ */
+  const SCALE = [0, 2, 4, 7, 9, 12, 9, 7, 4, 2];       // 빈칸이 채워질 때마다 음계가 오르내린다
+  const S = {
+    /** 빈칸이 채워짐 — 마림바 같은 「띠링」. i = 몇 번째 빈칸(음 높이 순서) */
+    blank(x, t, i) {
+      const f = 659.25 * Math.pow(2, SCALE[(i | 0) % 10] / 12);
+      tone(x, t, { f, a: .003, d: .34, g: .24 });
+      tone(x, t, { f: f * 2, a: .002, d: .16, g: .07 });
+      tone(x, t, { f: f * 4.02, a: .001, d: .05, g: .025 });
+      noise(x, t, { a: .001, d: .012, g: .05, type: 'highpass', f: 3500 });
+    },
+    /** 무언가 톡 나타남 */
+    pop(x, t) {
+      tone(x, t, { f: 420, f2: 840, a: .002, d: .1, g: .2 });
+      noise(x, t, { a: .001, d: .02, g: .05, type: 'highpass', f: 3000 });
+    },
+    /** 클릭으로 다음 단계 — 아주 작은 톡 */
+    step(x, t) { tone(x, t, { f: 1500, f2: 900, type: 'triangle', a: .001, d: .045, g: .075 }); noise(x, t, { a: .001, d: .01, g: .03, f: 3000, q: 1.5 }); },
+    /** 다음 장으로 — 부드러운 슥 */
+    slide(x, t) {
+      noise(x, t, { a: .12, d: .5, g: .2, f: 400, f2: 2600, q: .8 });
+      tone(x, t, { f: 220, f2: 110, a: .005, d: .25, g: .09 });
+    },
+    /** 휙 — dur ms, gain */
+    whoosh(x, t, dur = 700, g = 1) {
+      const d = (dur || 700) / 1000;
+      noise(x, t, { a: d * .4, d: d * .6, g: .2 * (g ?? 1), f: 350, f2: 2400, q: .7 });
+    },
+    /** 숫자 굴러감 — 오르는 째깍째깍 */
+    counter(x, t, dur = 1200) {
+      const n = clamp(Math.round((dur || 1200) / 70), 4, 22), sp = (dur || 1200) / 1000 / n;
+      for (let i = 0; i < n; i++) tickAt(x, t + i * sp, 1500 + i * (900 / n), .07);
+    },
+    /** 세는 선을 조각이 지나감(가이거처럼) — p 음높이, g 세기 */
+    tick(x, t, p = 1, g = 1) { tickAt(x, t, 2100 * (p || 1), .1 * (g ?? 1)); },
+    /** 1초가 지남 — 나무 시계 */
+    clock(x, t) {
+      tone(x, t, { f: 1050, f2: 620, type: 'triangle', a: .001, d: .06, g: .17 });
+      noise(x, t, { a: .001, d: .012, g: .08, f: 2600, q: 2 });
+    },
+    /** 쾅(도장) */
+    thunk(x, t) {
+      tone(x, t, { f: 150, f2: 44, a: .002, d: .24, g: .5 });
+      noise(x, t, { a: .002, d: .1, g: .28, type: 'lowpass', f: 700, f2: 200 });
+    },
+    /** 땡 */
+    ding(x, t, k = 1) { bell(x, t, 1318.5 * (k || 1), .32, 1.1); },
+    /** 딩동딩동 ↑ (정답·완성) */
+    chime(x, t) { [1046.5, 1318.5, 1568, 2093].forEach((f, i) => bell(x, t + i * .085, f, .3, .9)); },
+    /** 명판 뒤집기 */
+    flip(x, t) {
+      noise(x, t, { a: .002, d: .03, g: .18, f: 3200, q: 1.5 });
+      noise(x, t + .12, { a: .002, d: .03, g: .18, f: 2600, q: 1.5 });
+      noise(x, t + .02, { a: .03, d: .16, g: .09, f: 900, f2: 2600 });
+    },
+    /** 토스터 레버 내림 — 철컥 */
+    lever(x, t) {
+      tone(x, t, { f: 260, f2: 75, type: 'triangle', a: .002, d: .14, g: .4 });
+      noise(x, t, { a: .002, d: .06, g: .22, type: 'lowpass', f: 1200, f2: 400 });
+      tone(x, t + .01, { f: 1900, f2: 1200, a: .001, d: .05, g: .04 });
+    },
+    /** 토스터 빵 튀어 오름 — 텅~ 팅! */
+    toasterPop(x, t) {
+      tone(x, t, { f: 150, f2: 55, a: .002, d: .12, g: .32 });
+      tone(x, t + .02, { f: 210, f2: 640, type: 'triangle', a: .005, d: .32, g: .11, vib: [22, 26] });
+      noise(x, t + .02, { a: .01, d: .2, g: .05, f: 2400, q: 1.2 });
+      bell(x, t + .16, 2637, .22, .9);
+    },
+    /** 열선이 달아오르며 탁탁 — dur ms */
+    sizzle(x, t, dur = 2000) {
+      const d = (dur || 2000) / 1000, n = Math.round(d * 34);
+      for (let i = 0; i < n; i++) noise(x, t + Math.random() * d, { a: .001, d: .009, g: .11 * (1 - i / n * .3), f: 2500 + Math.random() * 3500, q: 1.4, pan: (Math.random() - .5) * .6 });
+    },
+    /** 스피커 박 — strong 이면 큰 북, 아니면 작은 북 + 심벌 */
+    kick(x, t, strong, lv) {
+      const k = lv == null ? 1 : lv, g = (strong ? .5 : .3) * k;
+      tone(x, t, { f: strong ? 150 : 130, f2: 44, a: .002, d: strong ? .2 : .14, g });
+      noise(x, t, { a: .001, d: .05, g: g * .5, type: 'lowpass', f: 900, f2: 300 });
+      if (!strong) noise(x, t + .02, { a: .001, d: .04, g: .045, type: 'highpass', f: 7000 });
+    },
+    /** 백열전구 켜짐 — 딸깍 · 웅 · 팅 */
+    bulbOn(x, t) {
+      noise(x, t, { a: .001, d: .006, g: .12, f: 3000, q: 1.5 });
+      tone(x, t + .02, { f: 98, type: 'triangle', a: .05, d: .55, g: .08, lp: 500 });
+      noise(x, t + .03, { a: .08, d: .5, g: .05, type: 'lowpass', f: 300, f2: 3000 });
+      bell(x, t + .05, 1760, .12, .8);
+    },
+    /** LED 켜짐 — 딸깍 · 띠링 */
+    ledOn(x, t) {
+      noise(x, t, { a: .001, d: .006, g: .1, f: 3400, q: 1.5 });
+      tone(x, t + .01, { f: 1568, f2: 2093, a: .003, d: .2, g: .1 });
+      bell(x, t + .03, 2349, .1, .7);
+    },
+    /** 집 창문 켜짐 — 딸깍 · 띵띵띵 */
+    lightsOn(x, t) {
+      noise(x, t, { a: .001, d: .01, g: .08, f: 2600, q: 1.5 });
+      [1568, 1760, 1976].forEach((f, i) => bell(x, t + .04 + i * .09, f, .15, .7));
+    },
+    /** 송전선을 타고 전달 — 웅~ + 쉬익 + 지직, 소리가 왼쪽에서 오른쪽으로 움직임 */
+    zap(x, t, dur = 2400) {
+      const ac = x.ac, d = (dur || 2400) / 1000;
+      const o = ac.createOscillator(), lp = ac.createBiquadFilter(), g = ac.createGain();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(55, t); o.frequency.exponentialRampToValueAtTime(230, t + d * .8);
+      lp.type = 'lowpass'; lp.frequency.setValueAtTime(260, t); lp.frequency.exponentialRampToValueAtTime(1400, t + d);
+      g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.15, t + d * .15); g.gain.setValueAtTime(.15, t + d * .7); g.gain.exponentialRampToValueAtTime(.0001, t + d + .5);
+      o.connect(lp); lp.connect(g);
+      if (ac.createStereoPanner) { const p = ac.createStereoPanner(); p.pan.setValueAtTime(-.85, t); p.pan.linearRampToValueAtTime(.85, t + d); g.connect(p); p.connect(x.dest); } else g.connect(x.dest);
+      o.start(t); o.stop(t + d + .6);
+      noise(x, t, { a: d * .3, d: d * .7, g: .07, f: 600, f2: 4200, q: .6 });
+      for (let i = 0, n = Math.round(d * 22); i < n; i++) noise(x, t + Math.random() * d, { a: .001, d: .008, g: .045, type: 'highpass', f: 5000, pan: -1 + 2 * Math.random() });
+    },
+    /** 열 보기 훑기 — 스캐너 */
+    scan(x, t, dur = 900) {
+      const d = (dur || 900) / 1000;
+      tone(x, t, { f: 280, f2: 1250, a: .04, d, g: .09, vib: [9, 14] });
+      tone(x, t, { f: 283, f2: 1262, type: 'triangle', a: .04, d, g: .04, pan: .4 });
+    },
+    /** 온도계가 오름 — 조용한 상승음 */
+    rise(x, t, dur = 2400) { tone(x, t, { f: 260, f2: 640, a: .15, d: (dur || 2400) / 1000, g: .07, vib: [5, 6] }); },
+    /** 바늘이 내려옴 — 슬라이드 휘슬 + 톡 */
+    sweepDown(x, t, dur = 1300) {
+      const d = (dur || 1300) / 1000;
+      tone(x, t, { f: 1100, f2: 380, a: .02, d, g: .09 });
+      tickAt(x, t + d, 1800, .08);
+    },
+    /** 푸슉(연기) */
+    puff(x, t) { noise(x, t, { a: .05, d: .5, g: .22, type: 'lowpass', f: 1000, f2: 300, q: .4 }); },
+    /** 싹둑 싹둑 */
+    snip(x, t) {
+      [0, .07, .14].forEach(o => { noise(x, t + o, { a: .001, d: .012, g: .18, f: 5000, q: 2 }); tone(x, t + o, { f: 3000, a: .001, d: .02, g: .03 }); });
+    },
+    /** 슥(선 그리기) */
+    zip(x, t, dur = 500) { noise(x, t, { a: .02, d: Math.min(.3, (dur || 500) / 1000 * .5), g: .12, f: 1500, f2: 4200, q: 1 }); },
+    /** 반짝 */
+    spark(x, t) { for (let i = 0; i < 4; i++) tone(x, t + i * .04 + Math.random() * .02, { f: 2200 + Math.random() * 2000, a: .001, d: .08, g: .04 }); },
+  };
+
+  /* ═════════ 이어지는 소리(선풍기·발전소·끓는 물) — level(0..1) 로 세기 조종 ═════════ */
+  function buildFan(x) {
+    const ac = x.ac, out = ac.createGain(); out.gain.value = 0; out.connect(x.dest);
+    const ns = ac.createBufferSource(); ns.buffer = x.nz; ns.loop = true;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 500; bp.Q.value = .7;
+    const gw = ac.createGain(); gw.gain.value = 0;
+    const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 3; lg.gain.value = 0; lfo.connect(lg); lg.connect(gw.gain);   // 날개가 바람을 자르는 울렁임
+    ns.connect(bp); bp.connect(gw); gw.connect(out);
+    const m1 = ac.createOscillator(), m2 = ac.createOscillator(), gm = ac.createGain(), lp = ac.createBiquadFilter();   // 모터 웅~
+    m1.type = 'triangle'; m1.frequency.value = 50; m2.type = 'sine'; m2.frequency.value = 100; gm.gain.value = 0;
+    lp.type = 'lowpass'; lp.frequency.value = 700; m1.connect(gm); m2.connect(gm); gm.connect(lp); lp.connect(out);
+    ns.start(0, .3); lfo.start(); m1.start(); m2.start();
+    let lv = 0, wh = 0;
+    const apply = () => {
+      const T = ac.currentTime, v = clamp(lv, 0, 1.1), tc = .07;
+      gw.gain.setTargetAtTime(v * v * .095, T, tc); lg.gain.setTargetAtTime(v * v * .035, T, tc);
+      lfo.frequency.setTargetAtTime(2 + 7 * v, T, tc);
+      bp.frequency.setTargetAtTime(380 + 900 * v, T, tc);
+      m1.frequency.setTargetAtTime(46 + 70 * v, T, tc); m2.frequency.setTargetAtTime(92 + 140 * v, T, tc);
+      gm.gain.setTargetAtTime(v > .02 ? .01 + .034 * v + wh * .04 : 0, T, tc);
+      out.gain.setTargetAtTime(v > .01 ? 1 : 0, T, .05);
+    };
+    return {
+      level(v) { lv = v; apply(); }, whine(v) { wh = v; apply(); },
+      stop() {
+        const T = ac.currentTime; out.gain.cancelScheduledValues(T); out.gain.setTargetAtTime(0, T, .08);
+        setTimeout(() => { try { ns.stop(); lfo.stop(); m1.stop(); m2.stop(); out.disconnect(); } catch (e) {} }, 500);
+      },
+    };
+  }
+  function buildHum(x) {   // 발전소 웅~
+    const ac = x.ac, out = ac.createGain(); out.gain.value = 0; out.connect(x.dest);
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; lp.connect(out);
+    const o1 = ac.createOscillator(), o2 = ac.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = 50; o2.type = 'sine'; o2.frequency.value = 100;
+    const g2 = ac.createGain(); g2.gain.value = .5; o1.connect(lp); o2.connect(g2); g2.connect(lp);
+    const ns = ac.createBufferSource(); ns.buffer = x.nz; ns.loop = true; const nl = ac.createBiquadFilter(); nl.type = 'lowpass'; nl.frequency.value = 380; const ng = ac.createGain(); ng.gain.value = .5;
+    ns.connect(nl); nl.connect(ng); ng.connect(lp);
+    o1.start(); o2.start(); ns.start(0, .7);
+    return {
+      level(v) { const T = ac.currentTime; out.gain.setTargetAtTime(clamp(v, 0, 1.1) * .06, T, .15); o1.frequency.setTargetAtTime(44 + 8 * v, T, .3); },
+      stop() { const T = ac.currentTime; out.gain.setTargetAtTime(0, T, .1); setTimeout(() => { try { o1.stop(); o2.stop(); ns.stop(); out.disconnect(); } catch (e) {} }, 500); },
+    };
+  }
+  function buildBoil(x) {   // 주전자 끓는 소리: 쉬이~ + 보글보글
+    const ac = x.ac, out = ac.createGain(); out.gain.value = 0; out.connect(x.dest);
+    const ns = ac.createBufferSource(); ns.buffer = x.nz; ns.loop = true; const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3200;
+    const gh = ac.createGain(); gh.gain.value = 0; ns.connect(hp); hp.connect(gh); gh.connect(out); ns.start(0, .2);
+    let lv = 0; const rnd = U_rng(7);
+    const id = setInterval(() => {
+      if (lv < .05 || !on) return;
+      if (rnd() < .15 + lv * .5) { const T = ac.currentTime + .005, f0 = 260 + rnd() * 260; tone({ ac, dest: out, nz: x.nz }, T, { f: f0, f2: f0 * 1.9, a: .003, d: .07, g: .1 * lv, pan: (rnd() - .5) * .8 }); }
+    }, 70);
+    return {
+      level(v) { lv = clamp(v, 0, 1); const T = ac.currentTime; gh.gain.setTargetAtTime(lv * .05, T, .4); out.gain.setTargetAtTime(lv > .01 ? 1 : 0, T, .1); },
+      stop() { clearInterval(id); const T = ac.currentTime; out.gain.setTargetAtTime(0, T, .1); setTimeout(() => { try { ns.stop(); out.disconnect(); } catch (e) {} }, 500); },
+    };
+  }
+  function U_rng(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
+  const LOOPS = { fan: buildFan, hum: buildHum, boil: buildBoil };
+  const NULL_LOOP = { level() {}, whine() {}, stop() {} };
+
+  /* ═════════ 바깥 API ═════════ */
+  let blankN = 0;
+  const tickLog = [];
+  function play(name, a, b) {
+    if (OFF || !on) return;
+    const x = ensure(); if (!x) return;
+    const f = S[name]; if (!f) { console.warn('[SFX] 없는 소리:', name); return; }
+    if (name === 'blank') a = blankN++;
+    if (name === 'tick') {   // 빽빽할수록(100 W 레인) 톡톡이 작고 높은 지지직으로 — 촘촘한 정도에 따라 세기·음높이 자동 조절
+      const now = performance.now(); tickLog.push(now); while (tickLog.length && now - tickLog[0] > 250) tickLog.shift();
+      const n = tickLog.length;
+      b = (b ?? 1) / (1 + n * .22); a = (a ?? 1) * (1 + Math.min(n, 30) * .012);
+    }
+    try { f(x, x.ac.currentTime + .008, a, b); } catch (e) { console.error('[SFX]', name, e); }
+  }
+  function loop(kind, o) {
+    const build = LOOPS[kind];
+    if (OFF || !build) return NULL_LOOP;
+    const h = {
+      built: null, lvl: 0, wh: 0, dead: false,
+      level(v) { h.lvl = v; if (h.built) h.built.level(v); },
+      whine(v) { h.wh = v; if (h.built && h.built.whine) h.built.whine(v); },
+      stop() { h.dead = true; pending.delete(h); if (h.built) { h.built.stop(); h.built = null; } },
+      tryBuild() {
+        if (h.built || h.dead) return;
+        const x = ensure(); if (!x) return;
+        try { h.built = build(x, o || {}); h.built.level(h.lvl); if (h.wh && h.built.whine) h.built.whine(h.wh); }
+        catch (e) { console.error('[SFX loop]', kind, e); h.dead = true; }
+      },
+    };
+    pending.add(h); h.tryBuild();
+    return h;
+  }
+  function unlock() {
+    if (unlocked) return;
+    unlocked = true;
+    if (!OFF) { ensure(); pending.forEach(h => h.tryBuild()); }
+  }
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, unlock, { capture: true, once: false, passive: true }));
+  document.addEventListener('visibilitychange', () => {
+    if (!ac) return;
+    if (document.hidden) ac.suspend().catch(() => {}); else if (on) ac.resume().catch(() => {});
+  });
+
+  let toastEl = null, toastT = 0;
+  function toast(v) {
+    if (!document.body) return;
+    if (!toastEl) { toastEl = document.createElement('div'); toastEl.id = 'sfxToast'; document.body.appendChild(toastEl); }
+    toastEl.textContent = v ? '소리 켜짐' : '소리 꺼짐';
+    toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 1400);
+  }
+  function toggle(v) {
+    on = v == null ? !on : !!v;
+    try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
+    unlock();
+    const x = ensure();
+    if (x && out) out.gain.setTargetAtTime(on ? .9 : 0, ac.currentTime, .03);
+    toast(on);
+    if (on) play('pop');
+    return on;
+  }
+
+  /* ═════════ 점검 도구 ═════════ */
+  function measure(buf) {
+    let peak = 0, sum = 0, n = 0, last = 0, first = -1, zc = 0, prev = 0;
+    const ch = buf.getChannelData(0), ch2 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : ch, sr = buf.sampleRate;
+    for (let i = 0; i < ch.length; i++) {
+      const v = Math.max(Math.abs(ch[i]), Math.abs(ch2[i]));
+      if (v > peak) peak = v;
+      sum += ch[i] * ch[i]; n++;
+      if (v > .003) { last = i; if (first < 0) first = i; }
+      if ((ch[i] >= 0) !== (prev >= 0)) zc++; prev = ch[i];
+    }
+    const active = Math.max(1, last - Math.max(0, first)) / sr;
+    return { peak: +peak.toFixed(3), rms: +Math.sqrt(sum / n).toFixed(4), attack: first < 0 ? null : +(first / sr).toFixed(3), length: +(last / sr).toFixed(2), approxHz: Math.round(zc / 2 / active), clipped: peak >= .98, silent: peak < .01 };
+  }
+  async function analyze(name, a, b, secs = 3) {
+    const OA = window.OfflineAudioContext || window.webkitOfflineAudioContext, sr = 44100;
+    const oc = new OA(2, Math.floor(sr * secs), sr), g = oc.createGain(); g.gain.value = .9; g.connect(oc.destination);
+    const x = { ac: oc, dest: g, nz: noiseBuf(oc) };
+    S[name](x, .02, a, b);
+    return measure(await oc.startRendering());
+  }
+  async function analyzeLoop(kind, level = 1, secs = 1.5) {
+    const OA = window.OfflineAudioContext || window.webkitOfflineAudioContext, sr = 44100;
+    const oc = new OA(2, Math.floor(sr * secs), sr), g = oc.createGain(); g.gain.value = .9; g.connect(oc.destination);
+    const h = LOOPS[kind]({ ac: oc, dest: g, nz: noiseBuf(oc) }); h.level(level);
+    const r = measure(await oc.startRendering()); try { h.stop(); } catch (e) {} return r;
+  }
+
+  /** ?sfx=demo — 모든 소리를 눌러 들어 보는 패널 */
+  function demoPanel() {
+    const box = document.createElement('div');
+    box.style.cssText = 'position:fixed;left:12px;top:12px;z-index:200;max-width:340px;max-height:92vh;overflow:auto;background:rgba(29,29,31,.94);color:#f5f5f7;border-radius:14px;padding:14px;font:600 13px/1.3 system-ui,sans-serif';
+    const btn = (t, fn) => { const b = document.createElement('button'); b.textContent = t; b.style.cssText = 'margin:3px;padding:6px 10px;border-radius:9999px;border:0;background:#0066cc;color:#fff;font:600 13px system-ui'; b.onclick = () => { unlock(); fn(); }; return b; };
+    box.appendChild(Object.assign(document.createElement('div'), { textContent: '효과음 듣기 (F2 로 닫기)', style: 'margin-bottom:8px;font-size:14px' }));
+    Object.keys(S).forEach(k => box.appendChild(btn(k, () => { if (!on) toggle(true); play(k, k === 'kick' ? true : undefined, 1); })));
+    let fan = null;
+    box.appendChild(btn('fan 0→1→0', () => { if (!on) toggle(true); if (fan) fan.stop(); fan = loop('fan'); let v = 0, dir = 1; const id = setInterval(() => { v += dir * .05; if (v >= 1) dir = -1; fan.level(clamp(v)); if (v <= 0 && dir < 0) { clearInterval(id); fan.stop(); fan = null; } }, 60); }));
+    box.appendChild(btn('boil', () => { if (!on) toggle(true); const h = loop('boil'); h.level(1); setTimeout(() => h.stop(), 4000); }));
+    box.appendChild(btn('hum', () => { if (!on) toggle(true); const h = loop('hum'); h.level(1); setTimeout(() => h.stop(), 3000); }));
+    document.body.appendChild(box);
+    document.addEventListener('keydown', e => { if (e.key === 'F2') box.remove(); });
+  }
+  if (Q.get('sfx') === 'demo') { const go = () => demoPanel(); if (document.body) go(); else document.addEventListener('DOMContentLoaded', go); }
+
+  return { play, loop, toggle, unlock, analyze, analyzeLoop, names: () => Object.keys(S), isOn: () => on, isOff: () => OFF, S, debug: () => ({ pendingLoops: pending.size, unlocked, state: ac ? ac.state : 'none' }) };
+})();
+
+}catch(e){console.error("[object 03_sfx.js]",e)}
+/* ── 10_gas.js ── */
+try{
+/* ═══════════════════════════════════════════════════════════════
+   objects/10_gas.js — 기체의 압력 강의 덱 공용 부품 (덱 셋이 함께 씀)
+   · GX.arrow(x1,y1,x2,y2,{color,w,head,id,cls})   화살표 SVG 문자열
+   · GX.spongeD({cx,y,hw,h,dw,depth})              스펀지 윗면이 눌린 모양의 path d (한 덩어리 몸통)
+   · GX.pencil({len,id})                           연필(심 끝이 원점, 몸통은 위로)
+   · GX.syringe({id,x,y,L,H,...})                  가로 주사기 SVG 문자열 (피스톤 이동은 GX.setPiston)
+   · FX.gasBox(c, parent, opts)                    입자 상자 시뮬 — 벽 충돌 세기·피스톤·입자 수·둥근 용기
+   과학 규약(설계기준): 입자 모형은 «모든 입자의 빠르기 같음·화살표 길이 같음»(온도 일정), 부피를 바꿔도 빠르기는 그대로,
+   충돌은 완전 탄성(입자 사이 충돌은 그리지 않는 이상 기체), 입자 크기 같음, 충돌 횟수는 «같은 넓이의 벽»으로 견준다.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  const G = window.GX = {};
+
+  /** 화살표: (x1,y1)→(x2,y2). 머리는 끝점에 닿는다 */
+  G.arrow = function (x1, y1, x2, y2, o = {}) {
+    const col = o.color || 'currentColor', w = o.w == null ? 6 : o.w, hd = o.head == null ? Math.max(18, w * 3.2) : o.head;
+    const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+    const bx = x2 - ux * hd * 0.85, by = y2 - uy * hd * 0.85, px = -uy, py = ux;
+    const f = v => (Math.round(v * 10) / 10);
+    return `<g${o.cls ? ` class="${o.cls}"` : ''}${o.id ? ` id="${o.id}"` : ''}><line x1="${f(x1)}" y1="${f(y1)}" x2="${f(bx)}" y2="${f(by)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>` +
+      `<polygon points="${f(x2)},${f(y2)} ${f(bx + px * hd * .5)},${f(by + py * hd * .5)} ${f(bx - px * hd * .5)},${f(by - py * hd * .5)}" fill="${col}"/></g>`;
+  };
+
+  /** 스펀지 윗면이 눌린 몸통 path. cx 가운데, y 윗면 높이, hw 반너비, h 두께, dw 눌린 폭의 절반, depth 눌린 깊이(px) */
+  G.spongeD = function ({ cx, y, hw, h, dw, depth }) {
+    const x0 = cx - hw, x1 = cx + hw, d = Math.max(0, depth), k = dw * 1.7;
+    if (d < 0.5) return `M${x0} ${y}H${x1}V${y + h}H${x0}Z`;
+    return `M${x0} ${y}H${cx - k}C${cx - dw * 1.15} ${y} ${cx - dw} ${y + d} ${cx} ${y + d}C${cx + dw} ${y + d} ${cx + dw * 1.15} ${y} ${cx + k} ${y}H${x1}V${y + h}H${x0}Z`;
+  };
+
+  /** 연필 — 심 끝이 원점(0,0), 몸통은 위(−y)로. 가로로 눕히려면 바깥 g 에 rotate(90)(심이 왼쪽). len 은 전체 길이 */
+  G.pencil = function (o = {}) {
+    const len = o.len || 470, id = o.id ? ` id="${o.id}"` : '';
+    const bodyEnd = -(len - 84), ferEnd = -(len - 50), top = -len;
+    return `<g${id} class="o-pencil">` +
+      `<polygon points="-9,-28 9,-28 0,0" fill="#6e6e73"/>` +
+      `<polygon points="-32,-96 32,-96 9,-28 -9,-28" fill="#e9c68f"/><polygon points="0,-96 32,-96 9,-28 0,-28" fill="rgba(0,0,0,.14)"/>` +
+      `<rect x="-32" y="${bodyEnd}" width="64" height="${-96 - bodyEnd}" fill="#f5b82e"/><rect x="0" y="${bodyEnd}" width="32" height="${-96 - bodyEnd}" fill="rgba(0,0,0,.16)"/><rect x="-32" y="${bodyEnd}" width="7" height="${-96 - bodyEnd}" fill="rgba(255,255,255,.30)"/>` +
+      `<rect x="-33" y="${ferEnd}" width="66" height="${bodyEnd - ferEnd}" fill="url(#lg-silver)"/>` +
+      `<path d="M-30 ${ferEnd}V${top + 22}Q-30 ${top} -8 ${top}H8Q30 ${top} 30 ${top + 22}V${ferEnd}Z" fill="#ff9fb4"/><path d="M-30 ${ferEnd}V${top + 22}Q-30 ${top} -8 ${top}" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>` +
+      `</g>`;
+  };
+
+  /* ───────── 주사기 ─────────
+     (x,y) = 통 안쪽(기체 자리) 왼쪽 위, 통 안쪽 길이 L(부피 40 mL 일 때), 높이 H. 피스톤 머리의 왼쪽 면이 기체의 오른쪽 벽.
+     피스톤(머리+막대+손잡이)은 g.gx-piston 하나 — GX.setPiston(el, id, pl) 로 pl(피스톤 위치, 0~L)만큼 옮긴다. */
+  G.syringe = function (o) {
+    const id = o.id, x = o.x || 0, y = o.y || 0, L = o.L || 700, H = o.H || 280, pl = o.pl == null ? L : o.pl;
+    const dark = o.surface !== 'light', th = 16;
+    const edge = dark ? 'rgba(255,255,255,.26)' : 'rgba(0,0,0,.16)', glass = dark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.035)';
+    let s = `<g id="${id}" class="o-syringe" transform="translate(${x} ${y})">`;
+    s += `<rect x="${-th}" y="${-th}" width="${L + th + 36}" height="${H + 2 * th}" rx="22" fill="${glass}" stroke="${edge}" stroke-width="1.5"/>`;
+    s += `<path d="M${-th} ${H / 2 - 34}H${-th - 58}V${H / 2 + 34}H${-th}Z" fill="${dark ? 'rgba(255,255,255,.10)' : 'rgba(0,0,0,.06)'}" stroke="${edge}" stroke-width="1.5"/>`;
+    s += `<rect x="${-th - 74}" y="${H / 2 - 42}" width="22" height="84" rx="8" fill="${dark ? '#8e8e93' : '#6e6e73'}"/>`;
+    s += `<rect class="gx-gas" x="0" y="0" width="${pl}" height="${H}" rx="6" fill="var(--kin)" opacity=".10"/>`;
+    if (o.scale !== false) {
+      const V0 = o.V0 || 40, step = 5;
+      for (let v = 0; v <= V0; v += step) {
+        const px = L * v / V0, big = v % 10 === 0;
+        s += `<line x1="${px}" y1="${-th - 2}" x2="${px}" y2="${-th - (big ? 22 : 11)}" stroke="${edge}" stroke-width="${big ? 2.5 : 1.5}"/>`;
+        if (big) s += `<text x="${px}" y="${-th - 32}" text-anchor="middle" style="font-size:24px;font-weight:600;fill:var(--t2)">${v}</text>`;
+      }
+      s += `<text x="${L + th + 64}" y="${-th - 32}" text-anchor="end" style="font-size:24px;font-weight:600;fill:var(--t2)">mL</text>`;
+    }
+    const rodL = o.rod || 330;
+    s += `<g class="gx-piston" transform="translate(${pl} 0)">`;
+    s += `<rect x="0" y="-2" width="34" height="${H + 4}" rx="8" fill="${dark ? '#48484a' : '#3a3a3c'}"/><rect x="0" y="-2" width="4" height="${H + 4}" fill="rgba(255,255,255,.35)"/>`;
+    s += `<rect x="34" y="${H / 2 - 17}" width="${rodL}" height="34" rx="6" fill="${dark ? '#c7c7cc' : '#aeaeb2'}"/>`;
+    s += `<rect x="${34 + rodL}" y="${H / 2 - 62}" width="30" height="124" rx="12" fill="${dark ? '#636366' : '#48484a'}"/>`;
+    s += `</g></g>`;
+    return s;
+  };
+  /** 피스톤 위치(0~L) — 피스톤 g 와 기체 색 rect 를 함께 옮긴다 */
+  G.setPiston = function (root, id, pl) {
+    const el = typeof root === 'string' ? document.querySelector(root) : root;
+    const sy = (el && el.id === id ? el : (el && el.querySelector('#' + id)));
+    if (!sy) return;
+    const pg = sy.querySelector('.gx-piston'), gas = sy.querySelector('.gx-gas');
+    if (pg) pg.setAttribute('transform', `translate(${pl.toFixed(2)} 0)`);
+    if (gas) gas.setAttribute('width', Math.max(0, pl).toFixed(2));
+  };
+
+  /** 주사기 + 입자 상자를 한 번에 — c: 장면 ctx, host: 붙일 svg 요소, o: {id,x,y,L,H,V0,rod,surface, n,r,speed,seed,vel,flash,warm,tick}
+      반환: {box, wrap, xOf(V), V(), setV(V, ms)}  (V 는 mL, V0 mL 일 때 피스톤이 L 만큼) */
+  G.syringeRig = function (c, host, o) {
+    const V0 = o.V0 || 40, wrap = U.el('g', {}, host);
+    wrap.innerHTML = G.syringe({ id: o.id, x: o.x, y: o.y, L: o.L, H: o.H, pl: o.pl == null ? o.L : o.pl, V0, rod: o.rod, surface: o.surface, scale: o.scale });
+    const bh = U.el('g', {}, host);
+    const xOf = V => o.x + o.L * V / V0;
+    const box = FX.gasBox(c, bh, Object.assign({ x: o.x, y: o.y, w: o.L, h: o.H, r: 9 }, o.box || {}, {
+      n: o.n, speed: o.speed, seed: o.seed, vel: o.vel, flash: o.flash, warm: o.warm, tick: o.tick,
+      onRight: xr => G.setPiston(wrap, o.id, xr - o.x),
+    }));
+    if (o.pl != null) box.jumpRight(o.x + o.pl);
+    return { box, wrap, xOf, V: () => (box.right() - o.x) * V0 / o.L, setV: (V, ms = 1400, ease) => box.setRight(xOf(V), ms, ease) };
+  };
+
+  /* ───────── 입자 상자 시뮬 ─────────
+     FX.gasBox(c, parent, {
+       x,y,w,h,        상자 안쪽(입자 중심이 다니는 영역의 바깥 경계) — 부모 SVG 좌표.   circle:{cx,cy,R} 이면 둥근 용기(축구공)
+       n, r, speed, seed, warm,   입자 수·반지름(9)·빠르기 px/s(420)·난수 씨앗·미리 돌릴 초(정지 화면에도 세기 값이 차 있게)
+       vel: true|{len,color,hidden}   입자마다 운동 방향 화살표(hidden:true 면 처음엔 감춤 → ctl.showVel(true))
+       flash: 색|false            벽 충돌 반짝임(기본 var(--heat)) — ctl.flash(true|false) 로 켜고 끔
+       hitArrows: true|{len}      충돌마다 벽을 미는 힘 화살표(보라)가 바깥으로 — ctl.arrows(true|false)
+       flashFilter/arrowFilter    (벽이름, 입자) => 참이면 그린다(기본 모두)
+       partColor, tick            입자 색 / 충돌마다 톡(밀도 자동 조절)
+       onRight(x)                 오른쪽 벽(피스톤)이 움직일 때마다 부름 · onR(R) 둥근 용기 반지름이 바뀔 때마다 · onHit(벽, 입자) 충돌마다
+     })
+     반환: { setN(n,{ms,stagger}), setRight(x,ms), jumpRight(x), rewarm(sec), setR(R,ms), setSpeed(f,ms), showVel(on,ms), flash(on), arrows(on),
+             count(wall,T), rate(wall,T), meanSpeed(), n(), right(), R(), t(), el }
+       wall = 'L'|'R'|'T'|'B'|'C'(둥근 용기)|'all' , T = 최근 몇 초(시뮬 시간) */
+  FX.gasBox = function (c, parent, o = {}) {
+    const circ = o.circle || null;
+    const x0 = circ ? circ.cx - circ.R : o.x, y0 = circ ? circ.cy - circ.R : o.y, W = circ ? 2 * circ.R : o.w, H = circ ? 2 * circ.R : o.h, r = o.r == null ? 9 : o.r;
+    const v0 = o.speed == null ? 420 : o.speed;
+    const rng = U.rng(o.seed == null ? 7 : o.seed);
+    const flashCol0 = o.flash === false ? null : (o.flash || 'var(--flash, #fff)');
+    const velOpt = o.vel ? Object.assign({ len: 32, color: 'var(--elec)' }, o.vel === true ? {} : o.vel) : null;
+    const partCol = o.partColor || 'var(--kin)';
+    let right = x0 + W, t = 0, spd = 1, Rc = circ ? circ.R : 0;
+    let flashOn = !!flashCol0, arrowsOn = !!o.hitArrows, clipEl = null;
+    const flashCol = flashCol0 || 'var(--flash, #fff)';
+    const fF = o.flashFilter || (() => true), aF = o.arrowFilter || (() => true);
+    const P = [], log = { L: [], R: [], T: [], B: [], C: [] };
+    const g = U.el('g', { class: 'gx-box' }, parent);
+    const gArrows = U.el('g', {}, g), gFlash = U.el('g', {}, g), gPart = U.el('g', {}, g), gVel = U.el('g', { opacity: velOpt && velOpt.hidden ? 0 : 1 }, g);
+    if (velOpt && velOpt.clip !== false) {   // 운동 방향 화살표가 용기 밖으로 삐져나가지 않게 용기 모양으로 자른다
+      const cid = U.uid('gxclip'), cp = U.el('clipPath', { id: cid }, g);
+      clipEl = circ ? U.el('circle', { cx: circ.cx, cy: circ.cy, r: circ.R + 2 }, cp) : U.el('rect', { x: x0, y: y0, width: W, height: H }, cp);
+      gVel.setAttribute('clip-path', 'url(#' + cid + ')');
+    }
+    const FL = [], AR = []; let fi = 0, ai = 0;
+    for (let i = 0; i < 36; i++) { const e = U.el('line', { stroke: flashCol, 'stroke-width': 9, 'stroke-linecap': 'round', opacity: 0 }, gFlash); FL.push({ e, life: 0 }); }
+    if (o.hitArrows) {
+      const len = (o.hitArrows === true ? {} : o.hitArrows).len || 56;
+      for (let i = 0; i < 16; i++) { const e = U.el('g', { opacity: 0 }, gArrows); e.innerHTML = G.arrow(0, 0, len, 0, { color: 'var(--sound)', w: 7, head: 22 }); AR.push({ e, life: 0, len }); }
+    }
+    const ccx = circ ? circ.cx : 0, ccy = circ ? circ.cy : 0;
+    function mk() {
+      const ang = rng() * Math.PI * 2;
+      let px, py;
+      if (circ) { const a2 = rng() * Math.PI * 2, rr = Math.sqrt(rng()) * (Rc - r - 2); px = ccx + Math.cos(a2) * rr; py = ccy + Math.sin(a2) * rr; }
+      else { px = x0 + r + rng() * (right - x0 - 2 * r); py = y0 + r + rng() * (H - 2 * r); }
+      const p = { x: px, y: py, vx: Math.cos(ang) * v0 * spd, vy: Math.sin(ang) * v0 * spd };
+      p.g = U.el('g', {}, gPart);
+      U.el('circle', { r, fill: partCol }, p.g);
+      U.el('circle', { r: r * .34, cx: -r * .32, cy: -r * .34, fill: '#fff', opacity: .34 }, p.g);
+      if (velOpt) {
+        p.a = U.el('g', {}, gVel);
+        p.al = U.el('line', { stroke: velOpt.color, 'stroke-width': 4, 'stroke-linecap': 'round' }, p.a);
+        p.ah = U.el('polygon', { fill: velOpt.color }, p.a);
+      }
+      return p;
+    }
+    function place(p) {
+      p.g.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
+      if (p.a) {
+        const sp = Math.hypot(p.vx, p.vy) || 1, ux = p.vx / sp, uy = p.vy / sp, L = velOpt.len * (sp / v0), s0 = r + 3;
+        const ax = p.x + ux * s0, ay = p.y + uy * s0, bx = p.x + ux * (s0 + L), by = p.y + uy * (s0 + L), h = 11, px = -uy, py = ux;
+        p.al.setAttribute('x1', ax.toFixed(1)); p.al.setAttribute('y1', ay.toFixed(1));
+        p.al.setAttribute('x2', (bx - ux * h * .7).toFixed(1)); p.al.setAttribute('y2', (by - uy * h * .7).toFixed(1));
+        p.ah.setAttribute('points', `${(bx + ux * 3).toFixed(1)},${(by + uy * 3).toFixed(1)} ${(bx - ux * h + px * h * .55).toFixed(1)},${(by - uy * h + py * h * .55).toFixed(1)} ${(bx - ux * h - px * h * .55).toFixed(1)},${(by - uy * h - py * h * .55).toFixed(1)}`);
+      }
+    }
+    function hit(w, p, nx, ny) {
+      log[w].push(t);
+      if (o.onHit) o.onHit(w, p);
+      if (flashOn && fF(w, p)) {
+        const f = FL[fi++ % FL.length]; f.life = 0.32;
+        const A = 22, e = f.e;
+        if (w === 'L') { e.setAttribute('x1', x0); e.setAttribute('x2', x0); e.setAttribute('y1', p.y - A); e.setAttribute('y2', p.y + A); }
+        else if (w === 'R') { e.setAttribute('x1', right); e.setAttribute('x2', right); e.setAttribute('y1', p.y - A); e.setAttribute('y2', p.y + A); }
+        else if (w === 'T') { e.setAttribute('y1', y0); e.setAttribute('y2', y0); e.setAttribute('x1', p.x - A); e.setAttribute('x2', p.x + A); }
+        else if (w === 'B') { e.setAttribute('y1', y0 + H); e.setAttribute('y2', y0 + H); e.setAttribute('x1', p.x - A); e.setAttribute('x2', p.x + A); }
+        else { const bx = ccx + nx * Rc, by = ccy + ny * Rc; e.setAttribute('x1', bx - ny * A); e.setAttribute('y1', by + nx * A); e.setAttribute('x2', bx + ny * A); e.setAttribute('y2', by - nx * A); }
+      }
+      if (arrowsOn && AR.length && aF(w, p)) {
+        const a = AR[ai++ % AR.length]; a.life = 0.7;
+        const gap = 6;
+        const tf = w === 'L' ? `translate(${x0 - gap} ${p.y}) rotate(180)` : w === 'R' ? `translate(${right + gap} ${p.y})` : w === 'T' ? `translate(${p.x} ${y0 - gap}) rotate(-90)` : w === 'B' ? `translate(${p.x} ${y0 + H + gap}) rotate(90)`
+          : `translate(${(ccx + nx * (Rc + gap)).toFixed(1)} ${(ccy + ny * (Rc + gap)).toFixed(1)}) rotate(${(Math.atan2(ny, nx) * 180 / Math.PI).toFixed(1)})`;
+        a.e.setAttribute('transform', tf);
+      }
+      if (o.tick && !c.instant && window.SFX) c.sfx('tick', 0, w === 'R' ? 1.15 : (w === 'L' ? .9 : 1.0), o.tick === true ? .6 : o.tick);
+    }
+    function step(dt) {
+      t += dt;
+      if (circ) {
+        const lim = Rc - r;
+        for (const p of P) {
+          p.x += p.vx * dt; p.y += p.vy * dt;
+          const dx = p.x - ccx, dy = p.y - ccy, d = Math.hypot(dx, dy);
+          if (d > lim) {
+            const nx = dx / d, ny = dy / d, vn = p.vx * nx + p.vy * ny;
+            if (vn > 0) { p.vx -= 2 * vn * nx; p.vy -= 2 * vn * ny; }
+            p.x = ccx + nx * (lim - 0.5); p.y = ccy + ny * (lim - 0.5);
+            hit('C', p, nx, ny);
+          }
+        }
+        return;
+      }
+      const xl = x0 + r, xr = right - r, yt = y0 + r, yb = y0 + H - r;
+      for (const p of P) {
+        p.x += p.vx * dt; p.y += p.vy * dt;
+        if (p.x < xl) { p.x = xl + (xl - p.x); p.vx = Math.abs(p.vx); hit('L', p); }
+        else if (p.x > xr) { p.x = Math.max(xl, xr - (p.x - xr)); p.vx = -Math.abs(p.vx); hit('R', p); }
+        if (p.y < yt) { p.y = yt + (yt - p.y); p.vy = Math.abs(p.vy); hit('T', p); }
+        else if (p.y > yb) { p.y = yb - (p.y - yb); p.vy = -Math.abs(p.vy); hit('B', p); }
+      }
+    }
+    function fade(dt) {
+      for (const f of FL) if (f.life > 0) { f.life -= dt; f.e.setAttribute('opacity', Math.max(0, f.life / 0.32).toFixed(2)); }
+      for (const a of AR) if (a.life > 0) { a.life -= dt; a.e.setAttribute('opacity', Math.max(0, Math.min(1, a.life / 0.45)).toFixed(2)); }
+    }
+    for (let i = 0; i < (o.n || 0); i++) P.push(mk());
+    const warm = o.warm == null ? 2.5 : o.warm;
+    const fo = flashOn, ao = arrowsOn; flashOn = false; arrowsOn = false;      // 미리 돌릴 때는 반짝이지 않는다
+    for (let s = 0; s < warm * 60; s++) step(1 / 60);
+    flashOn = fo; arrowsOn = ao;
+    P.forEach(place); fade(1);
+    const trim = w => { const a = log[w]; while (a.length && t - a[0] > 12) a.shift(); };
+    const ctl = {
+      setN(n, oo = {}) {
+        while (P.length < n) {
+          const p = mk(); P.push(p); place(p);
+          if (!c.instant && oo.ms !== 0) c.a(p.g, [{ opacity: 0 }, { opacity: 1 }], { dur: oo.ms || 500, delay: (P.length % 12) * (oo.stagger || 0), ease: 'out' });
+        }
+        while (P.length > n) { const p = P.pop(); p.g.remove(); if (p.a) p.a.remove(); }
+      },
+      /* 순간 모드(되돌리기·복원)로 용기가 커지면 입자를 새 용기 안에 골고루 다시 뿌린다(방향·빠르기는 그대로) */
+      respread() {
+        P.forEach(p => {
+          if (circ) { const a2 = rng() * Math.PI * 2, rr = Math.sqrt(rng()) * (Rc - r - 2); p.x = ccx + Math.cos(a2) * rr; p.y = ccy + Math.sin(a2) * rr; }
+          else { p.x = x0 + r + rng() * Math.max(1, right - x0 - 2 * r); p.y = y0 + r + rng() * (H - 2 * r); }
+        });
+        P.forEach(place);
+      },
+      jumpRight(x) { right = x; if (clipEl) clipEl.setAttribute('width', (right - x0 + 2).toFixed(1)); if (o.onRight) o.onRight(right); },
+      /* 순간 모드로 상태가 바뀐 뒤: 충돌 기록을 비우고 sec 초 만큼 조용히 다시 돌려, 새 상태의 충돌 횟수가 바로 읽히게 한다 */
+      rewarm(sec = 5) {
+        for (const k in log) log[k].length = 0;
+        const fo = flashOn, ao = arrowsOn; flashOn = false; arrowsOn = false;
+        for (let s = 0; s < sec * 60; s++) step(1 / 60);
+        flashOn = fo; arrowsOn = ao; P.forEach(place); fade(1);
+      },
+      setRight(x, ms = 900, ease = 'inOut') {
+        const from = right, to = x, grow = x > right;
+        return c.tween(ms, p => { right = from + (to - from) * p; if (clipEl) clipEl.setAttribute('width', (right - x0 + 2).toFixed(1)); if (o.onRight) o.onRight(right); }, { ease }).then(() => { if (c.instant && grow) ctl.respread(); });
+      },
+      setR(R, ms = 900, ease = 'inOut') {
+        const from = Rc, to = R, grow = R > Rc;
+        return c.tween(ms, p => { Rc = from + (to - from) * p; if (clipEl) clipEl.setAttribute('r', (Rc + 2).toFixed(1)); if (o.onR) o.onR(Rc); }, { ease }).then(() => { if (c.instant && grow) ctl.respread(); });
+      },
+      setSpeed(f, ms = 900) {
+        const from = spd, to = f;
+        return c.tween(ms, p => { const nf = from + (to - from) * p, k = nf / spd; spd = nf; P.forEach(q => { q.vx *= k; q.vy *= k; }); }, { ease: 'inOut' });
+      },
+      showVel(on, ms = 500) { return c.a(gVel, [{ opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0 }], { dur: ms }); },
+      flash(on) { flashOn = !!on; }, arrows(on) { arrowsOn = !!on; },
+      count(w, T) {
+        const now = t; const ws = w === 'all' ? ['L', 'R', 'T', 'B', 'C'] : [w]; let n = 0;
+        ws.forEach(k => { trim(k); n += log[k].filter(x => now - x <= T).length; });
+        return n;
+      },
+      rate(w, T) { return ctl.count(w, T) / T; },
+      meanSpeed() { return P.length ? P.reduce((s, q) => s + Math.hypot(q.vx, q.vy), 0) / P.length / v0 : 0; },
+      n: () => P.length, right: () => right, R: () => Rc, t: () => t, el: g,
+    };
+    c.loop((_, dt) => { step(dt); P.forEach(place); fade(dt); });
+    return ctl;
+  };
+})();
+
+}catch(e){console.error("[object 10_gas.js]",e)}
+</script>
+<script>
+/* ── 01_cover.html ── */
+try{
+
+(function () {
+  const H = 210;
+  Deck.scene('d3_01_cover', {
+    steps: 0,
+    async enter(c) {
+      const rig = GX.syringeRig(c, c.$('#d3_01_cover-syr'), { id: 'd3_01_cover-s', x: 450, y: 250, L: 700, H, V0: 40, n: 12, speed: 470, seed: 3 });
+      const pg = rig.wrap.querySelector('.gx-piston');
+      pg.insertAdjacentHTML('beforeend', `<g class="push" opacity="0">${GX.arrow(34 + 330 + 30 + 170, H / 2, 34 + 330 + 30 + 18, H / 2, { color: 'var(--sound)', w: 12, head: 40 })}</g>`);
+      await c.wait(1900);
+      c.reveal(rig.wrap.querySelector('.push'), 'fade', { dur: 500 });
+      c.sfx('pop');
+      await c.wait(400);
+      await rig.setV(20, 2000, 'inOut');
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 01_cover.html]",e)}
+/* ── 02_hook.html ── */
+try{
+
+(function () {
+  const H = 210;
+  Deck.scene('d3_02_hook', {
+    steps: 2,
+    async enter(c) {
+      c.data.rig = GX.syringeRig(c, c.$('#d3_02_hook-syr'), { id: 'd3_02_hook-s', x: 450, y: 430, L: 700, H, V0: 40, n: 12, speed: 470, seed: 5 });
+      c.data.rig.wrap.querySelector('.gx-piston').insertAdjacentHTML('beforeend', `<g class="push" opacity="0">${GX.arrow(34 + 330 + 30 + 170, H / 2, 34 + 330 + 30 + 18, H / 2, { color: 'var(--sound)', w: 12, head: 40 })}</g>`);
+    },
+    async go(c, k) {
+      const r = c.data.rig;
+      if (k === 1) {
+        c.reveal(r.wrap.querySelector('.push'), 'fade', { dur: 500 });
+        await Promise.all([r.setV(20, 2000, 'inOut'), c.count(c.$('#d3_02_hook-v'), 40, 20, { dur: 2000, ease: 'inOut', fmt: v => Math.round(v) })]);
+      }
+      if (k === 2) c.sfx('chime');
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 02_hook.html]",e)}
+/* ── 03_review.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_03_review', {
+    steps: 3,
+    async enter(c) {
+      const b = c.data.box = FX.gasBox(c, c.$('#d3_03_review-box'), { x: 1060, y: 330, w: 660, h: 380, n: 20, speed: 430, seed: 12, hitArrows: { len: 44 }, warm: 5 });
+      b.flash(false); b.arrows(false);
+      const n = c.$('#d3_03_review-n');
+      c.every(() => { n.textContent = Math.round(b.rate('all', 5)); }, 300);
+      c.timer(() => { n.textContent = Math.round(b.rate('all', 5)); }, 30);
+    },
+    async go(c, k) {
+      const b = c.data.box;
+      if (k === 1) { b.flash(true); c.sfx('pop'); }
+      if (k === 3) { b.arrows(true); c.sfx('pop'); }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 03_review.html]",e)}
+/* ── 04_relation.html ── */
+try{
+
+(function () {
+  const H = 200, X0 = 330, L = 760, V0 = 80;   // 이 장의 주사기는 80 mL 까지(압력을 절반으로 줄이면 부피가 80 mL)
+  Deck.scene('d3_04_relation', {
+    steps: 3,
+    async enter(c) {
+      const rig = c.data.rig = GX.syringeRig(c, c.$('#d3_04_relation-syr'), { id: 'd3_04_relation-s', x: X0, y: 610, L, H, V0, rod: 260, surface: 'light', n: 12, speed: 500, seed: 14 });
+      c.data.P = 1; c.data.V = 40;
+      // 처음 상태: 40 mL(1기압)
+      rig.box.jumpRight(rig.xOf(40));
+    },
+    async go(c, k) {
+      const r = c.data.rig, p = c.$('#d3_04_relation-p'), v = c.$('#d3_04_relation-v'), tag = c.$('#d3_04_relation-tag');
+      const to = async (P, V, ms = 1800) => {
+        const P0 = c.data.P, V1 = c.data.V;
+        c.data.P = P; c.data.V = V;
+        await Promise.all([r.setV(V, ms, 'inOut'),
+          c.count(p, P0, P, { dur: ms, ease: 'inOut', fmt: x => x.toFixed(1) }), c.count(v, V1, V, { dur: ms, ease: 'inOut', fmt: x => Math.round(x) })]);
+      };
+      if (k === 1) { c.sfx('pop'); tag.textContent = '압력 ↑ → 부피 ↓'; c.reveal(tag, 'fade', { dur: 500 }); await to(2, 20); }
+      if (k === 2) { tag.textContent = '압력 ↓ → 부피 ↑'; await to(1, 40, 1200); await to(0.5, 80, 1800); }
+      if (k === 3) { await to(1, 40, 900); tag.textContent = '압력 2배 → 부피 약 절반'; await to(2, 20, 1500); c.sfx('chime'); }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 04_relation.html]",e)}
+/* ── 05_why.html ── */
+try{
+
+(function () {
+  const H = 240, X0 = 1000, L = 560, S = 5;
+  Deck.scene('d3_05_why', {
+    steps: 3,
+    async enter(c) {
+      const rig = c.data.rig = GX.syringeRig(c, c.$('#d3_05_why-syr'), { id: 'd3_05_why-s', x: X0, y: 390, L, H, V0: 40, rod: 130, n: 10, speed: 600, seed: 24, flash: false, warm: 6, vel: { len: 26 } });
+      const b = rig.box, r1 = c.$('#d3_05_why-r1'), r2 = c.$('#d3_05_why-r2'), b1 = c.$('#d3_05_why-b1'), b2 = c.$('#d3_05_why-b2');
+      c.data.tDone = null; c.data.base = null; c.data.on2 = false;
+      // 누른 뒤의 값: 압축이 끝난 시점부터 재어 창이 2초 이상 찼을 때만 읽는다(누르는 도중의 값이 섞이지 않게)
+      const cur = () => { if (c.data.tDone == null) return null; const w = Math.min(S, b.t() - c.data.tDone); return w >= 2 ? b.count('R', w) / w : null; };
+      const upd = () => {
+        if (!c.data.on2) return;
+        const z = cur(), a = c.data.base || 0;
+        r1.textContent = a.toFixed(1); r2.textContent = z == null ? '재는 중' : z.toFixed(1);
+        if (c.data.on3) { b1.setAttribute('width', (a * 60).toFixed(0)); b2.setAttribute('width', ((z == null ? 0 : z) * 60).toFixed(0)); }
+      };
+      c.every(upd, 300);
+    },
+    async go(c, k) {
+      const rig = c.data.rig, b = rig.box;
+      if (k === 1) {
+        c.data.base = b.rate('R', S);                 // 누르기 전 40 mL 일 때 센 값
+        c.sfx('whoosh', 0, 1400);
+        await rig.setV(20, 2000, 'inOut');
+        if (c.instant) { b.rewarm(6); c.data.tDone = b.t() - 6; } else c.data.tDone = b.t();
+      }
+      if (k === 2) { c.data.on2 = true; c.sfx('pop'); }
+      if (k === 3) { c.data.on3 = true; c.sfx('chime', 900); }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 05_why.html]",e)}
+/* ── 06_unchanged.html ── */
+try{
+
+(function () {
+  const H = 240, X0 = 1000, L = 560;
+  Deck.scene('d3_06_unchanged', {
+    steps: 4,
+    async enter(c) {
+      const rig = c.data.rig = GX.syringeRig(c, c.$('#d3_06_unchanged-syr'), { id: 'd3_06_unchanged-s', x: X0, y: 390, L, H, V0: 40, rod: 130, n: 10, speed: 480, seed: 27, flash: false, vel: { len: 30 } });
+      const sp = c.$('#d3_06_unchanged-sp');
+      c.every(() => { sp.textContent = Math.round(rig.box.meanSpeed() * 100); }, 250);
+    },
+    async go(c, k) {
+      const rig = c.data.rig;
+      if (k === 1) { c.sfx('whoosh', 0, 1400); await rig.setV(20, 1800, 'inOut'); }
+      if (k === 4) {
+        c.a(c.$('#d3_06_unchanged-th'), [{ y: '800px', height: '70px' }, { y: '740px', height: '130px' }], { dur: 1400, ease: 'inOut' });
+        c.sfx('rise', 0, 1400);
+        await rig.box.setSpeed(1.4, 1500);
+      }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 06_unchanged.html]",e)}
+/* ── 07_table.html ── */
+try{
+
+(function () {
+  const H = 200, X0 = 330, L = 700, PV = [[1, 40], [2, 20], [4, 10], [5, 8]];
+  Deck.scene('d3_07_table', {
+    steps: 3,
+    build(root) {
+      let s = `<div class="cell hd2" style="left:120px;top:378px;width:220px">압력 (기압)</div><div class="cell hd2" style="left:120px;top:462px;width:220px">부피 (mL)</div>`;
+      PV.forEach(([P, V], i) => {
+        const x = 350 + i * 138;
+        s += `<div class="cell" style="left:${x}px;top:378px;width:126px;color:var(--heat)">${P}</div>`;
+        s += i === 0 ? `<div class="cell ans" style="left:${x}px;top:462px;width:126px">${V}</div>` : `<div class="cell ans" style="left:${x}px;top:462px;width:126px"><span id="d3_07_table-c${i}" data-step="${i}">?</span></div>`;
+      });
+      root.querySelector('#d3_07_table-tbl').innerHTML = s;
+    },
+    async enter(c) {
+      c.data.rig = GX.syringeRig(c, c.$('#d3_07_table-syr'), { id: 'd3_07_table-s', x: X0, y: 640, L, H, V0: 40, rod: 260, surface: 'light', n: 12, speed: 500, seed: 33 });
+    },
+    async go(c, k) {
+      const [P, V] = PV[k], [P0, V0] = PV[k - 1], r = c.data.rig;
+      const cell = c.$(`#d3_07_table-c${k}`);
+      c.sfx('pop');
+      await Promise.all([r.setV(V, 1800, 'inOut'),
+        c.count(c.$('#d3_07_table-p'), P0, P, { dur: 1800, ease: 'inOut', fmt: x => Math.round(x) }), c.count(c.$('#d3_07_table-v'), V0, V, { dur: 1800, ease: 'inOut', fmt: x => Math.round(x) })]);
+      cell.textContent = V;
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 07_table.html]",e)}
+/* ── 08_graph.html ── */
+try{
+
+(function () {
+  const OX = 300, OY = 900, CW = 100, VP = 12, PMAX = 8, VMAX = 45;
+  const X = P => OX + CW * P, Y = V => OY - VP * V;
+  const PTS = [[1, 40], [2, 20], [4, 10], [5, 8]];
+  const curve = (p0, p1) => { let d = ''; const n = 90; for (let i = 0; i <= n; i++) { const P = p0 + (p1 - p0) * i / n; d += (i ? 'L' : 'M') + X(P).toFixed(1) + ' ' + Y(40 / P).toFixed(1); } return d; };
+  Deck.scene('d3_08_graph', {
+    steps: 3,
+    build(root) {
+      let s = '';
+      for (let P = 0; P <= PMAX; P++) { s += `<line x1="${X(P)}" y1="${Y(0)}" x2="${X(P)}" y2="${Y(VMAX)}" stroke="#e5e5ea" stroke-width="2"/>`; if (P) s += `<text x="${X(P)}" y="${OY + 40}" text-anchor="middle" style="font-size:26px;fill:var(--t2)">${P}</text>`; }
+      for (let V = 0; V <= VMAX; V += 5) { s += `<line x1="${OX}" y1="${Y(V)}" x2="${X(PMAX)}" y2="${Y(V)}" stroke="#e5e5ea" stroke-width="2"/>`; if (V) s += `<text x="${OX - 14}" y="${Y(V) + 9}" text-anchor="end" style="font-size:26px;fill:var(--t2)">${V}</text>`; }
+      s += `<path d="M${OX} ${Y(VMAX) - 20}V${OY}H${X(PMAX) + 24}" stroke="#1d1d1f" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      s += `<text x="${(OX + X(PMAX)) / 2}" y="${OY + 90}" text-anchor="middle" style="font-size:32px;font-weight:700;fill:var(--ink)">압력 (기압)</text>`;
+      s += `<text x="${OX - 96}" y="${(OY + Y(VMAX)) / 2}" text-anchor="middle" transform="rotate(-90 ${OX - 96} ${(OY + Y(VMAX)) / 2})" style="font-size:32px;font-weight:700;fill:var(--ink)">부피 (mL)</text>`;
+      s += `<g id="d3_08_graph-curve" opacity="0"><path d="${curve(1, 8)}" fill="none" stroke="var(--light)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></g>`;
+      s += `<g id="d3_08_graph-tail" opacity="0"><path d="${curve(8, 9.6)}" fill="none" stroke="var(--light)" stroke-width="5" stroke-dasharray="4 12" stroke-linecap="round" opacity=".8"/>` +
+        `<path d="M${X(8) + 14} ${Y(0) - 6}V${Y(5) + 10}" stroke="var(--ink)" stroke-width="3" fill="none"/><path d="M${X(8) + 6} ${Y(5) + 22}L${X(8) + 14} ${Y(5) + 10}L${X(8) + 22} ${Y(5) + 22}M${X(8) + 6} ${Y(0) - 18}L${X(8) + 14} ${Y(0) - 6}L${X(8) + 22} ${Y(0) - 18}" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `<text x="${X(8) - 20}" y="${Y(20)}" text-anchor="end" style="font-size:28px;font-weight:600;fill:var(--ink)">눌러도 눌러도</text><text x="${X(8) - 20}" y="${Y(20) + 36}" text-anchor="end" style="font-size:28px;font-weight:600;fill:var(--ink)">0 mL가 되지는 않는다</text></g>`;
+      PTS.forEach(([P, V], i) => { s += `<g id="d3_08_graph-p${i}" opacity="0"><circle cx="${X(P)}" cy="${Y(V)}" r="14" fill="var(--light)" stroke="#fff" stroke-width="4"/><text x="${X(P) + 22}" y="${Y(V) - 14}" style="font-size:28px;font-weight:700;fill:var(--ink)">(${P}, ${V})</text></g>`; });
+      root.querySelector('#d3_08_graph-g').innerHTML = s;
+    },
+    async go(c, k) {
+      if (k === 1) {
+        for (let i = 0; i < PTS.length; i++) { c.sfx('pop'); c.a(c.$('#d3_08_graph-p' + i), [{ opacity: 0, transform: 'translateY(-60px)' }, { opacity: 1, transform: 'translateY(0px)' }], { dur: 600, ease: 'out' }); await c.wait(450); }
+      }
+      if (k === 2) {
+        const g = c.$('#d3_08_graph-curve'); c.a(g, [{ opacity: 1 }, { opacity: 1 }], { dur: 1 });
+        c.sfx('zip', 0, 1400);
+        await c.a(g.firstChild, [{ strokeDashoffset: 1, strokeDasharray: '1 1' }, { strokeDashoffset: 0, strokeDasharray: '1 1' }], { dur: 1600, ease: 'inOut' }).finished;
+      }
+      if (k === 3) { c.reveal(c.$('#d3_08_graph-tail'), 'fade', { dur: 900 }); c.sfx('chime', 500); }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 08_graph.html]",e)}
+/* ── 09_life.html ── */
+try{
+
+(function () {
+  const ROWS = [
+    { t: '높은 산에 올라간 과자 봉지', s: '봉지에 작용하는 압력', p: ['작아진다', 0], v: ['커진다', 1] },
+    { t: '물속 깊이 내려간 공기 방울', s: '', p: ['커진다', 1], v: ['작아진다', 0] },
+    { t: '끝을 막고 피스톤을 누른 주사기', s: '', p: ['커진다', 1], v: ['작아진다', 0] },
+    { t: '하늘 높이 올라간 풍선', s: '', p: ['작아진다', 0], v: ['커진다', 1] },
+  ];
+  const ICON = [
+    `<path d="M20 108L70 44L100 82L128 58L190 108Z" fill="#d1d1d6"/><path d="M70 44L58 62L70 56L82 64Z" fill="#fff"/><g class="tb ic" id="d3_09_life-i0"><rect x="112" y="22" width="86" height="44" rx="14" fill="#e5e5ea" stroke="#8e8e93" stroke-width="3"/><path d="M116 30V58M122 30V58M188 30V58M194 30V58" stroke="#8e8e93" stroke-width="2.5"/></g>`,
+    `<path d="M0 30Q30 20 60 30T120 30T180 30T230 30V130H0Z" fill="#8e8e93" opacity=".14"/><g id="d3_09_life-i1"><circle class="tb" cx="115" cy="56" r="30" fill="#8e8e93" fill-opacity=".22" stroke="#8e8e93" stroke-width="3"/></g>`,
+    `<rect x="24" y="48" width="170" height="40" rx="8" fill="#fff" stroke="#8e8e93" stroke-width="3"/><rect id="d3_09_life-i2g" x="28" y="52" width="130" height="32" fill="var(--kin)" opacity=".22"/><g id="d3_09_life-i2"><rect x="150" y="44" width="10" height="48" rx="3" fill="#48484a"/><rect x="160" y="64" width="50" height="8" rx="3" fill="#8e8e93"/><rect x="208" y="52" width="8" height="32" rx="3" fill="#48484a"/></g>`,
+    `<g id="d3_09_life-i3"><path d="M115 96V128" stroke="#8e8e93" stroke-width="3"/><circle class="tb" id="d3_09_life-i3b" cx="115" cy="60" r="34" fill="#ff8fa3" fill-opacity=".95"/></g>`,
+  ];
+  const row = (r, i) => {
+    const y = 300 + i * 150;
+    return `<g data-step="${i + 1}" data-fx="fade"><g transform="translate(120 ${y})"><rect width="1680" height="130" rx="18" fill="#fff"/>` +
+      `<g transform="translate(30 0)">${ICON[i]}</g>` +
+      `<text x="290" y="${r.s ? 58 : 76}" style="font-size:36px;font-weight:700;fill:var(--ink)">${r.t}</text>` +
+      (r.s ? `<text x="290" y="98" style="font-size:28px;fill:var(--t2)">(${r.s})</text>` : '') +
+      `<text x="1010" y="78" style="font-size:42px;font-weight:700;fill:var(--heat)">${r.p[1] ? '↑' : '↓'} ${r.p[0]}</text>` +
+      `<text x="1400" y="78" style="font-size:42px;font-weight:700;fill:var(--light)">${r.v[1] ? '↑' : '↓'} ${r.v[0]}</text></g></g>`;
+  };
+  Deck.scene('d3_09_life', {
+    steps: 4,
+    build(root) { root.querySelector('#d3_09_life-rows').innerHTML = ROWS.map(row).join(''); },
+    async go(c, k) {
+      c.sfx('pop');
+      if (k === 1) c.a(c.$('#d3_09_life-i0'), [{ transform: 'scale(.72)' }, { transform: 'scale(1.3)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+      if (k === 2) {
+        c.a(c.$('#d3_09_life-i1'), [{ transform: 'translateY(-22px)' }, { transform: 'translateY(30px)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+        c.a(c.$('#d3_09_life-i1 circle'), [{ transform: 'scale(1.3)' }, { transform: 'scale(.72)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+      }
+      if (k === 3) {
+        c.a(c.$('#d3_09_life-i2'), [{ transform: 'translateX(0px)' }, { transform: 'translateX(-60px)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+        c.a(c.$('#d3_09_life-i2g'), [{ width: '130px' }, { width: '70px' }], { dur: 1600, delay: 400, ease: 'inOut' });
+      }
+      if (k === 4) {
+        c.a(c.$('#d3_09_life-i3'), [{ transform: 'translateY(26px)' }, { transform: 'translateY(-14px)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+        c.a(c.$('#d3_09_life-i3b'), [{ transform: 'scale(.7)' }, { transform: 'scale(1.25)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+        c.sfx('chime', 1200);
+      }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 09_life.html]",e)}
+/* ── 10_breath.html ── */
+try{
+
+(function () {
+  const VEX = 260, VIN = 380, TOP = 330, REF = 470;
+  Deck.scene('d3_10_breath', {
+    steps: 2,
+    build(root) {
+      root.querySelector('#d3_10_breath-in').innerHTML = GX.arrow(960, 230, 960, 296, { color: 'var(--elec)', w: 10, head: 30 });
+      root.querySelector('#d3_10_breath-flow').innerHTML = [0, 1, 2].map(i => `<circle class="fd" cx="${950 + i * 10}" cy="250" r="7" fill="var(--kin)" opacity="0"/>`).join('');
+      root.querySelector('#d3_10_breath-out').innerHTML = GX.arrow(960, 296, 960, 230, { color: 'var(--elec)', w: 10, head: 30 });
+    },
+    async enter(c) {
+      const dia = c.$('#d3_10_breath-dia'), bar = c.$('#d3_10_breath-bar');
+      const setBar = lvl => { const top = REF + lvl; bar.setAttribute('y', top.toFixed(1)); bar.setAttribute('height', (710 - top).toFixed(1)); };
+      c.data.setBar = setBar;
+      c.data.box = FX.gasBox(c, c.$('#d3_10_breath-box'), { x: 0, y: 0, w: VIN, h: 400, n: 10, speed: 330, seed: 61, flash: false, onRight: xr => dia.setAttribute('y', (TOP + xr - 9).toFixed(1)) });
+      c.data.box.jumpRight(VEX); setBar(0);
+    },
+    async go(c, k) {
+      const b = c.data.box, sb = c.data.setBar;
+      if (k === 1) {
+        c.sfx('whoosh', 0, 1400);
+        await Promise.all([b.setRight(VIN, 1600, 'inOut'), c.tween(1600, p => sb(60 * p), { ease: 'inOut' })]);
+        c.reveal(c.$('#d3_10_breath-in'), 'fade', { dur: 400 });
+        c.all(c.$$('#d3_10_breath-flow .fd'), [{ opacity: 0, transform: 'translateY(-16px)' }, { opacity: 1, transform: 'translateY(30px)' }, { opacity: 0, transform: 'translateY(64px)' }], { dur: 900, stagger: 260 });
+        b.setN(14, { stagger: 120 });
+        await c.tween(1200, p => sb(60 * (1 - p)), { ease: 'out' });
+        c.hide(c.$('#d3_10_breath-in'), { dur: 500, delay: 300 });
+        if (c.instant) b.respread();
+      }
+      if (k === 2) {
+        c.sfx('whoosh', 0, 1400);
+        await Promise.all([b.setRight(VEX, 1600, 'inOut'), c.tween(1600, p => sb(-60 * p), { ease: 'inOut' })]);
+        c.reveal(c.$('#d3_10_breath-out'), 'fade', { dur: 400 });
+        c.all(c.$$('#d3_10_breath-flow .fd'), [{ opacity: 0, transform: 'translateY(64px)' }, { opacity: 1, transform: 'translateY(30px)' }, { opacity: 0, transform: 'translateY(-16px)' }], { dur: 900, stagger: 260 });
+        b.setN(10);
+        await c.tween(1200, p => sb(-60 * (1 - p)), { ease: 'out' });
+        c.hide(c.$('#d3_10_breath-out'), { dur: 500, delay: 300 });
+      }
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 10_breath.html]",e)}
+/* ── 11_sentence.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_11_sentence', {
+    steps: 2,
+    async go(c, k) { c.sfx(k === 2 ? 'chime' : 'blank'); },
+  });
+})();
+
+}catch(e){console.error("[slide 11_sentence.html]",e)}
+/* ── 12_recap.html ── */
+try{
+
+(function () {
+  const CARDS = [
+    ['압력과 부피', '<p>온도가 일정할 때 압력을 크게 하면 부피는 작아진다</p><p class="m">압력이 2배면 부피는 약 절반</p>', '<div class="big"><span class="c-press">압력 ↑</span> → <span class="c-amt">부피 ↓</span></div>'],
+    ['입자로 보면', '<p>입자 수·크기·평균 빠르기는 그대로</p><p class="m">부피가 줄면 벽 사이를 오가는 거리가 짧아져 충돌 횟수가 늘고 압력이 커진다(한 번의 세기는 그대로)</p>', '<div class="big" style="font-size:44px">충돌 횟수 ↑ → <span class="c-press">압력 ↑</span></div>'],
+    ['그래프', '<p>점을 이으면 오른쪽 아래로 휘어지는 곡선</p><p class="m">곡선은 가로축에 닿지 않는다</p>', '<div class="big c-amt">휘어지는 곡선</div>'],
+  ];
+  Deck.scene('d3_12_recap', {
+    steps: 4,
+    build(root) {
+      root.querySelector('#d3_12_recap-cards').innerHTML = CARDS.map(([t, body, foot], i) =>
+        `<div class="rc" style="left:${120 + i * 570}px" data-step="${i + 1}" data-fx="up"><div class="no">${i + 1}</div><h3>${t}</h3>${body}${foot}</div>`).join('');
+    },
+    async go(c, k) { if (k === 4) c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 12_recap.html]",e)}
+</script>
+</body>
+</html>
