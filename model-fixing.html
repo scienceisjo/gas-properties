@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>기체 시뮬레이터 고치기 — 바이브코딩</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --paper:#eef4f9; --paper-hi:#f9fcfe; --paper-lo:#d9e6f0;
+ --line:#9db7cc; --line-soft:#c3d5e2;
+ --ink:#1e2c39; --ink-dim:#41586c; --ink-mute:#7b91a4;
+ --accent:#20748f; --sky:#3f88c5; --sky-hi:#a9d0ef; --sky-dk:#1c507e;
+ --c1:#b23a30; --c2:#3f64b5; --c3:#c4711e; --c4:#3a7a3f; --c5:#7d5ba6;
+ --ok:#2c7a44; --danger:#b3362e; --gold:#c4711e;
+ --disp:"Pretendard",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ --mono:"JetBrains Mono",ui-monospace,monospace; --jua:"Jua",var(--disp);
+ --r:14px; --shadow:0 14px 38px -20px rgba(23,52,80,.5);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--disp);color:var(--ink);line-height:1.68;font-size:16.5px;
+     word-break:keep-all;overflow-wrap:break-word;
+     background:var(--paper) linear-gradient(180deg,#e3eef7 0%,var(--paper) 320px)}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 40px}
+
+/* ── 머리 ── */
+header.top{position:sticky;top:0;z-index:30;background:rgba(240,246,251,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line-soft)}
+.topin{max-width:920px;margin:0 auto;padding:9px 16px;display:flex;align-items:center;gap:12px}
+.brand{font-family:var(--jua);font-size:18px;color:var(--sky-dk);line-height:1.15;white-space:nowrap}
+.brand small{display:block;font-family:var(--disp);font-size:11.5px;color:var(--ink-mute);font-weight:400}
+.spacer{flex:1}
+.prog{display:flex;align-items:center;gap:7px;min-width:132px}
+.prog .track{flex:1;height:8px;background:var(--paper-lo);border-radius:5px;overflow:hidden}
+.prog .track i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.prog .pct{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--accent);min-width:34px;text-align:right}
+.hbtn{font:inherit;font-size:16px;padding:5px 9px;border:1px solid var(--line);border-radius:9px;
+  background:var(--paper-hi);cursor:pointer;line-height:1}
+.hbtn.on{background:var(--accent);border-color:var(--accent)}
+
+nav.tabs{display:flex;gap:6px;overflow-x:auto;max-width:920px;margin:0 auto;padding:8px 16px 0}
+nav.tabs button{flex:none;font:inherit;font-weight:700;font-size:14.5px;color:var(--ink-dim);
+  background:transparent;border:1px solid transparent;border-radius:11px 11px 0 0;
+  padding:8px 14px;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{background:rgba(255,255,255,.6)}
+nav.tabs button.on{background:var(--paper-hi);border-color:var(--line-soft);border-bottom-color:var(--paper-hi);
+  color:var(--accent);box-shadow:0 -3px 0 var(--accent) inset}
+
+/* ── 공통 ── */
+section.tab{display:none;animation:fade .22s ease}
+section.tab.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h2{font-family:var(--jua);font-size:clamp(21px,3.3vw,27px);color:var(--sky-dk);margin:30px 0 10px;font-weight:400}
+h3{font-family:var(--jua);font-size:18.5px;color:var(--accent);margin:22px 0 8px;font-weight:400}
+p{margin:0 0 12px}
+.card{background:var(--paper-hi);border:1px solid var(--line-soft);border-radius:var(--r);
+  padding:18px 20px;margin:14px 0;box-shadow:var(--shadow)}
+.lead{font-size:17.5px;color:var(--ink-dim)}
+.pill{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;
+  background:var(--accent);padding:3px 10px;border-radius:20px;letter-spacing:.3px}
+.pill.m1{background:var(--c1)} .pill.m2{background:var(--c2)} .pill.m3{background:var(--c3)}
+b.kw{color:var(--c1)} b.kv{color:var(--c2)} b.kt{color:var(--c3)} b.kp{color:var(--c4)}
+code{font-family:var(--mono);font-size:.92em;background:#e7eff6;padding:1px 6px;border-radius:5px;color:var(--sky-dk)}
+pre{font-family:var(--mono);font-size:13px;line-height:1.6;background:#1e2c39;color:#dbe7f0;
+  padding:12px 14px;border-radius:10px;overflow-x:auto;margin:8px 0}
+pre .del{color:#f4a2a2} pre .add{color:#a8e0b4}
+ul,ol{margin:0 0 12px;padding-left:1.3em} li{margin-bottom:5px}
+.btn{font:inherit;font-weight:700;font-size:14.5px;padding:9px 16px;border:1px solid var(--line);
+  border-radius:10px;background:var(--paper-hi);color:var(--ink);cursor:pointer}
+.btn:hover{background:#e9f2fa}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{background:#1a6079}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+
+/* ── 시뮬 틀 ── */
+.simbox{border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden;background:#fff;margin:6px 0}
+.simbox iframe{display:block;width:100%;height:660px;border:0}
+.simbox .cap{padding:7px 13px;background:var(--paper-lo);font-size:13px;color:var(--ink-dim);
+  border-bottom:1px solid var(--line-soft)}
+
+/* ── 결함 카드 ── */
+.bug{border:1px solid var(--line-soft);border-left:5px solid var(--c1);border-radius:11px;
+  background:var(--paper-hi);margin:10px 0;overflow:hidden}
+.bug.done{border-left-color:var(--ok);background:#f2f9f4}
+.bug > .head{display:flex;align-items:center;gap:11px;padding:12px 15px;cursor:pointer;user-select:none}
+.bug .no{font-family:var(--jua);font-size:16px;color:var(--c1);min-width:64px}
+.bug.done .no{color:var(--ok)}
+.bug .ttl{flex:1;font-weight:700;font-size:15.5px;color:var(--ink-mute)}
+.bug.done .ttl{color:var(--ink)}
+.bug .chk{width:22px;height:22px;accent-color:var(--ok);cursor:pointer;flex:none}
+.bug .body{display:none;padding:2px 15px 15px;border-top:1px dashed var(--line-soft)}
+.bug.open .body{display:block}
+.hint{margin:9px 0;border:1px solid var(--line-soft);border-radius:9px;background:#fff}
+.hint > summary{cursor:pointer;padding:9px 13px;font-weight:700;font-size:14.5px;color:var(--accent);list-style:none}
+.hint > summary::-webkit-details-marker{display:none}
+.hint > summary::before{content:"▸ ";color:var(--sky)}
+.hint[open] > summary::before{content:"▾ "}
+.hint .in{padding:2px 15px 13px;font-size:15.5px;color:var(--ink-dim)}
+.hint.ans{border-color:#c8b48a;background:#fdfaf3}
+.hint.ans > summary{color:var(--gold)}
+.why{margin-top:8px;padding:10px 13px;background:#eef5ef;border-left:3px solid var(--c4);
+  border-radius:0 8px 8px 0;font-size:15px}
+.why b{color:var(--c4)}
+
+/* ── 교사용 ── */
+.tonly{display:none}
+body.tmode .tonly{display:block}
+.tbox{border:1px dashed var(--c5);background:#f7f3fb;border-radius:10px;padding:12px 15px;margin:10px 0}
+.tbox .tag{font-family:var(--mono);font-size:11.5px;font-weight:700;color:#fff;background:var(--c5);
+  padding:2px 9px;border-radius:20px}
+
+/* ── 경고 상자 ── */
+.warn{border:1px solid #dcb88c;border-left:5px solid var(--c3);background:#fdf7ee;
+  border-radius:11px;padding:13px 16px;margin:12px 0;font-size:15.5px;line-height:1.66}
+.warn .h{display:block;font-family:var(--jua);font-size:16.5px;color:var(--c3);margin-bottom:4px}
+.warn .test{display:block;margin:7px 0;padding:9px 13px;background:#fff;
+  border:1px solid #e3cba7;border-radius:9px;font-weight:700}
+
+/* ── 프롬프트 ── */
+.pcard{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:14px 16px;margin:9px 0}
+.pcard.good{border-left:5px solid var(--ok)}
+.pcard.bad{border-left:5px solid var(--danger);opacity:.92}
+.pcard .lbl{font-weight:700;font-size:13.5px;margin-bottom:5px}
+.pcard.good .lbl{color:var(--ok)} .pcard.bad .lbl{color:var(--danger)}
+.pcard .txt{font-size:15.5px;line-height:1.7}
+.ptmpl{position:relative}
+.ptmpl .copy{position:absolute;top:10px;right:10px}
+
+/* ── 실행실 ── */
+.lab{border:2px solid var(--sky);border-radius:var(--r);background:#f4faff;padding:15px 17px;margin:14px 0}
+.lab h4{font-family:var(--jua);font-size:17px;color:var(--sky-dk);margin:0 0 6px;font-weight:400}
+.lab textarea{width:100%;height:130px;font-family:var(--mono);font-size:12.5px;line-height:1.55;
+  padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);resize:vertical}
+.lab .note{font-size:13.5px;color:var(--ink-dim);margin:6px 0 0}
+
+/* ── 새 흐름 ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+h4.way{font-family:var(--jua);font-size:18px;color:var(--accent);margin:0 0 6px;font-weight:400}
+.hint.fix{border-color:#9fc3a6;background:#f3faf4} .hint.fix > summary{color:var(--c4)}
+.hint pre{margin:6px 0 0}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:10px 0}
+figure.shot{margin:0;background:var(--paper-hi);border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
+figure.shot img{display:block;width:100%;height:auto;border-bottom:1px solid var(--line-soft)}
+figure.shot figcaption{padding:9px 12px;font-size:14.5px;line-height:1.55}
+figure.shot figcaption .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;margin-right:4px}
+.sgh{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0}
+.sgh span{font-size:14.5px;color:var(--ink-dim)}
+a.btn{text-decoration:none;display:inline-block}
+.cycle{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 10px;font-size:14.5px;color:var(--ink-mute)}
+.cycle span,.goal5 span{background:#e7f1f8;color:var(--sky-dk);font-weight:700;padding:5px 11px;border-radius:20px;font-size:14.5px}
+.goal5{display:flex;flex-wrap:wrap;gap:6px}
+ol.rules li{margin-bottom:6px}
+.mq{background:var(--paper-hi);border:1px solid var(--line-soft);border-radius:12px;padding:12px 15px;margin:10px 0}
+.mq > p{margin:0 0 8px}
+.mqc{display:flex;flex-direction:column;gap:6px}
+.mqc button{font:inherit;font-size:15px;text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:8px 12px;cursor:pointer}
+.mqc button.ok{background:#e3f4e8;border-color:var(--ok)} .mqc button.no{background:#fbe7e5;border-color:var(--danger)}
+.mqw{display:none;margin:8px 0 0 !important;padding:8px 12px;background:#eef5ef;border-left:3px solid var(--c4);border-radius:0 8px 8px 0;font-size:15px}
+.mq.done .mqw{display:block}
+table.mini{font-size:13.5px;margin:8px 0} table.mini td,table.mini th{padding:6px 8px}
+@media(max-width:760px){ .two,.steps{grid-template-columns:1fr} }
+
+/* ── 확인 목록 ── */
+.chks{list-style:none;padding:0;margin:8px 0}
+.chks li{display:flex;gap:11px;align-items:flex-start;padding:10px 13px;background:#fff;
+  border:1px solid var(--line-soft);border-radius:10px;margin-bottom:7px}
+.chks input{width:21px;height:21px;accent-color:var(--ok);cursor:pointer;flex:none;margin-top:2px}
+.chks label{flex:1;cursor:pointer;font-size:15.5px}
+.chks li.done{background:#f2f9f4;border-color:#b6dcc2}
+
+/* ── 표 ── */
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px;background:#fff}
+th,td{border:1px solid var(--line-soft);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:var(--paper-lo);font-weight:700;color:var(--sky-dk)}
+td .num{font-family:var(--mono)}
+
+/* ── 기록장 ── */
+.log textarea{width:100%;height:74px;font:inherit;font-size:15px;padding:9px 11px;
+  border:1px solid var(--line-soft);border-radius:9px;resize:vertical;background:#fff}
+.log .fld{margin-bottom:11px}
+.log .fld > label{display:block;font-weight:700;font-size:14.5px;color:var(--accent);margin-bottom:4px}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(14px);
+  background:var(--sky-dk);color:#fff;padding:11px 20px;border-radius:26px;font-weight:700;font-size:15px;
+  opacity:0;pointer-events:none;transition:.25s;z-index:80}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+@media(max-width:640px){
+  body{font-size:16px}
+  .simbox iframe{height:600px}
+  .bug .no{min-width:52px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topin">
+    <div class="brand">기체 시뮬레이터 고치기<small>중학교 과학 · 기체의 성질 · 바이브코딩</small></div>
+    <div class="spacer"></div>
+    <div class="prog"><div class="track"><i id="progBar"></i></div><span class="pct" id="progPct">0%</span></div>
+    <button class="hbtn" id="tmodeBtn" title="교사용 보기 켜기/끄기">&#129489;&#8205;&#127979;</button>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div class="wrap">
+<main id="main"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<textarea id="src-v1" hidden>&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+&lt;title&gt;기체 압력 상자&lt;/title&gt;
+&lt;style&gt;
+  :root{ --paper:#eef4f9; --ink:#1e2c39; --dim:#41586c; --line:#9db7cc;
+         --soft:#c3d5e2; --hi:#f9fcfe; --accent:#20748f; --c1:#b23a30; --c4:#3a7a3f; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;background:var(--paper);color:var(--ink);
+       font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;line-height:1.6}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{margin:0 0 12px;color:var(--dim);font-size:14px}
+  canvas{width:100%;height:auto;background:#fff;border:2px solid var(--line);
+         border-radius:12px;display:block;touch-action:none}
+  .panel{margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--soft);border-radius:12px}
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .row:last-child{margin-bottom:0}
+  .row label{min-width:70px;font-weight:700;font-size:14px}
+  input[type=range]{flex:1;accent-color:var(--accent)}
+  .val{min-width:44px;text-align:right;font-family:"JetBrains Mono",ui-monospace,monospace;
+       font-weight:700;font-size:15px;color:var(--accent)}
+  button{font:inherit;font-weight:700;font-size:14px;padding:7px 15px;border:1px solid var(--line);
+         border-radius:9px;background:var(--hi);color:var(--ink);cursor:pointer}
+  button:hover{background:#eaf3fa}
+  .reads{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .read{padding:9px;background:var(--hi);border:1px solid var(--soft);border-radius:10px;text-align:center}
+  .read span{display:block;font-size:13px;color:var(--dim)}
+  .read b{font-size:25px;font-family:"JetBrains Mono",ui-monospace,monospace;line-height:1.25}
+  .read.p b{color:var(--c1)} .read.h b{color:var(--c4)}
+  .bar{height:12px;background:#e4edf4;border-radius:7px;overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;background:var(--c1);width:0}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
+  &lt;h1&gt;기체 압력 상자&lt;/h1&gt;
+  &lt;p class="sub"&gt;상자 안 기체 입자가 벽에 부딪혀 &lt;b&gt;압력&lt;/b&gt;이 생기는 모습을 보여 줍니다.&lt;/p&gt;
+
+  &lt;canvas id="box" width="520" height="360"&gt;&lt;/canvas&gt;
+
+  &lt;div class="panel"&gt;
+    &lt;div class="row"&gt;
+      &lt;label for="num"&gt;입자 수&lt;/label&gt;
+      &lt;input type="range" id="num" min="4" max="60" value="24"&gt;
+      &lt;span class="val" id="numVal"&gt;24&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="row"&gt;
+      &lt;button id="play"&gt;⏸ 멈춤&lt;/button&gt;
+      &lt;button id="reset"&gt;↺ 다시 뿌리기&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="reads"&gt;
+    &lt;div class="read h"&gt;&lt;span&gt;1초 동안 벽에 부딪힌 횟수&lt;/span&gt;&lt;b id="hitOut"&gt;0&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read p"&gt;&lt;span&gt;기체의 압력&lt;/span&gt;&lt;b id="prsOut"&gt;0&lt;/b&gt;
+      &lt;div class="bar"&gt;&lt;i id="prsBar"&gt;&lt;/i&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+const cv  = document.getElementById('box');
+const ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+
+/* ===== 값 설정 ===== */
+const R      = 22;    // 입자 하나의 반지름(픽셀)
+const GY     = 0.34;  // 매 프레임 아래쪽으로 더해 주는 속도
+const BOUNCE = 0.74;  // 벽에 부딪힌 뒤 남는 속도의 비율
+const SPEED  = 2.7;   // 처음 나눠 주는 빠르기
+
+let ps = [];              // 입자 목록
+let playing = true;       // 움직이는 중인가
+let hitCount = 0;         // 충돌을 센 값
+let hitShow  = 0;         // 화면에 보여 줄 1초당 충돌 수
+let lastSec  = performance.now();
+
+/* 입자를 상자 안에 뿌린다 */
+function makeParticles(n){
+  ps = [];
+  for(let i=0;i&lt;n;i++){
+    const a = Math.random()*Math.PI*2;
+    ps.push({
+      x: R + Math.random()*(W-2*R),
+      y: R + Math.random()*(H-2*R),
+      vx: Math.cos(a)*SPEED,
+      vy: Math.sin(a)*SPEED
+    });
+  }
+}
+
+/* 입자를 한 걸음 움직인다 */
+function step(){
+  for(const p of ps){
+    p.vy += GY;          // 아래쪽으로 속도를 더한다
+    p.x  += p.vx;
+    p.y  += p.vy;
+
+    if(p.x &lt; R)     { p.x = R;     p.vx = -p.vx; }          // 왼쪽 벽
+    if(p.x &gt; W-R)   { p.x = W-R;   p.vx = -p.vx; }          // 오른쪽 벽
+    if(p.y &lt; R)     { p.y = R;     p.vy = -p.vy; }          // 위쪽 벽
+    if(p.y &gt; H-R)   { p.y = H-R;   p.vy = -p.vy*BOUNCE; }   // 아래쪽 벽
+
+    // 벽에 닿아 있으면 충돌한 것으로 센다
+    if(p.x &lt;= R || p.x &gt;= W-R || p.y &lt;= R || p.y &gt;= H-R) hitCount++;
+  }
+}
+
+/* 기체의 압력을 구한다 */
+function pressure(){
+  return ps.length * 1.7;
+}
+
+/* 화살표 하나를 그린다 */
+function arrow(x1,y1,x2,y2){
+  const a = Math.atan2(y2-y1, x2-x1);
+  ctx.strokeStyle = '#b23a30'; ctx.fillStyle = '#b23a30'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-9*Math.cos(a-0.42), y2-9*Math.sin(a-0.42));
+  ctx.lineTo(x2-9*Math.cos(a+0.42), y2-9*Math.sin(a+0.42));
+  ctx.closePath(); ctx.fill();
+}
+
+/* 화면을 그린다 */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  // 상자 안쪽
+  ctx.fillStyle = '#f4f9fd'; ctx.fillRect(0,0,W,H);
+
+  // 입자
+  for(const p of ps){
+    ctx.beginPath(); ctx.arc(p.x,p.y,R,0,Math.PI*2);
+    ctx.fillStyle = '#3a7a3f'; ctx.fill();
+    ctx.strokeStyle = '#2b5c2f'; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+
+  // 기체가 벽을 미는 힘을 화살표로 보여 준다
+  for(let i=0;i&lt;5;i++){
+    const x = W*(i+1)/6;
+    arrow(x, H-34, x, H-8);
+  }
+
+  // 상자 테두리
+  ctx.strokeStyle = '#1c507e'; ctx.lineWidth = 5;
+  ctx.strokeRect(2.5,2.5,W-5,H-5);
+}
+
+/* 되풀이해서 실행한다 */
+function loop(now){
+  if(playing) step();
+  draw();
+
+  if(now - lastSec &gt;= 1000){
+    hitShow  = hitCount;
+    hitCount = 0;
+    lastSec  = now;
+    document.getElementById('hitOut').textContent = hitShow;
+  }
+  const pr = pressure();
+  document.getElementById('prsOut').textContent = pr.toFixed(0);
+  document.getElementById('prsBar').style.width = Math.min(100, pr/1.2) + '%';
+
+  requestAnimationFrame(loop);
+}
+
+/* 조작 단추 연결 */
+const numEl = document.getElementById('num');
+numEl.addEventListener('input', ()=&gt;{
+  document.getElementById('numVal').textContent = numEl.value;
+  makeParticles(+numEl.value);
+});
+document.getElementById('play').addEventListener('click', e=&gt;{
+  playing = !playing;
+  e.target.textContent = playing ? '⏸ 멈춤' : '▶ 움직이기';
+});
+document.getElementById('reset').addEventListener('click', ()=&gt; makeParticles(+numEl.value));
+
+makeParticles(+numEl.value);
+requestAnimationFrame(loop);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</textarea>
+<textarea id="src-v2" hidden>&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+&lt;title&gt;누르는 상자 — 부피와 압력&lt;/title&gt;
+&lt;style&gt;
+  :root{ --paper:#eef4f9; --ink:#1e2c39; --dim:#41586c; --line:#9db7cc;
+         --soft:#c3d5e2; --hi:#f9fcfe; --accent:#20748f;
+         --c1:#b23a30; --c2:#3f64b5; --c4:#3a7a3f; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;background:var(--paper);color:var(--ink);
+       font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;line-height:1.6}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{margin:0 0 12px;color:var(--dim);font-size:14px}
+  canvas{width:100%;height:auto;background:#fff;border:2px solid var(--line);
+         border-radius:12px;display:block;touch-action:none}
+  .panel{margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--soft);border-radius:12px}
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .row:last-child{margin-bottom:0}
+  .row label{min-width:70px;font-weight:700;font-size:14px}
+  input[type=range]{flex:1;accent-color:var(--accent)}
+  .val{min-width:48px;text-align:right;font-family:"JetBrains Mono",ui-monospace,monospace;
+       font-weight:700;font-size:15px;color:var(--accent)}
+  button{font:inherit;font-weight:700;font-size:14px;padding:7px 15px;border:1px solid var(--line);
+         border-radius:9px;background:var(--hi);color:var(--ink);cursor:pointer}
+  button:hover{background:#eaf3fa}
+  .reads{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+  .read{padding:9px;background:var(--hi);border:1px solid var(--soft);border-radius:10px;text-align:center}
+  .read span{display:block;font-size:12.5px;color:var(--dim)}
+  .read b{font-size:23px;font-family:"JetBrains Mono",ui-monospace,monospace;line-height:1.25}
+  .read.v b{color:var(--c2)} .read.h b{color:var(--c4)}
+  .read.s b{color:#7d5ba6} .read.p b{color:var(--c1)}
+  .tip{margin:9px 2px 0;font-size:13px;line-height:1.55;color:var(--dim)}
+  .tip b{color:var(--c1)}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
+  &lt;h1&gt;누르는 상자&lt;/h1&gt;
+  &lt;p class="sub"&gt;온도가 일정할 때, 오른쪽 벽을 밀어 &lt;b&gt;부피&lt;/b&gt;를 줄이면 기체의 &lt;b&gt;압력&lt;/b&gt;이 어떻게 되는지 보여 줍니다.&lt;/p&gt;
+
+  &lt;canvas id="box" width="520" height="360"&gt;&lt;/canvas&gt;
+
+  &lt;div class="panel"&gt;
+    &lt;div class="row"&gt;
+      &lt;label for="vol"&gt;부피&lt;/label&gt;
+      &lt;input type="range" id="vol" min="35" max="100" value="100"&gt;
+      &lt;span class="val" id="volVal"&gt;100%&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="row"&gt;
+      &lt;label for="num"&gt;입자 수&lt;/label&gt;
+      &lt;input type="range" id="num" min="0" max="180" value="120"&gt;
+      &lt;span class="val" id="numVal"&gt;120&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="row"&gt;
+      &lt;button id="play"&gt;⏸ 멈춤&lt;/button&gt;
+      &lt;button id="reset"&gt;↺ 다시 뿌리기&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="reads"&gt;
+    &lt;div class="read v"&gt;&lt;span&gt;부피&lt;/span&gt;&lt;b id="volOut"&gt;100&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read h"&gt;&lt;span&gt;1초당 손잡이 충돌 횟수&lt;/span&gt;&lt;b id="hitOut"&gt;0&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read s"&gt;&lt;span&gt;입자의 평균 빠르기&lt;/span&gt;&lt;b id="spdOut"&gt;100&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read p"&gt;&lt;span&gt;기체의 압력&lt;/span&gt;&lt;b id="prsOut"&gt;40&lt;/b&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;p class="tip"&gt;위·아래 벽은 상자를 좁히면 함께 짧아집니다. 그래서 길이가 변하지 않는
+     &lt;b&gt;손잡이(오른쪽 벽)&lt;/b&gt;에 부딪히는 횟수만 세어야 공정하게 비교할 수 있습니다.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+const cv  = document.getElementById('box');
+const ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+
+/* ===== 값 설정 ===== */
+const R     = 5;     // 입자 하나의 반지름(픽셀)
+const SPEED = 2.6;   // 처음 나눠 주는 빠르기
+
+let ps = [];
+let playing  = true;
+let vol      = 100;              // 부피(%)
+let wallX    = W * vol / 100;    // 오른쪽 벽의 위치
+let hitCount = 0;
+let hitShow  = 0;
+let lastSec  = performance.now();
+
+/* 입자를 상자 안에 뿌린다 */
+function makeParticles(n){
+  ps = [];
+  for(let i=0;i&lt;n;i++){
+    const a = Math.random()*Math.PI*2;
+    ps.push({
+      x: R + Math.random()*(wallX-2*R),
+      y: R + Math.random()*(H-2*R),
+      vx: Math.cos(a)*SPEED,
+      vy: Math.sin(a)*SPEED
+    });
+  }
+}
+
+/* 입자를 한 걸음 움직인다 */
+function step(){
+  for(const p of ps){
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if(p.x &lt; R    &amp;&amp; p.vx &lt; 0){ p.x = R;   p.vx = -p.vx; }  // 왼쪽 벽
+    if(p.y &lt; R    &amp;&amp; p.vy &lt; 0){ p.y = R;   p.vy = -p.vy; }  // 위쪽 벽
+    if(p.y &gt; H-R  &amp;&amp; p.vy &gt; 0){ p.y = H-R; p.vy = -p.vy; }  // 아래쪽 벽
+
+    // 오른쪽 움직이는 벽 — 상자 안쪽에서 부딪힐 때
+    if(p.x &lt; wallX &amp;&amp; p.x + R &gt; wallX &amp;&amp; p.vx &gt; 0){ p.x = wallX-R; p.vx = -p.vx; hitCount++; }
+    // 오른쪽 움직이는 벽 — 상자 바깥쪽에서 부딪힐 때
+    if(p.x &gt; wallX &amp;&amp; p.x - R &lt; wallX &amp;&amp; p.vx &lt; 0){ p.x = wallX+R; p.vx = -p.vx; }
+
+    // 그림 밖으로 나가지 않게 막는다
+    if(p.x &gt; W-R &amp;&amp; p.vx &gt; 0){ p.x = W-R; p.vx = -p.vx; }
+  }
+}
+
+/* 입자의 평균 빠르기를 구한다 (처음 값이 100) */
+function avgSpeed(){
+  if(ps.length === 0) return 0;
+  let s = 0;
+  for(const p of ps) s += Math.hypot(p.vx, p.vy);
+  return s / ps.length / SPEED * 100;
+}
+
+/* 기체의 압력을 구한다 */
+function pressure(){
+  return 40 / (vol/100);
+}
+
+/* 화살표 하나를 그린다 */
+function arrow(x1,y1,x2,y2){
+  const a = Math.atan2(y2-y1, x2-x1);
+  ctx.strokeStyle = '#b23a30'; ctx.fillStyle = '#b23a30'; ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-8*Math.cos(a-0.42), y2-8*Math.sin(a-0.42));
+  ctx.lineTo(x2-8*Math.cos(a+0.42), y2-8*Math.sin(a+0.42));
+  ctx.closePath(); ctx.fill();
+}
+
+/* 화면을 그린다 */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#e8eef3'; ctx.fillRect(0,0,W,H);           // 상자 바깥
+  ctx.fillStyle = '#f4f9fd'; ctx.fillRect(0,0,wallX,H);       // 상자 안
+
+  for(const p of ps){                                          // 입자
+    ctx.beginPath(); ctx.arc(p.x,p.y,R,0,Math.PI*2);
+    ctx.fillStyle = '#3a7a3f'; ctx.fill();
+  }
+
+  // 기체가 벽을 미는 힘 — 네 벽 모두
+  for(let i=0;i&lt;4;i++){
+    const y = H*(i+1)/5, x = wallX*(i+1)/5;
+    arrow(26, y, 6, y);                 // 왼쪽
+    arrow(wallX-26, y, wallX-6, y);     // 오른쪽
+    arrow(x, 26, x, 6);                 // 위
+    arrow(x, H-26, x, H-6);             // 아래
+  }
+
+  // 움직이는 벽(손잡이)
+  ctx.fillStyle = '#8a5f24'; ctx.fillRect(wallX-6, 0, 12, H);
+  ctx.fillStyle = '#c4711e'; ctx.fillRect(wallX-6, H/2-26, 12, 52);
+
+  ctx.strokeStyle = '#1c507e'; ctx.lineWidth = 5;
+  ctx.strokeRect(2.5, 2.5, wallX-5, H-5);
+}
+
+/* 되풀이해서 실행한다 */
+function loop(now){
+  if(playing) step();
+  draw();
+
+  if(now - lastSec &gt;= 1000){
+    hitShow = hitCount; hitCount = 0; lastSec = now;
+    document.getElementById('hitOut').textContent = hitShow;
+  }
+  document.getElementById('volOut').textContent = vol + '%';
+  document.getElementById('spdOut').textContent = avgSpeed().toFixed(0);
+  document.getElementById('prsOut').textContent = pressure().toFixed(0);
+
+  requestAnimationFrame(loop);
+}
+
+/* 조작 단추 연결 */
+const volEl = document.getElementById('vol');
+const numEl = document.getElementById('num');
+
+volEl.addEventListener('input', ()=&gt;{
+  const before = wallX;
+  vol   = +volEl.value;
+  wallX = W * vol / 100;
+  document.getElementById('volVal').textContent = vol + '%';
+
+  // 상자가 좁아진 만큼 입자를 빠르게 한다
+  const ratio = before / wallX;
+  for(const p of ps){ p.vx *= ratio; p.vy *= ratio; }
+});
+
+numEl.addEventListener('input', ()=&gt;{
+  document.getElementById('numVal').textContent = numEl.value;
+  makeParticles(+numEl.value);
+});
+
+document.getElementById('play').addEventListener('click', e=&gt;{
+  playing = !playing;
+  e.target.textContent = playing ? '⏸ 멈춤' : '▶ 움직이기';
+});
+document.getElementById('reset').addEventListener('click', ()=&gt; makeParticles(+numEl.value));
+
+makeParticles(+numEl.value);
+requestAnimationFrame(loop);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</textarea>
+<textarea id="src-v3" hidden>&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+&lt;title&gt;데우는 상자 — 온도와 부피&lt;/title&gt;
+&lt;style&gt;
+  :root{ --paper:#eef4f9; --ink:#1e2c39; --dim:#41586c; --line:#9db7cc;
+         --soft:#c3d5e2; --hi:#f9fcfe; --accent:#20748f;
+         --c1:#b23a30; --c2:#3f64b5; --c3:#c4711e; --c4:#3a7a3f; }
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;background:var(--paper);color:var(--ink);
+       font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;line-height:1.6}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{margin:0 0 12px;color:var(--dim);font-size:14px}
+  canvas{width:100%;height:auto;background:#fff;border:2px solid var(--line);
+         border-radius:12px;display:block;touch-action:none}
+  .panel{margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--soft);border-radius:12px}
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .row:last-child{margin-bottom:0}
+  .row label{min-width:70px;font-weight:700;font-size:14px}
+  input[type=range]{flex:1;accent-color:var(--c3)}
+  .val{min-width:52px;text-align:right;font-family:"JetBrains Mono",ui-monospace,monospace;
+       font-weight:700;font-size:15px;color:var(--c3)}
+  button{font:inherit;font-weight:700;font-size:14px;padding:7px 15px;border:1px solid var(--line);
+         border-radius:9px;background:var(--hi);color:var(--ink);cursor:pointer}
+  button:hover{background:#eaf3fa}
+  .reads{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+  .read{padding:9px;background:var(--hi);border:1px solid var(--soft);border-radius:10px;text-align:center}
+  .read span{display:block;font-size:12.5px;color:var(--dim)}
+  .read b{font-size:23px;font-family:"JetBrains Mono",ui-monospace,monospace;line-height:1.25}
+  .read.t b{color:var(--c3)} .read.v b{color:var(--c2)}
+  .read.n b{color:var(--c4)} .read.s b{color:#7d5ba6}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
+  &lt;h1&gt;데우는 상자&lt;/h1&gt;
+  &lt;p class="sub"&gt;기체를 데우면 위에 얹힌 &lt;b&gt;뚜껑&lt;/b&gt;이 밀려 올라가 &lt;b&gt;부피&lt;/b&gt;가 어떻게 되는지 보여 줍니다.&lt;/p&gt;
+
+  &lt;canvas id="box" width="520" height="380"&gt;&lt;/canvas&gt;
+
+  &lt;div class="panel"&gt;
+    &lt;div class="row"&gt;
+      &lt;label for="temp"&gt;온도&lt;/label&gt;
+      &lt;input type="range" id="temp" min="0" max="100" value="20"&gt;
+      &lt;span class="val" id="tempVal"&gt;20℃&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="row"&gt;
+      &lt;button id="play"&gt;⏸ 멈춤&lt;/button&gt;
+      &lt;button id="reset"&gt;↺ 처음으로&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="reads"&gt;
+    &lt;div class="read t"&gt;&lt;span&gt;온도&lt;/span&gt;&lt;b id="tOut"&gt;20&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read v"&gt;&lt;span&gt;기체의 부피&lt;/span&gt;&lt;b id="vOut"&gt;50&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read n"&gt;&lt;span&gt;입자 수&lt;/span&gt;&lt;b id="nOut"&gt;27&lt;/b&gt;&lt;/div&gt;
+    &lt;div class="read s"&gt;&lt;span&gt;입자의 평균 빠르기&lt;/span&gt;&lt;b id="sOut"&gt;100&lt;/b&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+const cv  = document.getElementById('box');
+const ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+
+/* ===== 값 설정 ===== */
+const SPEED   = 2.6;   // 20℃일 때의 빠르기
+const ATM     = 0;     // 바깥 공기가 뚜껑을 누르는 정도
+const PUSH_K  = 0.050; // 입자가 뚜껑을 밀어 올리는 정도
+const DAMP    = 0.90;  // 뚜껑이 출렁이는 것을 가라앉히는 값
+const TOP     = 34;    // 뚜껑이 올라갈 수 있는 가장 높은 곳
+const BOTTOM  = H-40;  // 뚜껑이 내려갈 수 있는 가장 낮은 곳
+
+let R       = 5;       // 입자 하나의 반지름(픽셀)
+let temp    = 20;      // 온도(℃)
+let ps      = [];
+let playing = true;
+let lidY    = H/2;     // 뚜껑의 높이
+let lidV    = 0;       // 뚜껑이 움직이는 속도
+let push    = 0;       // 입자가 뚜껑을 민 정도
+
+/* 온도에 맞는 빠르기 */
+function targetSpeed(t){
+  return SPEED * Math.sqrt((t+273)/293);
+}
+
+/* 온도에 맞는 입자 수 */
+function targetCount(t){
+  return 20 + Math.round(t*0.35);
+}
+
+/* 온도에 맞는 입자 반지름 */
+function targetRadius(t){
+  return 4 + t*0.05;
+}
+
+/* 입자를 상자 안에 뿌린다 */
+function makeParticles(n){
+  const v = targetSpeed(temp);
+  ps = [];
+  for(let i=0;i&lt;n;i++){
+    const a = Math.random()*Math.PI*2;
+    ps.push({
+      x: R + Math.random()*(W-2*R),
+      y: lidY + R + Math.random()*(H-lidY-2*R),
+      vx: Math.cos(a)*v,
+      vy: Math.sin(a)*v
+    });
+  }
+}
+
+/* 온도를 바꾼다 */
+function setTemp(t){
+  temp = t;
+  R = targetRadius(t);                       // 입자 크기를 맞춘다
+  const want = targetCount(t);               // 입자 수를 맞춘다
+  while(ps.length &gt; want) ps.pop();
+  while(ps.length &lt; want){
+    const a = Math.random()*Math.PI*2, v = targetSpeed(t);
+    ps.push({ x: R+Math.random()*(W-2*R), y: lidY+R+Math.random()*(H-lidY-2*R),
+              vx: Math.cos(a)*v, vy: Math.sin(a)*v });
+  }
+  const want_v = targetSpeed(t);             // 빠르기를 맞춘다
+  const now_v  = avgSpeedRaw();
+  if(now_v &gt; 0){
+    const k = want_v / now_v;
+    for(const p of ps){ p.vx *= k; p.vy *= k; }
+  }
+}
+
+function avgSpeedRaw(){
+  if(ps.length === 0) return 0;
+  let s = 0;
+  for(const p of ps) s += Math.hypot(p.vx, p.vy);
+  return s / ps.length;
+}
+
+/* 입자와 뚜껑을 한 걸음 움직인다 */
+function step(){
+  push = 0;
+
+  for(const p of ps){
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if(p.x &lt; R    &amp;&amp; p.vx &lt; 0){ p.x = R;   p.vx = -p.vx; }   // 왼쪽 벽
+    if(p.x &gt; W-R  &amp;&amp; p.vx &gt; 0){ p.x = W-R; p.vx = -p.vx; }   // 오른쪽 벽
+    if(p.y &gt; H-R  &amp;&amp; p.vy &gt; 0){ p.y = H-R; p.vy = -p.vy; }   // 바닥
+
+    // 뚜껑 아래쪽에 부딪힌다
+    if(p.y &lt; lidY + R &amp;&amp; p.vy &lt; 0){
+      p.y  = lidY + R;
+      p.vy = -p.vy;
+      push += 2*Math.abs(p.vy);       // 뚜껑을 밀어 올린 정도를 모은다
+    }
+  }
+
+  // 뚜껑 : 아래에서 입자가 밀어 올리고, 위에서 바깥 공기가 누른다
+  lidV += push*PUSH_K - ATM;
+  lidV *= DAMP;
+  lidY -= lidV;
+
+  if(lidY &lt; TOP)   { lidY = TOP;    lidV = 0; }
+  if(lidY &gt; BOTTOM){ lidY = BOTTOM; lidV = 0; }
+
+  for(const p of ps) if(p.y &lt; lidY + R) p.y = lidY + R;
+}
+
+/* 화면을 그린다 */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#e8eef3'; ctx.fillRect(0,0,W,H);              // 뚜껑 위 바깥
+  ctx.fillStyle = '#f4f9fd'; ctx.fillRect(0,lidY,W,H-lidY);      // 기체가 든 곳
+
+  for(const p of ps){
+    ctx.beginPath(); ctx.arc(p.x,p.y,R,0,Math.PI*2);
+    ctx.fillStyle = '#3a7a3f'; ctx.fill();
+  }
+
+  ctx.fillStyle = '#8a5f24'; ctx.fillRect(0, lidY-13, W, 13);    // 뚜껑
+  ctx.fillStyle = '#c4711e'; ctx.fillRect(W/2-34, lidY-20, 68, 8);
+
+  ctx.strokeStyle = '#1c507e'; ctx.lineWidth = 5;                // 상자
+  ctx.beginPath();
+  ctx.moveTo(2.5, 0); ctx.lineTo(2.5, H-2.5);
+  ctx.lineTo(W-2.5, H-2.5); ctx.lineTo(W-2.5, 0);
+  ctx.stroke();
+
+  // 불꽃 — 온도가 높을수록 크게
+  const f = temp/100;
+  ctx.fillStyle = 'rgba(196,113,30,' + (0.25+0.75*f) + ')';
+  for(let i=0;i&lt;7;i++){
+    const x = W*(i+1)/8, h = 6 + 22*f;
+    ctx.beginPath();
+    ctx.moveTo(x-7, H-3); ctx.quadraticCurveTo(x, H-3-h*1.7, x+7, H-3);
+    ctx.fill();
+  }
+}
+
+/* 되풀이해서 실행한다 */
+function loop(){
+  if(playing) step();
+  draw();
+
+  document.getElementById('tOut').textContent = temp;
+  document.getElementById('vOut').textContent = Math.round((H-lidY)/H*100) + '%';
+  document.getElementById('nOut').textContent = ps.length;
+  document.getElementById('sOut').textContent = Math.round(avgSpeedRaw()/SPEED*100);
+
+  requestAnimationFrame(loop);
+}
+
+/* 조작 단추 연결 */
+const tempEl = document.getElementById('temp');
+tempEl.addEventListener('input', ()=&gt;{
+  document.getElementById('tempVal').textContent = tempEl.value + '℃';
+  setTemp(+tempEl.value);
+});
+document.getElementById('play').addEventListener('click', e=&gt;{
+  playing = !playing;
+  e.target.textContent = playing ? '⏸ 멈춤' : '▶ 움직이기';
+});
+document.getElementById('reset').addEventListener('click', ()=&gt;{
+  lidY = H/2; lidV = 0;
+  tempEl.value = 20;
+  document.getElementById('tempVal').textContent = '20℃';
+  temp = 20; R = targetRadius(20);
+  makeParticles(targetCount(20));
+});
+
+R = targetRadius(temp);
+makeParticles(targetCount(temp));
+requestAnimationFrame(loop);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</textarea>
+
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">&copy; 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-01</span></footer>
+
+<script>
+/* ══════════════════ 설정 ══════════════════ */
+const IMG = 'img/vibe/';
+const SGH_URL = new URLSearchParams(location.search).get('sgh') || 'https://scienceisjo.github.io/studentgithub/';
+
+/* ══════════════════ 자료 ══════════════════ */
+const MISSIONS = [
+{
+ id:'m1', no:1, cls:'m1', tab:'미션 1 · 압력',
+ title:'기체의 압력은 어디에서 오는가',
+ file:'불량시뮬_v1_압력.html', src:'src-v1', bugs_n:5,
+ intact:'그냥 두면 입자들이 20초 안에 상자 <b>바닥으로 가라앉아</b> 한 줄로 쌓여야 합니다.',
+ goal:[
+  '기체 입자는 <b class="kp">쉬지 않고 사방으로</b> 움직이며 상자 전체에 고르게 퍼져 있다.',
+  '그 입자들이 <b class="kw">벽에 부딪히면서 벽을 미는 것</b>이 기체의 압력이다.',
+  '기체의 압력은 <b class="kw">모든 방향</b>으로 작용한다.',
+  '입자 수가 많을수록 <b class="kw">더 자주 부딪혀</b> 압력이 커진다.'
+ ],
+ bugs:[
+  {t:'입자가 너무 크다',
+   h1:'상자 안 초록 알갱이 하나의 크기를 보세요. 알갱이가 상자를 얼마나 차지하고 있나요?',
+   h2:'기체 입자와 입자 사이는 대부분 무엇으로 채워져 있다고 배웠나요?',
+   ans:'입자를 상자가 꽉 찰 만큼 크게 그려 놓았습니다.',
+   why:'기체는 <b>입자 사이가 대부분 빈 공간</b>입니다. 알갱이가 서로 닿을 만큼 크게 그리면 기체가 아니라 알갱이가 빽빽이 들어찬 고체처럼 보입니다.',
+   code:'<span class="del">const R = 22;</span>\n<span class="add">const R = 5;</span>'},
+  {t:'입자가 바닥으로 가라앉는다',
+   h1:'아무것도 건드리지 말고 10초쯤 그냥 두고 보세요. 입자들이 결국 어디로 모이나요?',
+   h2:'바닥에 가라앉아 층을 이루는 것은 기체일까요, 액체일까요?',
+   ans:'매 순간 아래쪽으로 속도를 더하고 있어서(중력) 입자가 전부 바닥에 쌓입니다.',
+   why:'기체 입자는 <b>중력의 영향을 거의 받지 않고 사방으로 자유롭게</b> 움직여 그릇 전체에 고르게 퍼집니다. 바닥에 쌓이는 것은 액체의 모습입니다.',
+   code:'<span class="del">p.vy += GY;</span>          // 이 줄을 없앤다\n<span class="del">p.vy = -p.vy*BOUNCE;</span>  // 바닥에서 속도가 줄지 않게\n<span class="add">p.vy = -p.vy;</span>'},
+  {t:'압력 화살표가 바닥에만 있다',
+   h1:'빨간 화살표가 어느 벽에 그려져 있는지 세어 보세요.',
+   h2:'풍선은 아래쪽만 부풀어 오르나요? 기체는 어느 방향으로 벽을 미나요?',
+   ans:'기체가 벽을 미는 힘을 아래쪽 벽에만 그려 놓았습니다.',
+   why:'기체의 압력은 <b>모든 방향으로 똑같이</b> 작용합니다. 네 벽 모두에서 바깥쪽으로 미는 화살표가 그려져야 합니다.',
+   code:'// 아래쪽 한 줄만 그리던 것을 네 벽 모두로\n<span class="add">arrow(26, y, 6, y);      // 왼쪽\narrow(W-26, y, W-6, y);  // 오른쪽\narrow(x, 26, x, 6);      // 위\narrow(x, H-26, x, H-6);  // 아래</span>'},
+  {t:'충돌 수가 말이 안 되게 크다',
+   h1:'입자가 모두 바닥에 가라앉아 멈춘 뒤에도 <b>1초 동안 벽에 부딪힌 횟수</b>를 보세요.',
+   h2:'멈춰 있는 입자가 1초에 몇만 번씩 부딪힐 수 있을까요? 벽에 <b>부딪히는 것</b>과 벽에 <b>닿아 있는 것</b>은 같은 일인가요?',
+   ans:'벽에 닿아 있기만 해도 매 순간 충돌로 세고 있어서 숫자가 끝없이 부풀어 오릅니다.',
+   why:'충돌은 <b>벽에 부딪혀 튕겨 나오는 그 순간에 딱 한 번</b>만 세야 합니다. 이걸 잘못 세면 압력을 아무리 잘 계산해도 결과가 엉터리가 됩니다.<br><b>※ 잘못 ②(가라앉음)를 먼저 고치세요.</b> 입자가 바닥에 붙어 있으면 눈에는 멈춘 것 같아도 매 순간 아주 조금씩 튀고 있어서, 이걸 고쳐도 충돌이 1초에 1,000번 넘게 세어집니다. ②를 고치면 10번 안팎으로 내려옵니다.',
+   code:'<span class="del">if(p.x<=R || p.x>=W-R || p.y<=R || p.y>=H-R) hitCount++;</span>\n// 대신 벽마다 튕기는 곳에서 한 번씩 센다\n<span class="add">if(p.x < R && p.vx < 0){ p.x=R; p.vx=-p.vx; hitCount++; }</span>'},
+  {t:'압력이 충돌과 상관없이 정해진다',
+   h1:'<b>멈춤</b> 단추를 눌러 입자를 모두 세워 보세요. 압력 숫자가 변하나요?',
+   h2:'기체의 압력은 무엇 때문에 생기나요? 입자가 멈춰 있어도 압력이 있을 수 있나요?',
+   ans:'압력을 <code>입자 수 × 1.7</code>이라는 식으로 정해 놓아서, 입자가 다 멈춰도 압력이 그대로입니다.',
+   why:'이 시뮬레이터의 목적은 <b>충돌이 압력을 만든다는 것을 보여 주는 것</b>입니다. 압력을 식으로 미리 정해 버리면 아무것도 설명하지 못하는 가짜 모형이 됩니다. 압력은 <b>센 충돌 횟수에서</b> 나와야 합니다.',
+   code:'<span class="del">return ps.length * 1.7;</span>\n<span class="add">return hitShow * 3;   // 1초 동안 센 충돌 횟수로 구한다</span>'}
+ ],
+ prompt:'아래 코드는 기체 입자가 상자 벽에 부딪혀 압력이 생기는 것을 보여 주는 시뮬레이터입니다.\n지금 입자들이 전부 상자 바닥에 가라앉아 층을 이룹니다.\n기체 입자는 중력의 영향을 거의 받지 않고 사방으로 자유롭게 움직이며 그릇 전체에 고르게 퍼져야 합니다.\n중력으로 속도를 더하는 부분을 없애고, 벽에 부딪힐 때 속도가 줄지 않게 해 주세요.\n다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요.',
+ verify:[
+  '아무것도 건드리지 않고 20초를 두어도 입자가 상자 안에 고르게 퍼져 있는가? (바닥에 쌓이지 않는가)',
+  '빨간 화살표가 네 벽 모두에 있는가?',
+  '압력 숫자가 <b>충돌 횟수를 따라가는가</b>? <b>멈춤</b>을 누르면 1초 뒤 충돌 횟수가 0이 되는데, 압력도 함께 0이 되어야 합니다. (멈춤 동안 두 숫자를 모두 그대로 붙들어 두게 만들었다면 그것도 괜찮습니다. 충돌은 0인데 압력만 남아 있으면 안 됩니다.)',
+  '입자 수를 20개 → 40개로 바꾸면 1초당 충돌 수도 대략 2배가 되는가? <b>(교과서의 "입자 수가 많을수록 압력이 커진다"를 숫자로 확인하는 단계)</b> 숫자가 조금씩 흔들리니 몇 초 지켜보고 어림수로 견주세요.'
+ ],
+ tnote:'1걸음 <b>연필 양끝 누르기</b>와 이어 주면 좋습니다. 연필은 양쪽이 같은 힘으로 눌리고, 기체는 모든 방향으로 같은 압력을 냅니다. 잘못 ③을 고친 화면이 그 그림입니다.<br>잘못 ⑤는 학생이 가장 어려워합니다. 막히면 "압력 칸에 이미 있는 숫자 중에 쓸 수 있는 게 뭐가 있을까?"라고만 물어 주세요.'
+},
+{
+ id:'m2', no:2, cls:'m2', tab:'미션 2 · 압력과 부피',
+ title:'좁히면 왜 압력이 커지는가',
+ file:'불량시뮬_v2_보일.html', src:'src-v2', bugs_n:3,
+ intact:'부피를 50%로 줄이면 <b>입자의 평균 빠르기</b>가 100에서 <b>200</b>으로 올라가야 합니다.',
+ goal:[
+  '상자를 좁히면 입자가 벽까지 가는 거리가 짧아져 <b class="kw">더 자주</b> 부딪힌다.',
+  '그래서 부피를 줄이면 압력이 커진다.',
+  '이때 <b class="kt">온도가 일정하면 입자의 평균 빠르기는 변하지 않는다</b>. 빠르기를 바꾸는 것은 온도뿐이다.',
+  '벽을 밀면 안에 있던 입자는 벽에 밀려 상자 안에 그대로 남는다.',
+  '<span style="color:var(--ink-dim)">※ 이 시뮬레이터는 <b>손잡이(오른쪽 벽)에 부딪힌 횟수</b>만 셉니다. 위·아래 벽은 상자를 좁히면 함께 짧아져 버려서, 길이가 변하지 않는 벽 하나로 견주어야 공정합니다.</span>'
+ ],
+ bugs:[
+  {t:'좁히면 입자가 빨라진다',
+   h1:'부피를 100%에서 50%로 줄이면서 <b>입자의 평균 빠르기</b> 숫자를 지켜보세요.',
+   h2:'입자의 빠르기를 바꾸는 것은 무엇인가요? 상자의 크기인가요, 온도인가요?',
+   ans:'부피를 줄일 때 코드가 모든 입자의 속도에 숫자를 곱해서 빠르게 만들고 있습니다. (100 → 200)',
+   why:'이것이 이 단원에서 가장 많이 하는 착각입니다. <b>입자의 평균 빠르기를 정하는 것은 온도뿐</b>입니다. 온도가 그대로라면 상자를 좁혀도 입자는 그대로의 빠르기로 달리고, 다만 <b>벽까지 가는 거리가 짧아져서 더 자주</b> 부딪힐 뿐입니다.',
+   code:'// 부피 손잡이를 움직였을 때\n<span class="del">const ratio = before / wallX;</span>\n<span class="del">for(const p of ps){ p.vx *= ratio; p.vy *= ratio; }</span>\n// 이 세 줄을 통째로 없앤다'},
+  {t:'입자가 하나도 없어도 압력이 있다',
+   h1:'<b>입자 수</b>를 0까지 내려 보세요. 상자가 텅 비었는데 압력 숫자는 어떻게 되나요?',
+   h2:'상자 안에 아무것도 없으면 벽을 미는 것은 무엇인가요?',
+   ans:'압력을 <code>40 ÷ 부피</code>라는 식으로 계산해 두어서, 상자가 비어 있어도 숫자가 나옵니다.',
+   why:'미션 1과 같은 잘못입니다. 답을 미리 식으로 적어 두면 <b>왜 그렇게 되는지</b>는 하나도 보여 주지 못합니다. 압력은 <b>실제로 센 충돌 횟수</b>에서 나와야 합니다.',
+   code:'<span class="del">return 40 / (vol/100);</span>\n<span class="add">return hitShow * 3;   // 1초 동안 센 손잡이 충돌 횟수로 구한다</span>'},
+  {t:'벽이 입자를 뚫고 지나간다',
+   h1:'부피 손잡이를 100%에서 40%까지 쭉 밀어 보세요. 회색으로 칠해진 <b>상자 밖</b>에 무엇이 있나요?',
+   h2:'주사기 피스톤을 밀면, 안에 있던 공기가 피스톤을 통과해서 밖으로 빠져나가나요?',
+   ans:'벽을 옮길 때 벽이 지나간 자리에 있던 입자를 안으로 밀어 주지 않아서, 입자들이 상자 밖에 갇힙니다.',
+   why:'벽은 <b>입자를 밀고 가야</b> 합니다. 입자가 밖으로 새어 나가면 상자 안 기체의 양이 줄어들어, 압력이 왜 커지는지를 비교할 수 없게 됩니다.',
+   code:'// 부피 손잡이를 움직인 뒤에 덧붙인다\n<span class="add">for(const p of ps){\n  if(p.x > wallX - R) p.x = wallX - R;   // 벽이 입자를 밀고 간다\n}</span>'}
+ ],
+ prompt:'아래 코드는 상자의 오른쪽 벽을 밀어 기체의 부피를 줄이는 시뮬레이터입니다.\n지금 부피를 절반으로 줄이면 입자의 평균 빠르기가 100에서 200으로 올라갑니다.\n입자의 평균 빠르기를 정하는 것은 온도뿐이고, 상자를 좁히는 것으로는 빠르기가 변하지 않아야 합니다.\n부피를 바꿀 때 입자 속도에 숫자를 곱하는 부분을 없애 주세요.\n다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요.',
+ verify:[
+  '부피를 100% → 50%로 줄여도 <b>평균 빠르기</b>가 100 근처에 그대로 있는가?',
+  '부피를 100% → 50%로 줄이면 <b>손잡이 충돌 횟수</b>가 대략 2배가 되는가? <b>(보일 법칙을 숫자로 확인하는 단계)</b> 입자 수를 120쯤에 두고, 숫자가 흔들리니 몇 초씩 지켜보며 견주세요.',
+  '입자 수를 0으로 하면 압력이 0인가?',
+  '부피를 끝까지 밀었다 놓아도 회색(상자 밖)에 남은 입자가 없는가?'
+]
+ ,
+ tnote:'3~4걸음(주사기·압력센서 MBL) 바로 뒤에 붙이면 가장 잘 맞습니다. 실물 주사기로 잰 값과 학생이 고친 시뮬의 충돌 수를 나란히 놓아 보세요.<br>잘못 ①은 <b>부피↓ → 입자가 빨라진다</b>는 오개념을 정면으로 겨냥합니다. 여기서 시간을 가장 많이 쓰게 해 주세요.<br>학생이 "주사기를 세게 누르면 뜨거워지던데요?"라고 하면 맞는 말입니다 — 아주 빨리 누르면 공기가 잠깐 데워져 입자가 빨라집니다(3~4걸음 MBL 시뮬의 치솟았다 내려오는 곡선). 그래서 보일 법칙은 <b>온도가 일정할 때</b>, 곧 천천히 눌러 열이 빠져나갈 때의 이야기입니다. 이 시뮬레이터도 온도가 일정하다고 놓은 모형입니다.<br><br><b>⚠ 미리 알고 계실 것 — 어느 벽을 세느냐로 답이 달라집니다.</b> AI에게 "충돌 수를 제대로 세 달라"고 하면 <b>네 벽을 모두</b> 세도록 고치는 일이 흔합니다. 그러면 부피를 절반으로 줄여도 충돌 수가 <b>1.3배</b>밖에 안 올라 보일 법칙이 무너집니다. 상자를 좁히면 위·아래 벽도 함께 짧아져 그쪽 충돌이 줄기 때문입니다. 길이가 변하지 않는 <b>손잡이(오른쪽 벽) 한 곳만</b> 세야 2배가 나옵니다(실측 1.9~2.3배). 학생이 "2배가 안 나와요"라고 하면 <b>어느 벽을 세고 있는지</b>부터 물어 주세요 — 변인 통제를 가르칠 좋은 기회입니다.'
+},
+{
+ id:'m3', no:3, cls:'m3', tab:'미션 3 · 온도와 부피',
+ title:'데우면 왜 부풀어 오르는가',
+ file:'불량시뮬_v3_샤를.html', src:'src-v3', bugs_n:3,
+ intact:'온도를 20℃에 두었을 때 <b>뚜껑이 천장에 붙어</b> 있고, 기체의 부피가 <b>91%</b>에서 꼼짝하지 않아야 합니다.',
+ goal:[
+  '온도를 올리면 입자가 <b class="kt">빨라진다</b>.',
+  '빨라진 입자가 뚜껑을 더 세게 밀어 올려 <b class="kv">부피가 커진다</b>.',
+  '부피는 <b>안에서 미는 것</b>과 <b>밖에서 누르는 것</b>이 같아지는 곳에서 멈춘다.',
+  '온도가 변해도 <b class="kp">입자의 수와 크기는 변하지 않는다</b>.'
+ ],
+ bugs:[
+  {t:'뚜껑이 천장에 붙어 버린다',
+   h1:'온도를 20℃, 50℃, 100℃로 바꾸면서 <b>기체의 부피</b> 숫자를 보세요. 숫자가 변하나요?',
+   h2:'냄비 뚜껑이 끝없이 올라가지 않는 까닭은 무엇인가요? 뚜껑 위에는 무엇이 있나요?',
+   ans:'뚜껑 위에서 누르는 바깥 공기(대기압)를 0으로 두어서, 기체가 밀어 올리기만 하고 눌러 주는 것이 없습니다. 그래서 뚜껑이 천장까지 올라가 붙어 버리고, 온도를 바꿔도 부피가 91%에서 꼼짝하지 않습니다.',
+   why:'기체의 부피는 <b>안에서 미는 것과 밖에서 누르는 것이 같아지는 곳</b>에서 정해집니다. 밖에서 누르는 것이 없으면 기체는 그릇이 막을 때까지 끝없이 퍼집니다.',
+   code:'<span class="del">const ATM = 0;</span>\n<span class="add">const ATM = 0.027;   // 바깥 공기가 뚜껑을 누르는 정도 (0.02~0.05)</span>'},
+  {t:'데우면 입자 수가 늘어난다',
+   h1:'온도를 0℃에서 100℃까지 올리면서 <b>입자 수</b> 칸을 보세요. (20 → 55)',
+   h2:'봉지를 데우면 봉지 안에 공기가 새로 생겨나나요?',
+   ans:'온도에 맞춰 입자를 새로 만들어 넣고 있습니다.',
+   why:'닫힌 그릇 안에 든 <b>기체의 양은 변하지 않습니다</b>. 온도가 바꾸는 것은 오직 입자의 <b>빠르기</b>뿐입니다. 입자가 늘어나면 부피가 커진 까닭이 온도 때문인지 양 때문인지 알 수 없게 됩니다.',
+   code:'<span class="del">return 20 + Math.round(t*0.35);</span>\n<span class="add">return 30;   // 온도와 상관없이 늘 같다</span>'},
+  {t:'데우면 입자가 커진다',
+   h1:'온도를 0℃로 두었을 때와 100℃로 두었을 때, 초록 알갱이 하나의 크기를 비교해 보세요.',
+   h2:'기체의 부피가 커지는 것은 <b>입자 하나하나가 커져서</b>일까요, <b>입자 사이가 넓어져서</b>일까요?',
+   ans:'온도에 맞춰 입자의 반지름을 키우고 있습니다. (4 → 9)',
+   why:'입자 <b>자체의 크기는 변하지 않습니다</b>. 기체의 부피가 커지는 것은 빨라진 입자들이 더 넓게 퍼져서, 곧 <b>입자 사이의 거리가 멀어져서</b>입니다.',
+   code:'<span class="del">return 4 + t*0.05;</span>\n<span class="add">return 5;   // 온도와 상관없이 늘 같다</span>'}
+ ],
+ prompt:'아래 코드는 기체를 데우면 위에 얹힌 뚜껑이 밀려 올라가는 시뮬레이터입니다.\n지금 온도를 20℃로만 올려도 뚜껑이 천장까지 올라가 붙어 버려서, 온도를 바꿔도 부피가 변하지 않습니다.\n뚜껑 위에서 바깥 공기가 아래로 누르는 힘이 있어야 하고, 뚜껑은 아래에서 미는 것과 위에서 누르는 것이 같아지는 높이에서 멈춰야 합니다.\nATM 값을 0이 아닌 알맞은 값으로 바꿔서, 20℃에서 뚜껑이 상자 가운데쯤에 멈추게 해 주세요.\n다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요.',
+ verify:[
+  '온도를 올리면 뚜껑이 올라가고, 천장에 붙지 않고 <b>어느 높이에서 멈추는가</b>?',
+  '온도를 0℃ → 100℃로 바꿔도 <b>입자 수</b>가 그대로인가?',
+  '온도를 0℃ → 100℃로 바꿔도 <b>입자 크기</b>가 그대로인가?',
+  '온도를 올리면 <b>평균 빠르기</b>가 커지는가? (이것만은 커져야 한다)'
+ ],
+ tnote:'5걸음(냉동실 봉지·국그릇)과 짝을 이룹니다. 잘못 ③은 <b>부피가 커지는 것은 입자가 커져서</b>라는 아주 흔한 오개념을 그대로 그림으로 보여 주는 장치입니다. 학생이 이걸 스스로 찾아내면 그 자체가 개념 학습입니다.<br>ATM 값은 정답이 하나가 아닙니다. <b>0.02~0.05</b>면 뚜껑이 상자 중간쯤(부피 30~70%)에서 멈추고, 0℃→100℃로 올리면 부피가 <b>약 1.3배</b> 커집니다(실측 1.34배, 이론 373÷273=1.37배). 0.1이면 뚜껑이 낮게 깔리고(부피 15~20%), <b>0.2 이상이면 바닥에 붙어</b> 온도를 바꿔도 움직이지 않습니다. 알갱이가 30개뿐이라 뚜껑 높이는 돌릴 때마다 ±15%쯤 흔들립니다 — 이것도 모형의 한계로 다룰 만합니다. "너는 몇으로 했니? 그때 뚜껑은 어디서 멈췄니?"를 나누게 하면 대기압이 클수록 부피가 작아진다는 것까지 덤으로 보입니다.'
+}
+];
+
+/* ══════════════════ 도구 ══════════════════ */
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('gasvibe:'+k); return v===null?d:JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('gasvibe:'+k, JSON.stringify(v)); }catch(e){} }
+};
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove('on'), 1700);
+}
+function srcOf(id){ return document.getElementById(id).value; }
+function copyText(txt, msg){
+  const done = ()=> toast(msg || '복사했어요');
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(txt).then(done, ()=>fallback());
+  } else fallback();
+  function fallback(){
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position='fixed'; ta.style.left='-9999px';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }catch(e){ toast('복사가 안 돼요. 코드를 직접 긁어서 복사하세요'); }
+    document.body.removeChild(ta);
+  }
+}
+function openBlob(txt){
+  const url = URL.createObjectURL(new Blob([txt], {type:'text/html;charset=utf-8'}));
+  window.open(url, '_blank');
+  setTimeout(()=>URL.revokeObjectURL(url), 60000);
+}
+function download(txt, name){
+  const url = URL.createObjectURL(new Blob([txt], {type:'text/html;charset=utf-8'}));
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 60000);
+}
+
+/* ══════════════════ 진행도 ══════════════════ */
+let TOTAL = 0;
+function countTotal(){
+  TOTAL = 0;
+  MISSIONS.forEach(m => { TOTAL += m.bugs.length + m.verify.length; });
+}
+function updateProgress(){
+  let done = 0;
+  document.querySelectorAll('input[data-prog]').forEach(el => { if(el.checked) done++; });
+  const pct = TOTAL ? Math.round(done/TOTAL*100) : 0;
+  $('#progBar').style.width = pct + '%';
+  $('#progPct').textContent = pct + '%';
+}
+
+/* ══════════════════ 화면 만들기 ══════════════════ */
+const TABS = [
+  {id:'guide', label:'활동 안내'},
+  ...MISSIONS.map(m => ({id:m.id, label:m.tab})),
+  {id:'model', label:'모형 이야기'},
+  {id:'make', label:'만들기'},
+  {id:'eval', label:'평가 기준'}
+];
+
+function buildTabs(){
+  $('#tabs').innerHTML = TABS.map(t =>
+    `<button data-tab="${t.id}">${t.label}</button>`).join('');
+  $('#tabs').addEventListener('click', e => {
+    const b = e.target.closest('button[data-tab]'); if(!b) return;
+    showTab(b.dataset.tab);
+  });
+}
+function showTab(id){
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab===id));
+  document.querySelectorAll('section.tab').forEach(s => s.classList.toggle('on', s.id==='tab-'+id));
+  store.set('tab', id);
+  window.scrollTo({top:0, behavior:'instant'});
+  const sec = document.getElementById('tab-'+id);
+  if(sec) sec.querySelectorAll('iframe[data-lazy]').forEach(f => {
+    f.srcdoc = srcOf(f.dataset.lazy); f.removeAttribute('data-lazy');
+  });
+}
+
+function missionHTML(m){
+  const bugs = m.bugs.map((b, i) => `
+  <div class="bug" data-bug="${m.id}-${i}">
+    <div class="head">
+      <input type="checkbox" class="chk" data-prog data-key="bug:${m.id}:${i}" title="찾았어요">
+      <span class="no">잘못 ${'①②③④⑤'[i]}</span>
+      <span class="ttl" data-ttl>???</span>
+      <span style="color:var(--ink-mute);font-size:13px">펼치기 ▾</span>
+    </div>
+    <div class="body">
+      <details class="hint"><summary>힌트 1 — 어디를 볼까</summary><div class="in">${b.h1}</div></details>
+      <details class="hint"><summary>힌트 2 — 무엇이 이상할까</summary><div class="in">${b.h2}</div></details>
+      <details class="hint ans"><summary>확인하기 — 무엇이 잘못됐나</summary><div class="in">
+        <p style="margin-bottom:6px"><b>${b.t}</b> — ${b.ans}</p>
+        <div class="why"><b>왜 틀렸나 &nbsp;</b>${b.why}</div>
+      </div></details>
+      <details class="hint fix"><summary>직접 고칠 때 — 코드의 어디를 어떻게</summary><div class="in">
+        <p style="margin:0 0 4px;font-size:14.5px">빨간 줄을 찾아 초록 줄처럼 바꾸세요. 4단계 실행실에서 <b>불량 코드 불러오기</b>를 누르면 고칠 코드가 들어옵니다.
+           <b>Ctrl+F</b>로 빨간 줄의 낱말을 찾으면 빠릅니다.</p>
+        <pre>${b.code}</pre></div></details>
+    </div>
+  </div>`).join('');
+
+  const verify = m.verify.map((v, i) => `
+    <li><input type="checkbox" data-prog data-key="ver:${m.id}:${i}" id="ver-${m.id}-${i}">
+        <label for="ver-${m.id}-${i}">${v}</label></li>`).join('');
+
+  return `
+  <span class="pill ${m.cls}">미션 ${m.no}</span>
+  <h2 style="margin-top:8px">${m.title}</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">이 시뮬레이터가 보여 줘야 하는 것</h3>
+    <ul>${m.goal.map(g => `<li>${g}</li>`).join('')}</ul>
+    <p style="margin:0;color:var(--ink-dim);font-size:15px">
+      아래 시뮬레이터에는 위 내용과 <b>어긋나는 곳이 ${m.bugs.length}군데</b> 숨어 있습니다.</p>
+  </div>
+
+  <h3>1단계 · 돌려 보기</h3>
+  <div class="simbox">
+    <div class="cap">불량 시뮬레이터 — 손잡이를 움직이고, 멈춰 보고, 한참 지켜보세요</div>
+    <iframe data-lazy="${m.src}" title="${m.title} 불량 시뮬레이터"></iframe>
+  </div>
+  <div class="btnrow">
+    <button class="btn pri" data-copy="${m.src}">&#128203; 코드 복사</button>
+    <button class="btn" data-open="${m.src}">&#128279; 새 창에서 열기</button>
+    <button class="btn" data-dl="${m.src}" data-name="${m.file}">&#11015; 파일 내려받기</button>
+  </div>
+
+  <h3>2단계 · 잘못 찾기</h3>
+  <p style="font-size:15px;color:var(--ink-dim)">먼저 <b>혼자 힘으로</b> 찾아보세요. 찾았으면 왼쪽 칸에 표시하고, 확인하기를 눌러 맞는지 봅니다.
+     아무리 봐도 모르겠을 때만 힌트를 여세요.</p>
+  ${bugs}
+
+  <h3>3단계 · 고치기 — 두 가지 방법</h3>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <h4 class="way">ⓐ AI에게 말하기</h4>
+      <p style="font-size:15px;margin:0 0 6px">잘못 하나를 골라 이렇게 말합니다. 코드를 붙여넣어 함께 보냅니다.</p>
+      <div class="pcard good ptmpl" style="margin:0">
+        <button class="btn copy" data-copytext="${m.id}">복사</button>
+        <div class="txt" style="white-space:pre-line;font-size:14.5px" id="ptxt-${m.id}">${m.prompt}</div>
+      </div>
+      <p style="font-size:14px;color:var(--ink-dim);margin:8px 0 0">AI가 <b>"저는 언어 모델이라…"</b>처럼 거절하면 ⓑ로 하세요.
+         AI가 받아 주었다면 먼저 확인하세요 — ${m.intact} 그렇지 않다면 AI가 옮겨 적으며 잘못을 지워 버린 것입니다.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <h4 class="way">ⓑ 직접 고치기</h4>
+      <ol style="font-size:15px;margin:0">
+        <li>4단계 실행실에서 <b>불량 코드 불러오기</b>를 누릅니다.</li>
+        <li>잘못 카드의 <b>「직접 고칠 때」</b>를 열어 빨간 줄을 찾습니다(<b>Ctrl+F</b>).</li>
+        <li>초록 줄처럼 고치고 <b>실행</b>을 눌러 확인합니다.</li>
+      </ol>
+      <p style="font-size:14px;color:var(--ink-dim);margin:8px 0 0">숫자 하나, 줄 하나만 바꾸면 되는 잘못이 대부분입니다. 과학자가 모형을 고치는 것도 이렇게 한 곳씩입니다.</p>
+    </div>
+  </div>
+  <p style="font-size:15px;color:var(--ink-dim)">잘못이 ${m.bugs.length}개라고 해서 한 번에 ${m.bugs.length}개를 다 고치지 마세요.
+     <b>하나 고치고 → 돌려 보고 → 다음 하나</b>. 이렇게 해야 무엇 때문에 달라졌는지 알 수 있습니다.</p>
+
+  <h3>4단계 · 실행실에서 돌려 보고 저장하기</h3>
+  <div class="lab">
+    <h4>실행실</h4>
+    <p class="note" style="margin:0 0 8px"><b>직접 고칠 때</b>는 불량 코드를 불러와 여기서 고칩니다.
+       <b>AI에게 맡겼다면</b> AI가 준 코드를 통째로 복사해 붙여넣습니다. <b>실행</b>을 누르면 위쪽 불량 시뮬레이터와 나란히 견주어 볼 수 있고,
+       제출할 파일도 여기서 저장합니다. 여기에 쓴 코드는 이 기기에 저장됩니다.</p>
+    <textarea data-lab="${m.id}" placeholder="불량 코드 불러오기를 누르거나, AI가 준 코드를 붙여넣으세요 (&lt;!DOCTYPE html&gt; 부터 &lt;/html&gt; 까지 전부)"></textarea>
+    <div class="btnrow">
+      <button class="btn" data-labload="${m.id}">&#128229; 불량 코드 불러오기</button>
+      <button class="btn pri" data-run="${m.id}">&#9654; 실행</button>
+      <button class="btn" data-labdl="${m.id}" data-name="내가고친_${m.file}">&#11015; 내 파일로 저장</button>
+      <button class="btn" data-labclear="${m.id}">지우기</button>
+    </div>
+    <div class="simbox" data-labbox="${m.id}" style="display:none">
+      <div class="cap">내가 고친 시뮬레이터</div>
+      <iframe data-labframe="${m.id}" title="내가 고친 시뮬레이터"></iframe>
+    </div>
+  </div>
+
+  <h3>5단계 · 제대로 고쳤는지 확인하기</h3>
+  <p style="font-size:15px;color:var(--ink-dim)">AI가 "고쳤습니다"라고 해도 믿지 말고, <b>직접 조작해서</b> 확인하세요.</p>
+  <ul class="chks">${verify}</ul>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> 운영 메모<br>${m.tnote}</div>
+  `;
+}
+
+function buildMain(){
+  const guide = `
+  <h2>오늘 할 일</h2>
+  <div class="card">
+    <p class="lead" style="margin-bottom:8px">AI가 만든 기체 시뮬레이터에 숨은 <b class="kw">과학적으로 틀린 곳</b>을 찾아 고치고,
+       그 경험을 살려 <b>나만의 공기 시뮬레이터 웹앱</b>을 만듭니다.</p>
+    <p style="margin:0;color:var(--ink-dim);font-size:15.5px">코딩을 잘하는 사람이 이기는 게 아닙니다. <b>기체를 제대로 아는 사람</b>이 이깁니다.
+       AI는 코드를 잘 쓰지만, 그 코드가 과학적으로 맞는지는 모릅니다. 그건 여러분이 판단해야 합니다.</p>
+  </div>
+
+  <h3>전체 흐름</h3>
+  <table>
+    <tr><th style="width:118px">단계</th><th>하는 일</th><th style="width:150px">어디서</th></tr>
+    <tr><td><b>① 고치기</b></td><td>불량 시뮬레이터 3개에 숨은 잘못을 찾아 고친다</td><td>이 페이지 미션 1·2·3</td></tr>
+    <tr><td><b>② 모형 이야기</b></td><td>시뮬레이터도 모형이다 — 닮은 점, 다른 점, 한계</td><td>이 페이지 모형 이야기</td></tr>
+    <tr><td><b>③ 만들기</b></td><td>템플릿을 채우거나 자유롭게 써서 나만의 시뮬레이터를 만든다</td><td>Studentgithub 작업실</td></tr>
+    <tr><td><b>④ 점검</b></td><td>점검표에 체크하고 <b>그렇게 판단한 까닭</b>을 쓴다</td><td>Studentgithub 작업실</td></tr>
+    <tr><td><b>⑤ 성찰</b></td><td>자기평가를 하고 돌아본다</td><td>Studentgithub 작업실</td></tr>
+    <tr><td><b>⑥ 제출</b></td><td>내 앱을 올린다 — 고칠 때마다 새 판이 쌓인다</td><td>Studentgithub</td></tr>
+    <tr><td><b>⑦ 서로 평가</b></td><td>친구 앱을 돌려 보고 점검표로 평가한다</td><td>Studentgithub 전시관</td></tr>
+  </table>
+  <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a>
+    <span>학번과 별명으로 들어가면 어디까지 했는지 이어집니다.</span></div>
+
+  <h2>제미나이 캔버스 쓰는 법</h2>
+  <p style="font-size:15px;color:var(--ink-dim)">학교 계정 제미나이의 실제 화면입니다.</p>
+  <div class="steps">
+    <figure class="shot"><img src="${IMG}gemini-01-menu.webp" alt="입력칸 왼쪽 더하기 단추를 누르면 나오는 메뉴, 맨 아래에 Canvas" loading="lazy">
+      <figcaption><span class="n">1</span>입력칸 왼쪽 <b>+</b>를 누르고 맨 아래 <b>Canvas</b>를 고릅니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-02-canvas-on.webp" alt="입력칸에 Canvas 칩이 켜진 모습" loading="lazy">
+      <figcaption><span class="n">2</span>입력칸에 <b>Canvas</b>가 켜지면 준비가 끝났습니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-04-card.webp" alt="요청을 보내자 캔버스 카드가 생긴 모습" loading="lazy">
+      <figcaption><span class="n">3</span>요청을 보내면 캔버스 카드가 생깁니다. <b>코드 | 미리보기</b>로 바꿔 보고, <b>↶ ↷</b>로 이전·다음 판을 오갑니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-05-full.webp" alt="캔버스를 크게 펼친 모습" loading="lazy">
+      <figcaption><span class="n">4</span>오른쪽 위 <b>펼치기</b>로 크게 봅니다. 오른쪽 아래에 도구가 있습니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-06-code.webp" alt="코드 보기 화면" loading="lazy">
+      <figcaption><span class="n">5</span><b>코드</b>를 누르면 코드가 보입니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-07-console.webp" alt="아래쪽에 콘솔 창이 열린 모습" loading="lazy">
+      <figcaption><span class="n">6</span><b>콘솔 표시</b> — 화면이 하얘졌을 때 빨간 오류 글씨를 봅니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-09-selectask.webp" alt="오른쪽 아래 선택 후 물어보기 도구" loading="lazy">
+      <figcaption><span class="n">7</span><b>선택 후 물어보기</b> — 화면에서 고칠 곳만 골라 부탁합니다.</figcaption></figure>
+    <figure class="shot"><img src="${IMG}gemini-08-share.webp" alt="공유 메뉴의 콘텐츠 복사" loading="lazy">
+      <figcaption><span class="n">8</span><b>공유 → 콘텐츠 복사</b>로 코드를 통째로 복사해 제출합니다.</figcaption></figure>
+  </div>
+
+  <h2>제미나이가 거절할 때</h2>
+  <div class="two">
+    <figure class="shot"><img src="${IMG}gemini-03-refusal.webp" alt="저는 텍스트 기반 AI이기 때문에 그것은 도와드릴 수가 없습니다 라는 답" loading="lazy">
+      <figcaption>이런 답이 오면 거절당한 것입니다.</figcaption></figure>
+    <div class="card" style="margin:0">
+      <p style="margin:0 0 6px;font-size:15.5px"><b>"저는 언어 모델이라…"</b>, <b>"텍스트를 생성할 뿐이에요"</b> 같은 답은 제미나이가 요청을 받아 주지 않은 것입니다.</p>
+      <ol style="font-size:15px;margin:0">
+        <li><b>새 채팅</b>에서 다시 합니다.</li>
+        <li><b>짧게</b> 부탁합니다. 규칙이 긴 글은 한 번에 보내지 말고 나눠서 보냅니다.</li>
+        <li><b>'기체' 대신 '공기'</b>라고 써 봅니다. 공기도 기체입니다.</li>
+        <li>그래도 안 되면 미션은 <b>ⓑ 직접 고치기</b>, 만들기는 <b>시작 앱으로 만들기</b>로 갑니다. AI 없이도 끝까지 갈 수 있습니다.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>AI에게 말하는 세 가지 규칙</h2>
+  <div class="card">
+    <ol style="margin-bottom:0">
+      <li><b>보이는 것부터 말한다.</b> "이상해요"가 아니라 "입자가 전부 바닥에 가라앉습니다"라고.</li>
+      <li><b>왜 틀렸는지 과학으로 말한다.</b> "기체 입자는 사방으로 자유롭게 움직여야 합니다"까지 붙인다.</li>
+      <li><b>한 번에 하나만, 나머지는 그대로.</b> "다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요"를 꼭 붙인다.</li>
+    </ol>
+  </div>
+  <div class="pcard bad">
+    <div class="lbl">&#10007; 이렇게 말하면 안 됩니다</div>
+    <div class="txt">"이 코드 이상해요. 기체 시뮬레이터 잘 만들어 주세요."</div>
+    <p style="margin:8px 0 0;font-size:14.5px;color:var(--ink-dim)">→ 코드를 통째로 새로 씁니다. 무엇이 왜 달라졌는지 알 수 없고, 그건 내가 한 공부가 아닙니다.</p>
+  </div>
+  <div class="pcard good">
+    <div class="lbl">&#10003; 이렇게 말합니다</div>
+    <div class="txt">"이 시뮬레이터에서 입자들이 전부 상자 바닥에 가라앉습니다.
+기체 입자는 중력의 영향을 거의 받지 않고 사방으로 자유롭게 움직여야 합니다.
+중력으로 속도를 더하는 부분을 없애 주세요.
+다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요."</div>
+  </div>
+
+  <h2>세 개의 미션</h2>
+  <table>
+    <tr><th style="width:110px">미션</th><th>고칠 것</th><th style="width:74px">잘못</th></tr>
+    <tr><td><b>1 · 압력</b></td><td>기체의 압력은 어디에서 오는가</td><td class="num">5군데</td></tr>
+    <tr><td><b>2 · 압력과 부피</b></td><td>좁히면 왜 압력이 커지는가</td><td class="num">3군데</td></tr>
+    <tr><td><b>3 · 온도와 부피</b></td><td>데우면 왜 부풀어 오르는가</td><td class="num">3군데</td></tr>
+  </table>
+  <p style="font-size:15px;color:var(--ink-dim)">미션 1을 끝낸 뒤에 2로 갑니다. 미션 2와 3은 미션 1에서 고친 것이 이미 반영되어 있습니다.</p>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> <b>2026-10-01 선생님 학교 계정(교육)으로 시험한 결과</b> — 수업 설계를 바꿀 만큼 중요해서 적어 둡니다.
+    <table class="mini">
+      <tr><th>보낸 요청</th><th style="width:150px">결과</th></tr>
+      <tr><td>불량 코드 붙여넣기 + "캔버스에 올려 / 열어 실행해 / 웹앱으로 만들어 / 한 곳 고쳐 줘" (말투 4가지)</td><td>모두 거절(한 번은 만들다가 지워짐)</td></tr>
+      <tr><td>나만의 시뮬레이터 템플릿(규칙 목록이 긴 글) — '기체'로 / '공기'로 / 학생 문장 빼고 / '파일' 빼고 / 다시 생성</td><td>모두 거절</td></tr>
+      <tr><td>"기체 입자가 상자 안에서 움직이며 벽에 부딪히는 간단한 웹앱을 만들어 줘"</td><td>만들다가 지워짐</td></tr>
+      <tr><td>"작은 공기 알갱이들이 상자 안에서 움직이며 벽에 부딪히는 간단한 웹앱을 만들어 줘"</td><td>2번 모두 통과</td></tr>
+      <tr><td>통과한 앱에 짧은 후속 수정("온도는 ℃로" / "부딪힌 횟수 칸 추가")</td><td>거절</td></tr>
+      <tr><td>기체와 무관한 공 튀기기 앱 → 후속 "공 색을 파랗게"</td><td>첫 생성 통과, 후속 거절</td></tr>
+    </table>
+    정리하면 이날 이 계정에서는 <b>짧은 첫 생성만 가끔 통과하고, 코드를 붙인 요청·긴 요청·후속 수정은 막혔습니다</b>. 공 튀기기 앱의 후속 수정도 막혔으므로 기체 주제 탓만은 아니고, 계정 관리 정책이나 그날의 서비스 상태로 보입니다(Pro 모델 수요가 많다는 안내도 떴음). 학생 계정은 더 엄격할 수 있습니다.<br>
+    <b>수업 전에 꼭</b> ① 학생 계정 하나로 위 통과 문장을 보낸 뒤 이어서 "알갱이 색을 파랗게 바꿔 줘"를 보내 보세요. 둘 다 되면 계획대로, 첫 요청만 되면 만들기는 시작 앱 위주로, 둘 다 안 되면 AI 없이 가는 길로 운영합니다. ② 막히면 학교 정보 담당·교육청에 "Gemini 앱에서 캔버스 앱 생성·수정 요청이 '저는 언어 모델이라…'로 거절된다"고 문의하세요.<br>
+    <b>AI 없이도 끝까지 가는 길</b> 미션은 <b>ⓑ 직접 고치기</b>(실행실의 불량 코드 불러오기 + 잘못 카드의 「직접 고칠 때」), 만들기는 Studentgithub의 <b>시작 앱으로 만들기</b>(학생의 예시·퀴즈·한계를 선생님이 검증한 시작 앱에 넣어 줌)로 전 과정이 돌아갑니다.<br>
+    <b>배치</b> 미션 1 = 1~2걸음 뒤 / 미션 2 = 3~4걸음 뒤 / 미션 3 = 5걸음 뒤. 한 번에 다 하지 말고 진도에 맞춰 하나씩 꺼내는 것을 권합니다. 모형 이야기는 미션 1 바로 뒤가 가장 잘 맞습니다(방금 고친 경험이 "모형을 고친다"는 말로 바로 이어짐).<br>
+    <b>진행</b> 잘못을 몇 개 찾았는지를 겨루게 하면 힌트를 안 열고 버팁니다. 다 찾은 학생은 "잘못을 하나 더 만들어 짝에게 내기"로 확장하세요.<br>
+    <b>기록</b> 찾은 잘못·AI에게 한 말·만든 프롬프트·점검표·성찰은 모두 Studentgithub 작업실에 쌓입니다(학번+별명으로 어느 기기에서든 이어짐). 관리 화면에서 반별로 보고 CSV로 받아 세특 근거로 쓰세요.<br>
+    <b>주의</b> AI가 코드를 통째로 새로 쓰면 학습이 끊깁니다. "한 번에 하나만"을 수업 규칙으로 못 박아 주세요.</div>
+  `;
+
+  const model = `
+  <span class="pill">모형 이야기</span>
+  <h2 style="margin-top:8px">시뮬레이터도 모형이다</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">모형이란 무엇일까?</h3>
+    <p>지하철 노선도를 떠올려 보세요. 역 사이 거리도, 굽은 선로도 실제와 다릅니다. 그래도 <b>어느 역 다음에 어느 역이 오는지, 어디서 갈아타는지</b>는 정확합니다.
+       이렇게 <b>설명하고 싶은 것만 골라 닮게 만든 것</b>을 <b>모형</b>이라고 합니다.</p>
+    <p style="margin:0">과학자는 너무 작아서(공기 알갱이), 너무 커서(태양계), 너무 빨라서 직접 볼 수 없는 것을 생각할 때 모형을 씁니다.
+       모형으로 <b>설명</b>하고, 모형으로 <b>예측</b>합니다.</p>
+  </div>
+
+  <h3>공기를 설명하는 모형 셋</h3>
+  <table>
+    <tr><th style="width:130px">모형</th><th>닮은 점</th><th>다른 점(한계)</th></tr>
+    <tr><td><b>교과서 입자 그림</b></td><td>알갱이가 그릇 전체에 흩어져 있고, 알갱이 사이가 비어 있다</td><td>멈춘 그림이라 움직임과 충돌이 보이지 않는다</td></tr>
+    <tr><td><b>쇠구슬 모형</b></td><td>구슬이 부딪혀 판을 밀어 올린다 — 압력이 충돌에서 온다는 것을 보여 준다</td><td>쇠구슬은 흔들어 줘야 움직이고, 가만두면 바닥에 떨어진다. 공기 알갱이는 스스로 쉬지 않고 움직인다</td></tr>
+    <tr><td><b>시뮬레이터</b></td><td>움직임, 충돌 횟수, 부피 변화를 숫자와 함께 보여 준다</td><td>2차원이다. 알갱이 수가 실제보다 턱없이 적다(1 cm³ 공기 속에 약 2500경 개). 모든 알갱이가 같은 빠르기이고, 알갱이끼리는 부딪히지 않게 만든 것이 많다</td></tr>
+  </table>
+
+  <div class="card">
+    <h3 style="margin-top:0">모형은 고쳐진다</h3>
+    <p>과학자는 모형으로 예측하고, 실험과 관찰에 견주어 봅니다. 어긋나면 <b>모형을 고치고</b>, 다시 견주어 봅니다.</p>
+    <div class="cycle"><span>모형으로 예측</span>→<span>관찰과 견주기</span>→<span>어긋난 곳 찾기</span>→<span>모형 고치기</span>→<span>다시 확인</span></div>
+    <p style="margin:0">미션에서 여러분이 한 일 — 돌려 보고, 교과서와 어긋난 곳을 찾고, 고치고, 다시 확인한 것 — 이 바로 이 과정입니다.
+       원자 모형도 이렇게 여러 번 고쳐졌습니다(2학년 때 배웁니다).</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">좋은 모형이란</h3>
+    <ol style="margin:0">
+      <li>설명하려는 것을 <b>잘 보여 준다</b>. (압력이 충돌에서 온다는 것이 보인다)</li>
+      <li>예측이 <b>실제와 맞는다</b>. (부피를 줄이면 실제처럼 압력이 커진다)</li>
+      <li><b>한계를 숨기지 않는다</b>. (무엇이 실제와 다른지 밝혀 둔다)</li>
+    </ol>
+    <p style="margin:8px 0 0;color:var(--ink-dim);font-size:15px">진짜와 <b>똑같을수록</b> 좋은 모형인 것은 아닙니다. 실제 거리와 굽이를 다 그린 노선도는 오히려 보기 어렵습니다.</p>
+  </div>
+
+  <h3>AI가 만든 모형도 점검 대상입니다</h3>
+  <figure class="shot"><img src="${IMG}gemini-05-full.webp" alt="제미나이가 만든 공기 분자 운동 시뮬레이터" loading="lazy">
+    <figcaption>"작은 공기 알갱이들이 상자 안에서 움직이며 벽에 부딪히는 간단한 웹앱을 만들어 줘"라고만 했을 때 제미나이가 만든 앱입니다. 무엇을 고치거나 한계로 밝혀야 할까요?</figcaption></figure>
+  <details class="hint ans"><summary>함께 찾아보기</summary><div class="in">
+    <ul style="margin:0">
+      <li><b>온도가 K(켈빈), 압력이 atm</b> — 틀린 것은 아니지만 우리가 배우지 않은 단위입니다. ℃와 "압력 눈금"으로 바꿔 달라고 하면 됩니다.</li>
+      <li><b>「중력 효과 적용」 스위치</b> — 켜면 알갱이가 바닥에 쌓입니다. 상자 속 공기에서는 볼 수 없는 모습이라 헷갈리게 만듭니다.</li>
+      <li><b>「입자 크기」 손잡이</b> — 알갱이 크기를 마음대로 바꾸게 하면 "데우면 알갱이가 커진다"는 착각을 부를 수 있습니다.</li>
+      <li><b>알갱이가 왼쪽 위에 몰려 있다</b> — 마우스로 밀어낸 탓입니다. 공기는 그릇 전체에 고르게 퍼집니다.</li>
+    </ul></div></details>
+
+  <h3>해 보기 — 내 시뮬레이터의 한계 찾기</h3>
+  <p style="font-size:15px;color:var(--ink-dim)">내가 고치거나 만든 시뮬레이터에 해당하는 것을 골라 보세요. 고른 것은 내 앱의 「이 시뮬레이터의 한계」 칸에 적습니다.</p>
+  <ul class="chks">
+    <li><input type="checkbox" data-lim="lm1" id="lm1"><label for="lm1">화면이 2차원이다 (실제 공기는 3차원 공간에서 움직인다)</label></li>
+    <li><input type="checkbox" data-lim="lm2" id="lm2"><label for="lm2">알갱이 수가 실제보다 훨씬 적다</label></li>
+    <li><input type="checkbox" data-lim="lm3" id="lm3"><label for="lm3">모든 알갱이가 같은 빠르기로 움직인다 (실제는 제각각이다)</label></li>
+    <li><input type="checkbox" data-lim="lm4" id="lm4"><label for="lm4">알갱이끼리 부딪히지 않는다 (실제는 서로 부딪힌다)</label></li>
+    <li><input type="checkbox" data-lim="lm5" id="lm5"><label for="lm5">알갱이를 실제보다 훨씬 크게 그렸다</label></li>
+    <li><input type="checkbox" data-lim="lm6" id="lm6"><label for="lm6">압력을 '부딪힌 횟수'로만 나타낸다 (실제는 얼마나 세게 부딪히는지도 중요하다)</label></li>
+  </ul>
+
+  <h3>확인 문제</h3>
+  <div class="mq" data-a="1">
+    <p><b>1.</b> "모형은 진짜와 똑같을수록 좋은 모형이다." 맞을까요?</p>
+    <div class="mqc"><button>맞다</button><button>틀리다</button></div>
+    <p class="mqw">틀립니다. 좋은 모형은 설명하려는 것을 잘 보여 주고, 예측이 맞고, 한계를 밝힙니다. 모든 것을 똑같이 담으면 오히려 중요한 것이 안 보입니다.</p>
+  </div>
+  <div class="mq" data-a="2">
+    <p><b>2.</b> 쇠구슬 모형의 한계로 가장 알맞은 것은?</p>
+    <div class="mqc"><button>구슬이 판을 밀어 올린다</button><button>구슬이 여러 개다</button><button>구슬은 흔들어 줘야 움직이지만, 공기 알갱이는 스스로 움직인다</button></div>
+    <p class="mqw">쇠구슬 모형은 "충돌이 압력을 만든다"는 것을 잘 보여 주지만, 알갱이가 스스로 쉬지 않고 움직인다는 점은 담지 못합니다.</p>
+  </div>
+  <div class="mq" data-a="0">
+    <p><b>3.</b> 시뮬레이터 속 알갱이 수를 실제보다 훨씬 적게 그린 것은?</p>
+    <div class="mqc"><button>화면과 계산을 위해 단순하게 만든 것이다 — 한계로 밝혀야 한다</button><button>실제 공기에도 알갱이가 그 정도뿐이라서</button><button>알갱이 수는 압력과 관계없어서</button></div>
+    <p class="mqw">1 cm³ 공기 속에는 알갱이가 약 2500경 개 있습니다. 모두 그릴 수 없으니 줄인 것이고, 그래서 한계로 적어 두어야 합니다.</p>
+  </div>
+  <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub에 내 생각 쓰기 →</a><span>작업실 ② 모형 생각</span></div>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> 운영 메모<br>
+    미션 1을 끝낸 직후 10분이면 됩니다. "방금 여러분이 한 일이 과학자가 하는 일"이라는 한 문장이 핵심입니다.<br>
+    <b>숫자 근거</b> 1 cm³ 공기(20℃, 1기압) 속 알갱이 수 = 압력 ÷ (볼츠만 상수 × 절대온도) ≈ 2.5×10¹⁹개 = 약 2500경 개.<br>
+    <b>AI 앱 사진</b>은 2026-10-01 선생님 계정에서 실제로 만든 것입니다. 시키지 않았는데 K·atm 단위, 중력 스위치, 입자 크기 손잡이를 넣은 것이 "AI가 만든 모형도 점검해야 한다"는 좋은 증거가 됩니다.</div>
+  `;
+
+  const make = `
+  <span class="pill">만들기</span>
+  <h2 style="margin-top:8px">나만의 공기 시뮬레이터 만들기</h2>
+  <div class="card">
+    <p style="margin:0 0 8px">최종 목표는 이번 단원을 한 앱에 담는 것입니다.</p>
+    <div class="goal5"><span>① 공기의 압력</span><span>② 압력과 부피</span><span>③ 온도와 부피</span><span>④ 생활 속 공기 (내가 고른 예시)</span><span>⑤ 내가 낸 퀴즈</span><span>+ 이 시뮬레이터의 한계</span></div>
+  </div>
+
+  <h3>세 가지 길 — 모두 Studentgithub 작업실에서</h3>
+  <table>
+    <tr><th style="width:150px">길</th><th>어떻게</th></tr>
+    <tr><td><b>ⓐ 템플릿 채우기</b></td><td>빈칸(앱 이름·분위기·생활 속 예시·내 퀴즈·한계)을 채우면 AI에게 보낼 프롬프트가 <b>짧은 조각 여러 개</b>로 만들어집니다. 하나씩 보내고, 보낼 때마다 확인합니다.</td></tr>
+    <tr><td><b>ⓑ 자유롭게 쓰기</b></td><td>내 말로 프롬프트를 씁니다. 「좋은 프롬프트 점검」으로 빠진 것이 없는지 확인합니다.</td></tr>
+    <tr><td><b>ⓒ 시작 앱으로 만들기</b></td><td>AI가 거절할 때의 길. 선생님이 검증한 시작 앱에 내 예시·퀴즈·한계를 넣어 앱을 만듭니다. 꾸미기와 기능 더하기는 그다음에 AI나 직접 고치기로 합니다.</td></tr>
+  </table>
+  <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 작업실로 →</a></div>
+
+  <h3>프롬프트에 꼭 넣을 과학 규칙</h3>
+  <ol class="rules">
+    <li>공기 알갱이는 <b>중력 없이 사방으로</b> 움직인다. 바닥에 쌓이지 않는다.</li>
+    <li>알갱이는 <b>작게</b> 그리고, 알갱이 사이는 대부분 <b>빈 공간</b>이다.</li>
+    <li>압력은 공식으로 정하지 말고 <b>벽에 부딪힌 횟수</b>를 세어 나타낸다.</li>
+    <li>충돌은 <b>튕겨 나오는 순간 한 번만</b> 센다.</li>
+    <li>압력은 <b>모든 방향</b>으로 작용한다.</li>
+    <li>온도가 일정할 때 부피를 줄여도 <b>빠르기는 그대로</b>다. 벽이 알갱이를 밀고 가고, 충돌은 <b>손잡이 벽만</b> 센다.</li>
+    <li>온도를 올리면 <b>빠르기만</b> 커진다. 알갱이의 <b>수와 크기는 그대로</b>다. 뚜껑 위에는 <b>바깥 공기가 누르는 힘</b>이 있다.</li>
+    <li>설명에 <b>비례·반비례·공식(PV=일정 같은 식)</b>을 쓰지 않고 말로 쓴다.</li>
+    <li>온도는 <b>℃</b>로 쓴다. K(켈빈)은 쓰지 않는다.</li>
+  </ol>
+
+  <h3>이번 단원 한눈에 — 내 앱의 설명이 이것과 맞는지</h3>
+  <table>
+    <tr><th style="width:120px">내용</th><th>핵심</th><th style="width:34%">생활 속 예</th></tr>
+    <tr><td><b>압력</b></td><td>일정한 면적에 작용하는 힘. 같은 힘이라도 면적이 좁을수록 압력이 크다.</td><td>갯벌의 뻘배·눈썰매(넓게), 칼날·압정(좁게)</td></tr>
+    <tr><td><b>기체의 압력</b></td><td>기체 알갱이가 움직이며 벽에 부딪혀 생긴다. 모든 방향으로 작용한다.</td><td>부푼 풍선, 빵빵한 과자 봉지, 공기 주입 매트</td></tr>
+    <tr><td><b>압력과 부피</b></td><td>온도가 일정할 때 압력이 커지면 부피가 작아진다. 알갱이가 벽에 더 자주 부딪히기 때문이다.</td><td>산 위에서 부푼 과자 봉지, 물속에서 올라올수록 커지는 공기 방울, 주사기</td></tr>
+    <tr><td><b>온도와 부피</b></td><td>압력이 일정할 때 온도가 높아지면 부피가 커진다. 알갱이의 움직임이 활발해지기 때문이다.</td><td>뜨거운 물에 넣은 찌그러진 탁구공, 냉동실에서 쪼그라든 과자 봉지</td></tr>
+  </table>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> 운영 메모<br>
+    <b>짧은 조각 프롬프트</b>로 만든 까닭: 2026-10-01 시험에서 규칙이 긴 프롬프트는 제미나이가 모두 거절했습니다. 조각으로 나눈 것은 AI가 받아 줄 가능성을 높이는 것과 함께, 한 조각 보낼 때마다 확인하는 "한 번에 하나" 습관을 만들기 위해서입니다.<br>
+    <b>시작 앱</b>은 <code>기체_바이브코딩/시작앱_공기탐험대.html</code>과 같습니다(검증: 알갱이 20→40개 충돌 1.96배, 부피 절반 손잡이 충돌 2.07배·빠르기 100 그대로, 0℃→100℃ 부피 1.34배·알갱이 30개 그대로).<br>
+    <b>온도와 부피</b>는 지도서대로 충돌 횟수가 아니라 알갱이의 <b>운동</b>으로 설명하게 해 두었습니다.</div>
+  `;
+
+  const evalHTML = `
+  <h2>평가 기준</h2>
+  <table>
+    <tr><th style="width:112px">보는 것</th><th>잘함</th><th>보통</th><th>노력 필요</th></tr>
+    <tr><td><b>관찰과 발견</b></td>
+        <td>힌트 없이 잘못을 대부분 찾아내고, 무엇을 어떻게 조작해서 알아냈는지 말할 수 있다.</td>
+        <td>힌트 1~2를 보고 잘못을 찾아낸다.</td>
+        <td>확인하기를 열어야 무엇이 잘못인지 안다.</td></tr>
+    <tr><td><b>과학적 판정</b></td>
+        <td>왜 틀렸는지를 <b>기체 입자의 성질</b>로 설명한다. (사방으로 자유롭게 · 입자 사이는 빈 공간 · 빠르기는 온도가 정함 · 양은 변하지 않음)</td>
+        <td>틀렸다는 것은 아는데 까닭을 교과서 말로 옮기지 못한다.</td>
+        <td>"이상해 보여서"라고만 말한다.</td></tr>
+    <tr><td><b>지시와 검증</b></td>
+        <td>증상·까닭·고칠 곳을 갖춰 말하고, 고친 뒤 <b>직접 조작해서</b> 확인한다.</td>
+        <td>고쳐 달라고 말은 하지만 고친 뒤 확인을 건너뛴다.</td>
+        <td>AI가 준 것을 그대로 받아들인다.</td></tr>
+    <tr><td><b>만들기와 점검</b></td>
+        <td>단원 내용을 담은 앱을 만들고, 점검표의 모든 항목에 <b>확인한 방법과 까닭</b>을 쓰며, 한계를 스스로 밝힌다.</td>
+        <td>앱은 만들었지만 점검의 까닭이 짧거나 한계를 밝히지 않았다.</td>
+        <td>만든 앱을 점검하지 않고 낸다.</td></tr>
+  </table>
+
+  <h3>제출물 — 모두 Studentgithub에</h3>
+  <ol>
+    <li>고치기 기록 — 찾은 잘못, 그렇게 판단한 까닭, AI에게 한 말</li>
+    <li>나만의 시뮬레이터 — 앱 코드(고칠 때마다 새 판)와 쓴 프롬프트</li>
+    <li>점검표 — 항목마다 체크와 까닭</li>
+    <li>자기평가와 성찰</li>
+    <li>친구 앱 서로 평가</li>
+  </ol>
+  <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a></div>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> 세부능력 및 특기사항에 쓸 만한 갈래<br>
+    · 기체 입자 모형 시뮬레이터에서 입자가 바닥에 가라앉는 현상을 발견하고, 기체 입자가 중력의 영향을 거의 받지 않고 사방으로 운동한다는 성질에 어긋남을 지적하여 수정을 요구함<br>
+    · 부피가 줄 때 입자의 평균 속력이 함께 증가하도록 설계된 오류를 찾아내고, 입자의 운동 속력을 결정하는 것은 온도임을 근거로 압력 증가의 원인이 충돌 빈도의 변화임을 설명함<br>
+    · 온도 상승 시 입자 수와 입자 크기가 함께 커지는 모형의 오류를 지적하고, 기체의 부피 변화가 입자 사이 거리의 변화임을 구분하여 설명함<br>
+    · 인공지능이 생성한 결과를 그대로 받아들이지 않고 조작 변인을 바꿔 가며 검증하는 절차를 스스로 수행함<br>
+    <span style="font-size:14px;color:var(--ink-dim)">※ 실제 작성 시에는 학생의 기록장 문장을 근거로 개별화할 것. 명사형 종결·250자 규칙은 따로 적용.</span></div>
+  `;
+
+  const html = [`<section class="tab" id="tab-guide">${guide}</section>`]
+    .concat(MISSIONS.map(m => `<section class="tab" id="tab-${m.id}">${missionHTML(m)}</section>`))
+    .concat([`<section class="tab" id="tab-model">${model}</section>`,
+             `<section class="tab" id="tab-make">${make}</section>`,
+             `<section class="tab" id="tab-eval">${evalHTML}</section>`]);
+  $('#main').innerHTML = html.join('');
+}
+
+/* ══════════════════ 동작 연결 ══════════════════ */
+function wire(){
+  // 결함 카드 펼치기 / 체크
+  document.querySelectorAll('.bug').forEach(bug => {
+    const chk = bug.querySelector('.chk');
+    const ttl = bug.querySelector('[data-ttl]');
+    const idx = +bug.dataset.bug.split('-')[1];
+    const mid = bug.dataset.bug.split('-')[0];
+    const m = MISSIONS.find(x => x.id === mid);
+
+    bug.querySelector('.head').addEventListener('click', e => {
+      if(e.target === chk) return;
+      bug.classList.toggle('open');
+    });
+    const sync = () => {
+      bug.classList.toggle('done', chk.checked);
+      ttl.textContent = chk.checked ? m.bugs[idx].t : '???';
+    };
+    chk.checked = store.get('bug:'+mid+':'+idx, false);
+    chk.addEventListener('change', () => {
+      store.set('bug:'+mid+':'+idx, chk.checked); sync(); updateProgress();
+    });
+    sync();
+    // 확인하기를 열면 제목이 드러난다
+    bug.querySelectorAll('details.ans').forEach(d => d.addEventListener('toggle', () => {
+      if(d.open) ttl.textContent = m.bugs[idx].t;
+    }));
+  });
+
+  // 확인 목록
+  document.querySelectorAll('.chks input[data-key]').forEach(el => {
+    el.checked = store.get(el.dataset.key, false);
+    el.closest('li').classList.toggle('done', el.checked);
+    el.addEventListener('change', () => {
+      store.set(el.dataset.key, el.checked);
+      el.closest('li').classList.toggle('done', el.checked);
+      updateProgress();
+    });
+  });
+
+  // 코드 단추
+  document.querySelectorAll('[data-copy]').forEach(b =>
+    b.addEventListener('click', () => copyText(srcOf(b.dataset.copy), '코드를 복사했어요. AI에게 붙여넣으세요')));
+  document.querySelectorAll('[data-open]').forEach(b =>
+    b.addEventListener('click', () => openBlob(srcOf(b.dataset.open))));
+  document.querySelectorAll('[data-dl]').forEach(b =>
+    b.addEventListener('click', () => download(srcOf(b.dataset.dl), b.dataset.name)));
+  document.querySelectorAll('[data-copytext]').forEach(b =>
+    b.addEventListener('click', () => copyText(
+      document.getElementById('ptxt-'+b.dataset.copytext).textContent.trim(), '문장을 복사했어요')));
+
+  // 실행실
+  MISSIONS.forEach(m => {
+    const ta  = document.querySelector(`textarea[data-lab="${m.id}"]`);
+    const box = document.querySelector(`[data-labbox="${m.id}"]`);
+    const fr  = document.querySelector(`iframe[data-labframe="${m.id}"]`);
+    ta.value = store.get('lab:'+m.id, '');
+    ta.addEventListener('input', () => store.set('lab:'+m.id, ta.value));
+
+    document.querySelector(`[data-run="${m.id}"]`).addEventListener('click', () => {
+      const code = ta.value.trim();
+      if(!code){ toast('먼저 코드를 붙여넣으세요'); return; }
+      box.style.display = 'block';
+      fr.srcdoc = code;
+      toast('실행했어요');
+      setTimeout(() => box.scrollIntoView({behavior:'smooth', block:'center'}), 90);
+    });
+    document.querySelector(`[data-labdl="${m.id}"]`).addEventListener('click', e => {
+      const code = ta.value.trim();
+      if(!code){ toast('저장할 코드가 없어요'); return; }
+      download(code, e.target.dataset.name);
+    });
+    document.querySelector(`[data-labclear="${m.id}"]`).addEventListener('click', () => {
+      ta.value = ''; store.set('lab:'+m.id, ''); box.style.display = 'none';
+      fr.removeAttribute('srcdoc'); toast('지웠어요');
+    });
+  });
+
+  // 불량 코드 불러오기 (직접 고치기)
+  document.querySelectorAll('[data-labload]').forEach(b => b.addEventListener('click', () => {
+    const m = MISSIONS.find(x => x.id === b.dataset.labload);
+    const ta = document.querySelector(`textarea[data-lab="${m.id}"]`);
+    if(ta.value.trim() && !confirm('실행실에 있는 코드를 불량 코드로 바꿀까요?')) return;
+    ta.value = srcOf(m.src); store.set('lab:'+m.id, ta.value);
+    toast('불량 코드를 불러왔어요. 잘못 카드의 「직접 고칠 때」를 보고 고쳐 보세요');
+    ta.focus(); ta.setSelectionRange(0, 0); ta.scrollTop = 0;
+  }));
+
+  // Studentgithub 주소
+  document.querySelectorAll('[data-sgh]').forEach(a => { a.href = SGH_URL; a.target = '_blank'; a.rel = 'noopener'; });
+
+  // 모형 이야기: 한계 체크와 확인 문제
+  document.querySelectorAll('input[data-lim]').forEach(el => {
+    el.checked = store.get('lim:'+el.dataset.lim, false);
+    el.closest('li').classList.toggle('done', el.checked);
+    el.addEventListener('change', () => { store.set('lim:'+el.dataset.lim, el.checked); el.closest('li').classList.toggle('done', el.checked); });
+  });
+  document.querySelectorAll('.mq').forEach(q => q.addEventListener('click', e => {
+    const b = e.target.closest('.mqc button'); if(!b || q.classList.contains('done')) return;
+    const i = [...q.querySelectorAll('.mqc button')].indexOf(b);
+    if(i === +q.dataset.a){ b.classList.add('ok'); q.classList.add('done'); }
+    else { b.classList.add('no'); setTimeout(() => b.classList.remove('no'), 700); }
+  }));
+
+  // 교사 모드
+  const tb = $('#tmodeBtn');
+  const setT = on => { document.body.classList.toggle('tmode', on); tb.classList.toggle('on', on); store.set('tmode', on); };
+  setT(store.get('tmode', false));
+  tb.addEventListener('click', () => setT(!document.body.classList.contains('tmode')));
+}
+
+/* ══════════════════ 시작 ══════════════════ */
+countTotal();
+buildTabs();
+buildMain();
+wire();
+updateProgress();
+showTab(store.get('tab', 'guide'));
+</script>
+</body>
+</html>
