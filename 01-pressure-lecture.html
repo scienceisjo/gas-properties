@@ -321,7 +321,7 @@ html.student #notes{display:none!important}
 <section class="slide" id="d1_03_sponge" data-tile="parchment" data-title="스펀지 실험대" data-notes="P4" data-say="한 번에 하나만 바꿔서 눌린 깊이를 비교하는 것이 핵심입니다. 숫자(무게·넓이·깊이)는 실험대 예시값이에요.">
   <div class="hd" data-in><div class="eb">탐구하기</div><h2>무엇이 스펀지를 깊이 누를까</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080" id="d1_03_sponge-svg"><g id="d1_03_sponge-cells"></g></svg>
-  <div class="abs mute" style="left:1440px;top:262px;font-size:24px" data-in="900">숫자는 실험대 예시값 (빈 병 약 30 g · 물 가득 약 530 g)</div>
+  <div class="abs mute" style="left:1200px;width:600px;top:150px;font-size:26px;text-align:right" data-in="900">숫자는 실험대 예시값이에요<br>(빈 병 약 30 g · 물 가득 약 530 g)</div>
   <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-in="600" data-out="1">빈 병을 바로 세워 올려 보면</div>
   <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="1" data-out="2">방향만 바꿔 보면 — <b class="c-amt">닿는 넓이</b>가 좁아진다</div>
   <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="2" data-out="3">이번에는 <b class="c-force">무게</b>만 바꿔 보면</div>
@@ -1821,8 +1821,7 @@ try{
     `<path id="d1_05_knobs-s${m.id}" d="${GX.spongeD({ cx: CX, y: SY, hw: HW, h: TH, dw: m.dw, depth: 0 })}" fill="#4a4a4d" stroke="#4a4a4d" stroke-width="12" stroke-linejoin="round"/>` +
     `<g id="d1_05_knobs-b${m.id}" transform="translate(${CX} ${SY - LIFT})">${brick(m)}</g>` +
     `<text x="${CX}" y="${SY + TH + 40}" text-anchor="middle" style="font-size:30px;font-weight:700;fill:var(--on-dark)">${m.cap}</text>` +
-    `<text x="${CX}" y="${SY + TH + 82}" text-anchor="middle" style="font-size:30px;font-weight:700;fill:${COL[m.l1[1]]}">${m.l1[0]} <tspan style="fill:var(--on-dark)">${m.l1[2]}</tspan><tspan dx="26" style="fill:${COL.p}">압력</tspan> <tspan style="fill:var(--on-dark)">${m.l2}</tspan></text>` +
-    (m.ic ? `<rect x="${296 - m.ic[0] / 2}" y="${34 - m.ic[1] / 2}" width="${m.ic[0]}" height="${m.ic[1]}" rx="3" fill="var(--light)" opacity=".9"/>` : '') + `</g>`;
+    `<text x="${CX}" y="${SY + TH + 82}" text-anchor="middle" style="font-size:30px;font-weight:700;fill:${COL[m.l1[1]]}">${m.l1[0]} <tspan style="fill:var(--on-dark)">${m.l1[2]}</tspan><tspan dx="26" style="fill:${COL.p}">압력</tspan> <tspan style="fill:var(--on-dark)">${m.l2}</tspan></text>` + `</g>`;
 
   async function drop(c, m) {
     const g = c.$(`#d1_05_knobs-m${m.id}`), b = c.$(`#d1_05_knobs-b${m.id}`), s = c.$(`#d1_05_knobs-s${m.id}`);
