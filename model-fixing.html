@@ -161,6 +161,32 @@ ol.rules li{margin-bottom:6px}
 table.mini{font-size:13.5px;margin:8px 0} table.mini td,table.mini th{padding:6px 8px}
 @media(max-width:760px){ .two,.steps{grid-template-columns:1fr} }
 
+/* ── 잠금(열린 단계) ── */
+.lockcard{display:none;border:2px dashed var(--c5);background:#f7f3fb;border-radius:var(--r);padding:16px 18px;margin:14px 0;font-size:16px}
+.lockcard b{color:var(--c5)}
+section.tab.locked > .lockcard{display:block}
+body:not(.tmode) section.tab.locked > :not(.lockcard){display:none}
+.lockcard .tnote{display:none;font-size:14px;color:var(--ink-dim);margin-top:6px}
+body.tmode .lockcard .tnote{display:block}
+.stagepick button.lk{opacity:.6}
+
+/* ── ⓐ 말하기 순서 ── */
+ol.say{font-size:15px;margin:0 0 10px;padding-left:1.35em}
+ol.say li{margin-bottom:5px}
+ol.say .ent{color:var(--danger);font-weight:700}
+
+/* ── 잘못 찾기: 적고 → 공개 ── */
+.findbox{border:2px solid var(--sky);background:#f4faff}
+.findbox ol.finds{margin:6px 0 4px;padding-left:1.4em}
+.findbox ol.finds li{margin-bottom:8px}
+.findbox textarea,.thinkq textarea{display:block;width:100%;font:inherit;font-size:15px;line-height:1.55;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;resize:vertical}
+.bugs[hidden]{display:none}
+body.tmode .bugs[hidden]{display:block}
+.bugs .revealed{font-size:15px;color:var(--ink-dim);margin:12px 0 4px}
+.bug .found{display:flex;align-items:center;gap:6px;flex:none;font-size:13.5px;font-weight:700;color:var(--ok);cursor:pointer;white-space:nowrap}
+.thinkq .tq{margin-bottom:10px}
+.thinkq label{display:block;font-size:15.5px;margin-bottom:4px}
+
 /* ── 따라 하기 ── */
 .nowbar{max-width:920px;margin:0 auto;padding:6px 16px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .nowbar .nb{flex:1 1 220px;font-size:14px;background:#fff6e2;border:1px solid #e9c98a;border-radius:10px;padding:6px 11px;line-height:1.45}
@@ -919,6 +945,11 @@ requestAnimationFrame(loop);
 /* ══════════════════ 설정 ══════════════════ */
 const IMG = 'img/vibe/';
 const SGH_URL = new URLSearchParams(location.search).get('sgh') || 'https://scienceisjo.github.io/studentgithub/';
+/* 열린 단계 — Studentgithub 관리 → 과제 설정 「열린 단계」(1 압력 · 2 압력과 부피 · 3 온도와 부피 · 4 최종본).
+   서버를 못 읽으면 2(온도와 부피 전까지). 나눔용(/share/) 사본은 잠그지 않는다. */
+const SB_URL = 'https://hmzklbrksfdhzsgwzfyg.supabase.co', SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtemtsYnJrc2ZkaHpzZ3d6ZnlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1MTY4NDcsImV4cCI6MjA5NTA5Mjg0N30.LuTEeJyu-mtkNzUTNaA8IigmdtWPWXS2ucVgXDeevPA';
+const TAB_STAGE = { m3:3, make:4 };
+let OPEN = /\/share\//.test(location.pathname) ? 4 : 2;
 
 /* ══════════════════ 자료 ══════════════════ */
 const MISSIONS = [
@@ -954,7 +985,7 @@ const MISSIONS = [
    why:'기체의 압력은 <b>모든 방향으로 똑같이</b> 작용합니다. 네 벽 모두에서 바깥쪽으로 미는 화살표가 그려져야 합니다.',
    code:'// 아래쪽 한 줄만 그리던 것을 네 벽 모두로\n<span class="add">arrow(26, y, 6, y);      // 왼쪽\narrow(W-26, y, W-6, y);  // 오른쪽\narrow(x, 26, x, 6);      // 위\narrow(x, H-26, x, H-6);  // 아래</span>'},
   {t:'충돌 수가 말이 안 되게 크다',
-   h1:'입자가 모두 바닥에 가라앉아 멈춘 뒤에도 <b>1초 동안 벽에 부딪힌 횟수</b>를 보세요.',
+   h1:'<b>1초 동안 벽에 부딪힌 횟수</b>를 오래 지켜보세요. 입자들이 거의 움직이지 않을 때도 숫자가 큰가요?',
    h2:'멈춰 있는 입자가 1초에 몇만 번씩 부딪힐 수 있을까요? 벽에 <b>부딪히는 것</b>과 벽에 <b>닿아 있는 것</b>은 같은 일인가요?',
    ans:'벽에 닿아 있기만 해도 매 순간 충돌로 세고 있어서 숫자가 끝없이 부풀어 오릅니다.',
    why:'충돌은 <b>벽에 부딪혀 튕겨 나오는 그 순간에 딱 한 번</b>만 세야 합니다. 이걸 잘못 세면 압력을 아무리 잘 계산해도 결과가 엉터리가 됩니다.<br><b>※ 잘못 ②(가라앉음)를 먼저 고치세요.</b> 입자가 바닥에 붙어 있으면 눈에는 멈춘 것 같아도 매 순간 아주 조금씩 튀고 있어서, 이걸 고쳐도 충돌이 1초에 1,000번 넘게 세어집니다. ②를 고치면 10번 안팎으로 내려옵니다.',
@@ -1120,7 +1151,8 @@ const STUCK = {
   gemRefuse: ['「저는 언어 모델이라…」처럼 거절해요', '<b>새 채팅</b>에서 Canvas를 켜고 다시 보냅니다. 그래도 안 되면 미션은 ⓑ 직접 고치기, 만들기는 ⓒ 시작 앱으로 갑니다.'],
   gemText:   ['캔버스가 안 열리고 글로만 답해요', '입력칸에 <b>Canvas</b>가 켜져 있었는지 보고, "캔버스로 만들어 줘"라고 한 번 더 보냅니다.'],
   gemWhite:  ['앱 화면이 하얗거나 안 움직여요', '카드를 <b>펼치기</b> → 오른쪽 위 <b>콘솔 표시</b> → 빨간 글씨를 복사해 "이 오류를 고쳐 줘"와 함께 보냅니다.'],
-  gemAll:    ['AI가 코드를 통째로 바꿨어요', '카드의 <b>↶</b>로 앞 판으로 되돌리고, "다른 부분은 그대로 두고 이 한 곳만 고쳐 줘"를 붙여 다시 부탁합니다.'],
+  gemAll:    ['AI가 코드를 통째로 바꿨어요', '카드의 <b>↶</b>로 앞 판으로 되돌리고, "다른 부분은 그대로 두고 말한 곳만 고쳐 줘"를 붙여 다시 부탁합니다.'],
+  gemEnter:  ['Enter를 눌러 문장만 먼저 보내졌어요', '괜찮습니다. 이어서 <b>코드 복사</b> → 입력칸에 <b>Ctrl+V</b> → 보내기 하면 됩니다.'],
   gemExtra:  ['배우지 않은 말·단위·기능이 생겼어요', '"○○는 빼 줘. 우리가 배운 말로만 써 줘"라고 부탁합니다.'],
   gemLong:   ['1분이 넘도록 계속 만들어요', '2분까지는 조용히 기다립니다. 그래도 멈춰 있으면 새 채팅에서 다시 보냅니다.'],
   gemPaste:  ['코드가 길어 붙여넣기가 안 돼요', '1단계의 <b>파일 내려받기</b>로 파일을 받고, 제미나이 <b>+ → 파일 업로드</b>로 올린 뒤 문장만 붙여넣어 보냅니다.'],
@@ -1134,8 +1166,9 @@ const STUCK = {
   sghRelogin:['「다시 들어와 주세요(학번과 별명)」', '같은 학번·별명으로 다시 들어가면 기록은 그대로 있습니다.'],
   sghSave:   ['「저장하지 못했습니다」', '인터넷을 확인하고, 아무 칸이나 한 글자 고치면 다시 저장됩니다.'],
   sghDone:   ['「이 단계 마치기」를 누르면 빨간 알림이 떠요', '알림이 말하는 칸을 채운 뒤 다시 누릅니다.'],
-  upDl:      ['「콘텐츠 복사」가 안 보여요', '캔버스 카드의 <b>다운로드</b>로 파일을 받고, 제출의 <b>HTML 파일 열기</b>로 그 파일을 고릅니다.'],
+  upDl:      ['「콘텐츠 복사」가 안 보여요', '캔버스 카드의 <b>다운로드</b>(직접 고쳤다면 실행실의 <b>⬇ 내 파일로 저장</b>)로 파일을 받고, 제출의 <b>HTML 파일 열기</b>로 그 파일을 고릅니다.'],
   upNoHtml:  ['「HTML 코드가 보이지 않습니다」 · 「앱 코드를 붙여넣어 주세요」', '제미나이에서 <b>콘텐츠 복사</b>를 다시 하고 앱 코드 칸에 붙여넣습니다.'],
+  upReflect: ['「이번 판 돌아보기 ○번을 한 문장 이상 써 주세요」', '그 칸에 한 문장 이상 씁니다. 짧아도 내 말로 쓰면 됩니다.'],
   upPriv:    ['「실명·사진·연락처가 없는지 확인하고 체크해 주세요」', '앱 안에 실명·사진·연락처가 없는지 보고 체크합니다.'],
   upClosed:  ['「지금은 제출 기간이 아닙니다」', '선생님이 제출을 열 때까지 기다립니다. 붙여넣은 코드는 칸에 남아 있습니다.'],
   upOften:   ['「너무 자주 올렸어요. 1분 뒤에 다시 해 주세요」', '1분 뒤에 다시 올립니다.'],
@@ -1150,7 +1183,7 @@ const WAITS = {
   m3:{see:'온도를 올리면 뚜껑은 어디까지 올라갈까? 입자의 수와 크기는?', book:'온도와 부피의 관계(온도가 높아지면 입자가 빨라지고 부피가 커진다)를 찾아 밑줄을 긋습니다.'},
   s2:{see:'내 앱 첫 화면에 무엇이 보일까? 손잡이를 밀면 숫자는 어떻게 될까?', book:'기체의 압력 정의와 부피·압력의 관계에서 내 앱 설명과 견줄 문장에 밑줄을 긋습니다.'},
   s3:{see:'온도를 올리면 내 앱의 뚜껑과 숫자는 어떻게 될까?', book:'온도와 부피의 관계에서 「입자의 수와 크기는 그대로, 빠르기만 커진다」를 확인합니다.'},
-  s4:{see:'내 생활 속 예와 퀴즈가 어떻게 보일까?', book:'내 생활 속 예와 퀴즈 정답이 교과서 몇 쪽의 어떤 내용과 맞는지 찾습니다.'}
+  s4:{see:'내 앱 화면에 무엇이 보일까? 손잡이를 밀거나 온도를 올리면 숫자는 어떻게 될까?', book:'기체의 압력 정의, 압력과 부피·온도와 부피의 관계에서 내 앱 설명과 견줄 문장에 밑줄을 긋고, 내 생활 속 예와 퀴즈 정답이 교과서와 맞는지 봅니다.'}
 };
 function waitHTML(k){
   const w = WAITS[k]; if(!w) return '';
@@ -1177,18 +1210,20 @@ function missionFlow(m, first){
     { t:nm + ' — 돌려 보고 잘못 찾기', tab:m.id,
       do:['위쪽 <b>' + m.tab + '</b> 탭을 열고 「이 시뮬레이터가 보여 줘야 하는 것」을 읽습니다. 교과서에서 배운 내용입니다.',
           '<b>1단계 · 돌려 보기</b> — ' + look,
-          '<b>2단계 · 잘못 찾기</b> — 숨은 잘못 <b>' + n + '개</b>를 먼저 혼자 찾습니다. 찾은 것은 왼쪽 칸에 체크하고 「확인하기」로 맞는지 봅니다. 힌트는 아무리 봐도 모를 때만 엽니다.']
-        .concat(m.id === 'm1' ? ['잘못 ②(가라앉음)를 먼저 고쳐야 ④가 제대로 보입니다.'] : []),
+          '<b>2단계 · 잘못 찾기</b> — 이상한 점을 찾는 대로 칸에 적습니다. 무엇이 보였는지와 배운 내용과 어떻게 어긋나는지 함께 씁니다. <b>' + n + '개를 다 찾지 않아도 됩니다.</b>',
+          '다 적었으면 <b>다 적었어요 — 잘못 ' + n + '개 공개</b>를 눌러 정답을 보고, 내가 찾은 것에 <b>찾았어요</b>를 체크합니다.'],
       stuck:[['시뮬레이터가 안 보여요', '미션 탭을 다시 누르거나 1단계의 <b>새 창에서 열기</b>를 누릅니다.']] },
     { t:nm + ' — 고치기 ⓐ 제미나이에게 말하기', tab:m.id, wait:m.id,
-      do:['고칠 잘못을 <b>하나만</b> 고릅니다.',
+      do:['공개된 잘못 가운데 고칠 것을 고릅니다. 여러 개를 한 번에 부탁해도 됩니다.' + (m.id === 'm1' ? ' 하나씩 고친다면 잘못 ②(가라앉음)부터 고쳐야 ④가 제대로 보입니다.' : ''),
           '제미나이 탭 → 왼쪽 메뉴 <b>새 채팅</b> → 입력칸 왼쪽 <b>+</b> → 맨 아래 <b>Canvas</b>. 입력칸에 Canvas가 켜졌는지 봅니다.',
-          '수업 페이지 <b>3단계 ⓐ</b>의 <b>복사</b>를 눌러 입력칸에 붙여넣고, 줄을 바꾼 뒤 <b>1단계의 📋 코드 복사</b>로 코드를 붙여넣습니다.',
-          '<b>보내기</b>를 누르고, 아래 「AI가 만드는 동안」대로 조용히 기다립니다.',
-          '결과 카드의 <b>미리보기</b>에서 직접 조작해 봅니다. 부탁한 잘못만 고쳐지고 나머지는 그대로여야 합니다(예: ' + m.remain + ').',
-          '다음 잘못은 <b>같은 대화</b>에서 하나씩 부탁합니다 — 「[보인 것] … [배운 내용] … [고칠 곳] … 다른 부분은 그대로 두고 이 한 곳만 고쳐 줘.」'],
+          '수업 페이지 <b>3단계 ⓐ</b> 문장의 <b>복사</b>를 누르고, 제미나이 입력칸에 <b>Ctrl+V</b>로 붙여넣습니다.',
+          '<b>Shift</b>를 누른 채 <b>Enter</b>를 눌러 줄을 바꿉니다. Enter만 누르면 바로 보내집니다.',
+          '코드도 함께 보내야 합니다. 수업 페이지 <b>1단계의 📋 코드 복사</b>를 누르고, 제미나이 입력칸에 다시 <b>Ctrl+V</b> — 문장 아래에 코드가 들어갑니다.',
+          '<b>보내기(↑)</b>를 누르고, 아래 「AI가 만드는 동안」대로 조용히 기다립니다.',
+          '결과 카드의 <b>미리보기</b>에서 직접 조작해 봅니다. 부탁한 곳은 고쳐지고, 부탁하지 않은 곳은 그대로여야 합니다(예: 문장 그대로 보냈다면 ' + m.remain + ').',
+          '다른 잘못도 <b>같은 대화</b>에서 부탁합니다 — 「[보인 것] … [배운 내용] … [고칠 곳] … 다른 부분은 그대로 두고 말한 곳만 고쳐 줘.」 여러 개를 한 번에 적어도 됩니다.'],
       links:[ext('제미나이 열기 ↗', GEMINI)], shots:['menu', 'on', 'card'],
-      stuck:['gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemPaste', 'copy'] },
+      stuck:['gemEnter', 'gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemPaste', 'copy'] },
     { t:nm + ' — 고치기 ⓑ 직접 고치기', sub:'AI가 안 될 때, 또는 직접 해 보고 싶을 때', tab:m.id, opt:true,
       do:['<b>4단계 실행실</b>에서 <b>📥 불량 코드 불러오기</b>를 누릅니다.',
           '잘못 카드의 「직접 고칠 때」를 열고, 빨간 줄의 낱말을 <b>Ctrl+F</b>로 찾아 초록 줄처럼 고칩니다.',
@@ -1196,32 +1231,45 @@ function missionFlow(m, first){
       stuck:['labWhite'] },
     { t:nm + ' — 제대로 고쳤는지 확인하기', tab:m.id,
       do:['<b>5단계 · 확인하기</b>의 항목을 하나씩 <b>직접 조작해</b> 확인하고 체크합니다. AI가 "고쳤습니다"라고 해도 믿지 않습니다.',
-          '안 되는 것이 있으면 그 잘못으로 돌아가 다시 고칩니다. <b>하나 고치고 → 돌려 보고 → 다음 하나</b>.',
+          '안 되는 것이 있으면 그 잘못으로 돌아가 다시 고칩니다.',
           '잘못 ' + n + '개를 다 고칠 때까지 ⓐ나 ⓑ를 되풀이합니다.'] },
     { t:'Studentgithub — 고치기 기록 (' + nm + ')',
       do:['Studentgithub → 내 작업실 → <b>① 고치기 기록</b>을 엽니다.',
           '<b>' + nm + '</b> 칸에 찾은 잘못 체크, 고친 방법, 가장 기억에 남는 잘못, <b>무엇이 보였나 · 왜 틀렸나(교과서의 어떤 내용과 어긋나나) · 어떻게 고쳤나</b>, 기다리며 한 예상을 씁니다.',
-          '쓰는 대로 저절로 저장됩니다(왼쪽 아래 「저장됨」).']
-        .concat(first ? ['다 썼으면 <b>이 단계 마치기</b>를 누릅니다. 미션 2·3 칸은 그 단계에서 이어 씁니다.'] : []),
+          '쓰는 대로 저절로 저장됩니다(왼쪽 아래 「저장됨」).',
+          '다 썼으면 <b>이 단계 마치기</b>(또는 「다시 저장하고 다음으로」)를 누릅니다 — 제출로 넘어갑니다.' + (first ? ' 미션 2·3 칸은 그 단계에서 이어 씁니다.' : '')],
       links:[ext('고치기 기록 열기 ↗', sghTo('#/me/fix'))], stuck:['sghSave', 'sghRelogin', 'sghDone'] }
   ];
 }
+function uploadMission(m){
+  const what = '미션 ' + m.no + ' · 고친 ' + {m1:'압력', m2:'압력과 부피', m3:'온도와 부피'}[m.id] + ' 시뮬레이터';
+  return { t:'고친 시뮬레이터 올리기 (미션 ' + m.no + ') — Studentgithub 제출',
+    do:['고친 코드를 복사합니다. <b>ⓐ 제미나이로 고쳤다면</b> 캔버스 카드 오른쪽 위 <b>펼치기</b> → <b>공유</b> → <b>콘텐츠 복사</b>. <b>ⓑ 직접 고쳤다면</b> 이 페이지 실행실의 <b>📋 내 코드 복사</b>.',
+        'Studentgithub → <b>⑤ 제출</b> → 「무엇을 올리나요?」에서 <b>' + what + '</b>를 고르고, <b>앱 코드</b> 칸을 누른 뒤 <b>Ctrl+V</b>.',
+        '<b>미리보기</b>를 눌러 고친 시뮬레이터가 돌아가는지 봅니다.',
+        '<b>이번 판 돌아보기</b> 네 질문에 답합니다 — 이번에 고친 것, AI의 잘못을 찾아 고친 순간, 어려웠던 점과 해결, 새로 알게 된 점·느낀 점. 선생님만 봅니다.',
+        '「앱 안에 내 실명·사진·연락처가 없습니다」에 체크하고 <b>올리기</b>를 누릅니다.',
+        '「내가 올린 판」에 <b>미션 ' + m.no + '</b> 판이 생기면 끝입니다. 선생님이 확인하면 전시관에 나옵니다.'],
+    links:[ext('제출 열기 ↗', sghTo('#/me/submit'))], shots:['share'],
+    stuck:['upDl', 'upNoHtml', 'upReflect', 'upPriv', 'upClosed', 'upOften', 'upBig'] };
+}
 function upload(name, v){
-  return { t:name + ' 올리기 — Studentgithub ⑥ 제출',
+  return { t:name + ' 올리기 — Studentgithub ⑤ 제출',
     do:['제미나이 캔버스 카드 오른쪽 위 <b>펼치기</b> → <b>공유</b> → <b>콘텐츠 복사</b>를 누릅니다.',
-        'Studentgithub → <b>⑥ 제출</b> → 제목과 한 줄 소개를 확인하고, <b>앱 코드</b> 칸을 누른 뒤 <b>Ctrl+V</b>.',
+        'Studentgithub → <b>⑤ 제출</b> → 「무엇을 올리나요?」에서 <b>최종본</b>을 고르고, 제목과 한 줄 소개를 확인한 뒤 <b>앱 코드</b> 칸을 누르고 <b>Ctrl+V</b>.',
         '<b>미리보기</b>를 눌러 내 앱이 돌아가는지 봅니다.',
         '(골라서) 앱 화면을 캡처(윈도우 <b>Win+Shift+S</b>)한 뒤 「대표 화면」 칸을 누르고 <b>Ctrl+V</b>.',
+        '<b>이번 판 돌아보기</b> 네 질문에 답합니다 — 이번 판에서 만든 것, AI의 잘못을 찾아 고친 순간, 어려웠던 점과 해결, 새로 알게 된 점·느낀 점. 선생님만 봅니다.',
         '「앱 안에 내 실명·사진·연락처가 없습니다」에 체크하고 <b>올리기</b>를 누릅니다.',
         '「내가 올린 판」에 <b>' + v + '</b>이 생기면 끝입니다. 선생님이 확인하면 전시관에 나옵니다.'],
     links:[ext('제출 열기 ↗', sghTo('#/me/submit'))], shots:['share'],
-    stuck:['upDl', 'upNoHtml', 'upPriv', 'upClosed', 'upOften', 'upBig'] };
+    stuck:['upDl', 'upNoHtml', 'upReflect', 'upPriv', 'upClosed', 'upOften', 'upBig'] };
 }
 const MI = id => MISSIONS.find(x => x.id === id);
 const FLOW = [
  { no:1, t:'고치기', when:'압력을 배운 뒤',
-   goal:'불량 압력 시뮬레이터의 잘못 5개를 찾아 고치고, 시뮬레이터도 모형이라는 것을 알아봅니다.',
-   end:'🎉 1단계 끝! 다음은 압력과 부피를 배운 뒤 2단계입니다. 시간이 남으면 고치기 기록을 다듬거나, AI로 고친 잘못을 ⓑ 직접 고치기로도 고쳐 보세요.',
+   goal:'불량 압력 시뮬레이터의 잘못을 찾아 고치고, 고친 시뮬레이터를 Studentgithub에 올립니다. 시뮬레이터도 모형이라는 것을 알아봅니다.',
+   end:'🎉 1단계 끝! 다음은 2단계(압력과 부피)입니다.',
    steps:[
     { t:'준비하기 — 탭 3개 열어 두기',
       do:['이 페이지는 그대로 두고, 새 탭에 <b>제미나이</b>를 엽니다. 오른쪽 위 동그라미가 <b>학교 계정</b>인지 봅니다.',
@@ -1234,86 +1282,61 @@ const FLOW = [
           '다음 시간에도 똑같이 넣어야 하니 별명을 공책에 적어 둡니다.'],
       links:[ext('들어가기 ↗', sghTo('#/in'))], stuck:['sghNum', 'sghNick', 'sghTaken', 'sghReady'] },
     ...missionFlow(MI('m1'), true),
-    { t:'모형 이야기 읽기', tab:'model',
-      do:['<b>모형 이야기</b> 탭을 끝까지 읽습니다.', '「해 보기」에서 내 시뮬레이터의 한계를 고르고, 확인 문제 3개를 풉니다.'] },
-    { t:'Studentgithub — 모형 생각',
-      do:['<b>② 모형 생각</b>에서 세 질문에 답하고, 내 시뮬레이터의 한계를 고릅니다.', '<b>이 단계 마치기</b>를 누릅니다.'],
-      links:[ext('모형 생각 열기 ↗', sghTo('#/me/model'))], stuck:['sghDone'] }
+    uploadMission(MI('m1')),
+    { t:'모형 이야기 읽고 생각해 보기', tab:'model',
+      do:['<b>모형 이야기</b> 탭을 끝까지 읽습니다.', '「해 보기」에서 내 시뮬레이터의 한계를 고르고, 확인 문제 3개를 풉니다.',
+          '맨 아래 <b>생각해 보기</b> 세 질문에 답을 씁니다. 쓰기만 하고 내지 않습니다(이 기기에만 저장).'] }
    ]},
  { no:2, t:'압력과 부피', when:'압력과 부피를 배운 뒤',
-   goal:'불량 압력-부피 시뮬레이터를 고친 뒤, 내 시뮬레이터 첫 판(압력과 부피)을 만들어 올립니다.',
-   end:'🎉 2단계 끝! 다음은 온도와 부피를 배운 뒤 3단계입니다. 첫 판을 만든 제미나이 대화는 지우지 마세요.',
+   goal:'불량 압력-부피 시뮬레이터의 잘못을 찾아 고치고, 고친 시뮬레이터를 Studentgithub에 올립니다.',
+   end:'🎉 2단계 끝! 3단계(온도와 부피)는 온도와 부피를 배운 뒤 선생님이 열어 줍니다.',
    steps:[
     againStep(),
     ...missionFlow(MI('m2'), false),
-    { t:'내 앱 설계 — 이름과 분위기 정하기',
-      do:['Studentgithub <b>③ 만들기</b> → 「내 앱 설계」에서 <b>앱 이름</b>, <b>한 줄 소개</b>, <b>분위기</b>를 정합니다.',
-          '생활 속 예·퀴즈·한계는 4단계에서 채웁니다.'],
-      links:[ext('만들기 열기 ↗', sghTo('#/me/make'))] },
-    { t:'내 시뮬레이터 첫 판 만들기 — 제미나이', wait:'s2',
-      do:['만들기 아래 <b>ⓐ 템플릿 채우기</b> → 「2단계 · 압력과 부피 (첫 판)」의 <b>복사</b>를 누릅니다.',
-          '제미나이 <b>새 채팅</b> → <b>+ → Canvas</b> → 붙여넣고 <b>보내기</b>.',
-          'Studentgithub에서 그 프롬프트의 <b>보냈어요</b>를 체크하고, 「내가 보낸 프롬프트 기록」의 <b>보내기 전 예상</b> 칸에 예상을 적습니다.',
-          '아래 「AI가 만드는 동안」대로 조용히 기다립니다.',
-          '결과를 <b>미리보기</b>에서 직접 조작하며 「보낸 뒤 확인」 질문으로 점검합니다. 이상한 곳은 「고칠 때 쓰는 틀」로 한 곳씩 고칩니다.',
-          '이 대화는 3·4단계에서도 이어 쓰니 지우지 않습니다.'],
-      links:[ext('만들기 열기 ↗', sghTo('#/me/make')), ext('제미나이 열기 ↗', GEMINI)], shots:['menu', 'card', 'full'],
-      stuck:['gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemExtra', 'gemLong',
-             ['AI로 계속 안 될 때', 'Studentgithub 만들기의 <b>ⓒ 시작 앱으로 만들기</b>로 갑니다.']] },
-    { t:'점검 — 「압력」「압력과 부피」 묶음',
-      do:['<b>④ 점검표</b>에서 「압력」「압력과 부피」 묶음을 내 앱으로 직접 조작해 점검합니다.',
-          '됨·안 됨을 고르면 <b>어떻게 확인했는지</b> 까닭을 씁니다. 안 된 것은 고친 뒤 다시 점검합니다.'],
-      links:[ext('점검표 열기 ↗', sghTo('#/me/check'))] },
-    upload('첫 판', '새 판(처음이면 1판)')
+    uploadMission(MI('m2'))
    ]},
  { no:3, t:'온도와 부피', when:'온도와 부피를 배운 뒤',
-   goal:'불량 온도-부피 시뮬레이터를 고친 뒤, 내 시뮬레이터에 온도와 부피를 더해 둘째 판을 올립니다.',
-   end:'🎉 3단계 끝! 단원을 마칠 때 4단계(최종본)를 합니다.',
+   goal:'불량 온도-부피 시뮬레이터의 잘못을 찾아 고치고, 고친 시뮬레이터를 Studentgithub에 올립니다.',
+   end:'🎉 3단계 끝! 마지막은 4단계 — 나만의 기체 시뮬레이터(최종본)입니다.',
    steps:[
     againStep(),
     ...missionFlow(MI('m3'), false),
-    { t:'내 시뮬레이터에 온도와 부피 더하기 — 제미나이', wait:'s3',
-      do:['제미나이 왼쪽 목록에서 <b>첫 판을 만든 대화</b>를 찾아 엽니다.',
-          'Studentgithub 만들기 → 「3단계 · 온도와 부피 더하기」의 <b>복사</b> → 그 대화에 붙여넣고 <b>보내기</b>.',
-          '<b>보냈어요</b>를 체크하고 <b>보내기 전 예상</b>을 적습니다. 그리고 조용히 기다립니다.',
-          '「온도와 부피」 탭을 직접 조작해 점검하고, 「압력과 부피」 탭이 그대로인지도 봅니다.'],
-      links:[ext('만들기 열기 ↗', sghTo('#/me/make')), ext('제미나이 열기 ↗', GEMINI)],
-      stuck:[['첫 판을 만든 대화를 못 찾겠어요', 'Studentgithub <b>⑥ 제출</b> → 「내가 올린 판」의 <b>코드 복사</b> → 제미나이 새 채팅(Canvas)에 "이 코드에 이어서 만들어 줘"와 함께 붙여 보낸 뒤, 3단계 프롬프트를 보냅니다.'],
-             'gemAll', 'gemWhite', 'gemExtra'] },
-    { t:'점검 — 「온도와 부피」 묶음',
-      do:['<b>④ 점검표</b>의 「온도와 부피」 묶음을 내 앱으로 직접 조작해 점검하고 까닭을 씁니다.'],
-      links:[ext('점검표 열기 ↗', sghTo('#/me/check'))] },
-    upload('둘째 판', '새 판')
+    uploadMission(MI('m3'))
    ]},
- { no:4, t:'최종본', when:'단원을 마칠 때',
-   goal:'생활 속 예, 내가 낸 퀴즈, 한계를 넣어 최종본을 완성하고, 점검·성찰한 뒤 올리고 서로 평가합니다.',
+ { no:4, t:'최종본', when:'온도와 부피까지 배운 뒤',
+   goal:'나만의 기체 시뮬레이터를 만들어 생활 속 예, 내가 낸 퀴즈, 한계를 넣고, 점검·자기평가한 뒤 돌아보기와 함께 올리고 서로 평가합니다.',
    end:'🎉 프로젝트 끝! 전시관에서 친구들의 앱도 돌려 보세요.',
    steps:[
     againStep(),
-    { t:'내 앱 설계 마저 채우기',
-      do:['<b>③ 만들기</b> → 「내 앱 설계」에 <b>생활 속 예</b> 2개 이상을 씁니다(관련 개념을 고르고, 까닭은 기체 입자의 움직임으로 내 말로).',
+    { t:'내 앱 설계 채우기',
+      do:['Studentgithub <b>② 만들기</b> → 「내 앱 설계」에서 <b>앱 이름</b>, <b>한 줄 소개</b>, <b>분위기</b>를 정합니다.',
+          '<b>생활 속 예</b> 2개 이상을 씁니다(관련 개념을 고르고, 까닭은 기체 입자의 움직임으로 내 말로).',
           '<b>내가 낸 퀴즈</b> 3문제 — 보기 4개, 왼쪽 동그라미로 정답, 풀이까지.',
-          '<b>한계</b> — 「모형 생각에서 고른 것 가져오기」를 누르거나 직접 씁니다.',
+          '<b>한계</b> — 칸 아래 목록에서 <b>＋</b>로 고르거나 직접 씁니다.',
           '교과서를 펴고 내 예와 퀴즈가 교과서 내용과 맞는지 확인합니다.'],
       links:[ext('만들기 열기 ↗', sghTo('#/me/make'))] },
-    { t:'최종본 만들기 — 제미나이', wait:'s4',
-      do:['「4단계 · 최종본」의 <b>복사</b> → 첫 판을 만든 대화에 붙여넣고 <b>보내기</b>.',
-          '<b>보냈어요</b>를 체크하고 <b>보내기 전 예상</b>을 적은 뒤 조용히 기다립니다.',
-          '내 예와 퀴즈가 그대로 들어갔는지, 퀴즈를 직접 풀어 정답과 풀이가 맞게 나오는지 봅니다.',
-          '만들기 맨 아래 <b>이 단계 마치기</b>를 누릅니다.'],
-      links:[ext('만들기 열기 ↗', sghTo('#/me/make')), ext('제미나이 열기 ↗', GEMINI)],
-      stuck:['gemAll', 'gemExtra', 'gemWhite', 'sghDone'] },
+    { t:'나만의 시뮬레이터 만들기 — 제미나이', wait:'s4',
+      do:['만들기 아래 <b>ⓐ 템플릿 채우기</b> → 「① 압력과 부피 화면 만들기」의 <b>복사</b>를 누릅니다.',
+          '제미나이 <b>새 채팅</b> → <b>+ → Canvas</b> → <b>Ctrl+V</b>로 붙여넣고 <b>보내기</b>. Studentgithub에서 그 프롬프트의 <b>보냈어요</b>를 체크하고 <b>보내기 전 예상</b>을 적습니다.',
+          '아래 「AI가 만드는 동안」대로 조용히 기다린 뒤, <b>미리보기</b>에서 직접 조작하며 「보낸 뒤 확인」 질문으로 점검합니다.',
+          '<b>같은 대화</b>에서 「② 온도와 부피 더하기」, 이어서 「③ 생활 속 예 · 퀴즈 · 한계 더하기」를 똑같이 보냅니다.',
+          '이상한 곳은 「고칠 때 쓰는 틀」로 고칩니다. 다 되면 만들기 맨 아래 <b>이 단계 마치기</b>.'],
+      links:[ext('만들기 열기 ↗', sghTo('#/me/make')), ext('제미나이 열기 ↗', GEMINI)], shots:['menu', 'card', 'full'],
+      stuck:['gemEnter', 'gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemExtra', 'gemLong',
+             ['AI로 계속 안 될 때', 'Studentgithub 만들기의 <b>ⓒ 시작 앱으로 만들기</b>로 갑니다.'],
+             ['①을 보낸 대화를 못 찾겠어요', 'Studentgithub 제출 → 「내가 올린 판」의 <b>코드 복사</b> → 새 채팅(Canvas)에 "이 코드에 이어서 만들어 줘"와 함께 붙여 보낸 뒤 다음 프롬프트를 보냅니다.'],
+             'sghDone'] },
     { t:'점검표 전부 하기',
-      do:['<b>④ 점검표</b> 13개 항목을 모두 직접 조작해 점검하고 까닭을 씁니다.', '안 된 것은 고친 뒤 <b>이 단계 마치기</b>.'],
+      do:['<b>③ 점검표</b> 13개 항목을 모두 직접 조작해 점검하고 까닭을 씁니다.', '안 된 것은 고친 뒤 <b>이 단계 마치기</b>.'],
       links:[ext('점검표 열기 ↗', sghTo('#/me/check'))], stuck:['sghDone'] },
-    { t:'자기평가 · 성찰',
-      do:['<b>⑤ 자기평가·성찰</b>에서 네 영역의 수준을 고르고 까닭을 쓴 뒤, 성찰 1~3번을 씁니다.', '<b>이 단계 마치기</b>. 4번은 친구들에게 평가를 받은 뒤 씁니다.'],
+    { t:'자기평가',
+      do:['<b>④ 자기평가</b>에서 네 영역의 수준을 고르고 그렇게 고른 까닭을 씁니다.', '<b>이 단계 마치기</b>. 「친구 평가와 견주기」는 친구들에게 평가를 받은 뒤 씁니다.'],
       links:[ext('자기평가 열기 ↗', sghTo('#/me/reflect'))], stuck:['sghDone'] },
-    upload('최종본', '새 판'),
+    upload('최종본', '최종본 판'),
     { t:'서로 평가', sub:'선생님이 서로 평가를 열면',
-      do:['<b>⑦ 서로 평가</b>에서 배정된 친구 앱 2개 이상을 직접 돌려 봅니다.',
+      do:['<b>⑥ 서로 평가</b>에서 배정된 친구 앱 2개 이상을 직접 돌려 봅니다.',
           '세 질문에 답하고 까닭을 쓴 뒤, <b>칭찬</b>(꼭)과 제안을 씁니다.',
-          '내가 받은 평가를 읽고 성찰 4번을 씁니다.'],
+          '내가 받은 평가를 읽고 <b>④ 자기평가</b>의 「친구 평가와 견주기」를 씁니다.'],
       links:[ext('서로 평가 열기 ↗', sghTo('#/me/review'))], stuck:['rvClosed', 'rvPraise', 'rvSlow'] }
    ]}
 ];
@@ -1322,10 +1345,10 @@ FLOW.forEach(s => s.steps.forEach((st, i) => { st.id = s.no + '-' + (i + 1); }))
 function stuckLi(x){ const p = Array.isArray(x) ? x : STUCK[x]; return `<li><b>${p[0]}</b> → ${p[1]}</li>`; }
 function errDictHTML(){
   const G = [
-    ['🤖 제미나이', ['gemAccount', 'gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemExtra', 'gemLong', 'gemPaste']],
+    ['🤖 제미나이', ['gemAccount', 'gemEnter', 'gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemExtra', 'gemLong', 'gemPaste']],
     ['📄 이 수업 페이지', ['copy', 'labWhite', 'lost']],
     ['🐙 Studentgithub — 들어가기·저장', ['sghNum', 'sghNick', 'sghTaken', 'sghReady', 'sghRelogin', 'sghSave', 'sghDone']],
-    ['📤 Studentgithub — 올리기', ['upDl', 'upNoHtml', 'upPriv', 'upClosed', 'upOften', 'upBig']],
+    ['📤 Studentgithub — 올리기', ['upDl', 'upNoHtml', 'upReflect', 'upPriv', 'upClosed', 'upOften', 'upBig']],
     ['🤝 Studentgithub — 서로 평가', ['rvClosed', 'rvPraise', 'rvSlow']]
   ];
   return G.map(g => `<details class="hint"><summary>${g[0]}</summary><div class="in"><ul class="errl">${g[1].map(stuckLi).join('')}</ul></div></details>`).join('');
@@ -1342,7 +1365,7 @@ function flowShellHTML(){
     <ul>
       <li>🤫 <b>AI가 만드는 동안(30초~1분)은 조용히</b> 기다립니다. 떠들거나 돌아다니면 <b class="bad">벌점</b>입니다.</li>
       <li>⏳ 기다리는 시간은 쉬는 시간이 아닙니다. ① 결과가 <b>어떻게 나올지 예상</b>해 적고, ② <b>교과서</b>에서 그 내용을 찾아 밑줄을 긋고, ③ 결과가 나오면 예상·교과서와 견줍니다.</li>
-      <li>☝ 한 번에 하나만 고치고, 고칠 때마다 <b>직접 조작해 확인</b>합니다.</li>
+      <li>☝ 고칠 때마다 <b>직접 조작해 확인</b>합니다. AI가 "고쳤습니다"라고 해도 그대로 믿지 않습니다.</li>
       <li>📝 한 일은 모두 <b>Studentgithub</b>에 기록합니다. 별명은 실명 금지, 잊지 않게 공책에 적어 둡니다.</li>
       <li>🙋 막히면 손 들기 전에 그 순서의 「막혔을 때」와 맨 아래 「오류 사전」을 먼저 봅니다.</li>
     </ul>
@@ -1376,7 +1399,13 @@ function stepHTML(st, no, curId){
 }
 function drawFlow(scrollCur){
   const f = FLOW.find(x => x.no === flowStage) || FLOW[0];
-  document.querySelectorAll('#stagepick button').forEach(b => b.classList.toggle('on', +b.dataset.stage === f.no));
+  document.querySelectorAll('#stagepick button').forEach(b => { const n = +b.dataset.stage, lk = n > OPEN;
+    b.classList.toggle('on', n === f.no); b.classList.toggle('lk', lk);
+    const sm = b.querySelector('small'); const fs = FLOW.find(x => x.no === n); if(sm && fs) sm.textContent = (lk ? '🔒 ' : '') + fs.when; });
+  if(f.no > OPEN && !document.body.classList.contains('tmode')){
+    $('#flowbox').innerHTML = `<div class="card" style="border:2px dashed var(--c5);background:#f7f3fb"><b style="color:var(--c5)">🔒 ${f.no}단계 · ${f.t}</b> — ${f.when} 선생님이 열어 줍니다. 지금은 <b>${OPEN}단계</b>까지 할 수 있어요.</div>`;
+    updateNow(); return;
+  }
   FLOW.forEach(x => { const req = x.steps.filter(st => !st.opt), n = req.filter(st => flowDone[st.id]).length;
     const el = document.querySelector(`[data-pp="${x.no}"]`); if(el) el.textContent = n ? `${n}/${req.length} 마침` : ''; });
   const cur = curStep(f);
@@ -1388,8 +1417,8 @@ function drawFlow(scrollCur){
 }
 function updateNow(){
   const nb = $('#nowbar'); if(!nb) return;
-  if(curTab === 'flow'){ nb.hidden = true; return; }
   const f = FLOW.find(x => x.no === flowStage) || FLOW[0], cur = curStep(f);
+  if(curTab === 'flow' || f.no > OPEN){ nb.hidden = true; return; }
   nb.hidden = false;
   if(!cur){ nb.innerHTML = `<span class="nb">🎉 <b>${f.no}단계</b>를 다 마쳤어요</span><button type="button" class="btn" data-gotab="flow">순서 보기</button>`; return; }
   const req = f.steps.filter(st => !st.opt);
@@ -1415,7 +1444,27 @@ function wireFlow(){
   });
   drawFlow();
 }
-function startTab(){ return QS.get('s') ? 'flow' : store.get('tab2', 'flow'); }
+function applyLocks(){
+  document.querySelectorAll('nav.tabs button').forEach(b => { const st = TAB_STAGE[b.dataset.tab]; if(!st) return;
+    const t = TABS.find(x => x.id === b.dataset.tab); b.textContent = (st > OPEN ? '🔒 ' : '') + t.label; });
+  Object.keys(TAB_STAGE).forEach(id => { const sec = document.getElementById('tab-' + id); if(sec) sec.classList.toggle('locked', TAB_STAGE[id] > OPEN); });
+  drawFlow();
+}
+async function loadOpen(){
+  if(/\/share\//.test(location.pathname)) return;
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 5000);
+    const r = await fetch(SB_URL + '/rest/v1/rpc/sgh_task', { method:'POST', signal:ctl.signal,
+      headers:{ apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY, 'Content-Type':'application/json' }, body:JSON.stringify({ p_code:'gas' }) });
+    if(!r.ok) return;
+    const j = await r.json(), n = +(j && j.open_stage);
+    if(n >= 1 && n <= 4 && n !== OPEN){ OPEN = n; applyLocks(); }
+  } catch(e) { /* 못 읽으면 기본(2단계까지) */ }
+}
+function startTab(){
+  const t = QS.get('s') ? 'flow' : store.get('tab2', 'flow');
+  return (TAB_STAGE[t] || 1) > OPEN ? 'flow' : t;
+}
 
 /* ══════════════════ 진행도 ══════════════════ */
 let TOTAL = 0;
@@ -1464,18 +1513,14 @@ function missionHTML(m){
   const bugs = m.bugs.map((b, i) => `
   <div class="bug" data-bug="${m.id}-${i}">
     <div class="head">
-      <input type="checkbox" class="chk" data-prog data-key="bug:${m.id}:${i}" title="찾았어요">
+      <label class="found" title="내가 찾은 잘못이면 체크"><input type="checkbox" class="chk" data-prog data-key="bug:${m.id}:${i}"> 찾았어요</label>
       <span class="no">잘못 ${'①②③④⑤'[i]}</span>
-      <span class="ttl" data-ttl>???</span>
+      <span class="ttl" data-ttl>${b.t}</span>
       <span style="color:var(--ink-mute);font-size:13px">펼치기 ▾</span>
     </div>
     <div class="body">
-      <details class="hint"><summary>힌트 1 — 어디를 볼까</summary><div class="in">${b.h1}</div></details>
-      <details class="hint"><summary>힌트 2 — 무엇이 이상할까</summary><div class="in">${b.h2}</div></details>
-      <details class="hint ans"><summary>확인하기 — 무엇이 잘못됐나</summary><div class="in">
-        <p style="margin-bottom:6px"><b>${b.t}</b> — ${b.ans}</p>
-        <div class="why"><b>왜 틀렸나 &nbsp;</b>${b.why}</div>
-      </div></details>
+      <p style="margin:10px 0 6px"><b>${b.t}</b> — ${b.ans}</p>
+      <div class="why"><b>왜 틀렸나 &nbsp;</b>${b.why}</div>
       <details class="hint fix"><summary>직접 고칠 때 — 코드의 어디를 어떻게</summary><div class="in">
         <p style="margin:0 0 4px;font-size:14.5px">빨간 줄을 찾아 초록 줄처럼 바꾸세요. 4단계 실행실에서 <b>불량 코드 불러오기</b>를 누르면 고칠 코드가 들어옵니다.
            <b>Ctrl+F</b>로 빨간 줄의 낱말을 찾으면 빠릅니다.</p>
@@ -1487,7 +1532,7 @@ function missionHTML(m){
     <li><input type="checkbox" data-prog data-key="ver:${m.id}:${i}" id="ver-${m.id}-${i}">
         <label for="ver-${m.id}-${i}">${v}</label></li>`).join('');
 
-  return `
+  return `${TAB_STAGE[m.id] ? `<div class="lockcard">🔒 <b>미션 ${m.no} · ${m.tab.split(' · ')[1]}</b> — 온도와 부피를 배운 뒤 선생님이 열어 줍니다. 지금은 「따라 하기」에서 열린 단계를 해 주세요.<div class="tnote">선생님 보기 — 학생에게는 잠겨 있습니다. Studentgithub 관리 → 과제 설정 「열린 단계」를 3 이상으로 바꾸면 열립니다.</div></div>` : ''}
   <span class="pill ${m.cls}">미션 ${m.no}</span>
   <h2 style="margin-top:8px">${m.title}</h2>
 
@@ -1509,22 +1554,39 @@ function missionHTML(m){
     <button class="btn" data-dl="${m.src}" data-name="${m.file}">&#11015; 파일 내려받기</button>
   </div>
 
-  <h3>2단계 · 잘못 찾기</h3>
-  <p style="font-size:15px;color:var(--ink-dim)">먼저 <b>혼자 힘으로</b> 찾아보세요. 찾았으면 왼쪽 칸에 표시하고, 확인하기를 눌러 맞는지 봅니다.
-     아무리 봐도 모르겠을 때만 힌트를 여세요.</p>
-  ${bugs}
+  <h3>2단계 · 잘못 찾기 — 찾은 대로 적기</h3>
+  <div class="card findbox">
+    <p style="margin:0 0 6px">시뮬레이터를 돌려 보며 <b>이상한 점</b>을 찾는 대로 아래 칸에 적으세요. <b>무엇이 보였는지</b>와 <b>배운 내용과 어떻게 어긋나는지</b>를 함께 쓰면 좋습니다.
+       <b>${m.bugs.length}개를 다 찾지 않아도 됩니다.</b> 찾은 만큼 적으세요.</p>
+    <ol class="finds">${m.bugs.map((b, i) => `<li><textarea data-find="${m.id}:${i}" rows="2" placeholder="${i === 0 ? '예: ○○를 했더니 ○○가 보여요 — 배운 내용(○○)과 달라요' : '이상한 점 ' + (i + 1)}"></textarea></li>`).join('')}</ol>
+    <details class="hint"><summary>막혔을 때 — 어디를 볼까?</summary><div class="in"><ul style="margin:0">${m.bugs.map(b => `<li>${b.h1}</li>`).join('')}</ul></div></details>
+    <div class="btnrow" style="margin-bottom:0"><button type="button" class="btn pri" data-reveal="${m.id}">다 적었어요 — 잘못 ${m.bugs.length}개 공개</button></div>
+  </div>
+  <div class="bugs" data-bugs="${m.id}" hidden>
+    <p class="revealed">숨어 있던 잘못 <b>${m.bugs.length}개</b>입니다. 내가 적은 것과 견주어 보고, 찾은 것에 <b>찾았어요</b>를 체크하세요. 카드를 누르면 왜 틀렸는지와 직접 고치는 법이 나옵니다.</p>
+    ${bugs}
+  </div>
 
   <h3>3단계 · 고치기 — 두 가지 방법</h3>
+  <p style="font-size:15px;color:var(--ink-dim);margin:-2px 0 8px">2단계에서 잘못을 공개한 뒤, 하나를 골라 고칩니다.</p>
   <div class="two">
     <div class="card" style="margin:0">
       <h4 class="way">ⓐ AI에게 말하기</h4>
-      <p style="font-size:15px;margin:0 0 6px">제미나이 <b>새 채팅</b>에서 <b>+ → Canvas</b>를 켜고, 이 문장을 붙여넣은 뒤 줄을 바꿔 1단계의 <b>코드 복사</b>로 코드를 붙여 보냅니다.</p>
+      <ol class="say">
+        <li>제미나이 탭에서 왼쪽 메뉴의 <b>새 채팅</b>을 누릅니다.</li>
+        <li>입력칸 왼쪽 <b>+</b> → 맨 아래 <b>Canvas</b>를 누릅니다. 입력칸에 <b>Canvas</b>가 켜졌는지 봅니다.</li>
+        <li>아래 문장 오른쪽 위의 <b>복사</b>를 누르고, 제미나이 입력칸을 눌러 <b>Ctrl+V</b>로 붙여넣습니다.</li>
+        <li><b>Shift</b>를 누른 채 <b>Enter</b>를 눌러 줄을 바꿉니다. <span class="ent">Enter만 누르면 바로 보내져요!</span></li>
+        <li>코드도 함께 보내야 합니다. 이 페이지 <b>1단계</b>의 <b>📋 코드 복사</b>를 눌러 시뮬레이터 코드를 복사합니다.</li>
+        <li>제미나이 입력칸에 다시 <b>Ctrl+V</b> — 문장 아래에 코드가 들어갑니다.</li>
+        <li><b>보내기(↑)</b>를 누릅니다.</li>
+      </ol>
       <div class="pcard good ptmpl" style="margin:0">
         <button class="btn copy" data-copytext="${m.id}">복사</button>
         <div class="txt" style="white-space:pre-line;font-size:14.5px" id="ptxt-${m.id}">${m.prompt}</div>
       </div>
-      <p style="font-size:14px;color:var(--ink-dim);margin:8px 0 0">AI가 고쳐 주었다면 확인하세요 — 부탁한 잘못만 고쳐지고 나머지는 그대로여야 합니다(예: ${m.remain}).
-         다른 것까지 바뀌었다면 AI가 코드를 새로 쓴 것이니 카드의 ↶로 되돌리고 다시 부탁하세요. 거절하면 ⓑ로 하세요.</p>
+      <p style="font-size:14px;color:var(--ink-dim);margin:8px 0 0">AI가 고쳐 주었다면 확인하세요 — 부탁한 곳은 고쳐지고, 부탁하지 않은 곳은 그대로여야 합니다(예: 이 문장 그대로 보냈다면 ${m.remain}).
+         다른 잘못도 고치려면 같은 대화에서 고칠 곳을 적어 보냅니다. 여러 개를 한 번에 적어도 됩니다. 부탁하지 않은 곳까지 바뀌었다면 카드의 ↶로 되돌리고 다시 부탁하세요. 거절하면 ⓑ로 하세요.</p>
     </div>
     <div class="card" style="margin:0">
       <h4 class="way">ⓑ 직접 고치기</h4>
@@ -1533,12 +1595,10 @@ function missionHTML(m){
         <li>잘못 카드의 <b>「직접 고칠 때」</b>를 열어 빨간 줄을 찾습니다(<b>Ctrl+F</b>).</li>
         <li>초록 줄처럼 고치고 <b>실행</b>을 눌러 확인합니다.</li>
       </ol>
-      <p style="font-size:14px;color:var(--ink-dim);margin:8px 0 0">숫자 하나, 줄 하나만 바꾸면 되는 잘못이 대부분입니다. 과학자가 모형을 고치는 것도 이렇게 한 곳씩입니다.</p>
+      <p style="font-size:14px;color:var(--ink-dim);margin:8px 0 0">숫자 하나, 줄 하나만 바꾸면 되는 잘못이 대부분입니다.</p>
     </div>
   </div>
   ${waitHTML(m.id)}
-  <p style="font-size:15px;color:var(--ink-dim)">잘못이 ${m.bugs.length}개라고 해서 한 번에 ${m.bugs.length}개를 다 고치지 마세요.
-     <b>하나 고치고 → 돌려 보고 → 다음 하나</b>. 이렇게 해야 무엇 때문에 달라졌는지 알 수 있습니다.</p>
 
   <h3>4단계 · 실행실에서 돌려 보고 저장하기</h3>
   <div class="lab">
@@ -1550,6 +1610,7 @@ function missionHTML(m){
     <div class="btnrow">
       <button class="btn" data-labload="${m.id}">&#128229; 불량 코드 불러오기</button>
       <button class="btn pri" data-run="${m.id}">&#9654; 실행</button>
+      <button class="btn" data-labcopy="${m.id}">&#128203; 내 코드 복사</button>
       <button class="btn" data-labdl="${m.id}" data-name="내가고친_${m.file}">&#11015; 내 파일로 저장</button>
       <button class="btn" data-labclear="${m.id}">지우기</button>
     </div>
@@ -1581,12 +1642,12 @@ function buildMain(){
   <h3>네 단계</h3>
   <table>
     <tr><th style="width:150px">단계</th><th>하는 일</th><th style="width:165px">어디서</th></tr>
-    <tr><td><b>1 · 고치기</b><br><small>압력을 배운 뒤</small></td><td>불량 압력 시뮬레이터의 잘못을 찾아 고친다. 시뮬레이터도 모형이라는 것을 안다.</td><td>미션 1 · 모형 이야기</td></tr>
-    <tr><td><b>2 · 압력과 부피</b><br><small>압력과 부피를 배운 뒤</small></td><td>불량 시뮬레이터를 고친 뒤, <b>내 시뮬레이터 첫 판</b>(압력과 부피)을 만든다.</td><td>미션 2 · Studentgithub 만들기</td></tr>
-    <tr><td><b>3 · 온도와 부피</b><br><small>온도와 부피를 배운 뒤</small></td><td>불량 시뮬레이터를 고친 뒤, 내 시뮬레이터에 <b>온도와 부피</b>를 더한다.</td><td>미션 3 · Studentgithub 만들기</td></tr>
-    <tr><td><b>4 · 최종본</b><br><small>단원을 마칠 때</small></td><td>생활 속 예, <b>내가 낸 퀴즈</b>, 한계를 넣어 완성한다. 점검표·성찰 → 제출 → 서로 평가.</td><td>Studentgithub</td></tr>
+    <tr><td><b>1 · 고치기</b><br><small>압력을 배운 뒤</small></td><td>불량 압력 시뮬레이터의 잘못을 찾아 고치고, <b>고친 시뮬레이터를 올린다</b>. 시뮬레이터도 모형이라는 것을 안다.</td><td>미션 1 · 모형 이야기 · Studentgithub 제출</td></tr>
+    <tr><td><b>2 · 압력과 부피</b><br><small>압력과 부피를 배운 뒤</small></td><td>불량 압력-부피 시뮬레이터를 고치고, <b>고친 시뮬레이터를 올린다</b>.</td><td>미션 2 · Studentgithub 제출</td></tr>
+    <tr><td><b>3 · 온도와 부피</b><br><small>온도와 부피를 배운 뒤</small></td><td>불량 온도-부피 시뮬레이터를 고치고, <b>고친 시뮬레이터를 올린다</b>.</td><td>미션 3 · Studentgithub 제출</td></tr>
+    <tr><td><b>4 · 최종본</b><br><small>온도와 부피까지 배운 뒤</small></td><td><b>나만의 기체 시뮬레이터</b>를 만들어 생활 속 예, <b>내가 낸 퀴즈</b>, 한계를 넣는다. 점검표·자기평가 → 돌아보기와 함께 올리기 → 서로 평가.</td><td>Studentgithub 만들기 · 제출</td></tr>
   </table>
-  <p style="font-size:15px;color:var(--ink-dim)">단계마다 만든 앱을 제출하면 <b>판이 쌓입니다</b>(첫 판 → 둘째 판 → 최종본). 찾은 잘못, 보낸 프롬프트, 점검과 성찰도 모두 Studentgithub에 기록합니다.</p>
+  <p style="font-size:15px;color:var(--ink-dim)">미션을 마칠 때마다 고친 시뮬레이터를 올리면 <b>판이 쌓입니다</b>(미션 1 → 미션 2 → 미션 3 → 최종본). 3·4단계는 온도와 부피를 배운 뒤 열립니다. 찾은 잘못, 보낸 프롬프트, 점검, 올릴 때마다 쓰는 <b>이번 판 돌아보기</b>(만든 것·과학으로 판단한 순간·어려웠던 점·느낀 점)는 Studentgithub에 남깁니다. 모형 이야기의 「생각해 보기」는 쓰기만 하고 내지 않습니다.</p>
   <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a>
     <span>학번과 별명으로 들어가면 어디까지 했는지 이어집니다.</span></div>
 
@@ -1628,9 +1689,9 @@ function buildMain(){
   <h2>AI에게 말하는 네 가지 규칙</h2>
   <div class="card">
     <ol style="margin-bottom:0">
-      <li><b>보이는 것부터 말한다.</b> "이상해요"가 아니라 "입자가 전부 바닥에 가라앉습니다"라고.</li>
+      <li><b>보이는 것부터 말한다.</b> "이상해요"가 아니라 "압력 숫자 옆에 처음 보는 단위가 붙어 있습니다"라고.</li>
       <li><b>왜 틀렸는지 배운 과학으로 말한다.</b> "기체 입자는 모든 방향으로 끊임없이 움직여야 합니다"까지 붙인다.</li>
-      <li><b>한 번에 하나만, 나머지는 그대로.</b> "다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요"를 꼭 붙인다.</li>
+      <li><b>고칠 곳만 말하고, 나머지는 그대로.</b> "다른 부분은 그대로 두고 말한 곳만 고쳐 주세요"를 꼭 붙인다. 여러 곳을 한 번에 부탁해도 된다.</li>
       <li><b>배운 것만 넣게 한다.</b> 내가 설명할 수 없는 낱말·단위·기능이 생기면 "이것은 빼 주세요"라고 한다.</li>
     </ol>
   </div>
@@ -1641,9 +1702,9 @@ function buildMain(){
   </div>
   <div class="pcard good">
     <div class="lbl">&#10003; 이렇게 말합니다</div>
-    <div class="txt">"이 시뮬레이터에서 입자들이 전부 상자 바닥에 가라앉습니다.
-기체 입자는 모든 방향으로 끊임없이 움직이며 상자 전체에 고르게 퍼져야 합니다.
-입자를 아래쪽으로 쏠리게 만드는 부분을 없애 주세요.
+    <div class="txt">"이 시뮬레이터에서 압력 숫자 옆에 처음 보는 단위가 붙어 있습니다.
+우리는 기체의 압력을 기체 입자가 충돌하여 작용하는 힘으로 배웠고, 이 단위는 배우지 않았습니다.
+단위를 빼고 1초 동안 벽에 부딪힌 횟수로만 보여 주세요.
 다른 부분은 그대로 두고 이 한 곳만 고쳐 주세요."</div>
   </div>
 
@@ -1660,10 +1721,10 @@ function buildMain(){
     크롬 확장으로 자동 입력해 보낸 요청은 코드 붙여넣기·긴 요청·후속 수정이 대부분 거절됐지만, <b>선생님이 같은 요청을 손으로 다시 보내니 모두 처리되었습니다</b>. 거절은 자동 입력 탓으로 보입니다. 첫 시간 전에 학생 계정 하나로 미션 1의 「AI에게 말하기」를 한 번 보내 확인해 두세요.<br>
     <b>배운 내용만</b> 프롬프트와 템플릿은 학생이 배운 것(기체의 압력 정의, 부피와 충돌 횟수·압력, 압력은 모든 방향으로 작용, 온도에 따른 입자의 빠르기)만으로 썼습니다. 중력·대기압·보일/샤를 법칙의 이름·K·atm·계산식·「2배」 같은 수량 관계는 넣지 않았고, AI가 이런 것을 넣으면 학생이 「빼 달라」고 하도록 규칙과 점검표에 넣었습니다.<br>
     <b>AI 없이도 끝까지 가는 길</b> 미션은 <b>ⓑ 직접 고치기</b>(실행실의 불량 코드 불러오기 + 잘못 카드의 「직접 고칠 때」), 만들기는 Studentgithub의 <b>시작 앱으로 만들기</b>(학생의 예시·퀴즈·한계를 선생님이 검증한 시작 앱에 넣어 줌)로 전 과정이 돌아갑니다.<br>
-    <b>배치</b> 미션 1 = 압력을 배운 뒤 / 미션 2 + 만들기 2단계(첫 판) = 압력과 부피를 배운 뒤 / 미션 3 + 만들기 3단계 = 온도와 부피를 배운 뒤 / 최종본 = 단원 마무리. 한 차시에 몰아서 하지 않고 단원 내내 이어 가는 개인 프로젝트입니다. 모형 이야기는 미션 1 바로 뒤가 가장 잘 맞습니다(방금 고친 경험이 "모형을 고친다"는 말로 바로 이어짐).<br>
+    <b>배치</b> 미션 1 → 올리기 = 압력을 배운 뒤 / 미션 2 → 올리기 = 압력과 부피를 배운 뒤 / 미션 3 → 올리기 = 온도와 부피를 배운 뒤 / 최종본(나만의 시뮬레이터) = 단원 마무리. 3·4단계는 Studentgithub 관리 → 과제 설정 「열린 단계」로 엽니다(처음 값 2). 한 차시에 몰아서 하지 않고 단원 내내 이어 가는 개인 프로젝트입니다. 모형 이야기는 미션 1 바로 뒤가 가장 잘 맞습니다(방금 고친 경험이 "모형을 고친다"는 말로 바로 이어짐).<br>
     <b>진행</b> 잘못을 몇 개 찾았는지를 겨루게 하면 힌트를 안 열고 버팁니다. 다 찾은 학생은 "잘못을 하나 더 만들어 짝에게 내기"로 확장하세요.<br>
-    <b>기록</b> 찾은 잘못·AI에게 한 말·만든 프롬프트·점검표·성찰은 모두 Studentgithub 작업실에 쌓입니다(학번+별명으로 어느 기기에서든 이어짐). 관리 화면에서 반별로 보고 CSV로 받아 세특 근거로 쓰세요.<br>
-    <b>주의</b> AI가 코드를 통째로 새로 쓰면 학습이 끊깁니다. "한 번에 하나만"을 수업 규칙으로 못 박아 주세요.</div>
+    <b>기록</b> 찾은 잘못·AI에게 한 말·만든 프롬프트·점검표·<b>판마다 쓴 「이번 판 돌아보기」(세특 근거)</b>는 모두 Studentgithub 작업실에 쌓입니다. 「생각해 보기」·잘못 찾기 칸은 이 페이지(기기)에만 저장되고 거두지 않습니다(학번+별명으로 어느 기기에서든 이어짐). 관리 화면에서 반별로 보고 CSV로 받아 세특 근거로 쓰세요.<br>
+    <b>주의</b> AI가 코드를 통째로 새로 쓰면 학습이 끊깁니다. 여러 곳을 한 번에 부탁해도 되지만 "다른 부분은 그대로 두고 말한 곳만 고쳐 주세요"는 꼭 붙이게 해 주세요.</div>
   `;
 
   const model = `
@@ -1743,7 +1804,12 @@ function buildMain(){
     <div class="mqc"><button>화면과 계산을 위해 단순하게 만든 것이다 — 한계로 밝혀야 한다</button><button>실제 공기에도 입자가 그 정도뿐이라서</button><button>입자 수는 압력과 관계없어서</button></div>
     <p class="mqw">1 cm³ 공기 속에는 입자가 약 2500경 개 있습니다. 모두 그릴 수 없으니 줄인 것이고, 그래서 한계로 적어 두어야 합니다.</p>
   </div>
-  <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub에 내 생각 쓰기 →</a><span>작업실 ② 모형 생각</span></div>
+  <h3>생각해 보기 <span style="font-family:var(--disp);font-size:13.5px;color:var(--ink-mute)">— 쓰기만 하고 내지 않습니다(이 기기에만 저장)</span></h3>
+  <div class="card thinkq">
+    <div class="tq"><label for="tq1"><b>1.</b> 내가 고친(또는 만든) 시뮬레이터가 실제 공기와 닮은 점 한 가지는?</label><textarea id="tq1" data-think="tq1" rows="2"></textarea></div>
+    <div class="tq"><label for="tq2"><b>2.</b> 실제 공기와 다른 점(한계) 한 가지는?</label><textarea id="tq2" data-think="tq2" rows="2"></textarea></div>
+    <div class="tq" style="margin:0"><label for="tq3"><b>3.</b> 미션에서 내가 한 일은 과학자가 모형을 고치는 과정과 어떻게 닮았나요?</label><textarea id="tq3" data-think="tq3" rows="2"></textarea></div>
+  </div>
 
   <div class="tbox tonly"><span class="tag">교사용</span> 운영 메모<br>
     미션 1 바로 뒤에 다루면 좋습니다. "방금 여러분이 한 일이 과학자가 하는 일"이라는 한 문장이 핵심입니다.<br>
@@ -1751,18 +1817,18 @@ function buildMain(){
     <b>AI 앱 사진</b> 2026-10-01에 실제로 만든 앱(시키지 않은 K·atm 단위, 중력 스위치, 입자 크기 손잡이, 영어 부제 「Ideal Gas Law & Kinetic Molecular Theory」)에는 학생이 배우지 않은 내용이 찍혀 있어 사진 대신 글로만 적었습니다. 「캔버스 쓰는 법」 캡처도 앱 화면을 가렸습니다.</div>
   `;
 
-  const make = `
+  const make = `<div class="lockcard">🔒 <b>나만의 기체 시뮬레이터(최종본)</b> — 온도와 부피까지 배운 뒤 선생님이 열어 줍니다. 지금은 「따라 하기」에서 미션을 고치고, 고친 시뮬레이터를 올려 주세요.<div class="tnote">선생님 보기 — 학생에게는 잠겨 있습니다. Studentgithub 관리 → 과제 설정 「열린 단계」를 4로 바꾸면 열립니다.</div></div>
   <span class="pill">만들기</span>
   <h2 style="margin-top:8px">나만의 기체 시뮬레이터 키우기</h2>
   <div class="card">
-    <p style="margin:0 0 8px">한 번에 다 만들지 않습니다. 배운 만큼 하나씩 더해 <b>최종본</b>까지 키웁니다. 단계마다 제출하면 판이 쌓입니다.</p>
-    <div class="goal5"><span>2단계 · 압력과 부피 (첫 판)</span><span>3단계 · + 온도와 부피</span><span>4단계 · + 생활 속 예 · 내가 낸 퀴즈 · 한계 = 최종본</span></div>
+    <p style="margin:0 0 8px">미션을 고칠 때마다 고친 시뮬레이터를 Studentgithub에 올리고(1·2·3단계), 온도와 부피까지 배운 뒤 <b>나만의 기체 시뮬레이터(최종본)</b>를 만듭니다. 같은 대화에서 차례로 키웁니다.</p>
+    <div class="goal5"><span>① 압력과 부피 화면</span><span>② + 온도와 부피</span><span>③ + 생활 속 예 · 내가 낸 퀴즈 · 한계 = 최종본</span></div>
   </div>
 
   <h3>세 가지 길 — 모두 Studentgithub 작업실에서</h3>
   <table>
     <tr><th style="width:150px">길</th><th>어떻게</th></tr>
-    <tr><td><b>ⓐ 템플릿 채우기</b></td><td>빈칸(앱 이름·분위기·생활 속 예·내 퀴즈·한계)을 채우면 <b>단계마다 보낼 프롬프트</b>가 만들어집니다. 그 단계를 배운 뒤에 보내고, 보낸 뒤에는 직접 조작해 확인합니다.</td></tr>
+    <tr><td><b>ⓐ 템플릿 채우기</b></td><td>빈칸(앱 이름·분위기·생활 속 예·내 퀴즈·한계)을 채우면 <b>차례로 보낼 프롬프트 3개(①②③)</b>가 만들어집니다. 같은 대화에서 차례로 보내고, 보낼 때마다 직접 조작해 확인합니다.</td></tr>
     <tr><td><b>ⓑ 자유롭게 쓰기</b></td><td>내 말로 프롬프트를 씁니다. 「좋은 프롬프트 점검」으로 빠진 것이 없는지 확인합니다.</td></tr>
     <tr><td><b>ⓒ 시작 앱으로 만들기</b></td><td>AI 없이 가는 길. 선생님이 검증한 시작 앱에 내 예시·퀴즈·한계를 넣어 앱을 만듭니다. 꾸미기와 기능 더하기는 그다음에 AI나 직접 고치기로 합니다.</td></tr>
   </table>
@@ -1791,7 +1857,7 @@ function buildMain(){
   </table>
 
   <div class="tbox tonly"><span class="tag">교사용</span> 운영 메모<br>
-    <b>단계별 프롬프트</b> 선생님이 손으로 보낸 요청은 길어도 모두 처리되어(2026-10-01), 단계마다 하나의 프롬프트로 만들었습니다. 프롬프트에는 학생이 배운 내용만 넣고, AI가 시키지 않은 기능이나 배우지 않은 말을 넣지 않도록 막는 줄을 붙였습니다. 3단계는 온도와 부피를 배운 뒤에 열어 주세요.<br>
+    <b>단계별 프롬프트</b> 선생님이 손으로 보낸 요청은 길어도 모두 처리되어(2026-10-01), 단계마다 하나의 프롬프트로 만들었습니다. 프롬프트에는 학생이 배운 내용만 넣고, AI가 시키지 않은 기능이나 배우지 않은 말을 넣지 않도록 막는 줄을 붙였습니다. 미션 3과 최종본(만들기)은 Studentgithub 관리 → 과제 설정 「열린 단계」로 엽니다(처음 값 2 — 이 페이지의 미션 3·만들기 탭과 따라 하기 3·4단계, Studentgithub 만들기·점검표·자기평가가 잠김).<br>
     <b>시작 앱</b>은 <code>기체_바이브코딩/시작앱_공기탐험대.html</code>과 같습니다(검증: 입자 20→40개 충돌 1.96배, 부피 절반 손잡이 충돌 2.07배·빠르기 100 그대로, 0℃→100℃ 부피 1.34배·입자 30개 그대로).<br>
     <b>온도와 부피</b>는 지도서대로 충돌 횟수가 아니라 입자의 <b>운동</b>으로 설명하게 해 두었습니다.</div>
   `;
@@ -1821,11 +1887,13 @@ function buildMain(){
   <h3>제출물 — 모두 Studentgithub에</h3>
   <ol>
     <li>고치기 기록 — 찾은 잘못, 그렇게 판단한 까닭, AI에게 한 말</li>
-    <li>나만의 시뮬레이터 — 단계마다 낸 판(첫 판·둘째 판·최종본)과 쓴 프롬프트</li>
+    <li>미션마다 고친 시뮬레이터(미션 1·2·3)와 나만의 시뮬레이터 최종본 — 올린 판과 쓴 프롬프트</li>
+    <li><b>이번 판 돌아보기</b> — 올릴 때마다: 만든 것, AI의 잘못을 찾아 고친 순간, 어려웠던 점과 해결, 새로 알게 된 점·느낀 점</li>
     <li>점검표 — 항목마다 체크와 까닭</li>
-    <li>자기평가와 성찰</li>
+    <li>자기평가</li>
     <li>친구 앱 서로 평가</li>
   </ol>
+  <p style="font-size:15px;color:var(--ink-dim)">잘못 찾기 칸과 모형 이야기의 「생각해 보기」는 쓰기만 하고 내지 않습니다.</p>
   <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a></div>
 
   <div class="tbox tonly"><span class="tag">교사용</span> 세부능력 및 특기사항에 쓸 만한 갈래<br>
@@ -1849,28 +1917,44 @@ function wire(){
   // 결함 카드 펼치기 / 체크
   document.querySelectorAll('.bug').forEach(bug => {
     const chk = bug.querySelector('.chk');
-    const ttl = bug.querySelector('[data-ttl]');
     const idx = +bug.dataset.bug.split('-')[1];
     const mid = bug.dataset.bug.split('-')[0];
-    const m = MISSIONS.find(x => x.id === mid);
-
     bug.querySelector('.head').addEventListener('click', e => {
-      if(e.target === chk) return;
+      if(e.target.closest('.found')) return;
       bug.classList.toggle('open');
     });
-    const sync = () => {
-      bug.classList.toggle('done', chk.checked);
-      ttl.textContent = chk.checked ? m.bugs[idx].t : '???';
-    };
+    const sync = () => bug.classList.toggle('done', chk.checked);
     chk.checked = store.get('bug:'+mid+':'+idx, false);
-    chk.addEventListener('change', () => {
-      store.set('bug:'+mid+':'+idx, chk.checked); sync(); updateProgress();
-    });
+    chk.addEventListener('change', () => { store.set('bug:'+mid+':'+idx, chk.checked); sync(); updateProgress(); });
     sync();
-    // 확인하기를 열면 제목이 드러난다
-    bug.querySelectorAll('details.ans').forEach(d => d.addEventListener('toggle', () => {
-      if(d.open) ttl.textContent = m.bugs[idx].t;
-    }));
+  });
+
+  // 잘못 찾기 — 적은 것은 이 기기에 저장, 다 적으면 정답 공개
+  document.querySelectorAll('textarea[data-find]').forEach(t => {
+    t.value = store.get('find:' + t.dataset.find, '');
+    t.addEventListener('input', () => store.set('find:' + t.dataset.find, t.value));
+  });
+  const reveal = (mid, on) => {
+    const box = document.querySelector(`[data-bugs="${mid}"]`), b = document.querySelector(`[data-reveal="${mid}"]`);
+    if(box) box.hidden = !on;
+    if(b){ b.disabled = on; b.textContent = on ? '✓ 공개했어요 — 아래에서 견주어 보세요' : b.dataset.label; }
+  };
+  document.querySelectorAll('[data-reveal]').forEach(b => {
+    b.dataset.label = b.textContent;
+    const mid = b.dataset.reveal;
+    reveal(mid, store.get('reveal:' + mid, false));
+    b.addEventListener('click', () => {
+      const wrote = [...document.querySelectorAll(`textarea[data-find^="${mid}:"]`)].some(t => t.value.trim());
+      if(!wrote && !confirm('아직 하나도 적지 않았어요. 그래도 정답을 공개할까요?')) return;
+      store.set('reveal:' + mid, true); reveal(mid, true);
+      setTimeout(() => document.querySelector(`[data-bugs="${mid}"]`).scrollIntoView({behavior:'smooth', block:'start'}), 80);
+    });
+  });
+
+  // 생각해 보기 — 쓰기만 하고 내지 않는다(이 기기에만)
+  document.querySelectorAll('textarea[data-think]').forEach(t => {
+    t.value = store.get('think:' + t.dataset.think, '');
+    t.addEventListener('input', () => store.set('think:' + t.dataset.think, t.value));
   });
 
   // 확인 목록
@@ -1910,6 +1994,11 @@ function wire(){
       fr.srcdoc = code;
       toast('실행했어요');
       setTimeout(() => box.scrollIntoView({behavior:'smooth', block:'center'}), 90);
+    });
+    document.querySelector(`[data-labcopy="${m.id}"]`).addEventListener('click', () => {
+      const code = ta.value.trim();
+      if(!code){ toast('복사할 코드가 없어요'); return; }
+      copyText(code, '내 코드를 복사했어요. Studentgithub 제출의 앱 코드 칸에 붙여넣으세요');
     });
     document.querySelector(`[data-labdl="${m.id}"]`).addEventListener('click', e => {
       const code = ta.value.trim();
@@ -1952,9 +2041,11 @@ function wire(){
   const tb = $('#tmodeBtn');
   const setT = on => { document.body.classList.toggle('tmode', on); tb.classList.toggle('on', on); store.set('tmode', on); };
   setT(store.get('tmode', false));
-  tb.addEventListener('click', () => setT(!document.body.classList.contains('tmode')));
+  tb.addEventListener('click', () => { setT(!document.body.classList.contains('tmode')); drawFlow(); });
 
   wireFlow();
+  applyLocks();
+  loadOpen();
 }
 
 /* ══════════════════ 시작 ══════════════════ */
