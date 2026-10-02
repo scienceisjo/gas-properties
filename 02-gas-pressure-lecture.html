@@ -223,6 +223,59 @@ html.student #notes{display:none!important}
 .slide[data-tile="black"],.slide[data-tile="dark"],.slide[data-tile="graphite"]{--flash:#f5f5f7}
 .gx-eq .f{color:var(--sound)} .gx-eq .a{color:var(--light)} .gx-eq .p{color:var(--heat)}
 
+/* ── 90_quiz.css ── */
+/* ── 문제로 확인하기(강의 끝 문제 풀이) — 수업 페이지 확인하기 문제를 옮긴 장면 ──
+   문제 → (한 번 누르면) 정답 표시 + 보기 ○/✗ + 풀이. 글이 넘치면 enter 에서 --qz 배율을 줄여 맞춘다. */
+.qz-body{position:absolute;left:120px;top:96px;width:1680px;height:930px;display:flex;flex-direction:column;gap:calc(22px * var(--qz,1));font-size:calc(1px * var(--qz,1))}
+.qz-body>*{flex-shrink:0}
+.qz-eb{display:flex;align-items:center;gap:14px;font-size:30em;font-weight:600;color:var(--t2);letter-spacing:.01em}
+.qz-eb b{color:var(--act);font-weight:700}
+.qz-lv{display:inline-flex;align-items:center;padding:2px 14px;border-radius:9999px;border:2px solid var(--hl);font-size:.86em;color:var(--t2)}
+.qz-stem{font-size:42em;font-weight:600;line-height:1.42;letter-spacing:-.015em}
+.qz-stem u{text-decoration-thickness:3px;text-underline-offset:6px}
+.qz-row{display:flex;gap:44px;align-items:flex-start;min-height:0}
+.qz-wide .qz-left{flex-basis:1080px}
+.qz-wide .qz-fig svg{max-height:calc(420px * var(--qz,1))}
+.qz-left{flex:0 0 760px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.qz-card{border-radius:18px;background:#f5f5f7}
+.slide[data-tile="parchment"] .qz-card{background:#fff}
+.qz-fig{padding:14px 18px}
+.qz-fig svg{display:block;width:100%;height:auto;max-height:calc(330px * var(--qz,1))}
+.qz-box{padding:16px 26px 18px}
+.qz-box-h{display:inline-block;font-size:24em;font-weight:700;color:var(--t2);border:2px solid var(--hl);border-radius:8px;padding:0 12px;margin-bottom:6px}
+.qz-box p{position:relative;font-size:30em;line-height:1.45;margin:6px 0;padding-right:58px}
+.qz-box p b{font-weight:700;margin-right:6px}
+.qz-v{position:absolute;right:0;top:0;font-weight:800;font-size:1.1em}
+.qz-v.ok{color:var(--act)} .qz-v.no{color:var(--heat)}
+.qz-ch{list-style:none;margin:0;padding:0;flex:1 1 0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.qz-ch li{position:relative;display:flex;align-items:flex-start;gap:16px;font-size:34em;line-height:1.38;padding:12px 150px 12px 20px;border-radius:14px}
+.qz-n{flex:none;font-weight:700;color:var(--t2)}
+.qz-t{min-width:0}
+.qz-hl{position:absolute;inset:0;border-radius:14px;border:3px solid var(--act);background:color-mix(in srgb, var(--act) 10%, transparent);pointer-events:none}
+.qz-ch li.ok .qz-n,.qz-ch li.ok .qz-t{position:relative}
+.qz-mark{position:absolute;right:18px;top:50%;margin-top:-.75em;font-size:.82em;font-weight:700;color:#fff;background:var(--act);border-radius:9999px;padding:3px 16px}
+.qz-why{margin-top:auto;padding:22px 30px 24px;border-left:6px solid var(--act)}
+.qz-why .qz-why-h{font-size:26em;font-weight:700;color:var(--act);margin-bottom:6px}
+.qz-why .qz-why-t{font-size:30em;line-height:1.5}
+.qz-why b{color:var(--act);font-weight:700}
+/* 문제 들어가기 장 */
+.qz-intro{position:absolute;left:0;top:0;width:1920px;height:1080px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;text-align:center}
+.qz-intro .qz-k{font-size:30px;font-weight:600;color:var(--t2);letter-spacing:.02em}
+.qz-intro h2{font-size:96px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.qz-intro .qz-dots{display:flex;gap:18px;margin-top:20px}
+.qz-intro .qz-dots span{display:flex;align-items:center;justify-content:center;width:84px;height:84px;border-radius:50%;border:3px solid var(--hl);font-size:36px;font-weight:700;color:var(--t2)}
+.qz-intro .qz-sub{font-size:30px;color:var(--t2)}
+
+/* ── 91_recap.css ── */
+/* ── «오늘 배운 것» 핵심 낱말 빈칸(번호 없음 — 학습지 빈칸과 다름) ── */
+.rk{position:relative;display:inline-block;margin:0 .06em;padding:0 .1em;border-bottom:3px solid #c7c7cc;line-height:1.2;vertical-align:baseline}
+.slide[data-tile="black"] .rk,.slide[data-tile="dark"] .rk,.slide[data-tile="graphite"] .rk{border-bottom-color:#48484a}
+.rk .rk-w{display:inline-block;opacity:0}
+.rk.on{border-bottom-color:transparent}
+.rk-fx{position:absolute;inset:0;pointer-events:none;z-index:2}
+.rk-p{position:absolute;display:block;pointer-events:none}
+.rk.on .rk-w{opacity:1}
+
 /* ── 12_challenge.html ── */
 
 #d2_12_challenge .pill4{position:absolute;top:400px;width:360px;height:170px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1.2;padding:0 20px}
@@ -497,11 +550,56 @@ html.student #notes{display:none!important}
   </div>
 </section>
 <!-- ═══ 13_recap.html ═══ -->
-<section class="slide" id="d2_13_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P13" data-say="마지막 줄은 11장(높이에 따른 공기의 압력)의 요약이에요.">
+<section class="slide" id="d2_13_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P13" data-say="핵심 낱말이 빈칸으로 나옵니다 — 학생이 먼저 말하게 한 뒤 누를 때마다 카드 한 장씩 채워져요. 마지막 줄은 11장(높이에 따른 공기의 압력)의 요약이에요.">
   <div class="hd" data-in><div class="eb">정리</div><h2>오늘 배운 것</h2></div>
   <div id="d2_13_recap-cards"></div>
-  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">위로 올라갈수록 공기의 <span class="c-part">양</span>이 줄어 공기의 <span class="c-press">압력</span>은 작아진다</div>
-  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-02</div>
+  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">위로 올라갈수록 공기의 <span class="rk c-part" data-rk="4" data-kind="shrink"><span class="rk-w">양</span><span class="rk-fx" aria-hidden="true"></span></span>이 줄어 공기의 <span class="rk c-press" data-rk="4" data-kind="down"><span class="rk-w">압력</span><span class="rk-fx" aria-hidden="true"></span></span>은 작아진다</div>
+  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-03</div>
+</section>
+<!-- ═══ 90_quiz0.html ═══ -->
+<section class="slide" id="d2_90_quiz0" data-tile="black" data-title="문제로 확인하기" data-notes="" data-say="수업 페이지 확인하기에서 고른 4문제입니다. 문제마다 먼저 풀어 보게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다.">
+  <div class="qz-intro">
+    <div class="qz-k" data-in>기체의 압력</div>
+    <h2 data-in="200" data-fx="blur">문제로 확인하기</h2>
+    <div class="qz-dots" data-in="500" data-fx="up"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+    <div class="qz-sub" data-in="700">오늘 배운 내용으로 4문제를 풀어 봅시다</div>
+  </div>
+</section>
+<!-- ═══ 91_quiz1.html ═══ -->
+<section class="slide" id="d2_91_quiz1" data-tile="light" data-title="문제 1" data-notes="" data-say="기체 압력의 뜻(입자의 충돌이 가하는 힘)을 무게·인력과 구별하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 기체의 압력은 끊임없이 날아다니는 입자가 벽에 충돌 해서 가하는 힘입니다. 무게도, 입자끼리의 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 1</b> / 4 <span class="qz-lv">기본</span></div>
+    <div class="qz-stem" data-in="150">기체의 압력에 대한 설명으로 옳은 것은?</div>
+    <div class="qz-row" data-in="350"><ol class="qz-ch"><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">①</span><span class="qz-t">일정한 면적에 기체 입자가 충돌하여 가하는 힘이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">②</span><span class="qz-t">기체의 무게가 바닥을 누르는 힘이다.</span></li><li><span class="qz-n">③</span><span class="qz-t">기체 입자들이 서로 끌어당기는 힘이다.</span></li><li><span class="qz-n">④</span><span class="qz-t">기체가 한쪽으로 흐를 때만 생기는 힘이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">용기의 벽이 기체를 안쪽으로 조이는 힘이다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ① · 풀이</div><div class="qz-why-t">기체의 압력은 끊임없이 날아다니는 <b>입자가 벽에 충돌</b>해서 가하는 힘입니다. 무게도, 입자끼리의 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요.</div></div>
+  </div>
+</section>
+<!-- ═══ 92_quiz2.html ═══ -->
+<section class="slide" id="d2_92_quiz2" data-tile="parchment" data-title="문제 2" data-notes="" data-say="쇠구슬 모형에서 개수(입자 수)와 손바닥이 받는 힘(압력)을 충돌 횟수로 연결하는지 확인한다. 정답 ②. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 개수 — 30개면 벽에 부딪히는 횟수가 많아 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 2</b> / 4 <span class="qz-lv">기본</span></div>
+    <div class="qz-stem" data-in="150">그림과 같이 쇠구슬을 넣은 두 페트병을 같은 빠르기로 흔들었다. 손바닥에 느껴지는 힘이 더 큰 쪽과 그 까닭을 옳게 짝 지은 것은?</div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 230" role="img" aria-label="쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다."><text x="150" y="30" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="15" fill="#5c4a33" font-weight="800">(가) 쇠구슬 15개</text><rect x="80" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/><rect x="128" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/><circle cx="101" cy="89" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="138" cy="142" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="175" cy="95" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="108" cy="148" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="145" cy="101" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="182" cy="154" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="115" cy="107" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="152" cy="160" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="189" cy="113" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="122" cy="166" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="159" cy="119" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="196" cy="72" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="129" cy="125" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="166" cy="78" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="99" cy="131" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><text x="410" y="30" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="15" fill="#5c4a33" font-weight="800">(나) 쇠구슬 30개</text><rect x="340" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/><rect x="388" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/><circle cx="369" cy="145" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="406" cy="98" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="443" cy="151" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="376" cy="104" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="413" cy="157" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="450" cy="110" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="383" cy="163" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="420" cy="116" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="457" cy="69" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="390" cy="122" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="427" cy="75" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="360" cy="128" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="397" cy="81" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="434" cy="134" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="367" cy="87" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="404" cy="140" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="441" cy="93" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="374" cy="146" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="411" cy="99" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="448" cy="152" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="381" cy="105" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="418" cy="158" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="455" cy="111" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="388" cy="164" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="425" cy="117" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="358" cy="70" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="395" cy="123" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="432" cy="76" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="365" cy="129" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="402" cy="82" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><text x="280" y="215" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#96805c">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">(가) — 쇠구슬 하나하나가 더 세게 부딪히기 때문</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">②</span><span class="qz-t">(나) — 쇠구슬이 벽에 부딪히는 횟수가 더 많기 때문</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">③</span><span class="qz-t">(나) — 쇠구슬이 더 빨라지기 때문</span></li><li><span class="qz-n">④</span><span class="qz-t">같다 — 흔드는 빠르기가 같기 때문</span></li><li><span class="qz-n">⑤</span><span class="qz-t">(가) — 쇠구슬이 더 자유롭게 움직이기 때문</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ② · 풀이</div><div class="qz-why-t">흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 <b>개수</b> — 30개면 벽에 부딪히는 <b>횟수가 많아</b> 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요.</div></div>
+  </div>
+</section>
+<!-- ═══ 93_quiz3.html ═══ -->
+<section class="slide" id="d2_93_quiz3" data-tile="light" data-title="문제 3" data-notes="" data-say="기체의 압력이 모든 방향으로 작용함을 입자 운동과 연결하는지 확인한다. 정답 ③. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 입자는 위·아래·옆 가리지 않고 날아다니며 네 벽을 모두 두드립니다. 그래서 기체의 압력은 모든 방향 으로 작용해요. 튜브가 사방으로 부풀어 오르는 것이 그 증거입니다.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 3</b> / 4 <span class="qz-lv">기본</span></div>
+    <div class="qz-stem" data-in="150">그림은 상자 속 기체 입자의 움직임을 나타낸 것이다. 기체의 압력이 작용하는 방향에 대한 설명으로 옳은 것은?</div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 252" role="img" aria-label="상자 속 기체 입자들이 저마다 다른 방향으로 날아다니고, 위·아래·왼쪽·오른쪽 네 벽을 미는 빨간 화살표가 모두 그려져 있다."><rect x="150" y="40" width="260" height="150" rx="8" fill="#f7f3e8" stroke="#8a6a3a" stroke-width="2.5"/><circle cx="200" cy="80" r="7" fill="#3a7a3f"/><line x1="206.6" y1="84.5" x2="219.8" y2="93.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="224.8,96.9 213.8,93.8 217.9,87.9" fill="#2f6ea8"/><circle cx="330" cy="70" r="7" fill="#3a7a3f"/><line x1="324.1" y1="75.4" x2="312.3" y2="86.2" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="307.9,90.3 313.4,80.3 318.3,85.6" fill="#2f6ea8"/><circle cx="250" cy="140" r="7" fill="#3a7a3f"/><line x1="252.9" y1="132.5" x2="258.7" y2="117.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="260.9,112.0 260.3,123.4 253.6,120.8" fill="#2f6ea8"/><circle cx="360" cy="150" r="7" fill="#3a7a3f"/><line x1="352.8" y1="146.5" x2="338.5" y2="139.4" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="333.1,136.7 344.4,138.3 341.2,144.7" fill="#2f6ea8"/><circle cx="300" cy="105" r="7" fill="#3a7a3f"/><line x1="293.1" y1="100.9" x2="279.4" y2="92.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="274.3,89.5 285.4,92.0 281.7,98.2" fill="#2f6ea8"/><circle cx="215" cy="165" r="7" fill="#3a7a3f"/><line x1="212.4" y1="172.6" x2="207.2" y2="187.7" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="205.3,193.4 205.4,182.0 212.2,184.3" fill="#2f6ea8"/><line x1="280.0" y1="40.0" x2="280.0" y2="18.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="280.0,10.0 284.8,24.4 275.2,24.4" fill="#b23a30"/><line x1="280.0" y1="190.0" x2="280.0" y2="212.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="280.0,220.0 275.2,205.6 284.8,205.6" fill="#b23a30"/><line x1="150.0" y1="115.0" x2="128.0" y2="115.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="120.0,115.0 134.4,110.2 134.4,119.8" fill="#b23a30"/><line x1="410.0" y1="115.0" x2="432.0" y2="115.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="440.0,115.0 425.6,119.8 425.6,110.2" fill="#b23a30"/><text x="280" y="238" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">입자가 사방으로 날아다니며 네 벽을 모두 두드린다 → 압력은 모든 방향</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">압력은 상자의 옆면에만 작용한다.</span></li><li><span class="qz-n">②</span><span class="qz-t">입자가 부딪히는 순간에만 한 방향으로 작용한다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">③</span><span class="qz-t">입자가 사방으로 날아다니므로 압력은 모든 방향으로 작용한다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">④</span><span class="qz-t">기체는 무거우므로 압력은 아래쪽으로만 작용한다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">입자가 위로 떠오르므로 압력은 위쪽으로만 작용한다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ③ · 풀이</div><div class="qz-why-t">입자는 위·아래·옆 가리지 않고 날아다니며 <b>네 벽을 모두</b> 두드립니다. 그래서 기체의 압력은 <b>모든 방향</b>으로 작용해요. 튜브가 사방으로 부풀어 오르는 것이 그 증거입니다.</div></div>
+  </div>
+</section>
+<!-- ═══ 94_quiz4.html ═══ -->
+<section class="slide" id="d2_94_quiz4" data-tile="parchment" data-title="문제 4" data-notes="" data-say="축구공에 공기를 넣을 때 입자에게 일어나는 일(수 증가, 빠르기 불변)을 아는지 확인한다. 정답 ④. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 공기를 넣는다는 것은 입자를 더 넣는 것 입니다. 입자 수가 늘어 충돌이 잦아지고 압력이 커져 공이 단단해져요. 온도를 바꾼 게 아니니 입자의 빠르기는 그대로이고, 입자의 크기가 변하거나 서로 달라붙는 일도 없습니다.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 4</b> / 4 <span class="qz-lv">중간</span></div>
+    <div class="qz-stem" data-in="150">찌그러진 축구공에 펌프로 공기를 넣었더니 공이 단단해졌다. 공 속 기체 입자에게 일어난 일로 옳은 것은?</div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 262" role="img" aria-label="찌그러진 축구공에 펌프로 공기를 넣기 전과 뒤의 입자 모습"><rect width="560" height="262" fill="#fdfbf6"/><path d="M80 140 q0 -60 60 -60 q50 0 60 40 q-30 10 -25 45 q-45 25 -95 -25z" fill="#efe6d3" stroke="#5c4a33" stroke-width="2.4"/><circle cx="115" cy="125" r="5" fill="#3a7a3f"/><circle cx="140" cy="110" r="5" fill="#3a7a3f"/><circle cx="160" cy="140" r="5" fill="#3a7a3f"/><circle cx="120" cy="150" r="5" fill="#3a7a3f"/><path d="M120.4 120.5 L126.5 115.4" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M124.7 120.0 L126.5 115.4 L121.6 116.3" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M133.4 112.4 L125.9 115.1" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M129.2 111.4 L125.9 115.1 L130.8 115.9" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M163.5 146.1 L167.5 153.0" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M163.2 150.4 L167.5 153.0 L167.4 148.0" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M116.5 143.9 L112.5 137.0" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M116.8 139.6 L112.5 137.0 L112.6 142.0" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="140" y="218" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(가) 찌그러진 공</text><path d="M258.0 130.0 L302.0 130.0" stroke="#2e2315" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M294.1 134.3 L302.0 130.0 L294.1 125.7" stroke="#2e2315" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="262" y="60" width="36" height="46" rx="4" fill="#efe6d3" stroke="#5c4a33" stroke-width="2"/><rect x="276" y="40" width="8" height="22" fill="#5c4a33"/><rect x="266" y="34" width="28" height="8" rx="3" fill="#5c4a33"/><path d="M280.0 22.0 L280.0 32.0" stroke="#b23a30" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M277.1 26.7 L280.0 32.0 L282.9 26.7" stroke="#b23a30" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M298 100 q40 0 60 30" fill="none" stroke="#5c4a33" stroke-width="3" stroke-linecap="round"/><text x="280" y="122" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="11" fill="#5c4a33" font-weight="400">펌프</text><circle cx="430" cy="130" r="66" fill="#efe6d3" stroke="#5c4a33" stroke-width="2.4"/><circle cx="400" cy="105" r="5" fill="#3a7a3f"/><circle cx="440" cy="95" r="5" fill="#3a7a3f"/><circle cx="470" cy="120" r="5" fill="#3a7a3f"/><circle cx="395" cy="140" r="5" fill="#3a7a3f"/><circle cx="430" cy="135" r="5" fill="#3a7a3f"/><circle cx="460" cy="160" r="5" fill="#3a7a3f"/><circle cx="410" cy="170" r="5" fill="#3a7a3f"/><circle cx="445" cy="180" r="5" fill="#3a7a3f"/><circle cx="480" cy="145" r="5" fill="#3a7a3f"/><circle cx="385" cy="118" r="5" fill="#3a7a3f"/><path d="M406.1 101.5 L413.0 97.5" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M410.4 101.8 L413.0 97.5 L408.0 97.6" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M433.9 91.5 L427.0 87.5" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M432.0 87.6 L427.0 87.5 L429.6 91.8" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M468.8 126.9 L467.4 134.8" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M465.8 130.0 L467.4 134.8 L470.5 130.9" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M397.4 133.4 L400.1 125.9" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M400.9 130.8 L400.1 125.9 L396.4 129.2" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M433.5 141.1 L437.5 148.0" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M433.2 145.4 L437.5 148.0 L437.4 143.0" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M453.1 161.2 L445.2 162.6" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M449.1 159.5 L445.2 162.6 L450.0 164.2" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M407.6 163.4 L404.9 155.9" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M408.6 159.2 L404.9 155.9 L404.1 160.8" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M451.1 183.5 L458.0 187.5" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M453.0 187.4 L458.0 187.5 L455.4 183.2" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M474.6 149.5 L468.5 154.6" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M470.3 150.0 L468.5 154.6 L473.4 153.7" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M390.4 113.5 L396.5 108.4" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M394.7 113.0 L396.5 108.4 L391.6 109.3" stroke="#3a7a3f" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="430" y="218" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(나) 공기를 넣은 뒤</text><text x="280" y="250" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c" font-weight="400">입자 수가 늘어 벽에 부딪히는 횟수가 늘었다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">입자 하나하나의 크기가 커져 공을 채웠다.</span></li><li><span class="qz-n">②</span><span class="qz-t">입자들이 서로 달라붙어 단단한 덩어리가 되었다.</span></li><li><span class="qz-n">③</span><span class="qz-t">입자들이 모두 공의 안쪽 벽에 달라붙었다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">④</span><span class="qz-t">입자의 수가 늘어나 벽에 충돌하는 횟수가 많아졌다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">⑤</span><span class="qz-t">입자 하나하나가 더 빨라져 세게 부딪히게 되었다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ④ · 풀이</div><div class="qz-why-t">공기를 넣는다는 것은 <b>입자를 더 넣는 것</b>입니다. 입자 수가 늘어 충돌이 잦아지고 압력이 커져 공이 단단해져요. 온도를 바꾼 게 아니니 입자의 빠르기는 그대로이고, 입자의 크기가 변하거나 서로 달라붙는 일도 없습니다.</div></div>
+  </div>
 </section>
 <div id="gridov"></div>
 </div></div>
@@ -1741,6 +1839,182 @@ try{
 })();
 
 }catch(e){console.error("[object 10_gas.js]",e)}
+/* ── 90_quiz.js ── */
+try{
+/* objects/90_quiz.js — 문제 장면 도우미: 글이 넘치면 배율(--qz)을 줄여 한 화면에 맞춘다 */
+window.QZ = {
+  // 등장 효과(translate)는 scrollHeight 를 부풀리므로, 자식들의 실제 높이(offsetHeight, 변형 무시) 합으로 잰다
+  need(b) {
+    const kids = [...b.children], gap = parseFloat(getComputedStyle(b).rowGap) || 0;
+    return kids.reduce((a, e) => a + e.offsetHeight, 0) + gap * Math.max(0, kids.length - 1);
+  },
+  fit(c) {
+    const b = c.$('.qz-body'); if (!b) return;
+    let s = 1; b.style.setProperty('--qz', '1');
+    for (let i = 0; i < 8 && QZ.need(b) > b.clientHeight; i++) { s -= 0.05; b.style.setProperty('--qz', s.toFixed(2)); }
+  },
+};
+
+}catch(e){console.error("[object 90_quiz.js]",e)}
+/* ── 91_recap.js ── */
+try{
+/* ═══════════════════════════════════════════════════════════════
+   objects/91_recap.js — «오늘 배운 것» 핵심 낱말 빈칸 + 낱말에 어울리는 모션그래픽
+   · 마크업: RK.b('척력', 'push', 2)  → 빈칸(밑줄만, 낱말은 숨김). 세 번째 값 = 채워지는 단계(k)
+   · 장면 go(c, k) 에서 RK.fill(c, k) → 그 단계의 빈칸이 차례로(시차 ms) 모션그래픽과 함께 채워진다
+   · 순간 모드(되돌리기·건너뛰기)에서는 c.a/c.wait 가 곧장 끝 상태 → 낱말만 보이고 효과는 사라진 상태
+   종류(kind): electron · pos · neg · push · pull · spark · rub · flow · volt · zigzag · line · curve · press · hits
+              · grow · shrink · up · down · glow · equal · pop(기본)
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  const SND = { electron: 'zip', pos: 'pop', neg: 'pop', push: 'whoosh', pull: 'whoosh', spark: 'spark', rub: 'zip', flow: 'slide', volt: 'rise',
+    zigzag: 'scan', line: 'scan', curve: 'scan', press: 'thunk', hits: 'tick', grow: 'rise', shrink: 'pop', up: 'rise', down: 'pop', glow: 'ding', equal: 'step', pop: 'pop' };
+  const R = window.RK = {
+    /** 빈칸 하나(문자열). word 는 HTML 가능(색 span 등). cls 로 색(c-neg 등)을 줄 수 있다 */
+    b(word, kind, step, cls) {
+      return `<span class="rk${cls ? ' ' + cls : ''}" data-rk="${step}" data-kind="${kind || 'pop'}"><span class="rk-w">${word}</span><span class="rk-fx" aria-hidden="true"></span></span>`;
+    },
+    /** k 단계 빈칸 채우기. gap = 낱말 사이 시차(ms) */
+    async fill(c, k, gap = 520) {
+      const els = c.$$(`.rk[data-rk="${k}"]`);
+      for (let i = 0; i < els.length; i++) {
+        if (i) await c.wait(gap);
+        R.play(c, els[i]);
+      }
+      await c.wait(700);
+    },
+    play(c, el) {
+      const kind = el.dataset.kind || 'pop', w = el.querySelector('.rk-w'), fx = el.querySelector('.rk-fx');
+      el.classList.add('on');
+      c.sfx(SND[kind] || 'pop');
+      const f = R.K[kind] || R.K.pop;
+      fx.innerHTML = '';
+      const d = f(c, el, fx, w) || 0;
+      c.a(w, [{ opacity: 0, transform: 'scale(.6)', filter: 'blur(6px)' }, { opacity: 1, transform: 'scale(1)', filter: 'blur(0px)' }], { dur: 520, delay: d, ease: 'spring' });
+      c.a(fx, [{ opacity: 1 }, { opacity: 0 }], { dur: 500, delay: d + 650 });
+    },
+    /* 작은 도우미: fx 안에 요소 하나 */
+    el(fx, html, css) { const s = document.createElement('span'); s.className = 'rk-p'; s.innerHTML = html || ''; Object.assign(s.style, css || {}); fx.appendChild(s); return s; },
+    svg(fx, w, h, inner, css) { return R.el(fx, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block">${inner}</svg>`, css); },
+    arrow(x1, y1, x2, y2, col, sw = 6) {
+      const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, hd = 16, bx = x2 - ux * hd, by = y2 - uy * hd;
+      return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round"/><polygon points="${x2},${y2} ${bx - uy * 9},${by + ux * 9} ${bx + uy * 9},${by - ux * 9}" fill="${col}"/>`;
+    },
+  };
+  const W = el => el.offsetWidth, H = el => el.offsetHeight;
+  R.K = {
+    pop(c, el, fx) { const s = R.el(fx, '', { inset: '-8px -14px', border: '3px solid var(--act)', borderRadius: '12px' }); c.a(s, [{ opacity: 0, transform: 'scale(1.4)' }, { opacity: 1, transform: 'scale(1)' }], { dur: 380 }); return 120; },
+    electron(c, el, fx) {
+      const e = R.el(fx, '<span>−</span>', { left: '50%', top: '50%', width: '34px', height: '34px', margin: '-17px 0 0 -17px', borderRadius: '50%', background: 'var(--elec)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '26px', lineHeight: '1' });
+      c.a(e, [{ transform: 'translate(-260px,-120px) scale(.6)', opacity: 0 }, { transform: 'translate(-120px,-90px) scale(.9)', opacity: 1, offset: .35 }, { transform: 'translate(0,0) scale(1.2)', opacity: 1, offset: .85 }, { transform: 'translate(0,0) scale(.2)', opacity: 0 }], { dur: 900, ease: 'inOut' });
+      return 700;
+    },
+    pos(c, el, fx) { return R.K._chg(c, fx, '+', 'var(--heat)'); },
+    neg(c, el, fx) { return R.K._chg(c, fx, '−', 'var(--elec)'); },
+    _chg(c, fx, sym, col) {
+      const e = R.el(fx, sym, { left: '50%', top: '50%', width: '64px', height: '64px', margin: '-32px 0 0 -32px', borderRadius: '50%', border: `4px solid ${col}`, color: col, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '40px', lineHeight: '1', background: 'color-mix(in srgb, currentColor 14%, transparent)' });
+      c.a(e, [{ transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1, offset: .5 }, { transform: 'scale(1)', opacity: 1, offset: .75 }, { transform: 'scale(.3)', opacity: 0 }], { dur: 900, ease: 'out' });
+      return 620;
+    },
+    push(c, el, fx) {   // 낱말 위에서 두 화살표가 가운데에서 바깥으로
+      const s = R.svg(fx, 170, 30, R.arrow(78, 15, 6, 15, 'var(--sound)') + R.arrow(92, 15, 164, 15, 'var(--sound)'), { left: '50%', bottom: '100%', marginLeft: '-85px', marginBottom: '2px' });
+            c.a(s, [{ transform: 'scaleX(.2)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }], { dur: 520, ease: 'out' });
+      return 260;
+    },
+    pull(c, el, fx) {   // 낱말 위에서 두 화살표가 바깥에서 가운데로
+      const s = R.svg(fx, 170, 30, R.arrow(4, 15, 76, 15, 'var(--sound)') + R.arrow(166, 15, 94, 15, 'var(--sound)'), { left: '50%', bottom: '100%', marginLeft: '-85px', marginBottom: '2px' });
+      c.a(s, [{ transform: 'scaleX(1.8)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }], { dur: 560, ease: 'inOut' });
+      return 380;
+    },
+    spark(c, el, fx) {
+      let g = ''; for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5, r1 = 26, r2 = 54; g += `<line x1="${60 + Math.cos(a) * r1}" y1="${60 + Math.sin(a) * r1}" x2="${60 + Math.cos(a) * r2}" y2="${60 + Math.sin(a) * r2}" stroke="${i % 2 ? 'var(--light)' : 'var(--elec)'}" stroke-width="5" stroke-linecap="round"/>`; }
+      const s = R.svg(fx, 120, 120, g, { left: '50%', top: '50%', margin: '-60px 0 0 -60px' });
+      c.a(s, [{ transform: 'scale(.3) rotate(-20deg)', opacity: 0 }, { transform: 'scale(1.3) rotate(10deg)', opacity: 1, offset: .5 }, { transform: 'scale(1.6) rotate(20deg)', opacity: 0 }], { dur: 700, ease: 'out' });
+      return 260;
+    },
+    rub(c, el, fx) {
+      const s = R.svg(fx, 120, 24, '<path d="M4 6H116M14 18H106" stroke="var(--t2)" stroke-width="5" stroke-linecap="round"/>', { left: '50%', top: '-30px', marginLeft: '-60px' });
+      c.a(s, [{ transform: 'translateX(-30px)' }, { transform: 'translateX(30px)' }, { transform: 'translateX(-30px)' }, { transform: 'translateX(30px)' }, { transform: 'translateX(0)', opacity: 0 }], { dur: 720, ease: 'inOut' });
+      R.K.spark(c, el, fx);
+      return 520;
+    },
+    flow(c, el, fx) {
+      const s = R.el(fx, '›››', { left: '-40px', right: '-40px', bottom: '-30px', height: '30px', color: 'var(--light)', fontWeight: '800', fontSize: '34px', lineHeight: '30px', letterSpacing: '6px', overflow: 'hidden', whiteSpace: 'nowrap' });
+      c.a(s, [{ transform: 'translateX(-80px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1, offset: .4 }, { transform: 'translateX(80px)', opacity: 0 }], { dur: 900, ease: 'linear' });
+      return 300;
+    },
+    volt(c, el, fx) {
+      for (let i = 0; i < 3; i++) {
+        const r = R.el(fx, '', { left: '50%', top: '50%', width: '60px', height: '60px', margin: '-30px 0 0 -30px', borderRadius: '50%', border: '4px solid var(--kin)' });
+        c.a(r, [{ transform: 'scale(.4)', opacity: .9 }, { transform: 'scale(2.6)', opacity: 0 }], { dur: 800, delay: i * 180, ease: 'out' });
+      }
+      return 300;
+    },
+    zigzag(c, el, fx) {
+      const s = R.svg(fx, 160, 30, '<path d="M2 15H22L32 3L48 27L64 3L80 27L96 3L112 27L128 3L138 15H158" fill="none" stroke="var(--sound)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>', { left: '50%', bottom: '-34px', marginLeft: '-80px' });
+      c.a(s.querySelector('path'), [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 600, ease: 'inOut' });
+      return 380;
+    },
+    line(c, el, fx) {
+      const s = R.svg(fx, 90, 70, '<path d="M6 4V64H86" fill="none" stroke="var(--t3)" stroke-width="3"/><path d="M6 64L82 10" fill="none" stroke="var(--act)" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>', { left: '50%', bottom: '100%', marginLeft: '-45px', marginBottom: '4px' });
+      c.a(s.querySelectorAll('path')[1], [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 650, ease: 'inOut' });
+      return 420;
+    },
+    curve(c, el, fx) {
+      const s = R.svg(fx, 90, 70, '<path d="M6 4V64H86" fill="none" stroke="var(--t3)" stroke-width="3"/><path d="M12 8Q18 52 82 58" fill="none" stroke="var(--act)" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>', { left: '50%', bottom: '100%', marginLeft: '-45px', marginBottom: '4px' });
+      c.a(s.querySelectorAll('path')[1], [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 650, ease: 'inOut' });
+      return 420;
+    },
+    press(c, el, fx) {
+      const s = R.svg(fx, 120, 60, R.arrow(30, 0, 30, 50, 'var(--heat)', 6) + R.arrow(60, 0, 60, 50, 'var(--heat)', 6) + R.arrow(90, 0, 90, 50, 'var(--heat)', 6), { left: '50%', bottom: '100%', marginLeft: '-60px', marginBottom: '-6px' });
+      c.a(s, [{ transform: 'translateY(-40px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1, offset: .6 }, { transform: 'translateY(6px)', opacity: 1 }], { dur: 520, ease: 'in' });
+      c.a(el, [{ transform: 'translateY(0)' }, { transform: 'translateY(5px)', offset: .5 }, { transform: 'translateY(0)' }], { dur: 300, delay: 420 });
+      return 420;
+    },
+    hits(c, el, fx) {
+      const box = R.el(fx, '', { inset: '-12px -18px', border: '3px solid var(--t3)', borderRadius: '10px' });
+      for (let i = 0; i < 5; i++) {
+        const p = R.el(fx, '', { left: '50%', top: '50%', width: '14px', height: '14px', margin: '-7px 0 0 -7px', borderRadius: '50%', background: 'var(--kin)' });
+        const a = i * 1.26 + .4, dx = Math.cos(a) * (W(el) / 2 + 10), dy = Math.sin(a) * (H(el) / 2 + 6);
+        c.a(p, [{ transform: 'translate(0,0)' }, { transform: `translate(${dx}px,${dy}px)`, offset: .5 }, { transform: 'translate(0,0)', opacity: 0 }], { dur: 700, delay: i * 60, ease: 'linear' });
+      }
+      c.a(box, [{ opacity: 0 }, { opacity: 1, offset: .3 }, { opacity: 0 }], { dur: 900 });
+      return 420;
+    },
+    grow(c, el, fx) {
+      const b = R.el(fx, '', { inset: '-6px -10px', border: '3px dashed var(--light)', borderRadius: '12px' });
+      c.a(b, [{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1 }], { dur: 650, ease: 'out' });
+      return 300;
+    },
+    shrink(c, el, fx) {
+      const b = R.el(fx, '', { inset: '-6px -10px', border: '3px dashed var(--light)', borderRadius: '12px' });
+      c.a(b, [{ transform: 'scale(1.8)', opacity: 0 }, { transform: 'scale(.95)', opacity: 1 }], { dur: 650, ease: 'inOut' });
+      return 300;
+    },
+    up(c, el, fx) { return R.K._arr(c, fx, true); },
+    down(c, el, fx) { return R.K._arr(c, fx, false); },
+    _arr(c, fx, up) {
+      const s = R.svg(fx, 30, 60, up ? R.arrow(15, 58, 15, 4, 'var(--act)', 5) : R.arrow(15, 2, 15, 56, 'var(--act)', 5), { left: '100%', top: '50%', marginTop: '-30px', marginLeft: '8px' });
+      c.a(s, [{ transform: `translateY(${up ? 30 : -30}px)`, opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { dur: 520, ease: 'out' });
+      return 260;
+    },
+    glow(c, el, fx) {
+      const g = R.el(fx, '', { left: '50%', top: '50%', width: '200px', height: '200px', margin: '-100px 0 0 -100px', borderRadius: '50%', background: 'radial-gradient(circle, color-mix(in srgb, var(--light) 70%, transparent) 0%, transparent 65%)' });
+      c.a(g, [{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .5 }, { transform: 'scale(1.2)', opacity: 0 }], { dur: 1000, ease: 'out' });
+      return 300;
+    },
+    equal(c, el, fx) {
+      const a = R.el(fx, '', { left: '-30px', right: '-30px', top: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
+      const b = R.el(fx, '', { left: '-30px', right: '-30px', bottom: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
+      c.a(a, [{ transform: 'translateX(-60px) scaleX(.4)', opacity: 0 }, { transform: 'translateX(0) scaleX(1)', opacity: 1 }], { dur: 520, ease: 'out' });
+      c.a(b, [{ transform: 'translateX(60px) scaleX(.4)', opacity: 0 }, { transform: 'translateX(0) scaleX(1)', opacity: 1 }], { dur: 520, ease: 'out' });
+      return 260;
+    },
+  };
+})();
+
+}catch(e){console.error("[object 91_recap.js]",e)}
 </script>
 <script>
 /* ── 01_cover.html ── */
@@ -2167,22 +2441,83 @@ try{
 try{
 
 (function () {
+  const b = (w, kind, k, cls) => RK.b(w, kind, k, cls);
   const CARDS = [
-    ['기체의 압력', '<p>일정한 <b>면적</b>에 기체 입자가 <b>충돌</b>해서 가하는 힘</p>', '<div class="big"><span class="c-part">충돌</span> → <span class="c-press">압력</span></div>'],
-    ['압력의 방향', '<p>입자가 모든 방향으로 운동하므로 압력도 <b>모든 방향</b>으로 작용한다</p>', '<div class="big c-press">모든 방향</div>'],
-    ['입자 수', '<p>일정한 크기의 용기에서 입자가 많아지면 충돌이 잦아져 압력이 커진다</p>', '<div class="big" style="font-size:46px"><span class="c-part">입자 수 ↑</span> → <span class="c-press">압력 ↑</span></div>'],
+    ['기체의 압력', `<p>일정한 <b>${b('면적', 'grow', 1)}</b>에 기체 입자가 <b>${b('충돌', 'hits', 1)}</b>해서 가하는 힘</p>`, `<div class="big">${b('충돌', 'hits', 1, 'c-part')} → <span class="c-press">압력</span></div>`],
+    ['압력의 방향', `<p>입자가 모든 방향으로 운동하므로 압력도 <b>${b('모든 방향', 'spark', 2)}</b>으로 작용한다</p>`, '<div class="big c-press" data-step="2" data-delay="1200">모든 방향</div>'],
+    ['입자 수', `<p>일정한 크기의 용기에서 입자가 ${b('많아지면', 'grow', 3)} 충돌이 ${b('잦아져', 'hits', 3)} 압력이 커진다</p>`, `<div class="big" style="font-size:46px"><span class="c-part">입자 수 ↑</span> → <span class="c-press">압력 ${b('↑', 'up', 3)}</span></div>`],
   ];
   Deck.scene('d2_13_recap', {
     steps: 4,
     build(root) {
       root.querySelector('#d2_13_recap-cards').innerHTML = CARDS.map(([t, body, foot], i) =>
-        `<div class="rc" style="left:${120 + i * 570}px" data-step="${i + 1}" data-fx="up"><div class="no">${i + 1}</div><h3>${t}</h3>${body}${foot}</div>`).join('');
+        `<div class="rc" style="left:${120 + i * 570}px" data-in="${250 + i * 140}" data-fx="up"><div class="no">${i + 1}</div><h3>${t}</h3>${body}${foot}</div>`).join('');
     },
-    async go(c, k) { if (k === 4) c.sfx('chime'); },
+    async go(c, k) {
+      if (k === 4) await c.wait(600);
+      await RK.fill(c, k);
+      if (k === 4) c.sfx('chime', 300);
+    },
   });
 })();
 
 }catch(e){console.error("[slide 13_recap.html]",e)}
+/* ── 90_quiz0.html ── */
+try{
+
+(function () {
+  Deck.scene('d2_90_quiz0', { steps: 0, async enter(c) { c.sfx('whoosh', 300); } });
+})();
+
+}catch(e){console.error("[slide 90_quiz0.html]",e)}
+/* ── 91_quiz1.html ── */
+try{
+
+(function () {
+  Deck.scene('d2_91_quiz1', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 91_quiz1.html]",e)}
+/* ── 92_quiz2.html ── */
+try{
+
+(function () {
+  Deck.scene('d2_92_quiz2', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 92_quiz2.html]",e)}
+/* ── 93_quiz3.html ── */
+try{
+
+(function () {
+  Deck.scene('d2_93_quiz3', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 93_quiz3.html]",e)}
+/* ── 94_quiz4.html ── */
+try{
+
+(function () {
+  Deck.scene('d2_94_quiz4', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 94_quiz4.html]",e)}
 </script>
 </body>
 </html>

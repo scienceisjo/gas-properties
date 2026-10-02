@@ -223,6 +223,59 @@ html.student #notes{display:none!important}
 .slide[data-tile="black"],.slide[data-tile="dark"],.slide[data-tile="graphite"]{--flash:#f5f5f7}
 .gx-eq .f{color:var(--sound)} .gx-eq .a{color:var(--light)} .gx-eq .p{color:var(--heat)}
 
+/* ── 90_quiz.css ── */
+/* ── 문제로 확인하기(강의 끝 문제 풀이) — 수업 페이지 확인하기 문제를 옮긴 장면 ──
+   문제 → (한 번 누르면) 정답 표시 + 보기 ○/✗ + 풀이. 글이 넘치면 enter 에서 --qz 배율을 줄여 맞춘다. */
+.qz-body{position:absolute;left:120px;top:96px;width:1680px;height:930px;display:flex;flex-direction:column;gap:calc(22px * var(--qz,1));font-size:calc(1px * var(--qz,1))}
+.qz-body>*{flex-shrink:0}
+.qz-eb{display:flex;align-items:center;gap:14px;font-size:30em;font-weight:600;color:var(--t2);letter-spacing:.01em}
+.qz-eb b{color:var(--act);font-weight:700}
+.qz-lv{display:inline-flex;align-items:center;padding:2px 14px;border-radius:9999px;border:2px solid var(--hl);font-size:.86em;color:var(--t2)}
+.qz-stem{font-size:42em;font-weight:600;line-height:1.42;letter-spacing:-.015em}
+.qz-stem u{text-decoration-thickness:3px;text-underline-offset:6px}
+.qz-row{display:flex;gap:44px;align-items:flex-start;min-height:0}
+.qz-wide .qz-left{flex-basis:1080px}
+.qz-wide .qz-fig svg{max-height:calc(420px * var(--qz,1))}
+.qz-left{flex:0 0 760px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.qz-card{border-radius:18px;background:#f5f5f7}
+.slide[data-tile="parchment"] .qz-card{background:#fff}
+.qz-fig{padding:14px 18px}
+.qz-fig svg{display:block;width:100%;height:auto;max-height:calc(330px * var(--qz,1))}
+.qz-box{padding:16px 26px 18px}
+.qz-box-h{display:inline-block;font-size:24em;font-weight:700;color:var(--t2);border:2px solid var(--hl);border-radius:8px;padding:0 12px;margin-bottom:6px}
+.qz-box p{position:relative;font-size:30em;line-height:1.45;margin:6px 0;padding-right:58px}
+.qz-box p b{font-weight:700;margin-right:6px}
+.qz-v{position:absolute;right:0;top:0;font-weight:800;font-size:1.1em}
+.qz-v.ok{color:var(--act)} .qz-v.no{color:var(--heat)}
+.qz-ch{list-style:none;margin:0;padding:0;flex:1 1 0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.qz-ch li{position:relative;display:flex;align-items:flex-start;gap:16px;font-size:34em;line-height:1.38;padding:12px 150px 12px 20px;border-radius:14px}
+.qz-n{flex:none;font-weight:700;color:var(--t2)}
+.qz-t{min-width:0}
+.qz-hl{position:absolute;inset:0;border-radius:14px;border:3px solid var(--act);background:color-mix(in srgb, var(--act) 10%, transparent);pointer-events:none}
+.qz-ch li.ok .qz-n,.qz-ch li.ok .qz-t{position:relative}
+.qz-mark{position:absolute;right:18px;top:50%;margin-top:-.75em;font-size:.82em;font-weight:700;color:#fff;background:var(--act);border-radius:9999px;padding:3px 16px}
+.qz-why{margin-top:auto;padding:22px 30px 24px;border-left:6px solid var(--act)}
+.qz-why .qz-why-h{font-size:26em;font-weight:700;color:var(--act);margin-bottom:6px}
+.qz-why .qz-why-t{font-size:30em;line-height:1.5}
+.qz-why b{color:var(--act);font-weight:700}
+/* 문제 들어가기 장 */
+.qz-intro{position:absolute;left:0;top:0;width:1920px;height:1080px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;text-align:center}
+.qz-intro .qz-k{font-size:30px;font-weight:600;color:var(--t2);letter-spacing:.02em}
+.qz-intro h2{font-size:96px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.qz-intro .qz-dots{display:flex;gap:18px;margin-top:20px}
+.qz-intro .qz-dots span{display:flex;align-items:center;justify-content:center;width:84px;height:84px;border-radius:50%;border:3px solid var(--hl);font-size:36px;font-weight:700;color:var(--t2)}
+.qz-intro .qz-sub{font-size:30px;color:var(--t2)}
+
+/* ── 91_recap.css ── */
+/* ── «오늘 배운 것» 핵심 낱말 빈칸(번호 없음 — 학습지 빈칸과 다름) ── */
+.rk{position:relative;display:inline-block;margin:0 .06em;padding:0 .1em;border-bottom:3px solid #c7c7cc;line-height:1.2;vertical-align:baseline}
+.slide[data-tile="black"] .rk,.slide[data-tile="dark"] .rk,.slide[data-tile="graphite"] .rk{border-bottom-color:#48484a}
+.rk .rk-w{display:inline-block;opacity:0}
+.rk.on{border-bottom-color:transparent}
+.rk-fx{position:absolute;inset:0;pointer-events:none;z-index:2}
+.rk-p{position:absolute;display:block;pointer-events:none}
+.rk.on .rk-w{opacity:1}
+
 /* ── 07_table.html ── */
 
 #d3_07_table .cell{position:absolute;height:72px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:700;background:#fff;border-radius:12px;font-variant-numeric:tabular-nums}
@@ -469,11 +522,56 @@ html.student #notes{display:none!important}
   <div class="abs mute" style="left:120px;top:790px;width:1680px;font-size:30px;line-height:1.5" data-in="700">예시 문장이에요. 「부피가 줄면 입자가 빨라져서」는 틀린 설명 — 입자의 빠르기는 그대로!</div>
 </section>
 <!-- ═══ 12_recap.html ═══ -->
-<section class="slide" id="d3_12_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P12" data-say="마지막 줄로 「생활에서 찾기」 첫 줄(⑲ 낮아진다 · ⑳ 커진다)의 과자 봉지를 되받습니다. 온도 이야기는 다음 시간이에요.">
+<section class="slide" id="d3_12_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P12" data-say="핵심 낱말이 빈칸으로 나옵니다 — 학생이 먼저 말하게 한 뒤 누를 때마다 카드 한 장씩 채워져요. 마지막 줄로 「생활에서 찾기」 첫 줄(⑲ 낮아진다 · ⑳ 커진다)의 과자 봉지를 되받습니다. 온도 이야기는 다음 시간이에요.">
   <div class="hd" data-in><div class="eb">정리</div><h2>오늘 배운 것</h2></div>
   <div id="d3_12_recap-cards"></div>
-  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">산 위 과자 봉지가 부푼 까닭 — 바깥 <span class="c-press">압력</span>이 낮아졌기 때문이다</div>
-  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-02</div>
+  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">산 위 과자 봉지가 부푼 까닭 — 바깥 <span class="c-press">압력</span>이 <span class="rk" data-rk="4" data-kind="down"><span class="rk-w">낮아졌기</span><span class="rk-fx" aria-hidden="true"></span></span> 때문이다</div>
+  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-03</div>
+</section>
+<!-- ═══ 90_quiz0.html ═══ -->
+<section class="slide" id="d3_90_quiz0" data-tile="black" data-title="문제로 확인하기" data-notes="" data-say="수업 페이지 확인하기에서 고른 4문제입니다. 문제마다 먼저 풀어 보게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다.">
+  <div class="qz-intro">
+    <div class="qz-k" data-in>압력과 부피</div>
+    <h2 data-in="200" data-fx="blur">문제로 확인하기</h2>
+    <div class="qz-dots" data-in="500" data-fx="up"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+    <div class="qz-sub" data-in="700">오늘 배운 내용으로 4문제를 풀어 봅시다</div>
+  </div>
+</section>
+<!-- ═══ 91_quiz1.html ═══ -->
+<section class="slide" id="d3_91_quiz1" data-tile="light" data-title="문제 1" data-notes="" data-say="온도가 일정할 때 압력을 높이면 부피가 줄어드는 것을, 입자 수·크기·빠르기 변화 오개념과 구별하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 압력을 크게 하면 부피가 작아집니다 — 입자 사이의 거리가 좁아질 뿐, 입자의 수·크기는 그대로예요. 빠르기를 바꾸는 것은 온도인데 온도는 일정하니 빠르기도 그대로입니다.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 1</b> / 4 <span class="qz-lv">기본</span></div>
+    <div class="qz-stem" data-in="150">온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 일어나는 일로 옳은 것은?</div>
+    <div class="qz-row" data-in="350"><ol class="qz-ch"><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">①</span><span class="qz-t">기체의 부피가 작아진다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">②</span><span class="qz-t">기체 입자의 수가 줄어든다.</span></li><li><span class="qz-n">③</span><span class="qz-t">기체 입자 하나하나가 작아진다.</span></li><li><span class="qz-n">④</span><span class="qz-t">기체 입자가 더 빨라진다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">기체 입자 사이의 거리는 변하지 않는다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ① · 풀이</div><div class="qz-why-t">압력을 크게 하면 <b>부피가 작아집니다</b> — 입자 사이의 거리가 좁아질 뿐, 입자의 수·크기는 그대로예요. 빠르기를 바꾸는 것은 온도인데 온도는 일정하니 빠르기도 그대로입니다.</div></div>
+  </div>
+</section>
+<!-- ═══ 92_quiz2.html ═══ -->
+<section class="slide" id="d3_92_quiz2" data-tile="parchment" data-title="문제 2" data-notes="" data-say="부피가 줄 때 압력이 커지는 까닭을 입자 사이 거리와 충돌 횟수로 설명하고 빠르기 불변을 아는지 확인한다. 정답 ③. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 공간이 좁아지면 같은 수의 입자 가 벽까지 갈 거리가 짧아져 더 자주 충돌 합니다 — 그래서 압력이 커져요. 온도가 그대로이니 빠르기는 변하지 않고, 입자의 수·크기도 변하지 않습니다.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 2</b> / 4 <span class="qz-lv">중간</span></div>
+    <div class="qz-stem" data-in="150">그림은 온도를 일정하게 하고 피스톤을 눌러 기체의 부피를 줄인 모습이다. (나)에서 기체 입자에게 일어난 일로 옳은 것은?</div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 262" role="img" aria-label="(가) 피스톤을 누르기 전 넓은 공간에 입자 12개. (나) 피스톤을 누른 뒤 좁아진 공간에 같은 입자 12개."><rect x="60" y="50" width="170" height="150" fill="#f7f3e8" stroke="#8a6a3a" stroke-width="2.5"/><rect x="60" y="40" width="170" height="10" fill="#c9702a"/><rect x="140" y="6" width="10" height="34" fill="#c9702a"/><circle cx="80" cy="80" r="6" fill="#3a7a3f"/><circle cx="130" cy="66" r="6" fill="#3a7a3f"/><circle cx="180" cy="88" r="6" fill="#3a7a3f"/><circle cx="210" cy="70" r="6" fill="#3a7a3f"/><circle cx="95" cy="120" r="6" fill="#3a7a3f"/><circle cx="150" cy="105" r="6" fill="#3a7a3f"/><circle cx="205" cy="125" r="6" fill="#3a7a3f"/><circle cx="75" cy="160" r="6" fill="#3a7a3f"/><circle cx="120" cy="145" r="6" fill="#3a7a3f"/><circle cx="170" cy="150" r="6" fill="#3a7a3f"/><circle cx="210" cy="175" r="6" fill="#3a7a3f"/><circle cx="100" cy="185" r="6" fill="#3a7a3f"/><text x="145" y="228" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(가) 누르기 전</text><rect x="330" y="116" width="170" height="84" fill="#f7f3e8" stroke="#8a6a3a" stroke-width="2.5"/><rect x="330" y="106" width="170" height="10" fill="#c9702a"/><rect x="410" y="72" width="10" height="34" fill="#c9702a"/><circle cx="350" cy="138" r="6" fill="#3a7a3f"/><circle cx="374" cy="130" r="6" fill="#3a7a3f"/><circle cx="398" cy="142" r="6" fill="#3a7a3f"/><circle cx="424" cy="132" r="6" fill="#3a7a3f"/><circle cx="450" cy="140" r="6" fill="#3a7a3f"/><circle cx="476" cy="133" r="6" fill="#3a7a3f"/><circle cx="356" cy="166" r="6" fill="#3a7a3f"/><circle cx="382" cy="178" r="6" fill="#3a7a3f"/><circle cx="408" cy="162" r="6" fill="#3a7a3f"/><circle cx="434" cy="180" r="6" fill="#3a7a3f"/><circle cx="460" cy="164" r="6" fill="#3a7a3f"/><circle cx="482" cy="182" r="6" fill="#3a7a3f"/><text x="415" y="228" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(나) 피스톤을 누른 뒤</text><line x1="280.0" y1="120.0" x2="320.0" y2="120.0" stroke="#2e2315" stroke-width="2" stroke-linecap="round"/><polygon points="328.0,120.0 313.6,124.8 313.6,115.2" fill="#2e2315"/><text x="280" y="250" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c">※ 입자의 수(12개)와 온도는 같다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">입자 하나하나의 크기가 작아졌다.</span></li><li><span class="qz-n">②</span><span class="qz-t">입자들이 바닥에 가라앉아 움직이지 않게 되었다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">③</span><span class="qz-t">입자 사이의 거리가 좁아져 같은 시간 동안 벽에 더 자주 충돌한다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">④</span><span class="qz-t">입자가 눌려서 더 빨리 움직이게 되었다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">입자의 수가 줄어들었다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ③ · 풀이</div><div class="qz-why-t">공간이 좁아지면 <b>같은 수의 입자</b>가 벽까지 갈 거리가 짧아져 <b>더 자주 충돌</b>합니다 — 그래서 압력이 커져요. 온도가 그대로이니 빠르기는 변하지 않고, 입자의 수·크기도 변하지 않습니다.</div></div>
+  </div>
+</section>
+<!-- ═══ 93_quiz3.html ═══ -->
+<section class="slide" id="d3_93_quiz3" data-tile="light" data-title="문제 3" data-notes="" data-say="산 위에서 봉지가 부푸는 현상을 기압 감소와 부피 증가로 설명하는지 확인한다. 정답 ④. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 높이 올라갈수록 공기가 적어 기압이 낮아집니다 . 봉지를 바깥에서 누르던 힘이 약해지니 속 기체의 부피가 커져 부풀어요. 봉지는 밀봉되어 있어 입자가 드나들지 않고, 산 위는 오히려 춥습니다.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 3</b> / 4 <span class="qz-lv">중간</span></div>
+    <div class="qz-stem" data-in="150">높은 산에 올라가면 과자 봉지가 빵빵하게 부풀어 오른다. 그 까닭으로 옳은 것은?</div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 262" role="img" aria-label="산 아래와 산 위에서 과자 봉지의 크기 비교. 산 위에서는 바깥 공기의 압력이 낮다"><rect width="560" height="262" fill="#fdfbf6"/><path d="M20 230 L150 70 L260 230 Z" fill="#c9d6b5" stroke="#5c4a33" stroke-width="2"/><path d="M290 230 L420 90 L540 230 Z" fill="#c9d6b5" stroke="#5c4a33" stroke-width="2"/><line x1="10" y1="230" x2="550" y2="230" stroke="#5c4a33" stroke-width="2.4"/><rect x="62" y="176" width="52" height="44" rx="8" fill="#f0d9a6" stroke="#5c4a33" stroke-width="2.2"/><circle cx="78" cy="190" r="4" fill="#3a7a3f"/><circle cx="98" cy="186" r="4" fill="#3a7a3f"/><circle cx="88" cy="204" r="4" fill="#3a7a3f"/><circle cx="104" cy="208" r="4" fill="#3a7a3f"/><circle cx="72" cy="208" r="4" fill="#3a7a3f"/><path d="M88.0 178.0 L88.0 168.0" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M90.9 173.3 L88.0 168.0 L85.1 173.3" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M46.0 198.0 L56.0 198.0" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M50.7 200.9 L56.0 198.0 L50.7 195.1" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M130.0 198.0 L120.0 198.0" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M125.3 195.1 L120.0 198.0 L125.3 200.9" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M88.0 218.0 L88.0 228.0" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M85.1 222.7 L88.0 228.0 L90.9 222.7" stroke="#7d5ba6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="88" y="160" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#2e2315" font-weight="800">(가) 산 아래 — 공기가 세게 누른다</text><rect x="380" y="100" width="80" height="64" rx="12" fill="#f0d9a6" stroke="#5c4a33" stroke-width="2.2"/><circle cx="398" cy="116" r="4" fill="#3a7a3f"/><circle cx="432" cy="112" r="4" fill="#3a7a3f"/><circle cx="448" cy="134" r="4" fill="#3a7a3f"/><circle cx="400" cy="142" r="4" fill="#3a7a3f"/><circle cx="424" cy="150" r="4" fill="#3a7a3f"/><circle cx="416" cy="128" r="4" fill="#3a7a3f"/><path d="M420.0 98.0 L420.0 92.0" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M422.4 96.4 L420.0 92.0 L417.6 96.4" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M366.0 132.0 L372.0 132.0" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M367.6 134.4 L372.0 132.0 L367.6 129.6" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M474.0 132.0 L468.0 132.0" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M472.4 129.6 L468.0 132.0 L472.4 134.4" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M420.0 166.0 L420.0 172.0" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M417.6 167.6 L420.0 172.0 L422.4 167.6" stroke="#7d5ba6" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="420" y="84" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#2e2315" font-weight="800">(나) 산 위 — 누르는 공기가 약하다</text><text x="280" y="254" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c" font-weight="400">봉지 속 입자 수는 같다 — 바깥 압력이 달라졌다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">산 위에서는 봉지 속 기체 입자의 수가 늘어나기 때문이다.</span></li><li><span class="qz-n">②</span><span class="qz-t">산 위에서는 봉지 속 기체 입자가 더 빨라지기 때문이다.</span></li><li><span class="qz-n">③</span><span class="qz-t">산 위의 공기가 봉지 안으로 새어 들어오기 때문이다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">④</span><span class="qz-t">산 위는 공기의 압력이 낮아 봉지를 누르는 힘이 약해져 봉지 속 기체의 부피가 커지기 때문이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">⑤</span><span class="qz-t">산 위는 기온이 높아 봉지 속 기체가 데워지기 때문이다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ④ · 풀이</div><div class="qz-why-t">높이 올라갈수록 공기가 적어 <b>기압이 낮아집니다</b>. 봉지를 바깥에서 누르던 힘이 약해지니 속 기체의 <b>부피가 커져</b> 부풀어요. 봉지는 밀봉되어 있어 입자가 드나들지 않고, 산 위는 오히려 춥습니다.</div></div>
+  </div>
+</section>
+<!-- ═══ 94_quiz4.html ═══ -->
+<section class="slide" id="d3_94_quiz4" data-tile="parchment" data-title="문제 4" data-notes="" data-say="표의 규칙(부피 절반 → 압력 2배)으로 빈칸을 추정하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 60 → 40 mL로 줄 때 0.67 → 1.0기압, 40 → 20 mL로 절반 이 되면 압력은 2배 인 2.0기압 이 됩니다. 부피가 줄어드는 만큼 압력이 커지는 규칙이 표 전체에 이어져 있어요.">
+  <div class="qz-body">
+    <div class="qz-eb" data-in><b>문제 4</b> / 4 <span class="qz-lv">도전</span></div>
+    <div class="qz-stem" data-in="150">표는 온도가 일정할 때 주사기 속 공기의 부피를 바꾸며 압력을 잰 것이다. ㉠에 들어갈 값으로 가장 알맞은 것은?</div>
+    <div class="qz-row qz-wide" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 90" role="img" aria-label="부피 60·40·20 mL일 때 압력 0.67·1.0·㉠기압."><rect x="60" y="14" width="230" height="30" fill="#efe6d3" stroke="#c1ac82" stroke-width="1.4"/><text x="175.0" y="34.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315" font-weight="800">주사기 속 공기의 부피(mL)</text><rect x="290" y="14" width="70" height="30" fill="#efe6d3" stroke="#c1ac82" stroke-width="1.4"/><text x="325.0" y="34.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315" font-weight="800">60</text><rect x="360" y="14" width="70" height="30" fill="#efe6d3" stroke="#c1ac82" stroke-width="1.4"/><text x="395.0" y="34.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315" font-weight="800">40</text><rect x="430" y="14" width="70" height="30" fill="#efe6d3" stroke="#c1ac82" stroke-width="1.4"/><text x="465.0" y="34.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315" font-weight="800">20</text><rect x="60" y="44" width="230" height="30" fill="#efe6d3" stroke="#c1ac82" stroke-width="1.4"/><text x="175.0" y="64.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315" font-weight="800">압력 센서 값(기압)</text><rect x="290" y="44" width="70" height="30" fill="#fdfbf6" stroke="#c1ac82" stroke-width="1.4"/><text x="325.0" y="64.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315">0.67</text><rect x="360" y="44" width="70" height="30" fill="#fdfbf6" stroke="#c1ac82" stroke-width="1.4"/><text x="395.0" y="64.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315">1.0</text><rect x="430" y="44" width="70" height="30" fill="#fdfbf6" stroke="#c1ac82" stroke-width="1.4"/><text x="465.0" y="64.0" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13.5" fill="#2e2315">㉠</text></svg></div></div><ol class="qz-ch"><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">①</span><span class="qz-t">2.0</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">②</span><span class="qz-t">4.0</span></li><li><span class="qz-n">③</span><span class="qz-t">0.5</span></li><li><span class="qz-n">④</span><span class="qz-t">1.3</span></li><li><span class="qz-n">⑤</span><span class="qz-t">1.5</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ① · 풀이</div><div class="qz-why-t">60 → 40 mL로 줄 때 0.67 → 1.0기압, 40 → 20 mL로 <b>절반</b>이 되면 압력은 <b>2배</b>인 <b>2.0기압</b>이 됩니다. 부피가 줄어드는 만큼 압력이 커지는 규칙이 표 전체에 이어져 있어요.</div></div>
+  </div>
 </section>
 <div id="gridov"></div>
 </div></div>
@@ -1713,6 +1811,182 @@ try{
 })();
 
 }catch(e){console.error("[object 10_gas.js]",e)}
+/* ── 90_quiz.js ── */
+try{
+/* objects/90_quiz.js — 문제 장면 도우미: 글이 넘치면 배율(--qz)을 줄여 한 화면에 맞춘다 */
+window.QZ = {
+  // 등장 효과(translate)는 scrollHeight 를 부풀리므로, 자식들의 실제 높이(offsetHeight, 변형 무시) 합으로 잰다
+  need(b) {
+    const kids = [...b.children], gap = parseFloat(getComputedStyle(b).rowGap) || 0;
+    return kids.reduce((a, e) => a + e.offsetHeight, 0) + gap * Math.max(0, kids.length - 1);
+  },
+  fit(c) {
+    const b = c.$('.qz-body'); if (!b) return;
+    let s = 1; b.style.setProperty('--qz', '1');
+    for (let i = 0; i < 8 && QZ.need(b) > b.clientHeight; i++) { s -= 0.05; b.style.setProperty('--qz', s.toFixed(2)); }
+  },
+};
+
+}catch(e){console.error("[object 90_quiz.js]",e)}
+/* ── 91_recap.js ── */
+try{
+/* ═══════════════════════════════════════════════════════════════
+   objects/91_recap.js — «오늘 배운 것» 핵심 낱말 빈칸 + 낱말에 어울리는 모션그래픽
+   · 마크업: RK.b('척력', 'push', 2)  → 빈칸(밑줄만, 낱말은 숨김). 세 번째 값 = 채워지는 단계(k)
+   · 장면 go(c, k) 에서 RK.fill(c, k) → 그 단계의 빈칸이 차례로(시차 ms) 모션그래픽과 함께 채워진다
+   · 순간 모드(되돌리기·건너뛰기)에서는 c.a/c.wait 가 곧장 끝 상태 → 낱말만 보이고 효과는 사라진 상태
+   종류(kind): electron · pos · neg · push · pull · spark · rub · flow · volt · zigzag · line · curve · press · hits
+              · grow · shrink · up · down · glow · equal · pop(기본)
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  const SND = { electron: 'zip', pos: 'pop', neg: 'pop', push: 'whoosh', pull: 'whoosh', spark: 'spark', rub: 'zip', flow: 'slide', volt: 'rise',
+    zigzag: 'scan', line: 'scan', curve: 'scan', press: 'thunk', hits: 'tick', grow: 'rise', shrink: 'pop', up: 'rise', down: 'pop', glow: 'ding', equal: 'step', pop: 'pop' };
+  const R = window.RK = {
+    /** 빈칸 하나(문자열). word 는 HTML 가능(색 span 등). cls 로 색(c-neg 등)을 줄 수 있다 */
+    b(word, kind, step, cls) {
+      return `<span class="rk${cls ? ' ' + cls : ''}" data-rk="${step}" data-kind="${kind || 'pop'}"><span class="rk-w">${word}</span><span class="rk-fx" aria-hidden="true"></span></span>`;
+    },
+    /** k 단계 빈칸 채우기. gap = 낱말 사이 시차(ms) */
+    async fill(c, k, gap = 520) {
+      const els = c.$$(`.rk[data-rk="${k}"]`);
+      for (let i = 0; i < els.length; i++) {
+        if (i) await c.wait(gap);
+        R.play(c, els[i]);
+      }
+      await c.wait(700);
+    },
+    play(c, el) {
+      const kind = el.dataset.kind || 'pop', w = el.querySelector('.rk-w'), fx = el.querySelector('.rk-fx');
+      el.classList.add('on');
+      c.sfx(SND[kind] || 'pop');
+      const f = R.K[kind] || R.K.pop;
+      fx.innerHTML = '';
+      const d = f(c, el, fx, w) || 0;
+      c.a(w, [{ opacity: 0, transform: 'scale(.6)', filter: 'blur(6px)' }, { opacity: 1, transform: 'scale(1)', filter: 'blur(0px)' }], { dur: 520, delay: d, ease: 'spring' });
+      c.a(fx, [{ opacity: 1 }, { opacity: 0 }], { dur: 500, delay: d + 650 });
+    },
+    /* 작은 도우미: fx 안에 요소 하나 */
+    el(fx, html, css) { const s = document.createElement('span'); s.className = 'rk-p'; s.innerHTML = html || ''; Object.assign(s.style, css || {}); fx.appendChild(s); return s; },
+    svg(fx, w, h, inner, css) { return R.el(fx, `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:visible;display:block">${inner}</svg>`, css); },
+    arrow(x1, y1, x2, y2, col, sw = 6) {
+      const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, hd = 16, bx = x2 - ux * hd, by = y2 - uy * hd;
+      return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${col}" stroke-width="${sw}" stroke-linecap="round"/><polygon points="${x2},${y2} ${bx - uy * 9},${by + ux * 9} ${bx + uy * 9},${by - ux * 9}" fill="${col}"/>`;
+    },
+  };
+  const W = el => el.offsetWidth, H = el => el.offsetHeight;
+  R.K = {
+    pop(c, el, fx) { const s = R.el(fx, '', { inset: '-8px -14px', border: '3px solid var(--act)', borderRadius: '12px' }); c.a(s, [{ opacity: 0, transform: 'scale(1.4)' }, { opacity: 1, transform: 'scale(1)' }], { dur: 380 }); return 120; },
+    electron(c, el, fx) {
+      const e = R.el(fx, '<span>−</span>', { left: '50%', top: '50%', width: '34px', height: '34px', margin: '-17px 0 0 -17px', borderRadius: '50%', background: 'var(--elec)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '26px', lineHeight: '1' });
+      c.a(e, [{ transform: 'translate(-260px,-120px) scale(.6)', opacity: 0 }, { transform: 'translate(-120px,-90px) scale(.9)', opacity: 1, offset: .35 }, { transform: 'translate(0,0) scale(1.2)', opacity: 1, offset: .85 }, { transform: 'translate(0,0) scale(.2)', opacity: 0 }], { dur: 900, ease: 'inOut' });
+      return 700;
+    },
+    pos(c, el, fx) { return R.K._chg(c, fx, '+', 'var(--heat)'); },
+    neg(c, el, fx) { return R.K._chg(c, fx, '−', 'var(--elec)'); },
+    _chg(c, fx, sym, col) {
+      const e = R.el(fx, sym, { left: '50%', top: '50%', width: '64px', height: '64px', margin: '-32px 0 0 -32px', borderRadius: '50%', border: `4px solid ${col}`, color: col, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '40px', lineHeight: '1', background: 'color-mix(in srgb, currentColor 14%, transparent)' });
+      c.a(e, [{ transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1, offset: .5 }, { transform: 'scale(1)', opacity: 1, offset: .75 }, { transform: 'scale(.3)', opacity: 0 }], { dur: 900, ease: 'out' });
+      return 620;
+    },
+    push(c, el, fx) {   // 낱말 위에서 두 화살표가 가운데에서 바깥으로
+      const s = R.svg(fx, 170, 30, R.arrow(78, 15, 6, 15, 'var(--sound)') + R.arrow(92, 15, 164, 15, 'var(--sound)'), { left: '50%', bottom: '100%', marginLeft: '-85px', marginBottom: '2px' });
+            c.a(s, [{ transform: 'scaleX(.2)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }], { dur: 520, ease: 'out' });
+      return 260;
+    },
+    pull(c, el, fx) {   // 낱말 위에서 두 화살표가 바깥에서 가운데로
+      const s = R.svg(fx, 170, 30, R.arrow(4, 15, 76, 15, 'var(--sound)') + R.arrow(166, 15, 94, 15, 'var(--sound)'), { left: '50%', bottom: '100%', marginLeft: '-85px', marginBottom: '2px' });
+      c.a(s, [{ transform: 'scaleX(1.8)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }], { dur: 560, ease: 'inOut' });
+      return 380;
+    },
+    spark(c, el, fx) {
+      let g = ''; for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5, r1 = 26, r2 = 54; g += `<line x1="${60 + Math.cos(a) * r1}" y1="${60 + Math.sin(a) * r1}" x2="${60 + Math.cos(a) * r2}" y2="${60 + Math.sin(a) * r2}" stroke="${i % 2 ? 'var(--light)' : 'var(--elec)'}" stroke-width="5" stroke-linecap="round"/>`; }
+      const s = R.svg(fx, 120, 120, g, { left: '50%', top: '50%', margin: '-60px 0 0 -60px' });
+      c.a(s, [{ transform: 'scale(.3) rotate(-20deg)', opacity: 0 }, { transform: 'scale(1.3) rotate(10deg)', opacity: 1, offset: .5 }, { transform: 'scale(1.6) rotate(20deg)', opacity: 0 }], { dur: 700, ease: 'out' });
+      return 260;
+    },
+    rub(c, el, fx) {
+      const s = R.svg(fx, 120, 24, '<path d="M4 6H116M14 18H106" stroke="var(--t2)" stroke-width="5" stroke-linecap="round"/>', { left: '50%', top: '-30px', marginLeft: '-60px' });
+      c.a(s, [{ transform: 'translateX(-30px)' }, { transform: 'translateX(30px)' }, { transform: 'translateX(-30px)' }, { transform: 'translateX(30px)' }, { transform: 'translateX(0)', opacity: 0 }], { dur: 720, ease: 'inOut' });
+      R.K.spark(c, el, fx);
+      return 520;
+    },
+    flow(c, el, fx) {
+      const s = R.el(fx, '›››', { left: '-40px', right: '-40px', bottom: '-30px', height: '30px', color: 'var(--light)', fontWeight: '800', fontSize: '34px', lineHeight: '30px', letterSpacing: '6px', overflow: 'hidden', whiteSpace: 'nowrap' });
+      c.a(s, [{ transform: 'translateX(-80px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1, offset: .4 }, { transform: 'translateX(80px)', opacity: 0 }], { dur: 900, ease: 'linear' });
+      return 300;
+    },
+    volt(c, el, fx) {
+      for (let i = 0; i < 3; i++) {
+        const r = R.el(fx, '', { left: '50%', top: '50%', width: '60px', height: '60px', margin: '-30px 0 0 -30px', borderRadius: '50%', border: '4px solid var(--kin)' });
+        c.a(r, [{ transform: 'scale(.4)', opacity: .9 }, { transform: 'scale(2.6)', opacity: 0 }], { dur: 800, delay: i * 180, ease: 'out' });
+      }
+      return 300;
+    },
+    zigzag(c, el, fx) {
+      const s = R.svg(fx, 160, 30, '<path d="M2 15H22L32 3L48 27L64 3L80 27L96 3L112 27L128 3L138 15H158" fill="none" stroke="var(--sound)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>', { left: '50%', bottom: '-34px', marginLeft: '-80px' });
+      c.a(s.querySelector('path'), [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 600, ease: 'inOut' });
+      return 380;
+    },
+    line(c, el, fx) {
+      const s = R.svg(fx, 90, 70, '<path d="M6 4V64H86" fill="none" stroke="var(--t3)" stroke-width="3"/><path d="M6 64L82 10" fill="none" stroke="var(--act)" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>', { left: '50%', bottom: '100%', marginLeft: '-45px', marginBottom: '4px' });
+      c.a(s.querySelectorAll('path')[1], [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 650, ease: 'inOut' });
+      return 420;
+    },
+    curve(c, el, fx) {
+      const s = R.svg(fx, 90, 70, '<path d="M6 4V64H86" fill="none" stroke="var(--t3)" stroke-width="3"/><path d="M12 8Q18 52 82 58" fill="none" stroke="var(--act)" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>', { left: '50%', bottom: '100%', marginLeft: '-45px', marginBottom: '4px' });
+      c.a(s.querySelectorAll('path')[1], [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 650, ease: 'inOut' });
+      return 420;
+    },
+    press(c, el, fx) {
+      const s = R.svg(fx, 120, 60, R.arrow(30, 0, 30, 50, 'var(--heat)', 6) + R.arrow(60, 0, 60, 50, 'var(--heat)', 6) + R.arrow(90, 0, 90, 50, 'var(--heat)', 6), { left: '50%', bottom: '100%', marginLeft: '-60px', marginBottom: '-6px' });
+      c.a(s, [{ transform: 'translateY(-40px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1, offset: .6 }, { transform: 'translateY(6px)', opacity: 1 }], { dur: 520, ease: 'in' });
+      c.a(el, [{ transform: 'translateY(0)' }, { transform: 'translateY(5px)', offset: .5 }, { transform: 'translateY(0)' }], { dur: 300, delay: 420 });
+      return 420;
+    },
+    hits(c, el, fx) {
+      const box = R.el(fx, '', { inset: '-12px -18px', border: '3px solid var(--t3)', borderRadius: '10px' });
+      for (let i = 0; i < 5; i++) {
+        const p = R.el(fx, '', { left: '50%', top: '50%', width: '14px', height: '14px', margin: '-7px 0 0 -7px', borderRadius: '50%', background: 'var(--kin)' });
+        const a = i * 1.26 + .4, dx = Math.cos(a) * (W(el) / 2 + 10), dy = Math.sin(a) * (H(el) / 2 + 6);
+        c.a(p, [{ transform: 'translate(0,0)' }, { transform: `translate(${dx}px,${dy}px)`, offset: .5 }, { transform: 'translate(0,0)', opacity: 0 }], { dur: 700, delay: i * 60, ease: 'linear' });
+      }
+      c.a(box, [{ opacity: 0 }, { opacity: 1, offset: .3 }, { opacity: 0 }], { dur: 900 });
+      return 420;
+    },
+    grow(c, el, fx) {
+      const b = R.el(fx, '', { inset: '-6px -10px', border: '3px dashed var(--light)', borderRadius: '12px' });
+      c.a(b, [{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1 }], { dur: 650, ease: 'out' });
+      return 300;
+    },
+    shrink(c, el, fx) {
+      const b = R.el(fx, '', { inset: '-6px -10px', border: '3px dashed var(--light)', borderRadius: '12px' });
+      c.a(b, [{ transform: 'scale(1.8)', opacity: 0 }, { transform: 'scale(.95)', opacity: 1 }], { dur: 650, ease: 'inOut' });
+      return 300;
+    },
+    up(c, el, fx) { return R.K._arr(c, fx, true); },
+    down(c, el, fx) { return R.K._arr(c, fx, false); },
+    _arr(c, fx, up) {
+      const s = R.svg(fx, 30, 60, up ? R.arrow(15, 58, 15, 4, 'var(--act)', 5) : R.arrow(15, 2, 15, 56, 'var(--act)', 5), { left: '100%', top: '50%', marginTop: '-30px', marginLeft: '8px' });
+      c.a(s, [{ transform: `translateY(${up ? 30 : -30}px)`, opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], { dur: 520, ease: 'out' });
+      return 260;
+    },
+    glow(c, el, fx) {
+      const g = R.el(fx, '', { left: '50%', top: '50%', width: '200px', height: '200px', margin: '-100px 0 0 -100px', borderRadius: '50%', background: 'radial-gradient(circle, color-mix(in srgb, var(--light) 70%, transparent) 0%, transparent 65%)' });
+      c.a(g, [{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .5 }, { transform: 'scale(1.2)', opacity: 0 }], { dur: 1000, ease: 'out' });
+      return 300;
+    },
+    equal(c, el, fx) {
+      const a = R.el(fx, '', { left: '-30px', right: '-30px', top: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
+      const b = R.el(fx, '', { left: '-30px', right: '-30px', bottom: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
+      c.a(a, [{ transform: 'translateX(-60px) scaleX(.4)', opacity: 0 }, { transform: 'translateX(0) scaleX(1)', opacity: 1 }], { dur: 520, ease: 'out' });
+      c.a(b, [{ transform: 'translateX(60px) scaleX(.4)', opacity: 0 }, { transform: 'translateX(0) scaleX(1)', opacity: 1 }], { dur: 520, ease: 'out' });
+      return 260;
+    },
+  };
+})();
+
+}catch(e){console.error("[object 91_recap.js]",e)}
 </script>
 <script>
 /* ── 01_cover.html ── */
@@ -2072,22 +2346,83 @@ try{
 try{
 
 (function () {
+  const b = (w, kind, k, cls) => RK.b(w, kind, k, cls);
   const CARDS = [
-    ['압력과 부피', '<p>온도가 일정할 때 압력을 크게 하면 부피는 작아진다</p><p class="m">압력이 2배면 부피는 약 절반</p>', '<div class="big"><span class="c-press">압력 ↑</span> → <span class="c-amt">부피 ↓</span></div>'],
-    ['입자로 보면', '<p>입자 수·크기·평균 빠르기는 그대로</p><p class="m">부피가 줄면 입자 사이의 거리가 가까워지고, 좁아진 방에서 벽에 충돌하는 횟수가 늘어난다(한 번의 세기는 그대로)</p>', '<div class="big" style="font-size:44px">충돌 횟수 ↑ → <span class="c-press">압력 ↑</span></div>'],
-    ['그래프', '<p>점을 이으면 오른쪽 아래로 휘어지는 곡선</p><p class="m">곡선은 가로축에 닿지 않는다</p>', '<div class="big c-amt">휘어지는 곡선</div>'],
+    ['압력과 부피', `<p>온도가 일정할 때 압력을 크게 하면 부피는 ${b('작아진다', 'shrink', 1)}</p><p class="m">압력이 2배면 부피는 약 ${b('절반', 'shrink', 1)}</p>`, `<div class="big"><span class="c-press">압력 ↑</span> → <span class="c-amt">부피 ${b('↓', 'down', 1)}</span></div>`],
+    ['입자로 보면', `<p>입자 수·크기·평균 빠르기는 ${b('그대로', 'equal', 2)}</p><p class="m">부피가 줄면 입자 사이의 거리가 가까워지고, 좁아진 방에서 벽에 충돌하는 ${b('횟수', 'hits', 2)}가 늘어난다(한 번의 세기는 그대로)</p>`, `<div class="big" style="font-size:44px">충돌 횟수 ↑ → <span class="c-press">압력 ${b('↑', 'up', 2)}</span></div>`],
+    ['그래프', `<p>점을 이으면 오른쪽 아래로 휘어지는 ${b('곡선', 'curve', 3)}</p><p class="m">곡선은 가로축에 ${b('닿지 않는다', 'pop', 3)}</p>`, '<div class="big c-amt" data-step="3" data-delay="1400">휘어지는 곡선</div>'],
   ];
   Deck.scene('d3_12_recap', {
     steps: 4,
     build(root) {
       root.querySelector('#d3_12_recap-cards').innerHTML = CARDS.map(([t, body, foot], i) =>
-        `<div class="rc" style="left:${120 + i * 570}px" data-step="${i + 1}" data-fx="up"><div class="no">${i + 1}</div><h3>${t}</h3>${body}${foot}</div>`).join('');
+        `<div class="rc" style="left:${120 + i * 570}px" data-in="${250 + i * 140}" data-fx="up"><div class="no">${i + 1}</div><h3>${t}</h3>${body}${foot}</div>`).join('');
     },
-    async go(c, k) { if (k === 4) c.sfx('chime'); },
+    async go(c, k) {
+      if (k === 4) await c.wait(600);
+      await RK.fill(c, k);
+      if (k === 4) c.sfx('chime', 300);
+    },
   });
 })();
 
 }catch(e){console.error("[slide 12_recap.html]",e)}
+/* ── 90_quiz0.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_90_quiz0', { steps: 0, async enter(c) { c.sfx('whoosh', 300); } });
+})();
+
+}catch(e){console.error("[slide 90_quiz0.html]",e)}
+/* ── 91_quiz1.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_91_quiz1', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 91_quiz1.html]",e)}
+/* ── 92_quiz2.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_92_quiz2', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 92_quiz2.html]",e)}
+/* ── 93_quiz3.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_93_quiz3', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 93_quiz3.html]",e)}
+/* ── 94_quiz4.html ── */
+try{
+
+(function () {
+  Deck.scene('d3_94_quiz4', {
+    steps: 1,
+    async enter(c) { QZ.fit(c); },
+    async go(c, k) { c.all(c.$$('.qz-ch li:not(.ok)'), [{ opacity: 1 }, { opacity: .38 }], { dur: 450 }); c.sfx('chime'); },
+  });
+})();
+
+}catch(e){console.error("[slide 94_quiz4.html]",e)}
 </script>
 </body>
 </html>
