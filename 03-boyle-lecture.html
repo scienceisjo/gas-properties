@@ -232,6 +232,7 @@ html.student #notes{display:none!important}
 /* ── 09_life.html ── */
 
 #d3_09_life .s09-h{font-size:28px;font-weight:600;color:var(--t2)}
+#d3_09_life .s09-c{font-size:40px;line-height:1.3}
 
 /* ── 11_sentence.html ── */
 
@@ -403,16 +404,27 @@ html.student #notes{display:none!important}
     <div class="ws-line" style="font-size:36px">점을 이어 보면 직선이 아니라 오른쪽 아래로 휘어지는 <span class="bk"><span class="a" data-step="2" data-fx="pop">곡선</span><span class="n">17</span></span>이다.</div>
     <div class="ws-line" style="font-size:36px;margin-top:10px">부피가 0이 되는 일은 없으므로 곡선은 가로축에 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">닿지 않는다</span><span class="n">18</span></span>.</div>
   </div>
-  <div class="abs mute" style="left:1200px;top:640px;width:600px;font-size:28px;line-height:1.45" data-in="600">가로축 한 칸 = 1기압<br>세로축 한 칸 = 5 mL</div>
+  <div class="abs mute" style="left:1200px;top:672px;width:600px;font-size:28px;line-height:1.45" data-in="600">가로축 한 칸 = 1기압<br>세로축 한 칸 = 5 mL</div>
 </section>
 <!-- ═══ 09_life.html ═══ -->
-<section class="slide" id="d3_09_life" data-tile="parchment" data-title="생활에서 찾기" data-notes="P9" data-say="온도 변화는 생각하지 않고 압력만 봅니다(온도는 다음 시간에). 표는 학생이 먼저 채운 뒤 한 줄씩 확인해요.">
+<section class="slide" id="d3_09_life" data-tile="parchment" data-title="생활에서 찾기" data-notes="P9" data-say="빈칸 ⑲ 낮아진다 · ⑳ 커진다 · ㉑ 높아진다 · ㉒ 작아진다 · ㉓ 높아진다 · ㉔ 작아진다 · ㉕ 낮아진다 · ㉖ 커진다. 학습지 표 칸에는 번호가 인쇄되어 있지 않으니 「한 줄에서 왼쪽 칸이 압력, 오른쪽 칸이 부피」로 짚어 주세요. 학생이 먼저 채운 뒤 한 칸씩 엽니다. 압력 칸을 열 때 상황이 움직이고, 부피 칸을 열 때 점선(처음 크기)이 나타나요. 온도 변화는 생각하지 않고 압력만 봅니다(온도는 다음 시간에).">
   <div class="hd" data-in><div class="eb">A · 생활에서 찾기</div><h2>생활 속 압력과 부피</h2></div>
-  <div class="abs s09-h" style="left:410px;top:262px" data-in="300">상황</div>
-  <div class="abs s09-h" style="left:1130px;top:262px" data-in="300">작용하는 압력</div>
-  <div class="abs s09-h" style="left:1520px;top:262px" data-in="300">기체의 부피</div>
+  <div class="abs mute" style="left:120px;top:214px;font-size:28px" data-in="200">각 상황에서 <b class="c-press">기체에 작용하는 압력</b>과 <b class="c-amt">기체의 부피</b>가 어떻게 되는지 적어 보자.</div>
+  <div class="abs s09-h" style="left:410px;top:266px" data-in="300">상황</div>
+  <div class="abs s09-h" style="left:1130px;top:266px" data-in="300">작용하는 압력</div>
+  <div class="abs s09-h" style="left:1520px;top:266px" data-in="300">기체의 부피</div>
   <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d3_09_life-rows"></g></svg>
-  <div class="abs mute" style="left:120px;top:920px;font-size:28px" data-in="800">온도 변화는 생각하지 않고 압력만 본다</div>
+  <div id="d3_09_life-cells"><!-- 학습지 표 칸 = 정답지 ⑲~㉖ (줄마다 압력 → 부피) · 한 칸에 한 단계 -->
+    <div class="abs s09-c" style="left:1130px;top:339px" data-in="300" data-fx="fade"><span class="bk wide"><span class="a" data-step="1" data-fx="pop">낮아진다</span><span class="n">19</span></span></div>
+    <div class="abs s09-c" style="left:1520px;top:339px" data-in="300" data-fx="fade"><span class="bk wide"><span class="a" data-step="2" data-fx="pop">커진다</span><span class="n">20</span></span></div>
+    <div class="abs s09-c" style="left:1130px;top:487px" data-in="400" data-fx="fade"><span class="bk wide"><span class="a" data-step="3" data-fx="pop">높아진다</span><span class="n">21</span></span></div>
+    <div class="abs s09-c" style="left:1520px;top:487px" data-in="400" data-fx="fade"><span class="bk wide"><span class="a" data-step="4" data-fx="pop">작아진다</span><span class="n">22</span></span></div>
+    <div class="abs s09-c" style="left:1130px;top:635px" data-in="500" data-fx="fade"><span class="bk wide"><span class="a" data-step="5" data-fx="pop">높아진다</span><span class="n">23</span></span></div>
+    <div class="abs s09-c" style="left:1520px;top:635px" data-in="500" data-fx="fade"><span class="bk wide"><span class="a" data-step="6" data-fx="pop">작아진다</span><span class="n">24</span></span></div>
+    <div class="abs s09-c" style="left:1130px;top:783px" data-in="600" data-fx="fade"><span class="bk wide"><span class="a" data-step="7" data-fx="pop">낮아진다</span><span class="n">25</span></span></div>
+    <div class="abs s09-c" style="left:1520px;top:783px" data-in="600" data-fx="fade"><span class="bk wide"><span class="a" data-step="8" data-fx="pop">커진다</span><span class="n">26</span></span></div>
+  </div>
+  <div class="abs mute" style="left:120px;top:914px;font-size:28px" data-in="800">온도 변화는 생각하지 않고 압력만 본다 · 점선 = 처음 크기</div>
 </section>
 <!-- ═══ 10_breath.html ═══ -->
 <section class="slide" id="d3_10_breath" data-tile="dark" data-title="들숨과 날숨" data-notes="P10" data-say="가슴 속 공간(부피)이 변하면 폐 속 압력이 바깥보다 낮아지거나 높아져 공기가 드나듭니다. 그림은 원리를 보이는 단순한 모형이에요.">
@@ -457,16 +469,16 @@ html.student #notes{display:none!important}
   <div class="abs mute" style="left:120px;top:790px;width:1680px;font-size:30px;line-height:1.5" data-in="700">예시 문장이에요. 「부피가 줄면 입자가 빨라져서」는 틀린 설명 — 입자의 빠르기는 그대로!</div>
 </section>
 <!-- ═══ 12_recap.html ═══ -->
-<section class="slide" id="d3_12_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P12" data-say="마지막 줄로 처음의 과자 봉지를 되받습니다. 온도 이야기는 다음 시간이에요.">
+<section class="slide" id="d3_12_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P12" data-say="마지막 줄로 「생활에서 찾기」 첫 줄(⑲ 낮아진다 · ⑳ 커진다)의 과자 봉지를 되받습니다. 온도 이야기는 다음 시간이에요.">
   <div class="hd" data-in><div class="eb">정리</div><h2>오늘 배운 것</h2></div>
   <div id="d3_12_recap-cards"></div>
-  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">산 위 과자 봉지가 부푼 까닭 — 바깥 <span class="c-press">압력</span>이 작아졌기 때문이다</div>
-  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-09-30</div>
+  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">산 위 과자 봉지가 부푼 까닭 — 바깥 <span class="c-press">압력</span>이 낮아졌기 때문이다</div>
+  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-02</div>
 </section>
 <div id="gridov"></div>
 </div></div>
 
-<script>window.NOTES = {"P1": "오늘은 압력과 부피 사이의 관계를 알아봅니다. 주사기 끝을 막고 피스톤을 눌러 본 적 있나요? 눌렀더니 부피가 줄어들었죠. 이때 압력은 어떻게 될까요?", "P2": "주사기 끝을 막고 피스톤을 누르면 누를수록 점점 힘들어져요. 압력과 부피 사이에는 어떤 관계가 있을까요? 오늘은 온도가 일정할 때만 봅니다.", "P3": "먼저 되짚어 볼게요. 기체의 압력은 기체 입자가 그릇의 벽에 충돌하면서 가하는 힘입니다. 같은 시간 동안 벽에 부딪히는 횟수가 많을수록 압력이 커지고, 모든 방향으로 작용해요. 학습지 1번부터 3번 빈칸입니다.", "P4": "오늘의 관계입니다. 온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 작아지고, 압력을 작게 하면 부피는 커집니다. 압력이 2배가 되면 부피는 약 절반이 돼요.", "P5": "왜 그럴까요? 부피가 줄어들면 입자 사이의 거리가 가까워지고, 좁아진 방에서는 같은 시간 동안 벽에 충돌하는 횟수가 늘어납니다. 충돌이 곧 압력이므로 기체의 압력이 커져요. 입자끼리는 부딪히지 않는 단순한 그림이라, 좁아진 방에서는 벽까지 오가는 거리가 짧아져서 충돌이 잦아진다고 생각하면 됩니다. 피스톤 면에 부딪히는 횟수를 세어 봅시다.", "P6": "부피를 줄여도 변하지 않는 것이 있어요. 입자의 수, 입자 하나하나의 크기, 입자의 평균 빠르기입니다. 피스톤은 입자를 만들지도 없애지도 못하고, 빠르기를 바꾸는 것은 온도뿐이에요. 부피가 줄어들 때 입자가 빨라진다고 생각하면 안 됩니다.", "P7": "실제로 재어 볼게요. 주사기에 공기 40 mL를 가두고 피스톤을 천천히 눌렀을 때 압력 센서가 읽은 값입니다. 압력이 1, 2, 4, 5기압일 때 부피는 각각 얼마일까요? 첫 칸을 보고 규칙을 찾아 나머지를 채워 보세요.", "P8": "표의 값을 그래프에 찍어 볼까요. 가로축은 한 칸에 1기압, 세로축은 한 칸에 5 mL입니다. 점을 이어 보면 직선이 아니라 오른쪽 아래로 휘어지는 곡선이에요. 부피가 0이 되는 일은 없으므로 곡선은 가로축에 닿지 않습니다.", "P9": "생활에서 찾아봅시다. 각 상황에서 기체에 작용하는 압력과 기체의 부피가 어떻게 되는지 표에 적어 보세요. 높은 산에 올라간 과자 봉지는 바깥 공기의 압력이 작아져서 부피가 커진 거예요. 온도 변화는 생각하지 않고 압력만 봅니다.", "P10": "우리 몸에서도 같은 일이 일어납니다. 숨을 들이쉴 때는 가슴 속 공간이 커져 폐 속 압력이 낮아지고, 그 차이로 공기가 들어옵니다. 내쉴 때는 반대예요. 부피가 변해 압력 차가 생기는 거죠.", "P11": "오늘 알아낸 것을 조건까지 넣어 내 문장으로 적어 봅시다. 바깥에서 누르는 압력을 크게 하면, 기체가 미는 압력이 바깥 압력과 같아질 때까지 부피가 줄어드는 거예요. 온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 어떻게 되고, 왜 그런지까지 써 보세요.", "P12": "정리합니다. 온도가 일정할 때 압력이 커지면 부피는 작아지고, 압력이 2배면 부피는 약 절반입니다. 입자 수와 빠르기는 그대로이고 달라지는 것은 충돌의 횟수예요. 처음의 과자 봉지는 산 위에서 바깥의 압력이 작아져서 부풀었던 거죠."};</script>
+<script>window.NOTES = {"P1": "오늘은 압력과 부피 사이의 관계를 알아봅니다. 주사기 끝을 막고 피스톤을 눌러 본 적 있나요? 눌렀더니 부피가 줄어들었죠. 이때 압력은 어떻게 될까요?", "P2": "주사기 끝을 막고 피스톤을 누르면 누를수록 점점 힘들어져요. 압력과 부피 사이에는 어떤 관계가 있을까요? 오늘은 온도가 일정할 때만 봅니다.", "P3": "먼저 되짚어 볼게요. 기체의 압력은 기체 입자가 그릇의 벽에 충돌하면서 가하는 힘입니다. 같은 시간 동안 벽에 부딪히는 횟수가 많을수록 압력이 커지고, 모든 방향으로 작용해요. 학습지 1번부터 3번 빈칸입니다.", "P4": "오늘의 관계입니다. 온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 작아지고, 압력을 작게 하면 부피는 커집니다. 압력이 2배가 되면 부피는 약 절반이 돼요.", "P5": "왜 그럴까요? 부피가 줄어들면 입자 사이의 거리가 가까워지고, 좁아진 방에서는 같은 시간 동안 벽에 충돌하는 횟수가 늘어납니다. 충돌이 곧 압력이므로 기체의 압력이 커져요. 입자끼리는 부딪히지 않는 단순한 그림이라, 좁아진 방에서는 벽까지 오가는 거리가 짧아져서 충돌이 잦아진다고 생각하면 됩니다. 피스톤 면에 부딪히는 횟수를 세어 봅시다.", "P6": "부피를 줄여도 변하지 않는 것이 있어요. 입자의 수, 입자 하나하나의 크기, 입자의 평균 빠르기입니다. 피스톤은 입자를 만들지도 없애지도 못하고, 빠르기를 바꾸는 것은 온도뿐이에요. 부피가 줄어들 때 입자가 빨라진다고 생각하면 안 됩니다.", "P7": "실제로 재어 볼게요. 주사기에 공기 40 mL를 가두고 피스톤을 천천히 눌렀을 때 압력 센서가 읽은 값입니다. 압력이 1, 2, 4, 5기압일 때 부피는 각각 얼마일까요? 첫 칸을 보고 규칙을 찾아 나머지를 채워 보세요.", "P8": "표의 값을 그래프에 찍어 볼까요. 가로축은 한 칸에 1기압, 세로축은 한 칸에 5 mL입니다. 점을 이어 보면 직선이 아니라 오른쪽 아래로 휘어지는 곡선이에요. 부피가 0이 되는 일은 없으므로 곡선은 가로축에 닿지 않습니다.", "P9": "생활에서 찾아봅시다. 각 상황에서 기체에 작용하는 압력과 기체의 부피가 어떻게 되는지 표에 적어 보세요. 한 줄에서 왼쪽 칸이 압력, 오른쪽 칸이 부피예요. 높은 산에 올라간 과자 봉지는 봉지에 작용하는 압력이 낮아져서 부피가 커집니다. 물속 깊이 내려간 공기 방울은 작용하는 압력이 높아져서 부피가 작아지고, 끝을 막고 피스톤을 누른 주사기도 압력이 높아져서 부피가 작아져요. 하늘 높이 올라간 풍선은 압력이 낮아져서 부피가 커집니다. 온도 변화는 생각하지 않고 압력만 봅니다.", "P10": "우리 몸에서도 같은 일이 일어납니다. 숨을 들이쉴 때는 가슴 속 공간이 커져 폐 속 압력이 낮아지고, 그 차이로 공기가 들어옵니다. 내쉴 때는 반대예요. 부피가 변해 압력 차가 생기는 거죠.", "P11": "오늘 알아낸 것을 조건까지 넣어 내 문장으로 적어 봅시다. 바깥에서 누르는 압력을 크게 하면, 기체가 미는 압력이 바깥 압력과 같아질 때까지 부피가 줄어드는 거예요. 온도가 일정할 때, 일정한 양의 기체에 가하는 압력을 크게 하면 부피는 어떻게 되고, 왜 그런지까지 써 보세요.", "P12": "정리합니다. 온도가 일정할 때 압력이 커지면 부피는 작아지고, 압력이 2배면 부피는 약 절반입니다. 입자 수와 빠르기는 그대로이고 달라지는 것은 충돌의 횟수예요. 생활에서 찾기 첫 줄의 과자 봉지는 산 위에서 바깥의 압력이 낮아져서 부풀었던 거죠."};</script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
    core.js — 강의 덱 엔진
@@ -1933,46 +1945,68 @@ try{
 try{
 
 (function () {
+  // 학습지 3 「생활에서 찾기」 표 — 정답 칸(⑲~㉖)은 위 #d3_09_life-cells 에 그대로 적었다(top = ROW0 + i·GAP + RH/2 − 30)
+  const ROW0 = 304, GAP = 148, RH = 130;
   const ROWS = [
-    { t: '높은 산에 올라간 과자 봉지', s: '봉지에 작용하는 압력', p: ['작아진다', 0], v: ['커진다', 1] },
-    { t: '물속 깊이 내려간 공기 방울', s: '', p: ['커진다', 1], v: ['작아진다', 0] },
-    { t: '끝을 막고 피스톤을 누른 주사기', s: '', p: ['커진다', 1], v: ['작아진다', 0] },
-    { t: '하늘 높이 올라간 풍선', s: '', p: ['작아진다', 0], v: ['커진다', 1] },
+    { t: '높은 산에 올라간 과자 봉지', s: '봉지에 작용하는 압력' },   // ⑲ 낮아진다 · ⑳ 커진다
+    { t: '물속 깊이 내려간 공기 방울', s: '' },                      // ㉑ 높아진다 · ㉒ 작아진다
+    { t: '끝을 막고 피스톤을 누른 주사기', s: '' },                  // ㉓ 높아진다 · ㉔ 작아진다
+    { t: '하늘 높이 올라간 풍선', s: '' },                          // ㉕ 낮아진다 · ㉖ 커진다
   ];
+  // 아이콘: 처음 모습 = 바뀌기 전. 압력 칸(홀수 단계)을 열 때 상황이 움직이며 크기도 함께 바뀌고(실제로는 동시에 일어남),
+  // 부피 칸(짝수 단계)을 열 때 처음 크기를 점선으로 겹쳐 보여 준다. 움직이는 <g> 에는 transform 속성을 두지 않는다(WAAPI 가 덮음).
+  const GH = 'fill="none" stroke="#48484a" stroke-width="2.5" stroke-dasharray="6 5" data-fx="fade"';
   const ICON = [
-    `<path d="M20 108L70 44L100 82L128 58L190 108Z" fill="#d1d1d6"/><path d="M70 44L58 62L70 56L82 64Z" fill="#fff"/><g class="tb ic" id="d3_09_life-i0"><rect x="112" y="22" width="86" height="44" rx="14" fill="#e5e5ea" stroke="#8e8e93" stroke-width="3"/><path d="M116 30V58M122 30V58M188 30V58M194 30V58" stroke="#8e8e93" stroke-width="2.5"/></g>`,
-    `<path d="M0 30Q30 20 60 30T120 30T180 30T230 30V130H0Z" fill="#8e8e93" opacity=".14"/><g id="d3_09_life-i1"><circle class="tb" cx="115" cy="56" r="30" fill="#8e8e93" fill-opacity=".22" stroke="#8e8e93" stroke-width="3"/></g>`,
-    `<rect x="24" y="48" width="170" height="40" rx="8" fill="#fff" stroke="#8e8e93" stroke-width="3"/><rect id="d3_09_life-i2g" x="28" y="52" width="130" height="32" fill="var(--kin)" opacity=".22"/><g id="d3_09_life-i2"><rect x="150" y="44" width="10" height="48" rx="3" fill="#48484a"/><rect x="160" y="64" width="50" height="8" rx="3" fill="#8e8e93"/><rect x="208" y="52" width="8" height="32" rx="3" fill="#48484a"/></g>`,
-    `<g id="d3_09_life-i3"><path d="M115 96V128" stroke="#8e8e93" stroke-width="3"/><circle class="tb" id="d3_09_life-i3b" cx="115" cy="60" r="34" fill="#ff8fa3" fill-opacity=".95"/></g>`,
+    `<path d="M0 124L70 34L106 76L128 58L180 124Z" fill="#d1d1d6"/><path d="M70 34L58 49L70 44L82 51Z" fill="#fff"/>` +
+    `<g id="d3_09_life-i0"><g class="tb" id="d3_09_life-i0b"><rect x="176" y="92" width="60" height="30" rx="10" fill="#e5e5ea" stroke="#8e8e93" stroke-width="3"/><path d="M181 97V117M186 97V117M226 97V117M231 97V117" stroke="#8e8e93" stroke-width="2.5"/></g>` +
+    `<rect x="176" y="92" width="60" height="30" rx="10" ${GH} data-step="2"/></g>`,
+    `<path d="M0 22Q28 12 56 22T112 22T168 22T224 22V130H0Z" fill="#8e8e93" opacity=".14"/>` +
+    `<g id="d3_09_life-i1"><circle class="tb" id="d3_09_life-i1b" cx="112" cy="54" r="24" fill="#8e8e93" fill-opacity=".22" stroke="#8e8e93" stroke-width="3"/>` +
+    `<circle cx="112" cy="54" r="24" ${GH} data-step="4"/></g>`,
+    `<rect x="10" y="61" width="15" height="14" rx="3" fill="#48484a"/><rect x="24" y="48" width="170" height="40" rx="8" fill="#fff" stroke="#8e8e93" stroke-width="3"/>` +
+    `<rect id="d3_09_life-i2g" x="28" y="52" width="122" height="32" fill="var(--kin)" opacity=".22"/>` +
+    `<rect x="28" y="52" width="122" height="32" ${GH} data-step="6"/>` +
+    `<g id="d3_09_life-i2"><rect x="150" y="44" width="10" height="48" rx="3" fill="#48484a"/><rect x="160" y="64" width="50" height="8" rx="3" fill="#8e8e93"/><rect x="208" y="52" width="8" height="32" rx="3" fill="#48484a"/>` +
+    `<g data-step="5" data-fx="fade"><path d="M254 68H230" stroke="var(--sound)" stroke-width="6" stroke-linecap="round"/><path d="M236 58L222 68L236 78Z" fill="var(--sound)"/></g></g>`,
+    `<path d="M24 44a12 12 0 0 1 20-10a13 13 0 0 1 24 4a10 10 0 0 1 0 20H26a10 10 0 0 1-2-14Z" fill="#e5e5ea"/>` +
+    `<g id="d3_09_life-i3"><path d="M112 100V128" stroke="#8e8e93" stroke-width="3"/><circle class="tb" id="d3_09_life-i3b" cx="112" cy="74" r="26" fill="#ff8fa3" fill-opacity=".95"/>` +
+    `<circle cx="112" cy="74" r="26" ${GH} data-step="8"/></g>`,
   ];
   const row = (r, i) => {
-    const y = 300 + i * 150;
-    return `<g data-step="${i + 1}" data-fx="fade"><g transform="translate(120 ${y})"><rect width="1680" height="130" rx="18" fill="#fff"/>` +
+    const y = ROW0 + i * GAP;
+    return `<g data-in="${300 + i * 100}" data-fx="fade"><g transform="translate(120 ${y})"><rect width="1680" height="${RH}" rx="18" fill="#fff"/>` +
       `<g transform="translate(30 0)">${ICON[i]}</g>` +
       `<text x="290" y="${r.s ? 58 : 76}" style="font-size:36px;font-weight:700;fill:var(--ink)">${r.t}</text>` +
-      (r.s ? `<text x="290" y="98" style="font-size:28px;fill:var(--t2)">(${r.s})</text>` : '') +
-      `<text x="1010" y="78" style="font-size:42px;font-weight:700;fill:var(--heat)">${r.p[1] ? '↑' : '↓'} ${r.p[0]}</text>` +
-      `<text x="1400" y="78" style="font-size:42px;font-weight:700;fill:var(--light)">${r.v[1] ? '↑' : '↓'} ${r.v[0]}</text></g></g>`;
+      (r.s ? `<text x="290" y="98" style="font-size:28px;fill:var(--t2)">(${r.s})</text>` : '') + `</g></g>`;
   };
   Deck.scene('d3_09_life', {
-    steps: 4,
-    build(root) { root.querySelector('#d3_09_life-rows').innerHTML = ROWS.map(row).join(''); },
+    steps: 8,
+    build(root) {
+      root.querySelector('#d3_09_life-rows').innerHTML = ROWS.map(row).join('');
+    },
     async go(c, k) {
-      c.sfx('pop');
-      if (k === 1) c.a(c.$('#d3_09_life-i0'), [{ transform: 'scale(.72)' }, { transform: 'scale(1.3)' }], { dur: 1600, delay: 400, ease: 'inOut' });
-      if (k === 2) {
-        c.a(c.$('#d3_09_life-i1'), [{ transform: 'translateY(-22px)' }, { transform: 'translateY(30px)' }], { dur: 1600, delay: 400, ease: 'inOut' });
-        c.a(c.$('#d3_09_life-i1 circle'), [{ transform: 'scale(1.3)' }, { transform: 'scale(.72)' }], { dur: 1600, delay: 400, ease: 'inOut' });
+      const o = { dur: 1600, delay: 300, ease: 'inOut' };
+      if (k === 1) {   // 산 위로: 봉지에 작용하는 압력 ↓ → 봉지가 부푼다
+        c.sfx('rise', 300, 1600);
+        c.a(c.$('#d3_09_life-i0'), [{ transform: 'translate(0px,0px)' }, { transform: 'translate(-80px,-70px)' }], o);
+        c.a(c.$('#d3_09_life-i0b'), [{ transform: 'scale(1)' }, { transform: 'scale(1.35)' }], o);
       }
-      if (k === 3) {
-        c.a(c.$('#d3_09_life-i2'), [{ transform: 'translateX(0px)' }, { transform: 'translateX(-60px)' }], { dur: 1600, delay: 400, ease: 'inOut' });
-        c.a(c.$('#d3_09_life-i2g'), [{ width: '130px' }, { width: '70px' }], { dur: 1600, delay: 400, ease: 'inOut' });
+      if (k === 3) {   // 물속 깊이: 압력 ↑ → 방울이 작아진다
+        c.sfx('whoosh', 300, 1400);
+        c.a(c.$('#d3_09_life-i1'), [{ transform: 'translateY(0px)' }, { transform: 'translateY(44px)' }], o);
+        c.a(c.$('#d3_09_life-i1b'), [{ transform: 'scale(1)' }, { transform: 'scale(.62)' }], o);
       }
-      if (k === 4) {
-        c.a(c.$('#d3_09_life-i3'), [{ transform: 'translateY(26px)' }, { transform: 'translateY(-14px)' }], { dur: 1600, delay: 400, ease: 'inOut' });
-        c.a(c.$('#d3_09_life-i3b'), [{ transform: 'scale(.7)' }, { transform: 'scale(1.25)' }], { dur: 1600, delay: 400, ease: 'inOut' });
-        c.sfx('chime', 1200);
+      if (k === 5) {   // 피스톤을 누름: 압력 ↑ → 기체 칸이 짧아진다
+        c.sfx('whoosh', 300, 1400);
+        c.a(c.$('#d3_09_life-i2'), [{ transform: 'translateX(0px)' }, { transform: 'translateX(-60px)' }], o);
+        c.a(c.$('#d3_09_life-i2g'), [{ width: '122px' }, { width: '62px' }], o);
       }
+      if (k === 7) {   // 하늘 높이: 압력 ↓ → 풍선이 커진다
+        c.sfx('rise', 300, 1600);
+        c.a(c.$('#d3_09_life-i3'), [{ transform: 'translateY(0px)' }, { transform: 'translateY(-34px)' }], o);
+        c.a(c.$('#d3_09_life-i3b'), [{ transform: 'scale(1)' }, { transform: 'scale(1.35)' }], o);
+      }
+      if (k === 8) c.sfx('chime', 900);
     },
   });
 })();
@@ -2040,7 +2074,7 @@ try{
 (function () {
   const CARDS = [
     ['압력과 부피', '<p>온도가 일정할 때 압력을 크게 하면 부피는 작아진다</p><p class="m">압력이 2배면 부피는 약 절반</p>', '<div class="big"><span class="c-press">압력 ↑</span> → <span class="c-amt">부피 ↓</span></div>'],
-    ['입자로 보면', '<p>입자 수·크기·평균 빠르기는 그대로</p><p class="m">부피가 줄면 벽 사이를 오가는 거리가 짧아져 충돌 횟수가 늘고 압력이 커진다(한 번의 세기는 그대로)</p>', '<div class="big" style="font-size:44px">충돌 횟수 ↑ → <span class="c-press">압력 ↑</span></div>'],
+    ['입자로 보면', '<p>입자 수·크기·평균 빠르기는 그대로</p><p class="m">부피가 줄면 입자 사이의 거리가 가까워지고, 좁아진 방에서 벽에 충돌하는 횟수가 늘어난다(한 번의 세기는 그대로)</p>', '<div class="big" style="font-size:44px">충돌 횟수 ↑ → <span class="c-press">압력 ↑</span></div>'],
     ['그래프', '<p>점을 이으면 오른쪽 아래로 휘어지는 곡선</p><p class="m">곡선은 가로축에 닿지 않는다</p>', '<div class="big c-amt">휘어지는 곡선</div>'],
   ];
   Deck.scene('d3_12_recap', {
