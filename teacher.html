@@ -68,6 +68,14 @@ td.num,th.num{text-align:right;font-family:var(--mono)}
 .qa-tbl th.qh{max-width:64px;font-size:11.5px;white-space:nowrap;cursor:help}
 .qa-tbl td.rate{font-family:var(--mono);font-size:12.5px;color:var(--ink-mute)}
 .o{color:var(--ok)}.x{color:var(--danger)}.re{color:var(--warn)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--hair);border-radius:100px;padding:3px;background:var(--soft);gap:2px}
+.seg button{font-family:var(--body);font-size:13px;font-weight:700;border:0;background:transparent;color:var(--ink-mute);padding:6px 12px;border-radius:100px;cursor:pointer;letter-spacing:-.14px}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.vibe-tbl td{vertical-align:top}
+.vibe-tbl td.vt{white-space:pre-wrap;word-break:break-word;font-size:13.5px;line-height:1.55;min-width:190px}
+.vibe-tbl td.vt small{display:block;color:var(--ink-mute);font-size:11px;margin-top:4px;font-family:var(--mono)}
+.vibe-tbl td .none{color:#bbb}
+.tag.vibe{background:#fff2cc;color:#7a5200}
 #app-credit{margin-top:40px;text-align:center;font-size:12.5px;color:var(--ink-mute);border-top:1px solid var(--line);padding-top:20px}
 </style>
 </head>
@@ -89,7 +97,7 @@ td.num,th.num{text-align:right;font-family:var(--mono)}
 
  <div class="card" id="codesCard" hidden>
  <h2>🎟️ 참여 코드 <span class="r"><input id="newCustom" placeholder="원하는 코드 (숫자·영문 3~12자)" maxlength="12" style="width:160px;letter-spacing:.06em" autocomplete="off"><input id="newLabel" placeholder="이름표 (예: 2-3반)" maxlength="40" style="width:150px"><input id="newDays" type="number" value="120" min="1" max="365" style="width:84px" title="유효 기간(일)"><button class="btn cta sm" id="addCode">+ 이 코드로 발급</button><button class="btn ghost sm" id="newCode">🎲 무작위 코드</button></span></h2>
- <div class="note">학생은 수업 페이지 오른쪽 위 🎯 버튼 → <b>학번·이름·참여 코드</b>를 넣습니다(숫자 코드가 치기 쉬워요). 한 기기에서 한 번 넣으면 다른 차시·다른 단원도 자동으로 이어집니다. <b>코드 없이 혼자 탐구</b>한 학생은 서버에 남지 않고 📄 PDF로 제출합니다. 코드를 끄면 그 코드로는 더 저장되지 않아요(있는 기록은 남습니다). 삭제하면 그 코드의 학생 기록도 함께 지워집니다.</div>
+ <div class="note">학생은 수업 페이지 오른쪽 위 🎯 버튼 → <b>학번·이름·참여 코드</b>를 넣습니다(숫자 코드가 치기 쉬워요). 한 기기에서 한 번 넣으면 다른 차시·다른 단원도 자동으로 이어집니다. <b>코드 없이 혼자 탐구</b>한 학생은 서버에 남지 않고 📄 PDF로 제출합니다. <b>★ 시뮬레이터 프로젝트</b>(기체 바이브코딩) 페이지는 학생이 학번·이름만 넣으면 참여 코드 <b>8314</b>를 저절로 씁니다. 코드를 끄면 그 코드로는 더 저장되지 않아요(있는 기록은 남습니다). 삭제하면 그 코드의 학생 기록도 함께 지워집니다.</div>
  <div class="tbl-wrap"><table id="codesTbl"><thead><tr><th>코드</th><th>이름표</th><th>상태</th><th class="num">기록 수</th><th>마지막 저장</th><th>기한</th><th></th></tr></thead><tbody></tbody></table></div>
  <div class="msg" id="codesMsg"></div>
  </div>
@@ -99,6 +107,12 @@ td.num,th.num{text-align:right;font-family:var(--mono)}
  <div class="tbl-wrap"><table id="stuTbl"><thead><tr><th>차시</th><th>코드</th><th>학번</th><th>이름</th><th>진행</th><th class="num">%</th><th>현재 탭</th><th class="num">제출</th><th>확인문제 <small>첫시도 정답/응답 · 최고점</small></th><th>마지막 저장</th><th></th></tr></thead><tbody></tbody></table></div>
  <div class="empty" id="stuEmpty" hidden>아직 기록이 없어요.</div>
  <div class="msg" id="stuMsg"></div>
+ </div>
+
+ <div class="card" id="vibeCard" hidden>
+ <h2>🧪 시뮬레이터 프로젝트 — 모아 보기 <span class="r"><span class="seg" id="vibeSeg"><button data-v="find" class="on">🔍 찾은 잘못</button><button data-v="over">💪 극복한 점</button><button data-v="feel">💭 느낀 점</button><button data-v="plan">🛠 기획서</button></span><button class="btn ghost sm" id="vibeCopy" title="표를 복사해 엑셀·한글에 붙여넣기">📋 표 복사</button></span></h2>
+ <div class="note">기체 시뮬레이터 프로젝트(바이브코딩) 수업 페이지에서 학생이 📮로 보낸 <b>네 가지만</b> 모았습니다 — <b>찾은 잘못</b>(정답을 공개하는 순간 2단계에 적어 둔 그대로 + 공개 뒤 「찾았어요」 체크), 미션마다·최종본의 <b>극복한 점·느낀 점</b>, <b>내 시뮬레이터 기획서</b>. 조건 적기·고칠 방법·생각해 보기는 거두지 않습니다. 학생은 학번·이름만 넣고(참여 코드 8314는 페이지가 씀), 같은 학번·이름으로 다시 들어가면 이어집니다.</div>
+ <div class="tbl-wrap"><table id="vibeTbl" class="vibe-tbl"><thead></thead><tbody></tbody></table></div>
  </div>
 
  <div class="card" id="qaCard" hidden>
@@ -127,11 +141,14 @@ const UNIT_DEFAULT='gas';
 const UNITS={elec:'전기와 자기',gas:'기체의 성질',star:'별과 우주'};
 const PAGES={
  'elec-friction':['elec','1 마찰 전기'],'elec-induction':['elec','2 정전기 유도'],'elec-current':['elec','3 전류'],'elec-ohm':['elec','4 옴의 법칙'],'elec-series':['elec','5 직렬·병렬'],'elec-power':['elec','6 소비 전력'],'elec-coil':['elec','7 코일 자기장'],'elec-motor':['elec','8 전동기'],
- 'gas-pressure':['gas','1 압력'],'gas-gaspressure':['gas','2 기체의 압력'],'gas-boyle':['gas','3 압력과 부피'],'gas-charles':['gas','4 온도와 부피'],'gas-cases':['gas','5 부피 변화 조사'],
+ 'gas-pressure':['gas','1 압력'],'gas-gaspressure':['gas','2 기체의 압력'],'gas-boyle':['gas','3 압력과 부피'],'gas-charles':['gas','4 온도와 부피'],'gas-cases':['gas','5 부피 변화 조사'],'gas-vibe':['gas','★ 시뮬레이터 프로젝트'],
  'star-parallax':['star','1 연주 시차'],'star-brightness':['star','2 밝기와 거리'],'star-magnitude':['star','3 별의 등급'],'star-color':['star','4 색과 온도'],'star-milkyway':['star','5 우리은하'],'star-objects':['star','6 천체 관측'],'star-nebula':['star','7 성운과 성단'],'star-expanding':['star','8 팽창하는 우주']};
 const pageName=k=>PAGES[k]?PAGES[k][1]:k, pageUnit=k=>PAGES[k]?PAGES[k][0]:(String(k).split('-')[0]);
 const TEXT_LABEL={askTa:'나의 질문/생각',emRule:'표에서 찾은 규칙',essay:'사고력·블록 답',labRule:'실험 규칙',blockAns:'블록 질문 답',ruleTa:'표에서 찾은 규칙',ruleTxt:'표에서 찾은 규칙',conclTa:'나의 결론',conclTaFs:'(전체 화면 결론 메모)',eqTa:'확인 문제 서술형',open:'내 생각(밝기 줄이기)',why:'예상한 까닭',law:'내 말로 옴의 법칙',guess:'내 생각(예상)',summary:'내 말로 정리',note:'표에서 읽어 낸 것',
- rule:'표에서 찾은 규칙',pin:'누름못 풍선 설명',obs:'관찰 기록',balloon:'풍선 설명',block1:'블록 답(공기가 미는 까닭)',conclusion:'결론 문장',jtube:'J자 관 설명',block2:'봉지 여행 블록',compare:'보일·샤를 구분',topic:'영상 주제',principle:'원리 한 줄',sb1:'스토리보드 1',sb2:'스토리보드 2',sb3:'스토리보드 3',sb4:'스토리보드 4',sb5:'스토리보드 5',sb6:'스토리보드 6',roles:'역할 나누기',review:'오늘의 한 줄'};
+ rule:'표에서 찾은 규칙',pin:'누름못 풍선 설명',obs:'관찰 기록',balloon:'풍선 설명',block1:'블록 답(공기가 미는 까닭)',conclusion:'결론 문장',jtube:'J자 관 설명',block2:'봉지 여행 블록',compare:'보일·샤를 구분',topic:'영상 주제',principle:'원리 한 줄',sb1:'스토리보드 1',sb2:'스토리보드 2',sb3:'스토리보드 3',sb4:'스토리보드 4',sb5:'스토리보드 5',sb6:'스토리보드 6',roles:'역할 나누기',review:'오늘의 한 줄',
+ 'm1-find':'미션 1 · 찾은 잘못','m1-over':'미션 1 · 극복한 점','m1-feel':'미션 1 · 느낀 점','m2-find':'미션 2 · 찾은 잘못','m2-over':'미션 2 · 극복한 점','m2-feel':'미션 2 · 느낀 점',
+ 'm3-find':'미션 3 · 찾은 잘못','m3-over':'미션 3 · 극복한 점','m3-feel':'미션 3 · 느낀 점','plan-q':'기획 · 설명할 탐구 질문','plan-cond':'기획 · 갖춰야 할 조건','plan-ui':'기획 · 화면(조작과 보이는 것)',
+ 'plan-check':'기획 · AI가 틀리기 쉬운 곳과 확인 방법','fin-over':'최종본 · 극복한 점','fin-feel':'최종본 · 느낀 점'};
 let ADMIN='', CODES=[], STU=[];
 async function rpc(n,a){const r=await sb.rpc(n,a);if(r.error)throw new Error(r.error.message||String(r.error));return r.data;}
 const say=(id,t,c)=>{const m=$(id);m.textContent=t;m.className='msg '+(c||'');};
@@ -150,6 +167,7 @@ function fillPages(){
  sel.value=cur;if(sel.value!==cur)sel.value='';
 }
 fillPages();
+(function(){const p=new URLSearchParams(location.search).get('page');if(p&&PAGES[p]){$('#unitSel').value=PAGES[p][0];fillPages();$('#pageSel').value=p;}})();
 
 async function load(){
  ADMIN=$('#adm').value.trim().toUpperCase();
@@ -237,7 +255,36 @@ function paintStudents(){
  tb._list=list;
  say('#stuMsg',list.length?'기록 '+list.length+'건 (학생 한 명 × 차시 하나 = 한 줄) · 보기를 누르면 쓴 글과 문항별 정오가 보여요':'');
  paintQa(list,page);
+ paintVibe(list,page);
 }
+/* ── ★ 시뮬레이터 프로젝트(바이브코딩) 모아 보기 — 학생이 보낸 네 가지만 ── */
+const VIBE_VIEWS={
+ find:{t:'찾은 잘못',cols:[['m1-find','미션 1'],['m2-find','미션 2'],['m3-find','미션 3']]},
+ over:{t:'극복한 점',cols:[['m1-over','미션 1'],['m2-over','미션 2'],['m3-over','미션 3'],['fin-over','최종본']]},
+ feel:{t:'느낀 점',cols:[['m1-feel','미션 1'],['m2-feel','미션 2'],['m3-feel','미션 3'],['fin-feel','최종본']]},
+ plan:{t:'기획서',cols:[['plan-q','설명할 탐구 질문'],['plan-cond','갖춰야 할 조건'],['plan-ui','화면 기획'],['plan-check','AI가 틀리기 쉬운 곳·확인 방법']]}
+};
+let VIBE_V='find', VIBE_LIST=[];
+function paintVibe(list,page){
+ const card=$('#vibeCard');
+ if(page!=='gas-vibe'){card.hidden=true;return;}
+ card.hidden=false;VIBE_LIST=list;
+ const v=VIBE_VIEWS[VIBE_V];
+ document.querySelectorAll('#vibeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.v===VIBE_V));
+ $('#vibeTbl thead').innerHTML='<tr><th>학번</th><th>이름</th>'+v.cols.map(c=>'<th>'+esc(c[1])+'</th>').join('')+'</tr>';
+ const tb=$('#vibeTbl tbody');
+ if(!list.length){tb.innerHTML='<tr><td colspan="'+(v.cols.length+2)+'" class="empty">아직 보낸 학생이 없어요.</td></tr>';return;}
+ tb.innerHTML=list.map(x=>{const st=x.state||{},t=st.texts||{},at=st.at||{};
+  return '<tr><td class="code" style="font-size:13px">'+esc(x.sid)+'</td><td><b>'+esc(x.name)+'</b></td>'+v.cols.map(c=>{const s=t[c[0]];return '<td class="vt">'+(s?esc(s)+(at[c[0]]?'<small>'+fmtT(+at[c[0]])+'</small>':''):'<span class="none">—</span>')+'</td>';}).join('')+'</tr>';}).join('');
+}
+$('#vibeSeg').addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(!b)return;VIBE_V=b.dataset.v;paintVibe(VIBE_LIST,'gas-vibe');});
+$('#vibeCopy').addEventListener('click',async()=>{
+ const v=VIBE_VIEWS[VIBE_V], cell=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+ const rows=[['학번','이름'].concat(v.cols.map(c=>v.t+' · '+c[1]))].concat(VIBE_LIST.map(x=>{const t=((x.state||{}).texts)||{};return [x.sid,x.name].concat(v.cols.map(c=>t[c[0]]||''));}));
+ const tsv=rows.map(r=>r.map(cell).join('\t')).join('\n');
+ try{await navigator.clipboard.writeText(tsv);say('#stuMsg','✅ 「'+v.t+'」 표를 복사했어요 — 엑셀·한글에 붙여넣으세요','ok');}
+ catch(e){say('#stuMsg','복사가 막혔어요 — 위 ⬇️ CSV 내려받기를 쓰세요','err');}
+});
 function qsOf(list){
  /* 문항 목록: 기록에 실린 문항 정보(qs) 중 가장 긴 것 → 없으면 qa 키 합집합 */
  let best=null;list.forEach(x=>{const st=x.state||{};if(Array.isArray(st.qs)&&(!best||st.qs.length>best.length))best=st.qs;});
@@ -284,7 +331,7 @@ function openDetail(x){
  const sk=st.skip||{};const skKeys=Object.keys(sk);
  if(skKeys.length)html+='<div class="q" style="border-color:#f7b928;background:#fff8dc"><div class="qt">⚠️ 다 하지 않고 넘어간 단계</div><div class="qa">'+esc(skKeys.map(t=>((sk[t]&&sk[t].name)||t)+(sk[t]&&sk[t].t?' ('+fmtT(sk[t].t)+')':'')).join(' · '))+'</div></div>';
  const texts=st.texts||{};let body='';
- Object.keys(texts).forEach(k=>{if(k==='conclTaFs'||k==='eqTa')return;const lab=(TEXT_LABEL[k]||k)+(sub[k]?' · 📮 제출됨':'');body+=q(lab,texts[k]);});
+ Object.keys(texts).forEach(k=>{if(k==='conclTaFs'||k==='eqTa')return;const lab=((st.lab&&st.lab[k])||TEXT_LABEL[k]||k)+(sub[k]?' · 📮 제출됨':'');body+=q(lab,texts[k]);});
  if(!Object.keys(texts).length&&st.think){Object.keys(st.think).forEach(k=>{body+=q(TEXT_LABEL[k]||k,st.think[k]);});if(st.concl)body+=q('나의 결론',st.concl);if(st.essay)body+=q('사고력 답',st.essay);}
  const qsList=Array.isArray(st.qs)?st.qs:[];
  Object.keys(st.eq||{}).forEach(id=>{if(!(st.eq[id]||'').trim())return;const qq=qsList.find(z=>z.id===id);body+=q('확인 문제 서술형 '+id+(qq?' — '+qq.t:''),st.eq[id]);});
@@ -294,7 +341,8 @@ function openDetail(x){
   html+='<h4>📝 확인 문제 — 첫 시도 정답 '+s.ok+'/'+s.n+(st.best?' · 최고 점수 '+st.best+'점':'')+(st.medals&&Object.keys(st.medals).length?' · 🏅 '+Object.keys(st.medals).join(', '):'')+'</h4>'
    +'<table><tr><th>#</th><th>문항</th><th>첫 시도</th><th>최종</th><th class="num">시도</th><th>고른 답</th></tr>'
    +qs.map((qq,i)=>{const r=qa[qq.id];return '<tr><td>'+(i+1)+' <small>'+esc(qq.id)+'</small></td><td>'+esc(qq.t||'')+'</td><td>'+mark(r,qq.e,st,qq.id)+'</td><td>'+(qq.e?'':(r?(r.ok?'<span class="o">맞힘</span>':'<span class="x">못 맞힘</span>'):'—'))+'</td><td class="num">'+(r?r.tries:'')+'</td><td>'+esc(r&&r.c||'')+'</td></tr>';}).join('')+'</table>';}
- html+='<h4>✅ 개념 확인</h4><div class="chk"><span class="on">개념 확인 퀴즈 완료 '+Object.keys(st.mini||{}).filter(k=>st.mini[k]).length+'개</span><span class="on">빈칸 채움 '+(st.cloze!=null?st.cloze+(st.clozeTotal?'/'+st.clozeTotal:''):'—')+'</span><span>마지막 저장 '+fmtT(x.updated_at)+' · 처음 참여 '+fmtT(x.created_at)+'</span></div>';
+ if(x.page==='gas-vibe')html+='<div class="chk"><span>마지막으로 보낸 때 '+fmtT(x.updated_at)+' · 처음 들어온 때 '+fmtT(x.created_at)+'</span></div>';
+ else html+='<h4>✅ 개념 확인</h4><div class="chk"><span class="on">개념 확인 퀴즈 완료 '+Object.keys(st.mini||{}).filter(k=>st.mini[k]).length+'개</span><span class="on">빈칸 채움 '+(st.cloze!=null?st.cloze+(st.clozeTotal?'/'+st.clozeTotal:''):'—')+'</span><span>마지막 저장 '+fmtT(x.updated_at)+' · 처음 참여 '+fmtT(x.created_at)+'</span></div>';
  $('#dBody').innerHTML=html;
  $('#detail').classList.add('show');
 }
@@ -305,7 +353,7 @@ $('#csv').addEventListener('click',()=>{
  const list=$('#stuTbl tbody')._list||[];
  const keys=[];list.forEach(x=>Object.keys((x.state||{}).texts||{}).forEach(k=>{if(k!=='conclTaFs'&&k!=='eqTa'&&!keys.includes(k))keys.push(k);}));
  const qids=[];list.forEach(x=>Object.keys(((x.state||{}).qa)||{}).forEach(k=>{if(!qids.includes(k))qids.push(k);}));
- const H=['단원','차시','코드','학번','이름','진행(단계)','진행(%)','현재 탭','제출 수','확인문제 첫시도 정답','확인문제 응답','최고점','마지막 저장'].concat(qids.map(k=>'문항 '+k)).concat(keys.map(k=>TEXT_LABEL[k]||k));
+ const H=['단원','차시','코드','학번','이름','진행(단계)','진행(%)','현재 탭','제출 수','확인문제 첫시도 정답','확인문제 응답','최고점','마지막 저장'].concat(qids.map(k=>'문항 '+k)).concat(keys.map(k=>{for(const x of list){const l=((x.state||{}).lab||{})[k];if(l)return l;}return TEXT_LABEL[k]||k;}));
  const cell=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
  const lines=[H.map(cell).join(',')];
  list.forEach(x=>{const st=x.state||{},t=st.texts||{},qa=st.qa||{},s=qaSummary(st);
