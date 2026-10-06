@@ -86,6 +86,25 @@ main{max-width:1180px;margin:0 auto;padding:30px 18px 90px}
 footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;
  font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;
  border-top:1px solid rgba(128,128,128,.25)}
+/* 단원 내내 키우는 개인 프로젝트 — 기체 시뮬레이터 만들기 */
+.proj{position:relative;display:flex;gap:18px;align-items:center;text-decoration:none;color:inherit;margin-top:26px;
+ border:2px solid var(--c3);border-radius:var(--r);background:linear-gradient(180deg,#fffaf2,#fbf1e2);
+ padding:20px 22px;box-shadow:var(--shadow);transition:.18s}
+.proj:hover{transform:translateY(-3px);border-color:#a85c14}
+.proj .pi{flex:none;width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-size:36px;
+ background:var(--paper-hi);border:1.5px solid #e3c79d}
+.proj .pb{flex:1;min-width:0}
+.proj .kick{font-size:13.5px;font-weight:800;color:#8f5312}
+.proj h3{font-family:var(--jua);font-size:clamp(20px,2.7vw,25px);line-height:1.35;margin-top:2px}
+.proj p{font-size:14.5px;color:var(--ink-dim);margin-top:6px;line-height:1.65}
+.proj .stages{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.proj .stages span{font-size:12.5px;font-weight:700;background:var(--paper-hi);border:1px solid #e3c79d;border-radius:99px;padding:4px 11px;color:#7a4a12}
+.proj .stages span b{color:var(--c3)}
+.proj .pgo{flex:none;font-weight:800;font-size:15px;color:#fff;background:var(--c3);border-radius:99px;padding:10px 18px;white-space:nowrap}
+.proj .st{position:absolute;top:-12px;right:14px;font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:99px;
+ background:var(--paper-hi);border:1.5px solid var(--ok);color:var(--ok)}
+.proj .st[hidden]{display:none}
+@media(max-width:640px){.proj{flex-wrap:wrap;padding:18px 18px 16px}.proj .pi{display:none}.proj .pgo{width:100%;text-align:center}}
 .hubfig{margin:22px 0 6px;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper-hi)}
 .hubfig img{display:block;width:100%;height:auto}
 .hubfig figcaption{font-size:13.5px;color:var(--ink-mute);padding:9px 13px;border-top:1px solid var(--line-soft)}
@@ -102,6 +121,18 @@ footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14p
  <p>공기는 텅 빈 것이 아니라 <b>쉴 새 없이 날아다니는 알갱이</b>로 가득 차 있습니다.<br>
  그 알갱이가 벽에 부딪히는 것 — 그것이 바로 <b>기체의 압력</b>입니다. 다섯 걸음으로 확인해 봅시다.</p>
 </div>
+
+<a class="proj" href="model-fixing.html" id="projCard">
+ <span class="st" id="projSt" hidden>📖 진행 중</span>
+ <span class="pi" aria-hidden="true">🧪</span>
+ <div class="pb">
+  <div class="kick">단원 내내 키우는 개인 프로젝트</div>
+  <h3>기체 시뮬레이터 만들기 — 순서대로 따라 하기</h3>
+  <p>AI가 만든 불량 시뮬레이터에서 배운 내용과 어긋나는 곳을 찾아 고치고, 나만의 기체 시뮬레이터로 키웁니다. 무엇을 할지, 막혔을 때 대처법, 올리는 법까지 한 페이지에 순서대로 있어요.</p>
+  <div class="stages"><span><b>①</b> 고치기 — 기체의 압력을 배운 뒤</span><span><b>②</b> 압력과 부피를 배운 뒤</span><span><b>③</b> 온도와 부피를 배운 뒤</span><span><b>④</b> 최종본 — 단원 끝</span></div>
+ </div>
+ <span class="pgo">프로젝트 열기 →</span>
+</a>
 
 <div class="blocks">
  <div class="block">
@@ -176,7 +207,7 @@ footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14p
 
 </main>
 
-<footer id="app-credit">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-08-21</span></footer>
+<footer id="app-credit">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-06</span></footer>
 
 <script>
 "use strict";
@@ -190,6 +221,12 @@ document.querySelectorAll('.lesson[data-save]').forEach(a=>{
  else{st.textContent='📖 진행 중';st.classList.add('go');}
  }catch(e){}
 });
+
+/* 프로젝트 진행 배지 — 프로젝트 페이지 「따라 하기」에서 ✓ 한 것이 있으면 */
+try{
+ const d=JSON.parse(localStorage.getItem('gasvibe:flow:done')||'null');
+ if(d&&Object.keys(d).length)document.getElementById('projSt').hidden=false;
+}catch(e){}
 
 /* 구름 */
 (function(){
