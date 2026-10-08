@@ -1037,7 +1037,7 @@ requestAnimationFrame(loop);
 &lt;/html&gt;
 </textarea>
 
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">제작 : 과학을 사랑하는 선생님 · &copy; 2026 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-07</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">제작 : 과학을 사랑하는 선생님 · &copy; 2026 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-08</span></footer>
 
 <script>
 /* ══════════════════ 설정 ══════════════════ */
@@ -1454,10 +1454,8 @@ const STUCK = {
   labWhite:  ['실행실에서 실행했는데 하얘요', '코드를 <code>&lt;!DOCTYPE html&gt;</code>부터 <code>&lt;/html&gt;</code>까지 전부 붙였는지 봅니다.'],
   lost:      ['이 페이지에 체크한 것이 사라졌어요', '이 페이지의 칸과 체크는 이 기기에만 저장됩니다. 찾은 잘못·돌아보기·기획서는 📮로 보낸 것이 선생님께 남습니다(👤 같은 학번·이름으로 들어가면 다른 기기에서도 다시 불러옵니다).'],
   sghNum:    ['「학번은 숫자 4~6자리로 넣어 주세요」', '숫자만 넣습니다. 예: 1학년 3반 12번 → <b>10312</b>'],
-  sghNick:   ['「이 학번은 다른 별명으로 등록되어 있어요」', '처음에 쓴 별명을 넣습니다. 기억나지 않으면 선생님께 — 선생님이 별명을 바꿔 줄 수 있습니다.'],
-  sghTaken:  ['「다른 친구가 쓰고 있는 별명이에요」', '다른 별명을 정합니다.'],
   sghReady:  ['「선생님이 전시관을 준비하고 있습니다」', '선생님께 알리고, 그동안 미션을 하며 공책에 기록해 둡니다.'],
-  sghRelogin:['「다시 들어와 주세요(학번과 별명)」', '같은 학번·별명으로 다시 들어가면 기록은 그대로 있습니다.'],
+  sghRelogin:['「다시 들어와 주세요(학번)」', '같은 학번으로 다시 들어가면 기록은 그대로 있습니다.'],
   sghSave:   ['「저장하지 못했습니다」', '인터넷을 확인하고, 아무 칸이나 한 글자 고치면 다시 저장됩니다.'],
   sghDone:   ['「이 단계 마치기」를 누르면 빨간 알림이 떠요', '알림이 말하는 칸을 채운 뒤 다시 누릅니다.'],
   upDl:      ['「콘텐츠 복사」가 안 보여요', '<b>코드</b>를 누르고 코드 글자를 한 번 누른 뒤 <b>Ctrl+A</b> → <b>Ctrl+C</b>로 복사합니다. 그래도 안 되면 캔버스 카드의 <b>다운로드</b>(실행실에 붙여 두었다면 <b>⬇ 내 파일로 저장</b>)로 파일을 받고, 제출의 <b>HTML 파일 열기</b>로 그 파일을 고릅니다.'],
@@ -1524,8 +1522,8 @@ function waitHTML(k){
 const ext = (t, href) => ({t, href});
 const againStep = () => ({ t:'이어서 들어가기 — 👤 학번·이름 · Studentgithub',
   do:['이 페이지 오른쪽 위 <b>👤</b>에 내 학번과 이름이 보이는지 봅니다. 「학번·이름 넣기」라고 보이면 눌러서 넣습니다.',
-      'Studentgithub에 지난번과 <b>같은 학번·별명</b>으로 들어갑니다. 하던 곳부터 이어집니다.', '제미나이 탭도 열어 둡니다(학교 계정).'],
-  links:[ext('들어가기 ↗', sghTo('#/in')), ext('제미나이 열기 ↗', GEMINI)], stuck:['loginSid', 'sghNick', 'sghRelogin', 'gemAccount'] });
+      'Studentgithub에 <b>학번</b>만 넣고 들어갑니다. 하던 곳부터 이어집니다.', '제미나이 탭도 열어 둡니다(학교 계정).'],
+  links:[ext('들어가기 ↗', sghTo('#/in')), ext('제미나이 열기 ↗', GEMINI)], stuck:['loginSid', 'sghRelogin', 'gemAccount'] });
 function missionFlow(m, first){
   const look = {
     m1:'<b>입자 수</b> 손잡이를 움직여 보고, <b>멈춤</b>도 눌러 보고, 아무것도 건드리지 말고 <b>20초</b> 지켜봅니다.',
@@ -1605,9 +1603,9 @@ const FLOW = [
       links:[ext('제미나이 열기 ↗', GEMINI), ext('Studentgithub 열기 ↗', sghTo(''))], stuck:['loginSid', 'loginCode', 'loginOther', 'gemAccount'] },
     { t:'Studentgithub 들어가기',
       do:['Studentgithub에서 <b>들어가기</b>를 누릅니다.',
-          '<b>학번</b>(예: 10312 = 1학년 3반 12번)과 <b>별명</b>(1~12자, 실명 금지)을 넣고 <b>들어가기</b>.',
-          '다음 시간에도 똑같이 넣어야 하니 별명을 공책에 적어 둡니다.'],
-      links:[ext('들어가기 ↗', sghTo('#/in'))], stuck:['sghNum', 'sghNick', 'sghTaken', 'sghReady'] },
+          '<b>학번</b>(예: 10312 = 1학년 3반 12번)만 넣고 <b>들어가기</b>.',
+          '다음 시간에도 학번만 넣으면 하던 곳부터 이어집니다.'],
+      links:[ext('들어가기 ↗', sghTo('#/in'))], stuck:['sghNum', 'sghReady'] },
     ...missionFlow(MI('m1'), true),
     uploadMission(MI('m1')),
     { t:'모형 이야기 읽고 생각해 보기', tab:'model',
@@ -1683,7 +1681,7 @@ function errDictHTML(){
     ['🤖 제미나이', ['gemAccount', 'gemEnter', 'gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemExtra', 'gemLong', 'gemPaste']],
     ['📄 이 수업 페이지', ['condShort', 'copy', 'fixNeed', 'fixNone', 'fixDup', 'cvCopy', 'labWhite', 'lost']],
     ['📮 선생님께 보내기 (👤 학번·이름)', ['loginSid', 'loginCode', 'loginFull', 'loginOther', 'sendFail', 'refShort']],
-    ['🐙 Studentgithub — 들어가기·저장', ['sghNum', 'sghNick', 'sghTaken', 'sghReady', 'sghRelogin', 'sghSave', 'sghDone']],
+    ['🐙 Studentgithub — 들어가기·저장', ['sghNum', 'sghReady', 'sghRelogin', 'sghSave', 'sghDone']],
     ['📤 Studentgithub — 올리기', ['upDl', 'upNoHtml', 'upReflect', 'upPriv', 'upClosed', 'upOften', 'upBig']],
     ['🤝 Studentgithub — 서로 평가', ['rvClosed', 'rvPraise', 'rvSlow']]
   ];
@@ -1702,7 +1700,7 @@ function flowShellHTML(){
       <li>🤫 <b>AI가 만드는 동안(30초~1분)은 조용히</b> 기다립니다. 떠들거나 돌아다니면 <b class="bad">벌점</b>입니다.</li>
       <li>⏳ 기다리는 시간은 쉬는 시간이 아닙니다. ① 결과가 <b>어떻게 나올지 예상</b>해 적고, ② <b>교과서</b>에서 그 내용을 찾아 밑줄을 긋고, ③ 결과가 나오면 예상·교과서와 견줍니다.</li>
       <li>☝ 고칠 때마다 <b>직접 조작해 확인</b>합니다. AI가 "고쳤습니다"라고 해도 그대로 믿지 않습니다.</li>
-      <li>📮 <b>찾은 잘못 · 돌아보기 · 기획서</b>는 이 페이지에서 선생님께 보냅니다(오른쪽 위 👤 학번·이름). 고친 시뮬레이터와 최종본은 <b>Studentgithub</b>에 올립니다 — Studentgithub 별명은 실명 금지, 잊지 않게 공책에 적어 둡니다.</li>
+      <li>📮 <b>찾은 잘못 · 돌아보기 · 기획서</b>는 이 페이지에서 선생님께 보냅니다(오른쪽 위 👤 학번·이름). 고친 시뮬레이터와 최종본은 <b>Studentgithub</b>에 올립니다(학번만 넣고 들어감).</li>
       <li>🙋 막히면 손 들기 전에 그 순서의 「막혔을 때」와 맨 아래 「오류 사전」을 먼저 봅니다.</li>
     </ul>
   </div>
@@ -2047,7 +2045,7 @@ function buildMain(){
     <p style="margin:0;font-size:15px;color:var(--ink-dim)">오른쪽 위 <b>👤</b>에 학번과 이름을 넣으면 보내집니다. 조건 적기·고칠 방법·생각해 보기·실행실 코드는 이 기기에만 남고 거두지 않습니다. 고친 시뮬레이터와 최종본은 Studentgithub에 올립니다.</p>
   </div>
   <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a>
-    <span>학번과 별명으로 들어가면 어디까지 했는지 이어집니다.</span></div>
+    <span>학번만 넣고 들어가면 어디까지 했는지 이어집니다.</span></div>
 
   <h2>제미나이 캔버스 쓰는 법</h2>
   <p style="font-size:15px;color:var(--ink-dim)">학교 계정 제미나이의 실제 화면입니다.</p>
