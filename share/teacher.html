@@ -148,7 +148,7 @@ const TEXT_LABEL={askTa:'나의 질문/생각',emRule:'표에서 찾은 규칙',
  rule:'표에서 찾은 규칙',pin:'누름못 풍선 설명',obs:'관찰 기록',balloon:'풍선 설명',block1:'블록 답(공기가 미는 까닭)',conclusion:'결론 문장',jtube:'J자 관 설명',block2:'봉지 여행 블록',compare:'보일·샤를 구분',topic:'영상 주제',principle:'원리 한 줄',sb1:'스토리보드 1',sb2:'스토리보드 2',sb3:'스토리보드 3',sb4:'스토리보드 4',sb5:'스토리보드 5',sb6:'스토리보드 6',roles:'역할 나누기',review:'오늘의 한 줄',
  'm1-find':'미션 1 · 찾은 잘못','m1-over':'미션 1 · 극복한 점','m1-feel':'미션 1 · 느낀 점','m2-find':'미션 2 · 찾은 잘못','m2-over':'미션 2 · 극복한 점','m2-feel':'미션 2 · 느낀 점',
  'm3-find':'미션 3 · 찾은 잘못','m3-over':'미션 3 · 극복한 점','m3-feel':'미션 3 · 느낀 점','plan-q':'기획 · 설명할 탐구 질문','plan-cond':'기획 · 갖춰야 할 조건','plan-ui':'기획 · 화면(조작과 보이는 것)',
- 'plan-check':'기획 · AI가 틀리기 쉬운 곳과 확인 방법','fin-over':'최종본 · 극복한 점','fin-feel':'최종본 · 느낀 점'};
+ 'plan-check':'기획 · AI가 틀리기 쉬운 곳과 확인 방법','fin-find':'최종본 · 찾은 잘못','fin-over':'최종본 · 극복한 점','fin-feel':'최종본 · 느낀 점'};
 let ADMIN='', CODES=[], STU=[];
 async function rpc(n,a){const r=await sb.rpc(n,a);if(r.error)throw new Error(r.error.message||String(r.error));return r.data;}
 const say=(id,t,c)=>{const m=$(id);m.textContent=t;m.className='msg '+(c||'');};
@@ -259,7 +259,7 @@ function paintStudents(){
 }
 /* ── ★ 시뮬레이터 프로젝트(바이브코딩) 모아 보기 — 학생이 보낸 네 가지만 ── */
 const VIBE_VIEWS={
- find:{t:'찾은 잘못',cols:[['m1-find','미션 1'],['m2-find','미션 2'],['m3-find','미션 3']]},
+ find:{t:'찾은 잘못',cols:[['m1-find','미션 1'],['m2-find','미션 2'],['m3-find','미션 3'],['fin-find','최종본']]},
  over:{t:'극복한 점',cols:[['m1-over','미션 1'],['m2-over','미션 2'],['m3-over','미션 3'],['fin-over','최종본']]},
  feel:{t:'느낀 점',cols:[['m1-feel','미션 1'],['m2-feel','미션 2'],['m3-feel','미션 3'],['fin-feel','최종본']]},
  plan:{t:'기획서',cols:[['plan-q','설명할 탐구 질문'],['plan-cond','갖춰야 할 조건'],['plan-ui','화면 기획'],['plan-check','AI가 틀리기 쉬운 곳·확인 방법']]}
