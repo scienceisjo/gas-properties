@@ -208,6 +208,22 @@ html.student #notes{display:none!important}
 .qbox .qh{font-size:26px;font-weight:600;color:var(--t2);margin-bottom:6px}
 .say-line{position:absolute;left:120px;right:120px;text-align:center;font-size:44px;font-weight:600;letter-spacing:-.02em;z-index:3}
 .fine{position:absolute;left:120px;bottom:40px;font-size:24px;color:var(--t3);z-index:3}
+/* ── 키워드 진행 표시(무대 오른쪽 위) — core.js buildKw/syncKw ── */
+#kwbar{position:absolute;top:34px;right:44px;z-index:30;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);pointer-events:none;
+  transition:opacity .45s var(--ease-out),transform .45s var(--ease-out)}
+#kwbar.show{opacity:1;transform:none;pointer-events:auto}
+#kwbar .kw{display:flex;align-items:center;height:46px;min-width:46px;border-radius:9999px;background:rgba(0,0,0,.055);color:#86868b;
+  font-size:24px;font-weight:600;letter-spacing:-.01em;line-height:1;transition:background .45s,color .45s;cursor:pointer}
+#kwbar .kw b{width:46px;height:46px;flex:none;display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+#kwbar .kw span{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .6s var(--ease-out),padding .6s var(--ease-out)}
+#kwbar .kw.done{background:rgba(0,0,0,.13);color:#3a3a3c}
+#kwbar .kw.cur{background:var(--action);color:#fff}
+#kwbar .kw.cur span{max-width:460px;padding-right:22px}
+#kwbar .kw:active{transform:scale(.95)}
+body:not(.on-light) #kwbar .kw{background:rgba(255,255,255,.1);color:#8e8e93}
+body:not(.on-light) #kwbar .kw.done{background:rgba(255,255,255,.24);color:#f5f5f7}
+body:not(.on-light) #kwbar .kw.cur{background:var(--action-dark);color:#fff}
+html.still #kwbar,html.still #kwbar *{transition:none!important}
 
 /* ── 10_gas.css ── */
 /* ── 기체 압력 강의 덱 공용 색·글자 — 의미마다 색 하나(같은 뜻은 어느 장에서나 같은 색) ──
@@ -276,6 +292,23 @@ html.student #notes{display:none!important}
 .rk-p{position:absolute;display:block;pointer-events:none}
 .rk.on .rk-w{opacity:1}
 
+/* ── 02_hookk_keywords.html ── */
+
+#d2_02_hookk_keywords .kwk-n{font-size:48px;font-weight:700;fill:var(--act);font-variant-numeric:tabular-nums}
+#d2_02_hookk_keywords .kwk-end{position:absolute;width:200px;text-align:center;font-size:26px;font-weight:600;color:var(--t3);z-index:3}
+#d2_02_hookk_keywords .kwk-t{position:absolute;text-align:center;font-size:46px;font-weight:700;letter-spacing:-.025em;line-height:1.25;word-break:keep-all;z-index:3}
+#d2_02_hookk_keywords .kwk-start{position:absolute;width:220px;text-align:center;font-size:28px;font-weight:600;color:var(--act);z-index:3}
+#d2_02_hookk_keywords .kwk-mock{position:absolute;top:34px;right:44px;display:flex;gap:8px;z-index:3}
+#d2_02_hookk_keywords .kwk-mock .mk{display:flex;align-items:center;height:46px;min-width:46px;border-radius:9999px;background:rgba(0,0,0,.055);color:#86868b;font-size:24px;font-weight:600;line-height:1}
+#d2_02_hookk_keywords .kwk-mock .mk b{width:46px;height:46px;display:grid;place-items:center;font-weight:700}
+#d2_02_hookk_keywords .kwk-mock .mk.cur{background:var(--act);color:#fff}
+#d2_02_hookk_keywords .kwk-mock .mk i{font-style:normal;padding-right:22px;white-space:nowrap}
+#d2_02_hookk_keywords .kwk-hint{position:absolute;top:96px;right:44px;font-size:26px;color:var(--t2);z-index:3}
+
+/* ── 08_ball.html ── */
+
+#d2_08_ball .s08-cap{font-size:32px;font-weight:600;color:var(--on-dark)}
+
 /* ── 12_challenge.html ── */
 
 #d2_12_challenge .pill4{position:absolute;top:400px;width:360px;height:170px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1.2;padding:0 20px}
@@ -324,7 +357,7 @@ html.student #notes{display:none!important}
 
 <div id="viewport"><div id="stage">
 <!-- ═══ 01_cover.html ═══ -->
-<section class="slide" id="d2_01_cover" data-tile="black" data-title="표지" data-notes="P1" data-say="보이지 않는 기체가 어떻게 압력을 만드는지 — 벽이 반짝이는 자리가 입자가 부딪히는 자리예요.">
+<section class="slide" id="d2_01_cover" data-tile="black" data-title="표지" data-notes="P1" data-say="보이지 않는 기체가 어떻게 압력을 만드는지 봅니다. 벽이 반짝이는 자리가 입자가 부딪히는 자리예요.">
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <rect id="d2_01_cover-glass" x="520" y="90" width="880" height="500" rx="0" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)" stroke-width="2" opacity="0"/>
     <g id="d2_01_cover-box"></g>
@@ -334,22 +367,39 @@ html.student #notes{display:none!important}
   <div class="abs t-lead center mute" style="left:0;width:1920px;top:880px" data-in="1800">입자의 충돌</div>
 </section>
 <!-- ═══ 02_hook.html ═══ -->
-<section class="slide" id="d2_02_hook" data-tile="dark" data-title="속이 꽉 찬 것도 아닌데" data-notes="P2" data-say="답을 말하지 말고 다음 장으로 넘어갑니다. 입자가 날아다닌다는 것과 힘을 준다는 것이 아직 이어져 있지 않은 상태가 정상이에요.">
-  <div class="hd" data-in><div class="eb">생각 열기</div><h2>속이 꽉 찬 것도 아닌데</h2></div>
+<section class="slide" id="d2_02_hook" data-tile="dark" data-title="과자 봉지 누르기" data-notes="P2" data-say="답을 말하지 말고 다음 장으로 넘어갑니다. 입자가 날아다닌다는 것과 힘을 준다는 것이 아직 이어져 있지 않은 상태가 정상이에요.">
+  <div class="hd" data-in><div class="eb">생각 열기</div><h2>과자 봉지 누르기</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <path id="d2_02_hook-bag" d="" fill="url(#lg-graphite)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
     <g id="d2_02_hook-crimp" stroke="rgba(255,255,255,.4)" stroke-width="3" stroke-linecap="round"></g>
     <g id="d2_02_hook-box"></g>
     <g id="d2_02_hook-finger"><rect x="900" y="-80" width="120" height="330" rx="60" fill="url(#lg-graphite)"/><rect x="900" y="-80" width="120" height="330" rx="60" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5"/></g>
   </svg>
-  <div class="abs center" style="left:0;width:1920px;top:770px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="1">봉지 속 대부분은 <span class="c-part">공기</span>뿐이다</div>
-  <div class="abs center" style="left:0;width:1920px;top:850px;font-size:66px;font-weight:600;letter-spacing:-.028em" data-step="2">무엇이 내 손가락을 버틸까?</div>
+  <div class="abs center" style="left:0;width:1920px;top:770px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="1">봉지 속은 대부분 <span class="c-part">기체</span>이다</div>
+  <div class="abs center" style="left:0;width:1920px;top:850px;font-size:52px;font-weight:600;letter-spacing:-.025em" data-step="2">그런데 손가락으로 눌러도 봉지가 잘 눌리지 않는다</div>
+</section>
+<!-- ═══ 02_hookk_keywords.html ═══ -->
+<section class="slide" id="d2_02_hookk_keywords" data-tile="light" data-title="오늘의 키워드" data-notes="P2k" data-say="오늘의 키워드 3개를 먼저 훑어봅니다. 다음 장부터 오른쪽 위에 지금 배우는 키워드가 표시되고, 칩을 누르면 그 키워드의 첫 장으로 갑니다.">
+  <div class="hd" data-in><div class="eb">학습지 2 · 기체의 압력</div><h2>오늘의 키워드</h2></div>
+  <svg class="full-svg" viewBox="0 0 1920 1080">
+    <path d="M230 610H1480" stroke="#e8e8ed" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <g data-in="2380" data-fx="fade"><path d="M1544 610H1666" stroke="#c7c7cc" stroke-width="6" stroke-dasharray="2 16" stroke-linecap="round" fill="none"/>
+      <circle cx="1700" cy="610" r="30" fill="#f5f5f7" stroke="#c7c7cc" stroke-width="5"/><path d="M1689 611l8 8 15-17" stroke="#aeaeb2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
+    <path d="M230 610H1480" stroke="var(--act)" stroke-width="12" stroke-linecap="round" fill="none" data-in="600" data-fx="draw" data-dur="1680" data-ease="inOut"/>
+    <circle id="d2_02_hookk_keywords-ring" cx="230" cy="610" r="54" fill="none" stroke="var(--act)" stroke-width="4" opacity="0"/>
+    <g data-in="600" data-fx="pop"><circle cx="230" cy="610" r="54" fill="#fff" stroke="var(--act)" stroke-width="7"/><text x="230" y="627" text-anchor="middle" class="kwk-n">1</text></g><g data-in="1440" data-fx="pop"><circle cx="855" cy="610" r="54" fill="#fff" stroke="var(--act)" stroke-width="7"/><text x="855" y="627" text-anchor="middle" class="kwk-n">2</text></g><g data-in="2280" data-fx="pop"><circle cx="1480" cy="610" r="54" fill="#fff" stroke="var(--act)" stroke-width="7"/><text x="1480" y="627" text-anchor="middle" class="kwk-n">3</text></g>
+  </svg>
+  <div class="kwk-t" style="left:30px;top:694px;width:400px" data-in="740" data-fx="rise">기체의 압력</div><div class="kwk-t" style="left:655px;top:694px;width:400px" data-in="1580" data-fx="rise">입자 수와 압력</div><div class="kwk-t" style="left:1280px;top:694px;width:400px" data-in="2420" data-fx="rise">생활 속 기체의 압력</div>
+  <div class="kwk-end" style="left:1600px;top:526px" data-in="2480" data-fx="fade">정리 · 문제</div>
+  <div class="kwk-start" style="left:120px;top:470px" data-in="2480" data-fx="pop">여기서 시작</div>
+  <div class="kwk-mock" data-in="2880" data-fx="fade"><span class="mk cur"><b>1</b><i>기체의 압력</i></span><span class="mk"><b>2</b></span><span class="mk"><b>3</b></span></div>
+  <div class="kwk-hint" data-in="3180" data-fx="fade">지금 배우는 키워드는 오른쪽 위에 계속 표시돼요</div>
 </section>
 <!-- ═══ 03_review.html ═══ -->
-<section class="slide" id="d2_03_review" data-tile="light" data-title="기체 입자의 성질 복습" data-notes="P3" data-say="세 그림 모두 입자는 12개입니다. 달라진 것은 입자 사이의 간격과 움직임이에요. 눌러 보면 기체만 부피가 크게 줄어듭니다. 그림은 입자끼리 부딪치는 것을 생략한 단순한 모형이라 입자가 서로 겹쳐 지나가기도 해요. 빈칸 ① 운동 · ② 거리 · ③ 온도 · ④ 부피.">
-  <div class="hd" data-in><div class="eb">복습</div><h2>기체 입자의 성질</h2></div>
+<section class="slide" id="d2_03_review" data-tile="light" data-title="기체 입자의 성질(복습)" data-notes="P3" data-say="세 그림 모두 입자는 12개입니다. 달라진 것은 입자 사이의 간격과 움직임이에요. 눌러 보면 기체만 부피가 크게 줄어듭니다. 그림은 입자끼리 부딪치는 것을 생략한 단순한 모형이라 입자가 서로 겹쳐 지나가기도 해요. 빈칸 ① 운동 · ② 거리 · ③ 온도 · ④ 부피.">
+  <div class="hd" data-in><div class="eb">기체의 압력</div><h2>기체 입자의 성질(복습)</h2></div>
   <div class="ws-card" style="left:120px;top:300px;width:800px" data-in="300">
-    <div class="ws-h"><b>기체 입자의 성질</b><span>복습!</span></div>
+    <div class="ws-h"><b>기체 입자의 성질(복습)</b></div>
     <div class="ws-line">입자가 매우 활발하게 <span class="bk"><span class="a" data-step="1" data-fx="pop">운동</span><span class="n">1</span></span>한다</div>
     <div class="ws-line" style="margin-top:8px">입자 사이의 <span class="bk"><span class="a" data-step="2" data-fx="pop">거리</span><span class="n">2</span></span>가 매우 멀다</div>
     <div class="ws-line" style="margin-top:8px">압력이나 <span class="bk"><span class="a" data-step="3" data-fx="pop">온도</span><span class="n">3</span></span>에 따른 <span class="bk"><span class="a" data-step="3" data-fx="pop" data-delay="350">부피</span><span class="n">4</span></span> 변화가 크다</div>
@@ -357,12 +407,12 @@ html.student #notes{display:none!important}
   <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d2_03_review-boxes"></g></svg>
 </section>
 <!-- ═══ 04_define.html ═══ -->
-<section class="slide" id="d2_04_define" data-tile="black" data-title="기체의 압력이란" data-notes="P4" data-say="빈칸 ⑤ 운동 · ⑥ 충돌 · ⑦ 면적 · ⑧ 충돌 · ⑨ 기체의 압력. 벽의 일정한 넓이에 1초 동안 부딪히는 횟수를 세어 보게 합니다(그림의 입자는 부딪히면 벽에 붙지 않고 튕겨 나와요).">
-  <div class="hd" data-in><div class="eb"><b>1</b>기체의 압력</div><h2>입자가 벽에 부딪혀 가하는 힘</h2></div>
+<section class="slide" id="d2_04_define" data-tile="black" data-title="기체의 압력" data-notes="P4" data-say="빈칸 ⑤ 운동 · ⑥ 충돌 · ⑦ 면적 · ⑧ 충돌 · ⑨ 기체의 압력. 벽의 일정한 넓이에 1초 동안 부딪히는 횟수를 세어 보게 합니다(그림의 입자는 부딪히면 벽에 붙지 않고 튕겨 나와요).">
+  <div class="hd" data-in><div class="eb">기체의 압력</div><h2>기체 입자의 충돌과 기체의 압력</h2></div>
   <div class="ws-card" style="left:120px;top:300px;width:840px" data-in="300">
-    <div class="ws-h"><b>기체의 압력</b></div>
-    <div class="ws-line">기체 물질을 이루는 입자는 끊임없이 <span class="bk"><span class="a" data-step="1" data-fx="pop">운동</span><span class="n">5</span></span>하면서 물체에 <span class="bk"><span class="a" data-step="1" data-fx="pop" data-delay="350">충돌</span><span class="n">6</span></span>해 힘을 가한다</div>
-    <div class="ws-line" style="margin-top:12px">일정한 <span class="bk"><span class="a" data-step="2" data-fx="pop">면적</span><span class="n">7</span></span>에 기체 입자가 <span class="bk"><span class="a" data-step="2" data-fx="pop" data-delay="350">충돌</span><span class="n">8</span></span>해서 가하는 힘 → 이것을 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">기체의 압력</span><span class="n">9</span></span>이라고 한다</div>
+    <div class="ws-h"><b>기체의 압력</b><span>입자가 벽에 부딪혀 가하는 힘</span></div>
+    <div class="ws-line">기체 물질을 이루는 입자는 끊임없이 <span class="bk"><span class="a" data-step="1" data-fx="pop">운동</span><span class="n">5</span></span>하면서 물체에 <span class="bk"><span class="a" data-step="1" data-fx="pop" data-delay="350">충돌</span><span class="n">6</span></span>해 힘을 가한다.</div>
+    <div class="ws-line" style="margin-top:12px">일정한 <span class="bk"><span class="a" data-step="2" data-fx="pop">면적</span><span class="n">7</span></span>에 기체 입자가 <span class="bk"><span class="a" data-step="2" data-fx="pop" data-delay="350">충돌</span><span class="n">8</span></span>하여 가하는 힘을 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">기체의 압력</span><span class="n">9</span></span>이라고 한다.</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <rect x="1000" y="310" width="640" height="380" rx="0" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
@@ -380,49 +430,49 @@ html.student #notes{display:none!important}
   <div class="gx-tag c-press" style="left:800px;top:800px;background:rgba(255,106,61,.12)" data-step="3">기체의 압력</div>
 </section>
 <!-- ═══ 05_direction.html ═══ -->
-<section class="slide" id="d2_05_direction" data-tile="dark" data-title="압력의 방향" data-notes="P5" data-say="벽 네 면이 골고루 반짝이는 것을 보게 합니다. 「아래로만」은 자주 나오는 오개념이에요. 빈칸 ⑩ ⑪ 모든 방향 · ⑫ 아래.">
-  <div class="hd" data-in><div class="eb"><b>2</b>압력의 방향</div><h2>모든 방향으로 작용한다</h2></div>
+<section class="slide" id="d2_05_direction" data-tile="dark" data-title="압력의 방향" data-notes="P5" data-say="벽 네 면이 골고루 반짝이는 것을 보게 합니다. 기체의 압력이 아래로만 작용한다는 생각은 자주 나오는 오개념이에요. 빈칸 ⑩ ⑪ 모든 방향 · ⑫ 아래.">
+  <div class="hd" data-in><div class="eb">기체의 압력이 작용하는 방향</div><h2>압력의 방향</h2></div>
   <div class="ws-card" style="left:120px;top:300px;width:840px" data-in="300">
     <div class="ws-h"><b>압력의 방향</b></div>
-    <div class="ws-line">기체 입자가 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">모든 방향</span><span class="n">10</span></span>으로 운동하면서 충돌하므로, 기체의 압력도 <span class="bk wide"><span class="a" data-step="1" data-fx="pop" data-delay="350">모든 방향</span><span class="n">11</span></span>으로 작용한다</div>
-    <div class="ws-line" style="margin-top:18px"><b style="color:var(--heat)">주의</b> 기체의 압력이 <span class="bk"><span class="a" data-step="2" data-fx="pop">아래</span><span class="n">12</span></span>로만 작용하는 것이 아님!</div>
+    <div class="ws-line">기체 입자가 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">모든 방향</span><span class="n">10</span></span>으로 운동하면서 충돌하므로, 기체의 압력도 <span class="bk wide"><span class="a" data-step="1" data-fx="pop" data-delay="350">모든 방향</span><span class="n">11</span></span>으로 작용한다.</div>
+    <div class="ws-line" style="margin-top:18px">기체의 압력은 <span class="bk"><span class="a" data-step="2" data-fx="pop">아래</span><span class="n">12</span></span>쪽뿐만 아니라 위쪽과 옆쪽으로도 작용한다.</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <g id="d2_05_direction-wrong" opacity="0">
       <rect x="1000" y="410" width="320" height="340" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
       <g id="d2_05_direction-fall"></g>
       <path d="M1036 446L1284 714M1284 446L1036 714" stroke="var(--on-dark)" stroke-width="12" stroke-linecap="round" opacity=".8"/>
-      <text x="1160" y="806" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--on-dark-2)">이렇게 생각하기 쉽지만</text>
-      <text x="1160" y="844" text-anchor="middle" style="font-size:26px;fill:var(--on-dark-2)">입자가 아래로만 떨어져 바닥만 누른다</text>
+      <text x="1160" y="838" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--on-dark-2)">잘못된 입자 모형 ✗</text>
+      <text x="1160" y="876" text-anchor="middle" style="font-size:24px;fill:var(--on-dark-2)">입자가 아래로만 운동하여</text><text x="1160" y="910" text-anchor="middle" style="font-size:24px;fill:var(--on-dark-2)">바닥에만 충돌한다</text>
     </g>
     <g id="d2_05_direction-right" opacity="0">
       <rect x="1440" y="410" width="320" height="340" rx="14" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
       <g id="d2_05_direction-box"></g>
-      <text x="1600" y="806" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--kin)">실제로는 사방으로</text>
-      <text x="1600" y="844" text-anchor="middle" style="font-size:26px;fill:var(--on-dark-2)">네 벽 어디에나 부딪힌다</text>
+      <text x="1600" y="838" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--kin)">옳은 입자 모형 ✓</text>
+      <text x="1600" y="876" text-anchor="middle" style="font-size:24px;fill:var(--on-dark-2)">모든 방향으로 운동하며</text><text x="1600" y="910" text-anchor="middle" style="font-size:24px;fill:var(--on-dark-2)">모든 벽에 충돌한다</text>
     </g>
   </svg>
 </section>
 <!-- ═══ 06_beads.html ═══ -->
-<section class="slide" id="d2_06_beads" data-tile="dark" data-title="페트병 속 쇠구슬" data-notes="P6" data-say="쇠구슬은 흔들어 줘야 움직이고 진짜 기체 입자는 스스로 움직인다는 한계를 꼭 말해 줍니다(그림은 계속 흔들어 주는 상황). 표의 「작다 · 크다」는 학생이 먼저 적게 하세요.">
-  <div class="hd" data-in><div class="eb">쇠구슬을 기체 입자에 비유</div><h2>페트병 속 쇠구슬</h2></div>
+<section class="slide" id="d2_06_beads" data-tile="dark" data-title="쇠구슬을 기체 입자에 비유한 실험" data-notes="P6" data-say="쇠구슬은 흔들어 줘야 움직이고 진짜 기체 입자는 스스로 움직인다는 한계를 꼭 말해 줍니다(그림은 계속 흔들어 주는 상황). 표의 「작다 · 크다」는 학생이 먼저 적게 하세요.">
+  <div class="hd" data-in><div class="eb">기체 입자의 수와 기체의 압력</div><h2>쇠구슬을 기체 입자에 비유한 실험</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <rect x="120" y="340" width="720" height="340" rx="0" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
     <g id="d2_06_beads-box"></g>
     <rect x="840" y="340" width="56" height="340" rx="12" fill="#c99a7a"/>
     <text x="868" y="522" text-anchor="middle" style="font-size:30px;font-weight:700;fill:#3a2a1f" transform="rotate(-90 868 510)">손바닥</text>
-    <text x="120" y="322" style="font-size:26px;fill:var(--on-dark-2)">쇠구슬을 계속 흔들어 주는 중이라고 생각해 보자</text>
+    <text x="120" y="322" style="font-size:26px;fill:var(--on-dark-2)">쇠구슬이 든 페트병을 계속 흔든다</text>
     <g id="d2_06_beads-tbl"></g>
   </svg>
   <div class="abs" style="left:120px;top:730px;font-size:34px;font-weight:600" data-step="1">1초 동안 손바닥에 약 <span id="d2_06_beads-n" class="num" style="font-size:52px;font-weight:700;margin:0 8px">0</span> 번 부딪힌다</div>
   <div class="abs mute" style="left:120px;top:820px;width:770px;font-size:30px;line-height:1.45" data-step="3">쇠구슬은 흔들어 줘야 움직이지만, 기체 입자는 아무도 흔들지 않아도 스스로 끊임없이 움직인다.</div>
 </section>
 <!-- ═══ 07_count.html ═══ -->
-<section class="slide" id="d2_07_count" data-tile="black" data-title="입자 수와 압력" data-notes="P7" data-say="용기의 크기는 같고 입자 수만 다릅니다. 입자가 빨라진 것이 아니라 수가 늘어난 것이에요(빠르기를 나타내는 하늘색 화살표 길이는 같음). 빈칸 ⑬ 많으면 · ⑭ 횟수 · ⑮ 커진다 · ⑱ 많아지면 · ⑲ 잦아진다.">
-  <div class="hd" data-in><div class="eb"><b>3</b>압력을 바꾸는 것</div><h2>무엇이 압력을 크게 하나 — 입자 수</h2></div>
+<section class="slide" id="d2_07_count" data-tile="black" data-title="입자 수에 따른 압력 변화" data-notes="P7" data-say="용기의 크기는 같고 입자 수만 다릅니다. 입자가 빨라진 것이 아니라 수가 늘어난 것이에요(빠르기를 나타내는 하늘색 화살표 길이는 같음). 빈칸 ⑬ 많으면 · ⑭ 횟수 · ⑮ 커진다 · ⑱ 많아지면 · ⑲ 잦아진다.">
+  <div class="hd" data-in><div class="eb">기체 입자의 수와 기체의 압력</div><h2>입자 수에 따른 압력 변화</h2></div>
   <div class="ws-card" style="left:120px;top:250px;width:1680px;padding:24px 44px 22px" data-in="300">
     <div class="ws-line" style="font-size:38px">입자가 <span class="bk wide"><span class="a" data-step="4" data-fx="pop">많아지면</span><span class="n">18</span></span> 충돌이 <span class="bk wide"><span class="a" data-step="4" data-fx="pop" data-delay="350">잦아진다</span><span class="n">19</span></span></div>
-    <div class="ws-line" style="font-size:38px;margin-top:6px">일정한 크기의 용기 안에 기체 입자의 수가 <span class="bk"><span class="a" data-step="1" data-fx="pop">많으면</span><span class="n">13</span></span> 벽에 충돌하는 <span class="bk"><span class="a" data-step="2" data-fx="pop">횟수</span><span class="n">14</span></span>가 늘어 기체의 압력이 <span class="bk"><span class="a" data-step="3" data-fx="pop">커진다</span><span class="n">15</span></span></div>
+    <div class="ws-line" style="font-size:38px;margin-top:6px">일정한 크기의 용기 안에 기체 입자의 수가 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">많으면</span><span class="n">13</span></span> 벽에 충돌하는 <span class="bk"><span class="a" data-step="2" data-fx="pop">횟수</span><span class="n">14</span></span>가 늘어 기체의 압력이 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">커진다</span><span class="n">15</span></span>.</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <rect x="190" y="500" width="620" height="330" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
@@ -432,7 +482,7 @@ html.student #notes{display:none!important}
       <text x="500" y="884" text-anchor="middle" style="font-size:36px;font-weight:700;fill:var(--kin)">입자 12개</text>
       <text x="1420" y="884" text-anchor="middle" style="font-size:36px;font-weight:700;fill:var(--kin)">입자 24개</text>
       <path d="M860 665H1060" stroke="var(--kin)" stroke-width="6" stroke-linecap="round"/><path d="M1044 645L1064 665L1044 685" stroke="var(--kin)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="960" y="626" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--on-dark-2)">입자 수만 늘렸다</text>
+      <text x="960" y="626" text-anchor="middle" style="font-size:28px;font-weight:600;fill:var(--on-dark-2)">입자 수만 늘린다</text>
       <text x="960" y="722" text-anchor="middle" style="font-size:26px;fill:var(--on-dark-2)">빠르기는 같다</text>
     </g>
     <g data-step="3" data-fx="fade">
@@ -445,12 +495,12 @@ html.student #notes{display:none!important}
   <div class="abs center" style="left:1110px;width:620px;top:906px;font-size:32px;font-weight:600" data-step="2">1초 동안 벽 충돌 <span id="d2_07_count-nb" class="num" style="font-size:44px;font-weight:700;margin:0 6px">0</span> 번</div>
 </section>
 <!-- ═══ 08_ball.html ═══ -->
-<section class="slide" id="d2_08_ball" data-tile="dark" data-title="찌그러진 축구공" data-notes="P8" data-say="한쪽만 펴지는 게 아니라 사방으로 부푸는 것이 「모든 방향」의 증거예요. 입자가 늘어도 빠르기(하늘색 화살표 길이)는 그대로예요. 빈칸 ⑯ 수 · ⑰ 사방.">
-  <div class="hd" data-in><div class="eb"><b>4</b>입자 수와 압력</div><h2>찌그러진 축구공에 공기를 넣으면</h2></div>
+<section class="slide" id="d2_08_ball" data-tile="dark" data-title="공기를 넣을 때 공이 부풀어 오르는 과정" data-notes="P8" data-say="한쪽만 펴지는 게 아니라 사방으로 부푸는 것이 「모든 방향」의 증거예요. 입자가 늘어도 빠르기(하늘색 화살표 길이)는 그대로예요. 빈칸 ⑯ 수 · ⑰ 사방.">
+  <div class="hd" data-in><div class="eb">기체 입자의 수와 기체의 압력</div><h2>공기를 넣을 때 공이 부풀어 오르는 과정</h2></div>
   <div class="ws-card" style="left:120px;top:300px;width:860px" data-in="300">
-    <div class="ws-h"><b>압력을 바꾸는 것</b></div>
+    <div class="ws-h"><b>입자 수에 따른 압력 변화</b></div>
     <div class="ws-line">찌그러진 축구공에 공기를 넣으면<br>공기 입자의 <span class="bk"><span class="a" data-step="1" data-fx="pop">수</span><span class="n">16</span></span>가 늘어나 압력이 커지고,</div>
-    <div class="ws-line" style="margin-top:10px">압력이 모든 방향으로 작용하므로 <span class="bk"><span class="a" data-step="2" data-fx="pop">사방</span><span class="n">17</span></span>으로 부풀어 오른다</div>
+    <div class="ws-line" style="margin-top:10px">압력이 모든 방향으로 작용하므로 <span class="bk"><span class="a" data-step="2" data-fx="pop">사방</span><span class="n">17</span></span>으로 부풀어 오른다.</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <path id="d2_08_ball-body" d="" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.42)" stroke-width="6" stroke-linejoin="round"/>
@@ -463,10 +513,12 @@ html.student #notes{display:none!important}
     </g>
     <g id="d2_08_ball-box"></g>
   </svg>
+  <div class="abs center s08-cap" style="left:1180px;width:600px;top:860px" data-in="600" data-out="1">공기를 넣기 전(찌그러진 공)</div>
+  <div class="abs center s08-cap" style="left:1180px;width:600px;top:860px" data-step="2" data-delay="1600">공기를 넣은 후(팽팽한 공)</div>
 </section>
 <!-- ═══ 09_rigid.html ═══ -->
-<section class="slide" id="d2_09_rigid" data-tile="black" data-title="용기의 특성에 따른 차이" data-notes="P9" data-say="말랑한 공도 무한정 부풀지는 않아요. 안에서 미는 힘과 밖에서 누르는 힘이 같아지면 멈춥니다. 압력 막대와 안쪽 화살표는 처음 압력에 대한 비율이에요 — 공기를 넣는 순간 2배로 올랐다가, 부풀수록 도로 낮아져 처음보다 조금 큰 값에서 멈춥니다.">
-  <div class="hd" data-in><div class="eb">용기의 특성</div><h2>같은 양의 공기를 더 넣으면</h2></div>
+<section class="slide" id="d2_09_rigid" data-tile="black" data-title="단단한 용기와 늘어나는 용기의 차이" data-notes="P9" data-say="말랑한 공도 무한정 부풀지는 않아요. 안에서 미는 힘과 밖에서 누르는 힘이 같아지면 멈춥니다. 압력 막대와 안쪽 화살표는 처음 압력에 대한 비율이에요. 공기를 넣는 순간 2배로 올랐다가, 부풀수록 도로 낮아져 처음보다 조금 큰 값에서 멈춥니다.">
+  <div class="hd" data-in><div class="eb">기체 입자의 수와 기체의 압력</div><h2>단단한 용기와 늘어나는 용기의 차이</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <rect x="140" y="330" width="500" height="440" fill="rgba(255,255,255,.03)" stroke="#8e8e93" stroke-width="12"/>
     <g id="d2_09_rigid-a"></g>
@@ -478,21 +530,21 @@ html.student #notes{display:none!important}
     <g data-step="1" data-fx="fade">
       <rect x="190" y="880" width="400" height="20" rx="10" fill="rgba(255,255,255,.1)"/><rect id="d2_09_rigid-ga" x="190" y="880" width="200" height="20" rx="10" fill="var(--heat)"/>
       <path d="M390 872V908" stroke="var(--on-dark)" stroke-width="3"/><text x="176" y="898" text-anchor="end" style="font-size:26px;font-weight:600;fill:var(--on-dark-2)">압력</text>
-      <text x="390" y="946" text-anchor="middle" style="font-size:32px;font-weight:600;fill:var(--on-dark)">부피 그대로 · <tspan style="fill:var(--heat)">압력만 커진다</tspan></text>
+      <text x="390" y="946" text-anchor="middle" style="font-size:32px;font-weight:600;fill:var(--on-dark)">부피는 그대로이고 <tspan style="fill:var(--heat)">압력이 커진다</tspan></text>
     </g>
     <g data-step="2" data-fx="fade">
       <rect x="1050" y="880" width="400" height="20" rx="10" fill="rgba(255,255,255,.1)"/><rect id="d2_09_rigid-gb" x="1050" y="880" width="200" height="20" rx="10" fill="var(--heat)"/>
       <path d="M1250 872V908" stroke="var(--on-dark)" stroke-width="3"/><text x="1036" y="898" text-anchor="end" style="font-size:26px;font-weight:600;fill:var(--on-dark-2)">압력</text>
-      <text x="1250" y="946" text-anchor="middle" style="font-size:32px;font-weight:600;fill:var(--on-dark)">부풀다가 <tspan style="fill:var(--on-dark)">안팎의 힘이 같아지면 멈춘다</tspan></text>
+      <text x="1250" y="946" text-anchor="middle" style="font-size:32px;font-weight:600;fill:var(--on-dark)">안팎의 힘이 같아지면 더 부풀지 않는다</text>
     </g>
   </svg>
   <div class="abs" style="left:1560px;top:380px;width:240px;font-size:28px;line-height:1.45;font-weight:600" data-step="2"><span class="c-force">안에서 미는 힘</span><div style="font-weight:400;color:var(--on-dark-2);font-size:24px">= 기체의 압력</div><div style="margin-top:14px;color:var(--on-dark)">밖에서 누르는 힘</div><div style="font-weight:400;color:var(--on-dark-2);font-size:24px">= 바깥 공기의 압력 + 고무의 되당김</div><div style="margin-top:14px;font-weight:400;color:var(--on-dark-2);font-size:24px">부풀수록 안쪽 압력은 도로 낮아진다</div></div>
 </section>
 <!-- ═══ 10_life.html ═══ -->
 <section class="slide" id="d2_10_life" data-tile="parchment" data-title="생활 속 기체의 압력" data-notes="P10" data-say="빈칸 ⑳ 에어백 · ㉑ 커져. 에어백은 순간적으로 기체를 채워 압력을 만들고, 그 압력이 몸을 받쳐 충격을 줄입니다.">
-  <div class="hd" data-in><div class="eb"><b>5</b>생활 속의 기체 압력</div><h2>기체가 차면 부풀어 오른다</h2></div>
+  <div class="hd" data-in><div class="eb">생활 속 기체의 압력</div><h2>생활 속의 기체 압력</h2></div>
   <div class="ws-card" style="left:120px;top:262px;width:1680px;padding:24px 44px" data-in="300">
-    <div class="ws-line" style="font-size:38px">자동차 <span class="bk"><span class="a" data-step="1" data-fx="pop">에어백</span><span class="n">20</span></span>과 풍선 놀이 틀 : 기체가 차면서 기체의 압력이 <span class="bk"><span class="a" data-step="2" data-fx="pop">커져</span><span class="n">21</span></span> 부풀어 오른다</div>
+    <div class="ws-line" style="font-size:38px">자동차 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">에어백</span><span class="n">20</span></span>과 풍선 놀이 틀 : 기체가 차면서 기체의 압력이 <span class="bk"><span class="a" data-step="2" data-fx="pop">커져</span><span class="n">21</span></span> 부풀어 오른다.</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <g id="d2_10_life-car">
@@ -519,10 +571,10 @@ html.student #notes{display:none!important}
 </section>
 <!-- ═══ 11_air.html ═══ -->
 <section class="slide" id="d2_11_air" data-tile="dark" data-title="높이에 따른 공기의 압력" data-notes="P11" data-say="어느 높이에서나 압력은 모든 방향으로 작용하고, 달라지는 것은 크기뿐이에요. 화살표 길이는 압력의 대략적인 크기를 나타낸 표시입니다. 빈칸 ㉒ 공기 · ㉓ 양 · ㉔ 작아진다.">
-  <div class="hd" data-in><div class="eb"><b>6</b>공기의 압력</div><h2>늘 우리를 밀고 있다</h2></div>
+  <div class="hd" data-in><div class="eb">생활 속 기체의 압력</div><h2>높이에 따른 공기의 압력</h2></div>
   <div class="ws-card" style="left:120px;top:300px;width:830px" data-in="300">
-    <div class="ws-line">우리는 <span class="bk"><span class="a" data-step="1" data-fx="pop">공기</span><span class="n">22</span></span>에 둘러싸여 있으므로 늘 공기의 압력을 받고 있다</div>
-    <div class="ws-line" style="margin-top:14px">위로 올라갈수록 공기의 <span class="bk"><span class="a" data-step="2" data-fx="pop">양</span><span class="n">23</span></span>이 줄어들어 공기의 압력은 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">작아진다</span><span class="n">24</span></span></div>
+    <div class="ws-line">우리는 <span class="bk"><span class="a" data-step="1" data-fx="pop">공기</span><span class="n">22</span></span>에 둘러싸여 있으므로 공기의 압력을 받는다.</div>
+    <div class="ws-line" style="margin-top:14px">위로 올라갈수록 공기의 <span class="bk"><span class="a" data-step="2" data-fx="pop">양</span><span class="n">23</span></span>이 줄어들어 공기의 압력은 <span class="bk wide"><span class="a" data-step="3" data-fx="pop">작아진다</span><span class="n">24</span></span>.</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <path d="M1000 960H1250L1400 800L1520 640L1640 780L1800 930V990H1000Z" fill="#3a3a3c"/>
@@ -531,30 +583,30 @@ html.student #notes{display:none!important}
     <g data-step="2" data-fx="fade">
       <path d="M1032 940V360" stroke="var(--on-dark-2)" stroke-width="3" stroke-dasharray="4 10" stroke-linecap="round"/>
       <path d="M1020 384L1032 360L1044 384" stroke="var(--on-dark-2)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="1052" y="950" style="font-size:26px;fill:var(--on-dark-2);stroke:#1d1d1f;stroke-width:6px;paint-order:stroke">많음</text><text x="1052" y="392" style="font-size:26px;fill:var(--on-dark-2);stroke:#1d1d1f;stroke-width:6px;paint-order:stroke">적음</text><text x="1006" y="700" text-anchor="middle" transform="rotate(-90 1006 700)" style="font-size:26px;font-weight:600;fill:var(--on-dark-2);stroke:#1d1d1f;stroke-width:6px;paint-order:stroke">공기의 양</text>
+      <text x="1022" y="972" text-anchor="end" style="font-size:26px;fill:var(--on-dark-2);stroke:#1d1d1f;stroke-width:6px;paint-order:stroke">많음</text><text x="1052" y="392" style="font-size:26px;fill:var(--on-dark-2);stroke:#1d1d1f;stroke-width:6px;paint-order:stroke">적음</text><text x="1006" y="700" text-anchor="middle" transform="rotate(-90 1006 700)" style="font-size:26px;font-weight:600;fill:var(--on-dark-2);stroke:#1d1d1f;stroke-width:6px;paint-order:stroke">공기의 양</text>
     </g>
     <g id="d2_11_air-m1" data-step="1" data-fx="fade"></g>
     <g id="d2_11_air-m2" data-step="3" data-fx="fade"></g>
     <g id="d2_11_air-m3" data-step="3" data-fx="fade" data-delay="500"></g>
   </svg>
-  <div class="abs" style="left:120px;top:730px;width:830px;font-size:32px;line-height:1.45;font-weight:600" data-step="3">어느 높이에서나 압력은 <span style="color:var(--sound)">모든 방향</span>으로 작용한다.<br><span style="color:var(--on-dark-2);font-weight:400">달라지는 것은 크기뿐이다 (화살표 길이는 압력의 크기를 대략 나타낸 표시).</span></div>
+  <div class="abs" style="left:120px;top:730px;width:830px;font-size:32px;line-height:1.45;font-weight:600" data-step="3">공기의 압력은 어느 높이에서나 <span style="color:var(--sound)">모든 방향</span>으로 작용하고, 높이에 따라 크기가 달라진다.<br><span style="color:var(--on-dark-2);font-weight:400">화살표의 길이는 압력의 크기를 나타낸다.</span></div>
 </section>
 <!-- ═══ 12_challenge.html ═══ -->
-<section class="slide" id="d2_12_challenge" data-tile="parchment" data-title="도전!" data-notes="P12" data-say="학습지 뒷면의 도전 문제예요. 학생이 먼저 세 낱말로 써 본 뒤 화살표를 한 칸씩 열어 확인합니다.">
-  <div class="hd" data-in><div class="eb">도전!</div><h2>공이 부풀어 오르기까지</h2></div>
-  <div class="abs center" style="left:0;width:1920px;top:268px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-in="400">공에 공기를 넣었을 때 — <span class="c-part">입자 수</span> · <b>충돌 횟수</b> · <span class="c-press">압력</span>으로 설명해 보자</div>
+<section class="slide" id="d2_12_challenge" data-tile="parchment" data-title="도전 문제" data-notes="P12" data-say="학습지 뒷면의 도전 문제예요. 학생이 먼저 세 낱말로 써 본 뒤 화살표를 한 칸씩 열어 확인합니다.">
+  <div class="hd" data-in><div class="eb">도전</div><h2>공이 부풀어 오르는 과정 설명하기</h2></div>
+  <div class="abs" style="left:120px;width:1680px;top:250px;font-size:40px;line-height:1.4;font-weight:600;letter-spacing:-.02em" data-in="400">공에 공기를 넣었을 때 공이 부풀어 오르는 과정을 <span class="c-part">입자 수</span>, <b>충돌 횟수</b>, <span class="c-press">압력</span>을 모두 사용하여 설명하시오.</div>
   <div id="d2_12_challenge-chain"></div>
   <div class="ws-card" style="left:120px;top:660px;width:1680px;padding:30px 44px" data-step="5" data-fx="up">
-    <div class="ws-h"><b>이렇게 설명할 수 있다</b></div>
+    <div class="ws-h"><b>예시 답</b></div>
     <div class="ws-line" style="font-size:40px">공에 공기를 넣으면 공기 입자의 <b class="c-part">수</b>가 늘어나 벽에 충돌하는 <b>횟수</b>가 늘고, 기체의 <b class="c-press">압력</b>이 커진다. 압력은 모든 방향으로 작용하므로 공은 사방으로 부풀어 오른다.</div>
   </div>
 </section>
 <!-- ═══ 13_recap.html ═══ -->
-<section class="slide" id="d2_13_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P13" data-say="핵심 낱말이 빈칸으로 나옵니다 — 학생이 먼저 말하게 한 뒤 누를 때마다 카드 한 장씩 채워져요. 마지막 줄은 11장(높이에 따른 공기의 압력)의 요약이에요.">
+<section class="slide" id="d2_13_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P13" data-say="핵심 낱말이 빈칸으로 나옵니다. 학생이 먼저 말하게 한 뒤 누를 때마다 카드 한 장씩 채워져요. 마지막 줄은 「높이에 따른 공기의 압력」 장의 요약이에요.">
   <div class="hd" data-in><div class="eb">정리</div><h2>오늘 배운 것</h2></div>
   <div id="d2_13_recap-cards"></div>
   <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">위로 올라갈수록 공기의 <span class="rk c-part" data-rk="4" data-kind="shrink"><span class="rk-w">양</span><span class="rk-fx" aria-hidden="true"></span></span>이 줄어 공기의 <span class="rk c-press" data-rk="4" data-kind="down"><span class="rk-w">압력</span><span class="rk-fx" aria-hidden="true"></span></span>은 작아진다</div>
-  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-03</div>
+  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved · 최종 업데이트: 2026-10-14</div>
 </section>
 <!-- ═══ 90_quiz0.html ═══ -->
 <section class="slide" id="d2_90_quiz0" data-tile="black" data-title="문제로 확인하기" data-notes="" data-say="수업 페이지 확인하기에서 고른 4문제입니다. 문제마다 먼저 풀어 보게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다.">
@@ -566,34 +618,34 @@ html.student #notes{display:none!important}
   </div>
 </section>
 <!-- ═══ 91_quiz1.html ═══ -->
-<section class="slide" id="d2_91_quiz1" data-tile="light" data-title="문제 1" data-notes="" data-say="기체 압력의 뜻(입자의 충돌이 가하는 힘)을 무게·인력과 구별하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 기체의 압력은 끊임없이 날아다니는 입자가 벽에 충돌 해서 가하는 힘입니다. 무게도, 입자끼리의 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요.">
+<section class="slide" id="d2_91_quiz1" data-tile="light" data-title="문제 1" data-notes="" data-say="기체 압력의 뜻(입자의 충돌이 가하는 힘)을 바닥에만 작용하는 힘·입자끼리 끌어당기는 힘과 구별하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 기체의 압력은 끊임없이 날아다니는 입자가 벽에 충돌해서 가하는 힘입니다. 바닥에만 작용하는 힘도, 입자끼리 끌어당기는 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 1</b> / 4 <span class="qz-lv">기본</span></div>
     <div class="qz-stem" data-in="150">기체의 압력에 대한 설명으로 옳은 것은?</div>
-    <div class="qz-row" data-in="350"><ol class="qz-ch"><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">①</span><span class="qz-t">일정한 면적에 기체 입자가 충돌하여 가하는 힘이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">②</span><span class="qz-t">기체의 무게가 바닥을 누르는 힘이다.</span></li><li><span class="qz-n">③</span><span class="qz-t">기체 입자들이 서로 끌어당기는 힘이다.</span></li><li><span class="qz-n">④</span><span class="qz-t">기체가 한쪽으로 흐를 때만 생기는 힘이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">용기의 벽이 기체를 안쪽으로 조이는 힘이다.</span></li></ol></div>
-    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ① · 풀이</div><div class="qz-why-t">기체의 압력은 끊임없이 날아다니는 <b>입자가 벽에 충돌</b>해서 가하는 힘입니다. 무게도, 입자끼리의 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요.</div></div>
+    <div class="qz-row" data-in="350"><ol class="qz-ch"><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">①</span><span class="qz-t">일정한 면적에 기체 입자가 충돌하여 가하는 힘이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">②</span><span class="qz-t">기체 입자가 바닥에만 부딪혀 가하는 힘이다.</span></li><li><span class="qz-n">③</span><span class="qz-t">기체 입자들이 서로 끌어당기는 힘이다.</span></li><li><span class="qz-n">④</span><span class="qz-t">기체가 한쪽으로 흐를 때만 생기는 힘이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">용기의 벽이 기체를 안쪽으로 조이는 힘이다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ① · 풀이</div><div class="qz-why-t">기체의 압력은 끊임없이 날아다니는 <b>입자가 벽에 충돌</b>해서 가하는 힘입니다. 바닥에만 작용하는 힘도, 입자끼리 끌어당기는 힘도 아니고, 기체가 가만히 담겨 있어도 입자는 계속 움직이므로 압력이 생겨요.</div></div>
   </div>
 </section>
 <!-- ═══ 92_quiz2.html ═══ -->
-<section class="slide" id="d2_92_quiz2" data-tile="parchment" data-title="문제 2" data-notes="" data-say="쇠구슬 모형에서 개수(입자 수)와 손바닥이 받는 힘(압력)을 충돌 횟수로 연결하는지 확인한다. 정답 ②. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 개수 — 30개면 벽에 부딪히는 횟수가 많아 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요.">
+<section class="slide" id="d2_92_quiz2" data-tile="parchment" data-title="문제 2" data-notes="" data-say="쇠구슬 모형에서 개수(입자 수)와 손바닥이 받는 힘(압력)을 충돌 횟수로 연결하는지 확인한다. 정답 ②. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 개수입니다. 30개면 벽에 부딪히는 횟수가 많아 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 2</b> / 4 <span class="qz-lv">기본</span></div>
     <div class="qz-stem" data-in="150">그림과 같이 쇠구슬을 넣은 두 페트병을 같은 빠르기로 흔들었다. 손바닥에 느껴지는 힘이 더 큰 쪽과 그 까닭을 옳게 짝 지은 것은?</div>
-    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 230" role="img" aria-label="쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다."><text x="150" y="30" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="15" fill="#5c4a33" font-weight="800">(가) 쇠구슬 15개</text><rect x="80" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/><rect x="128" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/><circle cx="101" cy="89" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="138" cy="142" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="175" cy="95" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="108" cy="148" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="145" cy="101" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="182" cy="154" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="115" cy="107" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="152" cy="160" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="189" cy="113" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="122" cy="166" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="159" cy="119" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="196" cy="72" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="129" cy="125" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="166" cy="78" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="99" cy="131" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><text x="410" y="30" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="15" fill="#5c4a33" font-weight="800">(나) 쇠구슬 30개</text><rect x="340" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/><rect x="388" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/><circle cx="369" cy="145" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="406" cy="98" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="443" cy="151" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="376" cy="104" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="413" cy="157" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="450" cy="110" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="383" cy="163" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="420" cy="116" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="457" cy="69" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="390" cy="122" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="427" cy="75" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="360" cy="128" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="397" cy="81" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="434" cy="134" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="367" cy="87" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="404" cy="140" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="441" cy="93" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="374" cy="146" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="411" cy="99" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="448" cy="152" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="381" cy="105" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="418" cy="158" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="455" cy="111" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="388" cy="164" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="425" cy="117" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="358" cy="70" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="395" cy="123" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="432" cy="76" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="365" cy="129" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="402" cy="82" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><text x="280" y="215" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#96805c">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">(가) — 쇠구슬 하나하나가 더 세게 부딪히기 때문</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">②</span><span class="qz-t">(나) — 쇠구슬이 벽에 부딪히는 횟수가 더 많기 때문</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">③</span><span class="qz-t">(나) — 쇠구슬이 더 빨라지기 때문</span></li><li><span class="qz-n">④</span><span class="qz-t">같다 — 흔드는 빠르기가 같기 때문</span></li><li><span class="qz-n">⑤</span><span class="qz-t">(가) — 쇠구슬이 더 자유롭게 움직이기 때문</span></li></ol></div>
-    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ② · 풀이</div><div class="qz-why-t">흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 <b>개수</b> — 30개면 벽에 부딪히는 <b>횟수가 많아</b> 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요.</div></div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 230" role="img" aria-label="쇠구슬을 넣은 페트병 두 개를 같은 빠르기로 흔드는 실험. (가)는 쇠구슬 15개, (나)는 쇠구슬 30개가 들어 있다."><text x="150" y="30" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="15" fill="#5c4a33" font-weight="800">(가) 쇠구슬 15개</text><rect x="80" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/><rect x="128" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/><circle cx="101" cy="89" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="138" cy="142" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="175" cy="95" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="108" cy="148" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="145" cy="101" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="182" cy="154" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="115" cy="107" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="152" cy="160" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="189" cy="113" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="122" cy="166" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="159" cy="119" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="196" cy="72" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="129" cy="125" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="166" cy="78" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="99" cy="131" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><text x="410" y="30" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="15" fill="#5c4a33" font-weight="800">(나) 쇠구슬 30개</text><rect x="340" y="52" width="140" height="130" rx="18" fill="#f1f7fc" stroke="#1c507e" stroke-width="2.5"/><rect x="388" y="40" width="44" height="14" rx="4" fill="#3f88c5" stroke="#1c507e" stroke-width="2"/><circle cx="369" cy="145" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="406" cy="98" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="443" cy="151" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="376" cy="104" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="413" cy="157" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="450" cy="110" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="383" cy="163" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="420" cy="116" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="457" cy="69" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="390" cy="122" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="427" cy="75" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="360" cy="128" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="397" cy="81" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="434" cy="134" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="367" cy="87" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="404" cy="140" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="441" cy="93" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="374" cy="146" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="411" cy="99" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="448" cy="152" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="381" cy="105" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="418" cy="158" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="455" cy="111" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="388" cy="164" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="425" cy="117" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="358" cy="70" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="395" cy="123" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="432" cy="76" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="365" cy="129" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><circle cx="402" cy="82" r="7" fill="#8d99a6" stroke="#5c6b78" stroke-width="1.4"/><text x="280" y="215" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#96805c">※ 두 페트병을 같은 빠르기로 흔든다. 쇠구슬은 기체 입자를 흉내 낸 것이다.</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">(가), 쇠구슬 하나하나가 더 세게 부딪히기 때문</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">②</span><span class="qz-t">(나), 쇠구슬이 벽에 부딪히는 횟수가 더 많기 때문</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">③</span><span class="qz-t">(나), 쇠구슬이 더 빨라지기 때문</span></li><li><span class="qz-n">④</span><span class="qz-t">같다, 흔드는 빠르기가 같기 때문</span></li><li><span class="qz-n">⑤</span><span class="qz-t">(가), 쇠구슬이 더 자유롭게 움직이기 때문</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ② · 풀이</div><div class="qz-why-t">흔드는 빠르기가 같으니 쇠구슬 하나의 세기는 비슷합니다. 다른 것은 <b>개수</b>입니다. 30개면 벽에 부딪히는 <b>횟수가 많아</b> 손바닥이 받는 힘이 큽니다. 기체도 입자 수가 많을수록 충돌이 잦아 압력이 커져요.</div></div>
   </div>
 </section>
 <!-- ═══ 93_quiz3.html ═══ -->
-<section class="slide" id="d2_93_quiz3" data-tile="light" data-title="문제 3" data-notes="" data-say="기체의 압력이 모든 방향으로 작용함을 입자 운동과 연결하는지 확인한다. 정답 ③. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 입자는 위·아래·옆 가리지 않고 날아다니며 네 벽을 모두 두드립니다. 그래서 기체의 압력은 모든 방향 으로 작용해요. 튜브가 사방으로 부풀어 오르는 것이 그 증거입니다.">
+<section class="slide" id="d2_93_quiz3" data-tile="light" data-title="문제 3" data-notes="" data-say="기체의 압력이 모든 방향으로 작용함을 입자 운동과 연결하는지 확인한다. 정답 ③. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 입자는 위·아래·옆 가리지 않고 날아다니며 네 벽을 모두 두드립니다. 그래서 기체의 압력은 모든 방향으로 작용해요. 찌그러진 공에 공기를 넣으면 사방으로 부풀어 오르는 것이 그 증거입니다.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 3</b> / 4 <span class="qz-lv">기본</span></div>
     <div class="qz-stem" data-in="150">그림은 상자 속 기체 입자의 움직임을 나타낸 것이다. 기체의 압력이 작용하는 방향에 대한 설명으로 옳은 것은?</div>
-    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 252" role="img" aria-label="상자 속 기체 입자들이 저마다 다른 방향으로 날아다니고, 위·아래·왼쪽·오른쪽 네 벽을 미는 빨간 화살표가 모두 그려져 있다."><rect x="150" y="40" width="260" height="150" rx="8" fill="#f7f3e8" stroke="#8a6a3a" stroke-width="2.5"/><circle cx="200" cy="80" r="7" fill="#3a7a3f"/><line x1="206.6" y1="84.5" x2="219.8" y2="93.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="224.8,96.9 213.8,93.8 217.9,87.9" fill="#2f6ea8"/><circle cx="330" cy="70" r="7" fill="#3a7a3f"/><line x1="324.1" y1="75.4" x2="312.3" y2="86.2" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="307.9,90.3 313.4,80.3 318.3,85.6" fill="#2f6ea8"/><circle cx="250" cy="140" r="7" fill="#3a7a3f"/><line x1="252.9" y1="132.5" x2="258.7" y2="117.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="260.9,112.0 260.3,123.4 253.6,120.8" fill="#2f6ea8"/><circle cx="360" cy="150" r="7" fill="#3a7a3f"/><line x1="352.8" y1="146.5" x2="338.5" y2="139.4" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="333.1,136.7 344.4,138.3 341.2,144.7" fill="#2f6ea8"/><circle cx="300" cy="105" r="7" fill="#3a7a3f"/><line x1="293.1" y1="100.9" x2="279.4" y2="92.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="274.3,89.5 285.4,92.0 281.7,98.2" fill="#2f6ea8"/><circle cx="215" cy="165" r="7" fill="#3a7a3f"/><line x1="212.4" y1="172.6" x2="207.2" y2="187.7" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="205.3,193.4 205.4,182.0 212.2,184.3" fill="#2f6ea8"/><line x1="280.0" y1="40.0" x2="280.0" y2="18.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="280.0,10.0 284.8,24.4 275.2,24.4" fill="#b23a30"/><line x1="280.0" y1="190.0" x2="280.0" y2="212.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="280.0,220.0 275.2,205.6 284.8,205.6" fill="#b23a30"/><line x1="150.0" y1="115.0" x2="128.0" y2="115.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="120.0,115.0 134.4,110.2 134.4,119.8" fill="#b23a30"/><line x1="410.0" y1="115.0" x2="432.0" y2="115.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="440.0,115.0 425.6,119.8 425.6,110.2" fill="#b23a30"/><text x="280" y="238" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">입자가 사방으로 날아다니며 네 벽을 모두 두드린다 → 압력은 모든 방향</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">압력은 상자의 옆면에만 작용한다.</span></li><li><span class="qz-n">②</span><span class="qz-t">입자가 부딪히는 순간에만 한 방향으로 작용한다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">③</span><span class="qz-t">입자가 사방으로 날아다니므로 압력은 모든 방향으로 작용한다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">④</span><span class="qz-t">기체는 무거우므로 압력은 아래쪽으로만 작용한다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">입자가 위로 떠오르므로 압력은 위쪽으로만 작용한다.</span></li></ol></div>
-    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ③ · 풀이</div><div class="qz-why-t">입자는 위·아래·옆 가리지 않고 날아다니며 <b>네 벽을 모두</b> 두드립니다. 그래서 기체의 압력은 <b>모든 방향</b>으로 작용해요. 튜브가 사방으로 부풀어 오르는 것이 그 증거입니다.</div></div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 252" role="img" aria-label="상자 속 기체 입자들이 저마다 다른 방향으로 날아다니고, 위·아래·왼쪽·오른쪽 네 벽을 미는 빨간 화살표가 모두 그려져 있다."><rect x="150" y="40" width="260" height="150" rx="8" fill="#f7f3e8" stroke="#8a6a3a" stroke-width="2.5"/><circle cx="200" cy="80" r="7" fill="#3a7a3f"/><line x1="206.6" y1="84.5" x2="219.8" y2="93.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="224.8,96.9 213.8,93.8 217.9,87.9" fill="#2f6ea8"/><circle cx="330" cy="70" r="7" fill="#3a7a3f"/><line x1="324.1" y1="75.4" x2="312.3" y2="86.2" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="307.9,90.3 313.4,80.3 318.3,85.6" fill="#2f6ea8"/><circle cx="250" cy="140" r="7" fill="#3a7a3f"/><line x1="252.9" y1="132.5" x2="258.7" y2="117.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="260.9,112.0 260.3,123.4 253.6,120.8" fill="#2f6ea8"/><circle cx="360" cy="150" r="7" fill="#3a7a3f"/><line x1="352.8" y1="146.5" x2="338.5" y2="139.4" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="333.1,136.7 344.4,138.3 341.2,144.7" fill="#2f6ea8"/><circle cx="300" cy="105" r="7" fill="#3a7a3f"/><line x1="293.1" y1="100.9" x2="279.4" y2="92.6" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="274.3,89.5 285.4,92.0 281.7,98.2" fill="#2f6ea8"/><circle cx="215" cy="165" r="7" fill="#3a7a3f"/><line x1="212.4" y1="172.6" x2="207.2" y2="187.7" stroke="#2f6ea8" stroke-width="1.9" stroke-linecap="round"/><polygon points="205.3,193.4 205.4,182.0 212.2,184.3" fill="#2f6ea8"/><line x1="280.0" y1="40.0" x2="280.0" y2="18.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="280.0,10.0 284.8,24.4 275.2,24.4" fill="#b23a30"/><line x1="280.0" y1="190.0" x2="280.0" y2="212.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="280.0,220.0 275.2,205.6 284.8,205.6" fill="#b23a30"/><line x1="150.0" y1="115.0" x2="128.0" y2="115.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="120.0,115.0 134.4,110.2 134.4,119.8" fill="#b23a30"/><line x1="410.0" y1="115.0" x2="432.0" y2="115.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="440.0,115.0 425.6,119.8 425.6,110.2" fill="#b23a30"/><text x="280" y="238" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">상자 속 기체 입자의 운동과 벽을 미는 힘</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">압력은 상자의 옆면에만 작용한다.</span></li><li><span class="qz-n">②</span><span class="qz-t">입자가 부딪히는 순간에만 한 방향으로 작용한다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">③</span><span class="qz-t">입자가 사방으로 날아다니므로 압력은 모든 방향으로 작용한다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">④</span><span class="qz-t">입자가 아래로만 운동하므로 압력은 아래쪽으로만 작용한다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">입자가 위로 떠오르므로 압력은 위쪽으로만 작용한다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ③ · 풀이</div><div class="qz-why-t">입자는 위·아래·옆 가리지 않고 날아다니며 <b>네 벽을 모두</b> 두드립니다. 그래서 기체의 압력은 <b>모든 방향</b>으로 작용해요. 찌그러진 공에 공기를 넣으면 사방으로 부풀어 오르는 것이 그 증거입니다.</div></div>
   </div>
 </section>
 <!-- ═══ 94_quiz4.html ═══ -->
-<section class="slide" id="d2_94_quiz4" data-tile="parchment" data-title="문제 4" data-notes="" data-say="축구공에 공기를 넣을 때 입자에게 일어나는 일(수 증가, 빠르기 불변)을 아는지 확인한다. 정답 ④. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 공기를 넣는다는 것은 입자를 더 넣는 것 입니다. 입자 수가 늘어 충돌이 잦아지고 압력이 커져 공이 단단해져요. 온도를 바꾼 게 아니니 입자의 빠르기는 그대로이고, 입자의 크기가 변하거나 서로 달라붙는 일도 없습니다.">
+<section class="slide" id="d2_94_quiz4" data-tile="parchment" data-title="문제 4" data-notes="" data-say="축구공에 공기를 넣을 때 입자에게 일어나는 일(수 증가, 빠르기 불변)을 아는지 확인한다. 정답 ④. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 공기를 넣는다는 것은 입자를 더 넣는 것입니다. 입자 수가 늘어 충돌이 잦아지고 압력이 커져 공이 단단해져요. 온도를 바꾼 게 아니니 입자의 빠르기는 그대로이고, 입자의 크기가 변하거나 서로 달라붙는 일도 없습니다.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 4</b> / 4 <span class="qz-lv">중간</span></div>
     <div class="qz-stem" data-in="150">찌그러진 축구공에 펌프로 공기를 넣었더니 공이 단단해졌다. 공 속 기체 입자에게 일어난 일로 옳은 것은?</div>
@@ -604,7 +656,8 @@ html.student #notes{display:none!important}
 <div id="gridov"></div>
 </div></div>
 
-<script>window.NOTES = {"P1": "지난 시간에는 일정한 면적에 작용하는 힘을 압력이라고 배웠어요. 오늘은 눈에 보이지도, 손에 잡히지도 않는 기체가 어떻게 압력을 만드는지 알아봅니다.", "P2": "과자 봉지를 뜯기 전에 손가락으로 꾹 눌러 보세요. 잘 안 눌립니다. 그런데 뜯어 보면 속에는 과자가 가득 차 있지도 않고 대부분 공기예요. 잡을 수도 볼 수도 없는 공기가 어떻게 내 손가락을 버텨 낼까요?", "P3": "먼저 복습입니다. 기체 입자는 매우 활발하게 운동하고, 입자 사이의 거리가 매우 멀어요. 그래서 압력이나 온도에 따라 부피가 크게 변합니다. 세 그림 모두 입자는 12개인데, 달라진 것은 입자 사이의 간격과 움직임이에요. 눌러 보면 기체만 부피가 크게 줄어듭니다.", "P4": "기체 입자는 끊임없이 운동하면서 물체에 충돌해 힘을 가합니다. 일정한 면적에 기체 입자가 충돌해서 가하는 힘, 이것을 기체의 압력이라고 해요. 학습지 5번부터 9번 빈칸을 채워 봅시다.", "P5": "입자는 모든 방향으로 운동하면서 충돌하니까, 기체의 압력도 모든 방향으로 작용합니다. 기체의 압력이 아래로만 작용한다고 생각하기 쉬운데, 벽 네 면 어디에서나 충돌이 일어난다는 걸 보세요.", "P6": "페트병 속 쇠구슬을 기체 입자에 비유해 봅시다. 쇠구슬이 15개일 때보다 30개일 때 손바닥에 느껴지는 힘이 더 큽니다. 다만 쇠구슬은 흔들어 줘야 움직이고, 진짜 기체 입자는 아무도 흔들어 주지 않아도 스스로 끊임없이 움직인다는 점은 달라요.", "P7": "일정한 크기의 용기 안에 기체 입자의 수가 많으면 벽에 충돌하는 횟수가 늘어 기체의 압력이 커집니다. 입자가 많아지면 충돌이 잦아진다고 정리할 수 있어요. 입자를 빠르게 하는 것이 아니라 수를 늘리는 것이라는 점에 주의하세요.", "P8": "찌그러진 축구공에 공기를 넣으면 공기 입자의 수가 늘어나 압력이 커지고, 압력이 모든 방향으로 작용하므로 사방으로 부풀어 오릅니다. 어느 한쪽만 펴지는 것이 아니에요.", "P9": "같은 양의 공기를 더 넣어 볼게요. 단단한 통은 부피가 그대로라서 압력만 커집니다. 말랑한 공은 부풀지만 무한정 부풀지는 않아요. 부풀수록 안쪽 압력이 도로 낮아지고, 안에서 미는 힘과 밖에서 누르는 힘이 같아지는 순간 멈춥니다.", "P10": "생활 속 기체의 압력을 찾아볼까요. 자동차 에어백과 풍선 놀이 틀은 기체가 차면서 기체의 압력이 커져 부풀어 오릅니다.", "P11": "우리도 공기에 둘러싸여 있어서 늘 공기의 압력을 받고 있어요. 위로 올라갈수록 공기의 양이 줄어들어 공기의 압력은 작아집니다. 어느 높이에서나 압력은 모든 방향으로 작용하고, 달라지는 것은 크기뿐이에요.", "P12": "도전해 봅시다. 공에 공기를 넣었을 때 공이 부풀어 오르기까지의 과정을 입자 수, 충돌 횟수, 압력이라는 키워드로 설명해 보세요. 예시 답: 공에 공기를 넣으면 공기 입자의 수가 늘어나 벽에 충돌하는 횟수가 늘고, 기체의 압력이 커집니다. 압력은 모든 방향으로 작용하므로 공은 사방으로 부풀어 오릅니다.", "P13": "오늘 정리입니다. 기체의 압력은 일정한 면적에 기체 입자가 충돌해서 가하는 힘이고, 모든 방향으로 작용하며, 입자 수가 많아지면 충돌이 잦아져 커집니다."};</script>
+<script>window.NOTES = {"P1": "지난 시간에는 일정한 면적에 작용하는 힘을 압력이라고 배웠어요. 오늘은 눈에 보이지도, 손에 잡히지도 않는 기체가 어떻게 압력을 만드는지 알아봅니다.", "P2": "과자 봉지를 뜯기 전에 손가락으로 꾹 눌러 보세요. 잘 안 눌립니다. 그런데 뜯어 보면 속에는 과자가 가득 차 있지도 않고 대부분 기체(질소)예요. 잡을 수도 볼 수도 없는 기체가 어떻게 내 손가락을 버텨 낼까요?", "P2k": "본격적으로 들어가기 전에 오늘의 키워드부터 볼까요? 오늘은 세 가지 키워드를 따라갑니다. 첫 번째 「기체의 압력」, 두 번째 「입자 수와 압력」, 그리고 마지막 「생활 속 기체의 압력」입니다. 화면 오른쪽 위를 보면 지금 어떤 키워드를 배우고 있는지 계속 표시해 둘게요. 그럼 첫 번째 키워드, 「기체의 압력」부터 시작해 볼까요? <span class=\"cue\">화면: 오늘의 키워드 3개 — 오른쪽 위 진행 표시 안내</span>", "P3": "먼저 복습입니다. 기체 입자는 매우 활발하게 운동하고, 입자 사이의 거리가 매우 멀어요. 그래서 압력이나 온도에 따라 부피가 크게 변합니다. 1번 「운동」, 2번 「거리」, 3번 「온도」, 4번 「부피」입니다. 세 그림 모두 입자는 12개인데, 달라진 것은 입자 사이의 간격과 움직임이에요. 눌러 보면 기체만 부피가 크게 줄어듭니다.", "P4": "기체 물질을 이루는 입자는 끊임없이 운동하면서 물체에 충돌해 힘을 가합니다. 일정한 면적에 기체 입자가 충돌하여 가하는 힘을 기체의 압력이라고 해요. 5번 「운동」, 6번 「충돌」, 7번 「면적」, 8번 「충돌」, 9번 「기체의 압력」입니다.", "P5": "기체 입자가 모든 방향으로 운동하면서 충돌하니까, 기체의 압력도 모든 방향으로 작용합니다. 10번과 11번은 「모든 방향」이에요. 기체의 압력은 아래쪽뿐만 아니라 위쪽과 옆쪽으로도 작용하니 12번은 「아래」입니다. 왼쪽처럼 입자가 아래로만 운동해 바닥에만 충돌하는 것은 잘못된 입자 모형이고, 오른쪽처럼 모든 방향으로 운동하며 네 벽 모두에 충돌하는 것이 옳은 입자 모형이에요.", "P6": "쇠구슬을 기체 입자에 비유한 실험을 봅시다. 쇠구슬이 15개일 때보다 30개일 때 손바닥에 느껴지는 힘이 더 큽니다. 다만 쇠구슬은 흔들어 줘야 움직이고, 진짜 기체 입자는 아무도 흔들어 주지 않아도 스스로 끊임없이 움직인다는 점은 달라요.", "P7": "입자 수에 따른 압력 변화입니다. 일정한 크기의 용기 안에 기체 입자의 수가 많으면 벽에 충돌하는 횟수가 늘어 기체의 압력이 커집니다. 13번 「많으면」, 14번 「횟수」, 15번 「커진다」예요. 그래서 입자가 많아지면 충돌이 잦아진다고 정리합니다. 18번 「많아지면」, 19번 「잦아진다」입니다. 입자를 빠르게 하는 것이 아니라 수를 늘리는 것이라는 점에 주의하세요.", "P8": "찌그러진 축구공에 공기를 넣으면 공기 입자의 수가 늘어나 압력이 커지고, 압력이 모든 방향으로 작용하므로 사방으로 부풀어 오릅니다. 16번 「수」, 17번 「사방」이에요. 어느 한쪽만 펴지는 것이 아니에요.", "P9": "단단한 용기와 늘어나는 용기의 차이를 봅시다. 두 용기에 같은 양의 공기를 더 넣어 볼게요. 단단한 통은 부피가 그대로라서 압력만 커집니다. 말랑한 공은 부풀지만 무한정 부풀지는 않아요. 부풀수록 안쪽 압력이 도로 낮아지고, 안에서 미는 힘과 밖에서 누르는 힘이 같아지는 순간 멈춥니다.", "P10": "생활 속 기체의 압력을 찾아볼까요. 자동차 에어백과 풍선 놀이 틀은 기체가 차면서 기체의 압력이 커져 부풀어 오릅니다. 20번 「에어백」, 21번 「커져」입니다.", "P11": "우리는 공기에 둘러싸여 있으므로 공기의 압력을 받습니다. 위로 올라갈수록 공기의 양이 줄어들어 공기의 압력은 작아집니다. 22번 「공기」, 23번 「양」, 24번 「작아진다」예요. 공기의 압력은 어느 높이에서나 모든 방향으로 작용하고, 높이에 따라 크기가 달라집니다.", "P12": "도전 문제입니다. 공에 공기를 넣었을 때 공이 부풀어 오르는 과정을 입자 수, 충돌 횟수, 압력을 모두 사용하여 설명해 보세요. 예시 답: 공에 공기를 넣으면 공기 입자의 수가 늘어나 벽에 충돌하는 횟수가 늘고, 기체의 압력이 커집니다. 압력은 모든 방향으로 작용하므로 공은 사방으로 부풀어 오릅니다.", "P13": "오늘 정리입니다. 기체의 압력은 일정한 면적에 기체 입자가 충돌하여 가하는 힘이고, 모든 방향으로 작용하며, 입자 수가 많아지면 충돌이 잦아져 커집니다."};</script>
+<script>window.KW = {"items": [{"kw": "기체의 압력"}, {"kw": "입자 수와 압력"}, {"kw": "생활 속 기체의 압력"}], "at": [-1, -1, -1, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3]};</script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
    core.js — 강의 덱 엔진
@@ -974,7 +1027,30 @@ html.student #notes{display:none!important}
     const on = !window.SFX || SFX.isOn();
     b.innerHTML = on ? ICON.sound : ICON.mute; b.classList.toggle('off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
+  /* ── 키워드 진행 표시(무대 오른쪽 위 · 녹화 화면에도 보임) ──
+     window.KW = {items:[{kw}], at:[장마다 키워드 번호]} — build.py 가 slides/…/_keywords.json 으로 넣는다.
+     at: -1 = 숨김(표지·도입·키워드 장), 0..n-1 = 그 키워드, n = 모두 끝(정리·문제). 칩을 누르면 그 키워드의 첫 장으로 */
+  let kwEl = null;
+  function buildKw() {
+    const K = window.KW; if (!K || !K.items || !K.items.length || !K.at) return;
+    kwEl = document.createElement('div'); kwEl.id = 'kwbar'; kwEl.setAttribute('data-interactive', '');
+    kwEl.innerHTML = K.items.map((it, j) => `<button type="button" class="kw" data-j="${j}" aria-label="키워드 ${j + 1}: ${it.kw}"><b>${j + 1}</b><span>${it.kw}</span></button>`).join('');
+    stage.appendChild(kwEl);
+    kwEl.addEventListener('click', e => {
+      const b = e.target.closest('.kw'); if (!b) return; e.stopPropagation();
+      const i = K.at.indexOf(+b.dataset.j); if (i >= 0 && i !== Deck.i) show(i, 0);
+    });
+  }
+  function syncKw() {
+    if (!kwEl) return;
+    const K = window.KW, a = K.at[Deck.i], sec = Deck.list[Deck.i];
+    const hide = a == null || a < 0 || (sec && sec.hasAttribute('data-kw-hide'));
+    kwEl.classList.toggle('show', !hide);
+    kwEl.classList.toggle('end', a >= K.items.length);
+    kwEl.querySelectorAll('.kw').forEach((b, j) => { b.classList.toggle('done', j < a); b.classList.toggle('cur', j === a); });
+  }
   function buildChrome() {
+    buildKw();
     hud = document.createElement('div'); hud.id = 'hud';
     hud.innerHTML = `<button data-a="replay" aria-label="이 단계 다시 보기(R)">${ICON.replay}</button>${STUDENT ? '' : `<button data-a="notes" aria-label="대본 보기(T)">${ICON.notes}</button>`}<button data-a="grid" aria-label="전체 보기(O)">${ICON.grid}</button><button data-a="prev" aria-label="이전">${ICON.prev}</button><span class="count" id="count">1 / 1</span><button data-a="next" aria-label="다음">${ICON.next}</button><button data-a="sound" aria-label="소리 켜기/끄기(M)">${ICON.sound}</button><button data-a="full" aria-label="전체 화면(F)">${ICON.full}</button>`;
     document.body.appendChild(hud); syncSound();
@@ -1012,6 +1088,7 @@ html.student #notes{display:none!important}
     hud.querySelector('#count').textContent = `${Deck.i + 1} / ${n}`;
     prog.firstChild.style.width = `${((Deck.i + (st ? Deck.k / (st + 1) : 0)) / Math.max(1, n - 1)) * 100}%`;
     dots.innerHTML = st ? Array.from({ length: st + 1 }, (_, j) => `<i class="${j <= Deck.k ? 'on' : ''}"></i>`).join('') : '';
+    syncKw();
     if (notesEl.classList.contains('show')) renderNotes();
     if (ovEl.classList.contains('show')) renderOverview();
   }
@@ -1177,11 +1254,14 @@ window.SFX = (function () {
   const D = window.Deck || {};
   const OFF = !!D.STILL || Q.get('nosfx') === '1';
   const KEY = 'sc_sfx';
+  const VOLUME_KEY = 'sc_sfx_volume';
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  let volume = 1;
+  try { const saved = localStorage.getItem(VOLUME_KEY); if (saved !== null && saved.trim() !== '' && Number.isFinite(Number(saved))) volume = clamp(Number(saved)); } catch (e) {}
   let on = !D.STUDENT;
   try { const s = localStorage.getItem(KEY); if (s === '1' || s === '0') on = s === '1'; } catch (e) {}
   if (Q.get('sound') === '1') on = true; else if (Q.get('sound') === '0') on = false;
-  let ac = null, out = null, X = null, unlocked = Q.get('sfxtest') === '1', broken = false;
+  let ac = null, out = null, master = null, X = null, unlocked = Q.get('sfxtest') === '1', broken = false;
   const pending = new Set();
 
   /* ── 잡음(결정적) ── */
@@ -1199,8 +1279,10 @@ window.SFX = (function () {
       try { ac = new AC(); } catch (e) { broken = true; return null; }
       const comp = ac.createDynamicsCompressor();
       comp.threshold.value = -14; comp.knee.value = 18; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .18;
-      out = ac.createGain(); out.gain.value = on ? .9 : 0;
-      out.connect(comp); comp.connect(ac.destination);
+      out = ac.createGain(); out.gain.value = .9;
+      // Apply volume after compression, so every one-shot and loop shares the same level.
+      master = ac.createGain(); master.gain.value = on ? volume : 0;
+      out.connect(comp); comp.connect(master); master.connect(ac.destination);
       X = { ac, dest: out, nz: noiseBuf(ac) };
     }
     if (ac.state === 'suspended' && on && !document.hidden) ac.resume().catch(() => {});
@@ -1508,11 +1590,90 @@ window.SFX = (function () {
     try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
     unlock();
     const x = ensure();
-    if (x && out) out.gain.setTargetAtTime(on ? .9 : 0, ac.currentTime, .03);
+    if (x && master) master.gain.setTargetAtTime(on ? volume : 0, ac.currentTime, .03);
+    syncVolumeUI();
     toast(on);
     if (on) play('pop');
     return on;
   }
+
+  function setVolume(value, persist = true) {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return volume;
+    volume = clamp(value);
+    if (persist) { try { localStorage.setItem(VOLUME_KEY, String(volume)); } catch (e) {} }
+    if (master && ac) master.gain.setTargetAtTime(on ? volume : 0, ac.currentTime, .03);
+    syncVolumeUI();
+    return volume;
+  }
+  let volumeButton = null, volumePanel = null, volumeInput = null, volumeOutput = null, volumeStatus = null, volumeTry = null;
+  function syncVolumeUI() {
+    if (!volumeButton) return;
+    const percent = Math.round(volume * 100);
+    volumeButton.textContent = percent + '%';
+    volumeButton.title = '효과음 볼륨 ' + percent + '% · 조절하기';
+    volumeInput.value = String(percent);
+    volumeInput.setAttribute('aria-valuetext', percent + '%');
+    volumeOutput.textContent = percent + '%';
+    volumeStatus.textContent = OFF ? '소리가 비활성화된 화면' : !on ? '음소거 중 · 아래 스피커 버튼으로 켜기' : percent === 0 ? '볼륨 0% · 소리 없음' : '효과음 전체에 적용';
+    volumeInput.disabled = OFF;
+    volumeTry.disabled = OFF || !on || volume === 0;
+  }
+  function mountVolumeUI() {
+    const hud = document.getElementById('hud');
+    if (!hud || document.getElementById('lecture-volume-toggle')) return;
+    const sound = hud.querySelector('[data-a="sound"]');
+    if (!sound) return;
+    const style = document.createElement('style');
+    style.textContent = `#hud #lecture-volume-toggle{width:58px;border-radius:22px;font:600 14px system-ui,sans-serif}
+      #hud.volume-open{opacity:1;transform:none;pointer-events:auto}
+      #lecture-volume-panel{position:absolute;right:0;bottom:calc(100% + 10px);width:280px;max-width:calc(100vw - 28px);box-sizing:border-box;padding:18px;background:#172238;color:#fff;border:1px solid #62718a;border-radius:14px;font:16px/1.5 system-ui,sans-serif;touch-action:auto}
+      #lecture-volume-panel[hidden]{display:none!important}
+      #lecture-volume-panel .volume-heading{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:12px}
+      #lecture-volume-range{display:block;width:100%;height:36px;margin:0;accent-color:#8bceff;touch-action:auto;cursor:pointer}
+      #lecture-volume-status{font-size:14px;color:#d5e4fa;margin:8px 0 12px}
+      #hud #lecture-volume-panel button{width:auto;min-height:40px;height:auto;padding:8px 14px;border-radius:8px;font:600 14px system-ui,sans-serif;background:#e1edff;color:#172238}
+      #lecture-volume-panel .volume-actions{display:flex;justify-content:space-between;gap:12px}
+      #lecture-volume-panel button:disabled{opacity:.45;cursor:default}
+      @media(max-width:600px){#hud{right:8px;gap:4px;max-width:calc(100vw - 16px);flex-wrap:wrap;justify-content:flex-end}#hud button{width:32px;height:38px}#hud .count{min-width:50px;height:38px;padding:0 8px}#hud #lecture-volume-toggle{width:44px;font-size:12px}}
+      @media print{#lecture-volume-panel,#lecture-volume-toggle{display:none!important}}`;
+    document.head.appendChild(style);
+    volumeButton = document.createElement('button');
+    volumeButton.id = 'lecture-volume-toggle'; volumeButton.type = 'button';
+    volumeButton.setAttribute('aria-label','효과음 볼륨 조절');
+    volumeButton.setAttribute('aria-expanded','false');
+    volumeButton.setAttribute('aria-controls','lecture-volume-panel');
+    hud.insertBefore(volumeButton,sound.nextSibling);
+    volumePanel = document.createElement('div');
+    volumePanel.id = 'lecture-volume-panel'; volumePanel.hidden = true;
+    volumePanel.setAttribute('role','group'); volumePanel.setAttribute('aria-label','효과음 볼륨');
+    volumePanel.innerHTML = '<div class="volume-heading"><label for="lecture-volume-range">효과음 볼륨</label><output id="lecture-volume-value" for="lecture-volume-range"></output></div><input id="lecture-volume-range" type="range" min="0" max="100" step="1" aria-label="효과음 볼륨"><div id="lecture-volume-status"></div><div class="volume-actions"><button type="button" id="lecture-volume-try">시험 듣기</button><button type="button" id="lecture-volume-close">닫기</button></div>';
+    hud.appendChild(volumePanel);
+    volumeInput = volumePanel.querySelector('input'); volumeOutput = volumePanel.querySelector('output');
+    volumeStatus = volumePanel.querySelector('#lecture-volume-status'); volumeTry = volumePanel.querySelector('#lecture-volume-try');
+    const setOpen = (open, restoreFocus = false) => {
+      volumePanel.hidden = !open; volumeButton.setAttribute('aria-expanded',String(open));
+      hud.classList.toggle('volume-open',open);
+      if (open) volumeInput.focus(); else if (restoreFocus) volumeButton.focus();
+    };
+    volumeButton.addEventListener('click', e => { e.stopPropagation(); setOpen(volumePanel.hidden); });
+    volumeButton.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') e.stopPropagation(); });
+    volumePanel.addEventListener('click', e => e.stopPropagation());
+    volumePanel.addEventListener('keydown', e => e.stopPropagation());
+    volumeInput.addEventListener('input', () => setVolume(Number(volumeInput.value)/100));
+    volumeTry.addEventListener('click', () => { unlock(); play('ding'); });
+    volumePanel.querySelector('#lecture-volume-close').addEventListener('click', () => setOpen(false,true));
+    document.addEventListener('keydown', e => {
+      if (!volumePanel.hidden && e.key === 'Escape') { setOpen(false,true); e.preventDefault(); e.stopImmediatePropagation(); }
+    },true);
+    document.addEventListener('pointerdown', e => { if (!volumePanel.hidden && !volumePanel.contains(e.target) && e.target !== volumeButton) setOpen(false); },true);
+    window.addEventListener('blur', () => setOpen(false));
+    window.addEventListener('storage', e => {
+      if (e.key === VOLUME_KEY && e.newValue !== null && e.newValue.trim() !== '' && Number.isFinite(Number(e.newValue))) setVolume(Number(e.newValue),false);
+    });
+    syncVolumeUI();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(mountVolumeUI,0));
+  else setTimeout(mountVolumeUI,0);
 
   /* ═════════ 점검 도구 ═════════ */
   function measure(buf) {
@@ -1558,7 +1719,7 @@ window.SFX = (function () {
   }
   if (Q.get('sfx') === 'demo') { const go = () => demoPanel(); if (document.body) go(); else document.addEventListener('DOMContentLoaded', go); }
 
-  return { play, loop, toggle, unlock, analyze, analyzeLoop, names: () => Object.keys(S), isOn: () => on, isOff: () => OFF, S, debug: () => ({ pendingLoops: pending.size, unlocked, state: ac ? ac.state : 'none' }) };
+  return { play, loop, toggle, unlock, setVolume, getVolume: () => volume, analyze, analyzeLoop, names: () => Object.keys(S), isOn: () => on, isOff: () => OFF, S, debug: () => ({ pendingLoops: pending.size, unlocked, state: ac ? ac.state : 'none', volume, effectiveVolume: on && !OFF ? volume : 0 }) };
 })();
 
 }catch(e){console.error("[object 03_sfx.js]",e)}
@@ -1863,13 +2024,13 @@ try{
    · 마크업: RK.b('척력', 'push', 2)  → 빈칸(밑줄만, 낱말은 숨김). 세 번째 값 = 채워지는 단계(k)
    · 장면 go(c, k) 에서 RK.fill(c, k) → 그 단계의 빈칸이 차례로(시차 ms) 모션그래픽과 함께 채워진다
    · 순간 모드(되돌리기·건너뛰기)에서는 c.a/c.wait 가 곧장 끝 상태 → 낱말만 보이고 효과는 사라진 상태
-   종류(kind): electron · pos · neg · push · pull · spark · rub · flow · volt · zigzag · line · curve · press · hits
+   종류(kind): electron · pos · neg · push · pull · spark · rub · flow · volt · zigzag · line · curve · press · hits · chain · fork · cut
               · grow · shrink · up · down · glow · equal · pop(기본)
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
   const SND = { electron: 'zip', pos: 'pop', neg: 'pop', push: 'whoosh', pull: 'whoosh', spark: 'spark', rub: 'zip', flow: 'slide', volt: 'rise',
-    zigzag: 'scan', line: 'scan', curve: 'scan', press: 'thunk', hits: 'tick', grow: 'rise', shrink: 'pop', up: 'rise', down: 'pop', glow: 'ding', equal: 'step', pop: 'pop' };
+    zigzag: 'scan', line: 'scan', curve: 'scan', press: 'thunk', hits: 'tick', grow: 'rise', shrink: 'pop', up: 'rise', down: 'pop', glow: 'ding', equal: 'step', chain: 'step', fork: 'slide', cut: 'sweepDown', pop: 'pop' };
   const R = window.RK = {
     /** 빈칸 하나(문자열). word 는 HTML 가능(색 span 등). cls 로 색(c-neg 등)을 줄 수 있다 */
     b(word, kind, step, cls) {
@@ -2004,6 +2165,32 @@ try{
       c.a(g, [{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .5 }, { transform: 'scale(1.2)', opacity: 0 }], { dur: 1000, ease: 'out' });
       return 300;
     },
+    chain(c, el, fx) {   // 낱말 위 한 줄 도선에 전구 셋이 차례로 — 직렬(길이 하나)
+      const s = R.svg(fx, 140, 36, '<path d="M4 18H136" fill="none" stroke="var(--t3)" stroke-width="4" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>' +
+        [34, 70, 106].map(x => `<circle cx="${x}" cy="18" r="9" fill="#FFE27A" stroke="var(--t2)" stroke-width="3" opacity="0"/>`).join(''), { left: '50%', bottom: '100%', marginLeft: '-70px', marginBottom: '2px' });
+      c.a(s.querySelector('path'), [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 420, ease: 'inOut' });
+      s.querySelectorAll('circle').forEach((b, i) => c.a(b, [{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(1)' }], { dur: 260, delay: 300 + i * 110, ease: 'spring' }));
+      return 420;
+    },
+    fork(c, el, fx) {    // 낱말 위에서 한 줄기가 두 갈래로 나뉘었다가 다시 만난다 — 병렬(길이 여러 개)
+      const P = ['M4 22H34', 'M34 22C44 22 44 5 58 5H82C96 5 96 22 106 22', 'M34 22C44 22 44 39 58 39H82C96 39 96 22 106 22', 'M106 22H136'];
+      const s = R.svg(fx, 140, 44, P.map(d => `<path d="${d}" fill="none" stroke="var(--light)" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`).join(''),
+        { left: '50%', bottom: '100%', marginLeft: '-70px', marginBottom: '2px' });
+      const ps = s.querySelectorAll('path'), D = [[0, 220], [200, 420], [200, 420], [600, 220]];
+      ps.forEach((p, i) => c.a(p, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: D[i][1], delay: D[i][0], ease: 'linear' }));
+      return 520;
+    },
+    cut(c, el, fx) {     // 한 줄 도선의 켜진 전구들 — 가운데가 끊기면 모두 함께 꺼진다
+      const xs = [30, 70, 110];
+      const s = R.svg(fx, 140, 40, '<path d="M4 20H56M84 20H136" fill="none" stroke="var(--t3)" stroke-width="4" stroke-linecap="round"/><path d="M56 20H84" fill="none" stroke="var(--t3)" stroke-width="4"/>' +
+        xs.map(x => `<circle cx="${x}" cy="20" r="9" fill="var(--t3)" opacity=".5"/><circle class="on" cx="${x}" cy="20" r="9" fill="#FFE27A"/>`).join('') +
+        '<path d="M60 10L80 30M80 10L60 30" stroke="var(--heat)" stroke-width="5" stroke-linecap="round" opacity="0"/>', { left: '50%', bottom: '100%', marginLeft: '-70px', marginBottom: '2px' });
+      const p = s.querySelectorAll('path');
+      c.a(p[1], [{ opacity: 1 }, { opacity: 0 }], { dur: 120, delay: 380 });
+      c.a(p[2], [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'scale(1)' }], { dur: 260, delay: 380, ease: 'out' });
+      s.querySelectorAll('.on').forEach(b => c.a(b, [{ opacity: 1 }, { opacity: 0 }], { dur: 180, delay: 460 }));   // 같은 순간에 모두
+      return 520;
+    },
     equal(c, el, fx) {
       const a = R.el(fx, '', { left: '-30px', right: '-30px', top: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
       const b = R.el(fx, '', { left: '-30px', right: '-30px', bottom: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
@@ -2060,6 +2247,25 @@ try{
 })();
 
 }catch(e){console.error("[slide 02_hook.html]",e)}
+/* ── 02_hookk_keywords.html ── */
+try{
+
+(function () {
+  const S = 'd2_02_hookk_keywords', TT = [600, 1440, 2280], TEND = 2280;
+  Deck.scene(S, {
+    steps: 0,
+    enter(c) {
+      if (!c.instant) { c.sfx('scan', 600, 1680); TT.forEach(t => c.sfx('tick', t)); c.sfx('chime', TEND + 250); }
+      const ring = c.$(`#${S}-ring`);
+      c.loop(t => {   // 「여기서 시작」: 첫 키워드 둘레가 천천히 숨 쉬듯
+        const k = t * 1000 < TEND ? 0 : (Math.sin((t * 1000 - TEND) / 420) + 1) / 2;
+        ring.setAttribute('r', (54 + 4 + 12 * k).toFixed(1)); ring.setAttribute('opacity', (t * 1000 < TEND ? 0 : .55 - .45 * k).toFixed(3));
+      });
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 02_hookk_keywords.html]",e)}
 /* ── 03_review.html ── */
 try{
 
@@ -2094,7 +2300,7 @@ try{
         s += `<g id="d2_03_review-lg${i}"><rect id="d2_03_review-lid${i}" x="${bx}" y="${y}" width="${S}" height="14" rx="5" fill="#8e8e93"/>` +
           `<g data-step="3" data-fx="fade">${GX.arrow(bx + S / 2, y - 86, bx + S / 2, y - 8, { color: 'var(--sound)', w: 8, head: 26 })}</g></g>`;
       });
-      s += `<text x="${(BX[0] + BX[2] + S) / 2}" y="${BY + S + 100}" text-anchor="middle" style="font-size:28px;fill:var(--t2)">세 그림 모두 입자는 12개 — 달라진 것은 간격과 움직임</text>`;
+      s += `<text x="${(BX[0] + BX[2] + S) / 2}" y="${BY + S + 100}" text-anchor="middle" style="font-size:28px;fill:var(--t2)">세 상태 모두 입자의 수(12개)는 같고, 입자 사이의 거리와 입자의 운동이 다르다</text>`;
       ROW.forEach((row, k) => {
         s += `<g data-step="${k + 1}" data-fx="fade">` + row.map((t, i) => `<text x="${BX[i] + S / 2}" y="${BY + S + 150 + k * 46}" text-anchor="middle" style="font-size:26px;font-weight:600;fill:${k === 2 && i === 2 ? 'var(--ink)' : 'var(--ink-2)'}">${t}</text>`).join('') + `</g>`;
       });
@@ -2161,8 +2367,8 @@ try{
   Deck.scene('d2_05_direction', {
     steps: 2,
     build(root) {
-      root.querySelector('#d2_05_direction-fall').innerHTML = FALL.map(p => `<circle r="9" cx="${p[0]}" cy="${p[1]}" fill="#8e8e93"/>`).join('') +
-        `<g>${GX.arrow(1160, 712, 1160, 746, { color: '#8e8e93', w: 7, head: 20 })}</g>`;
+      root.querySelector('#d2_05_direction-fall').innerHTML = FALL.map(p => `<circle r="9" cx="${p[0]}" cy="${p[1]}" fill="#8e8e93"/>` + GX.arrow(p[0], p[1] + 12, p[0], p[1] + 34, { color: '#8e8e93', w: 4, head: 12 })).join('') +
+        [1080, 1160, 1240].map(x => GX.arrow(x, 756, x, 800, { color: '#8e8e93', w: 6, head: 16 })).join('');
     },
     async enter(c) {
       c.data.box = FX.gasBox(c, c.$('#d2_05_direction-box'), { x: 1440, y: 410, w: 320, h: 340, n: 14, speed: 380, seed: 41, hitArrows: { len: 44 }, warm: 4 });
@@ -2248,7 +2454,7 @@ try{
 try{
 
 (function () {
-  const CX = 1480, CY = 620, R0 = 140, W0 = .22, R1 = 190;
+  const CX = 1480, CY = 620, R0 = 140, W0 = .10, R1 = 190;   // W0: 찌그러진 정도 — 그린 윤곽과 기체가 부딪히는 원의 틈을 14px 이하로
   const g = p => (R0 + (R1 - R0) * p) * (1 - W0 * (1 - p));                 // 기체가 다니는 원(찌그러진 윤곽 안에 꼭 들어가는 가장 큰 원)의 반지름
   const RC0 = g(0), RC1 = g(1);
   const solveP = Rc => { let a = 0, b = 1; for (let i = 0; i < 30; i++) { const m = (a + b) / 2; if (g(m) < Rc) a = m; else b = m; } return (a + b) / 2; };
@@ -2271,7 +2477,7 @@ try{
     },
     async go(c, k) {
       const b = c.data.box;
-      // 7개 → 30개: 다 부푼 뒤(R 190)에도 입자 밀도 30/(190-9)² 가 찌그러진 공 7/(109-9)² 의 약 1.3배 — 학습지 그림대로 압력 「작다」→「크다」
+      // 7개 → 30개: 다 부푼 뒤(R 190)에도 입자 밀도 30/(190-9)² 가 찌그러진 공 7/(126-9)² 의 약 1.8배 — 학습지 그림대로 압력 「작다」→「크다」
       if (k === 1) { b.setN(30, { stagger: 50 }); c.sfx('pop'); }
       if (k === 2) { c.sfx('whoosh', 0, 1500); await b.setR(RC1, 2200, 'inOut'); }
     },
@@ -2377,9 +2583,10 @@ try{
   const surf = x => { for (let i = 1; i < PTS.length; i++) if (x <= PTS[i][0]) { const a = PTS[i - 1], b = PTS[i]; return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]); } return 990; };
   const MARK = [
     { id: 'm1', x: 1100, y: 880, L: 62, name: '바닷가(해수면)', sub: '압력 큼', side: 1, col: 'var(--heat)' },
-    { id: 'm2', x: 1520, y: 550, L: 36, name: '높은 산 꼭대기', sub: '압력 조금 작음', side: 1, col: 'var(--heat)' },
-    { id: 'm3', x: 1660, y: 330, L: 20, name: '아주 높은 하늘', sub: '압력 아주 작음', side: -1, col: 'var(--heat)' },
+    { id: 'm2', x: 1520, y: 550, L: 26, name: '높은 산 꼭대기', sub: '압력 조금 작음', side: 1, col: 'var(--heat)' },
+    { id: 'm3', x: 1660, y: 330, L: 15, name: '아주 높은 하늘', sub: '압력 아주 작음', side: -1, col: 'var(--heat)' },
   ];
+  // 화살표 길이 L = 62 × exp(-(높이 차)/H0): 점(공기 입자) 분포와 같은 모형 — 바닷가 h=105, 산 꼭대기 h=435(0.42배), 하늘 h=655(0.235배)
   const marker = m => {
     let s = `<circle cx="${m.x}" cy="${m.y}" r="18" fill="#e5e5ea"/>`;
     for (let i = 0; i < 8; i++) { const th = i / 8 * Math.PI * 2, ux = Math.cos(th), uy = Math.sin(th);
@@ -2417,9 +2624,9 @@ try{
 (function () {
   const P = [
     ['입자 수 ↑', '공기를 넣는다', 'var(--kin)'],
-    ['충돌 횟수 ↑', '벽에 부딪히는 일이 잦다', 'var(--ink)'],
+    ['충돌 횟수 ↑', '충돌이 잦아진다', 'var(--ink)'],
     ['압력 ↑', '안에서 미는 힘이 커진다', 'var(--heat)'],
-    ['사방으로 부풀어 오른다', '모든 방향으로 작용', 'var(--ink)'],
+    ['사방으로 부풀어 오른다', '모든 방향으로 작용한다', 'var(--ink)'],
   ];
   Deck.scene('d2_12_challenge', {
     steps: 5,
@@ -2443,7 +2650,7 @@ try{
 (function () {
   const b = (w, kind, k, cls) => RK.b(w, kind, k, cls);
   const CARDS = [
-    ['기체의 압력', `<p>일정한 <b>${b('면적', 'grow', 1)}</b>에 기체 입자가 <b>${b('충돌', 'hits', 1)}</b>해서 가하는 힘</p>`, `<div class="big">${b('충돌', 'hits', 1, 'c-part')} → <span class="c-press">압력</span></div>`],
+    ['기체의 압력', `<p>일정한 <b>${b('면적', 'grow', 1)}</b>에 기체 입자가 <span style="white-space:nowrap"><b>${b('충돌', 'hits', 1)}</b>하여</span> 가하는 힘</p>`, `<div class="big">${b('충돌', 'hits', 1, 'c-part')} → <span class="c-press">압력</span></div>`],
     ['압력의 방향', `<p>입자가 모든 방향으로 운동하므로 압력도 <b>${b('모든 방향', 'spark', 2)}</b>으로 작용한다</p>`, '<div class="big c-press" data-step="2" data-delay="1200">모든 방향</div>'],
     ['입자 수', `<p>일정한 크기의 용기에서 입자가 ${b('많아지면', 'grow', 3)} 충돌이 ${b('잦아져', 'hits', 3)} 압력이 커진다</p>`, `<div class="big" style="font-size:46px"><span class="c-part">입자 수 ↑</span> → <span class="c-press">압력 ${b('↑', 'up', 3)}</span></div>`],
   ];

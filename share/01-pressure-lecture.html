@@ -208,6 +208,22 @@ html.student #notes{display:none!important}
 .qbox .qh{font-size:26px;font-weight:600;color:var(--t2);margin-bottom:6px}
 .say-line{position:absolute;left:120px;right:120px;text-align:center;font-size:44px;font-weight:600;letter-spacing:-.02em;z-index:3}
 .fine{position:absolute;left:120px;bottom:40px;font-size:24px;color:var(--t3);z-index:3}
+/* ── 키워드 진행 표시(무대 오른쪽 위) — core.js buildKw/syncKw ── */
+#kwbar{position:absolute;top:34px;right:44px;z-index:30;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(-8px);pointer-events:none;
+  transition:opacity .45s var(--ease-out),transform .45s var(--ease-out)}
+#kwbar.show{opacity:1;transform:none;pointer-events:auto}
+#kwbar .kw{display:flex;align-items:center;height:46px;min-width:46px;border-radius:9999px;background:rgba(0,0,0,.055);color:#86868b;
+  font-size:24px;font-weight:600;letter-spacing:-.01em;line-height:1;transition:background .45s,color .45s;cursor:pointer}
+#kwbar .kw b{width:46px;height:46px;flex:none;display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+#kwbar .kw span{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .6s var(--ease-out),padding .6s var(--ease-out)}
+#kwbar .kw.done{background:rgba(0,0,0,.13);color:#3a3a3c}
+#kwbar .kw.cur{background:var(--action);color:#fff}
+#kwbar .kw.cur span{max-width:460px;padding-right:22px}
+#kwbar .kw:active{transform:scale(.95)}
+body:not(.on-light) #kwbar .kw{background:rgba(255,255,255,.1);color:#8e8e93}
+body:not(.on-light) #kwbar .kw.done{background:rgba(255,255,255,.24);color:#f5f5f7}
+body:not(.on-light) #kwbar .kw.cur{background:var(--action-dark);color:#fff}
+html.still #kwbar,html.still #kwbar *{transition:none!important}
 
 /* ── 10_gas.css ── */
 /* ── 기체 압력 강의 덱 공용 색·글자 — 의미마다 색 하나(같은 뜻은 어느 장에서나 같은 색) ──
@@ -280,6 +296,19 @@ html.student #notes{display:none!important}
 
 #d1_02_pencil .gx-lead{color:var(--sound)}
 
+/* ── 02_pencilk_keywords.html ── */
+
+#d1_02_pencilk_keywords .kwk-n{font-size:48px;font-weight:700;fill:var(--act);font-variant-numeric:tabular-nums}
+#d1_02_pencilk_keywords .kwk-end{position:absolute;width:200px;text-align:center;font-size:26px;font-weight:600;color:var(--t3);z-index:3}
+#d1_02_pencilk_keywords .kwk-t{position:absolute;text-align:center;font-size:46px;font-weight:700;letter-spacing:-.025em;line-height:1.25;word-break:keep-all;z-index:3}
+#d1_02_pencilk_keywords .kwk-start{position:absolute;width:220px;text-align:center;font-size:28px;font-weight:600;color:var(--act);z-index:3}
+#d1_02_pencilk_keywords .kwk-mock{position:absolute;top:34px;right:44px;display:flex;gap:8px;z-index:3}
+#d1_02_pencilk_keywords .kwk-mock .mk{display:flex;align-items:center;height:46px;min-width:46px;border-radius:9999px;background:rgba(0,0,0,.055);color:#86868b;font-size:24px;font-weight:600;line-height:1}
+#d1_02_pencilk_keywords .kwk-mock .mk b{width:46px;height:46px;display:grid;place-items:center;font-weight:700}
+#d1_02_pencilk_keywords .kwk-mock .mk.cur{background:var(--act);color:#fff}
+#d1_02_pencilk_keywords .kwk-mock .mk i{font-style:normal;padding-right:22px;white-space:nowrap}
+#d1_02_pencilk_keywords .kwk-hint{position:absolute;top:96px;right:44px;font-size:26px;color:var(--t2);z-index:3}
+
 /* ── 03_sponge.html ── */
 
 #d1_03_sponge .s03-cap{font-size:44px;font-weight:600;letter-spacing:-.02em}
@@ -287,20 +316,16 @@ html.student #notes{display:none!important}
 
 /* ── 08_basket.html ── */
 
-#d1_08_basket .s08-h{font-size:28px;font-weight:600;color:var(--t2)}
-#d1_08_basket .s08-h .tri{width:22px;height:22px;margin-right:6px;vertical-align:-2px}
-#d1_08_basket .s08-lead{font-size:28px;line-height:1.45;text-align:right}
+#d1_08_basket .s08-h{font-size:30px;font-weight:600;color:var(--t2)}
+#d1_08_basket .s08-lead{font-size:34px;line-height:1.4;font-weight:600;letter-spacing:-.02em}
 #d1_08_basket .s08-row{position:absolute;left:120px;width:1680px;height:112px;border-radius:18px;background:#fff}
 #d1_08_basket .s08-row .ic{position:absolute;left:36px;top:6px;width:100px;height:100px}
 #d1_08_basket .s08-row .nm{position:absolute;left:170px;top:30px;font-size:40px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
-#d1_08_basket .s08-row .nm small{font-size:24px;font-weight:400;color:var(--t3);margin-left:14px}
-#d1_08_basket .s08-row .sz{position:absolute;left:760px;top:28px;display:flex;align-items:center;gap:14px;font-size:40px;font-weight:700}
-#d1_08_basket .s08-row .sz svg{width:38px;height:38px}
-#d1_08_basket .s08-row .rs{position:absolute;left:1030px;top:17px;width:610px;font-size:36px;line-height:1.25}
+#d1_08_basket .s08-row .sz{position:absolute;left:640px;top:30px;font-size:40px;font-weight:700}
+#d1_08_basket .s08-row .rs{position:absolute;left:920px;top:14px;width:720px;font-size:36px;line-height:1.25}
 #d1_08_basket .s08-row .rs b{font-weight:700}
-#d1_08_basket .s08-row .rs span{color:var(--t2);font-size:30px;display:block;margin-top:2px}
-#d1_08_basket .s08-row .trk{position:absolute;right:36px;top:46px;width:180px;height:22px;border-radius:11px;background:#e5e5ea}
-#d1_08_basket .s08-row .trk i{display:block;height:100%;border-radius:11px;background:var(--light)}
+#d1_08_basket .s08-row .rs span{color:var(--t2);font-size:32px;display:block;margin-top:2px}
+#d1_08_basket .s08-row .ans,#d1_08_basket .s08-row .ans b,#d1_08_basket .s08-row .ans span{color:var(--act)}
 
 /* ── 09_recap.html ── */
 
@@ -358,8 +383,8 @@ html.student #notes{display:none!important}
   <div class="abs t-lead center mute" style="left:0;width:1920px;top:946px" data-in="2500">일정한 면적에 작용하는 힘</div>
 </section>
 <!-- ═══ 02_pencil.html ═══ -->
-<section class="slide" id="d1_02_pencil" data-tile="dark" data-title="연필 양끝 누르기" data-notes="P2 P3" data-say="끼워서 누르면 양쪽 힘은 같을 수밖에 없다는 점이 핵심입니다. 「힘」과 「닿는 넓이」 두 낱말이 학생 입에서 나오면 충분해요.">
-  <div class="hd" data-in><div class="eb">생각 열기</div><h2>양쪽을 똑같은 힘으로 눌렀는데</h2></div>
+<section class="slide" id="d1_02_pencil" data-tile="dark" data-title="연필 양 끝 누르기" data-notes="P2 P3" data-say="끼워서 누르면 양쪽 힘은 같을 수밖에 없다는 점이 핵심입니다. 「힘」과 「닿는 넓이」 두 낱말이 학생 입에서 나오면 충분해요.">
+  <div class="hd" data-in><div class="eb">생각 열기</div><h2>연필 양 끝 누르기</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <g id="d1_02_pencil-pain" opacity="0"><circle class="tb" cx="500" cy="540" r="130" fill="url(#rg-heat)" opacity="0"/></g>
     <g id="d1_02_pencil-fl"></g>
@@ -369,28 +394,44 @@ html.student #notes{display:none!important}
     <g data-step="3" data-fx="fade" id="d1_02_pencil-zoom"></g>
   </svg>
   <div class="abs center gx-lead" style="left:0;width:1920px;top:262px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="1" data-out="2">연필이 가만히 있으면 양쪽이 누르는 힘은 똑같다</div>
-  <div class="abs center" style="left:0;width:1920px;top:262px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="2" data-out="3"><span style="color:var(--heat)">아픈 쪽은 뾰족한 쪽 하나뿐</span> — 왜 한쪽만 아플까?</div>
+  <div class="abs center" style="left:0;width:1920px;top:262px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="2" data-out="3"><span style="color:var(--heat)">뾰족한 쪽에 닿은 손가락만 아프다</span></div>
   <div class="abs center" style="left:0;width:1920px;top:262px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="3">힘은 같아도 <span style="color:var(--light)">닿는 넓이</span>가 다르다</div>
 </section>
+<!-- ═══ 02_pencilk_keywords.html ═══ -->
+<section class="slide" id="d1_02_pencilk_keywords" data-tile="light" data-title="오늘의 키워드" data-notes="P3k" data-say="오늘의 키워드 3개를 먼저 훑어봅니다. 다음 장부터 오른쪽 위에 지금 배우는 키워드가 표시되고, 칩을 누르면 그 키워드의 첫 장으로 갑니다.">
+  <div class="hd" data-in><div class="eb">학습지 1 · 압력</div><h2>오늘의 키워드</h2></div>
+  <svg class="full-svg" viewBox="0 0 1920 1080">
+    <path d="M230 610H1480" stroke="#e8e8ed" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <g data-in="2380" data-fx="fade"><path d="M1544 610H1666" stroke="#c7c7cc" stroke-width="6" stroke-dasharray="2 16" stroke-linecap="round" fill="none"/>
+      <circle cx="1700" cy="610" r="30" fill="#f5f5f7" stroke="#c7c7cc" stroke-width="5"/><path d="M1689 611l8 8 15-17" stroke="#aeaeb2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
+    <path d="M230 610H1480" stroke="var(--act)" stroke-width="12" stroke-linecap="round" fill="none" data-in="600" data-fx="draw" data-dur="1680" data-ease="inOut"/>
+    <circle id="d1_02_pencilk_keywords-ring" cx="230" cy="610" r="54" fill="none" stroke="var(--act)" stroke-width="4" opacity="0"/>
+    <g data-in="600" data-fx="pop"><circle cx="230" cy="610" r="54" fill="#fff" stroke="var(--act)" stroke-width="7"/><text x="230" y="627" text-anchor="middle" class="kwk-n">1</text></g><g data-in="1440" data-fx="pop"><circle cx="855" cy="610" r="54" fill="#fff" stroke="var(--act)" stroke-width="7"/><text x="855" y="627" text-anchor="middle" class="kwk-n">2</text></g><g data-in="2280" data-fx="pop"><circle cx="1480" cy="610" r="54" fill="#fff" stroke="var(--act)" stroke-width="7"/><text x="1480" y="627" text-anchor="middle" class="kwk-n">3</text></g>
+  </svg>
+  <div class="kwk-t" style="left:30px;top:694px;width:400px" data-in="740" data-fx="rise">스펀지 실험</div><div class="kwk-t" style="left:655px;top:694px;width:400px" data-in="1580" data-fx="rise">압력이란</div><div class="kwk-t" style="left:1280px;top:694px;width:400px" data-in="2420" data-fx="rise">단위와 계산</div>
+  <div class="kwk-end" style="left:1600px;top:526px" data-in="2480" data-fx="fade">정리 · 문제</div>
+  <div class="kwk-start" style="left:120px;top:470px" data-in="2480" data-fx="pop">여기서 시작</div>
+  <div class="kwk-mock" data-in="2880" data-fx="fade"><span class="mk cur"><b>1</b><i>스펀지 실험</i></span><span class="mk"><b>2</b></span><span class="mk"><b>3</b></span></div>
+  <div class="kwk-hint" data-in="3180" data-fx="fade">지금 배우는 키워드는 오른쪽 위에 계속 표시돼요</div>
+</section>
 <!-- ═══ 03_sponge.html ═══ -->
-<section class="slide" id="d1_03_sponge" data-tile="parchment" data-title="스펀지 실험대" data-notes="P4" data-say="한 번에 하나만 바꿔서 눌린 깊이를 비교하는 것이 핵심입니다. 숫자(무게·넓이·깊이)는 실험대 예시값이에요.">
-  <div class="hd" data-in><div class="eb">탐구하기</div><h2>무엇이 스펀지를 깊이 누를까</h2></div>
+<section class="slide" id="d1_03_sponge" data-tile="parchment" data-title="스펀지가 눌린 깊이 비교" data-notes="P4" data-say="한 번에 하나만 바꿔서 눌린 깊이를 비교하는 것이 핵심입니다. 숫자(누르는 힘·닿는 넓이·깊이)는 실험대 예시값이에요. 빈 병은 약 30 g, 물을 가득 채운 병은 약 530 g입니다.">
+  <div class="hd" data-in><div class="eb">탐구하기</div><h2>스펀지가 눌린 깊이 비교</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080" id="d1_03_sponge-svg"><g id="d1_03_sponge-cells"></g></svg>
-  <div class="abs mute" style="left:1200px;width:600px;top:150px;font-size:26px;text-align:right" data-in="900">숫자는 실험대 예시값이에요<br>(빈 병 약 30 g · 물 가득 약 530 g)</div>
-  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-in="600" data-out="1">빈 병을 바로 세워 올려 보면</div>
-  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="1" data-out="2">방향만 바꿔 보면 — <b class="c-amt">닿는 넓이</b>가 좁아진다</div>
-  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="2" data-out="3">이번에는 <b class="c-force">무게</b>만 바꿔 보면</div>
-  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="3" data-out="4">무게도 넓이도 함께 바꾸면</div>
-  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="4"><b class="c-force">무게</b>도 <b class="c-amt">닿는 넓이</b>도 — 둘 다 눌리는 정도를 정한다</div>
+  <div class="abs mute" style="left:1200px;width:600px;top:150px;font-size:26px;text-align:right" data-in="900">숫자는 실험대에서 얻은 예시값이다.<br>(빈 병, 물을 가득 채운 병)</div>
+  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-in="600" data-out="1">빈 병을 바로 세워 스펀지 위에 올린다</div>
+  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="1" data-out="2">병을 거꾸로 세우면 <b class="c-amt">닿는 넓이</b>가 좁아진다</div>
+  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="2" data-out="3">이번에는 <b class="c-force">누르는 힘</b>만 크게 한다</div>
+  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="3" data-out="4"><b class="c-force">누르는 힘</b>을 크게 하고 <b class="c-amt">닿는 넓이</b>도 좁게 한다</div>
+  <div class="abs center s03-cap" style="left:0;width:1920px;top:250px" data-step="4"><b class="c-force">누르는 힘</b>이 클수록, <b class="c-amt">닿는 넓이</b>가 좁을수록 스펀지가 깊이 눌린다</div>
 </section>
 <!-- ═══ 04_define.html ═══ -->
-<section class="slide" id="d1_04_define" data-tile="light" data-title="압력이란" data-notes="P5" data-say="빈칸 ① 힘 · ② 면적. 「널빤지의 비밀」은 뒤의 압력 바구니에서 다시 나옵니다.">
-  <div class="hd" data-in><div class="eb">압력</div><h2>일정한 면적에 작용하는 힘</h2></div>
+<section class="slide" id="d1_04_define" data-tile="light" data-title="압력" data-notes="P5" data-say="빈칸 ① 힘 · ② 면적. 압력 = 힘 ÷ 면적.">
+  <div class="hd" data-in><div class="eb">압력</div><h2>압력의 뜻</h2></div>
   <div class="ws-card" style="left:120px;top:310px;width:1000px" data-in="300">
-    <div class="ws-h"><b>압력</b></div>
+    <div class="ws-h"><b>압력</b><span>일정한 면적에 작용하는 힘</span></div>
     <div class="ws-line">일정한 넓이(면적)에 작용하는 <span class="bk"><span class="a" data-step="1" data-fx="pop">힘</span><span class="n">1</span></span>을 압력이라고 한다.</div>
     <div class="ws-line" style="margin-top:14px">압력 = 힘 ÷ <span class="bk"><span class="a" data-step="2" data-fx="pop">면적</span><span class="n">2</span></span></div>
-    <div class="ws-line mute" style="font-size:30px;margin-top:6px">(널빤지의 비밀이 여기에 있다!)</div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080">
     <g id="d1_04_define-art"></g>
@@ -398,59 +439,56 @@ html.student #notes{display:none!important}
   <div class="gx-eq" style="left:120px;top:770px;font-size:104px" data-step="2"><span class="p">압력</span> = <span class="f">힘</span> ÷ <span class="a">면적</span></div>
 </section>
 <!-- ═══ 05_knobs.html ═══ -->
-<section class="slide" id="d1_05_knobs" data-tile="black" data-title="압력을 바꾸는 두 손잡이" data-notes="P6" data-say="빈칸 ③ 클수록 · ④ 좁을수록. 눌린 깊이는 압력에 정확히 비례하지 않는 재료라서 그림의 깊이는 크기 비교용이에요. 세우면 닿는 면의 가로세로가 모두 절반(20×10 cm → 10×5 cm)이라 넓이는 ¼입니다.">
-  <div class="hd" data-in><div class="eb">두 개의 손잡이</div><h2>압력을 바꾸는 방법은 딱 둘</h2></div>
+<section class="slide" id="d1_05_knobs" data-tile="black" data-title="압력의 크기" data-notes="P6" data-say="빈칸 ③ 클수록 · ④ 좁을수록. 같은 물체를 세우면 압력이 커지고, 눕히면 작아집니다. 눌린 깊이는 압력에 정확히 비례하지 않는 재료라서 그림의 깊이는 크기 비교용이에요. 세우면 닿는 면의 가로세로가 모두 절반(20×10 cm → 10×5 cm)이라 넓이는 ¼입니다.">
+  <div class="hd" data-in><div class="eb">압력의 크기에 영향을 주는 요인</div><h2>압력의 크기</h2></div>
   <div class="ws-card" style="left:120px;top:310px;width:820px" data-in="300">
-    <div class="ws-h"><b>압력을 바꾸는 방법</b></div>
+    <div class="ws-h"><b>압력의 크기</b></div>
     <div class="ws-line">작용하는 힘의 크기가 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">클수록</span><span class="n">3</span></span> <span style="white-space:nowrap">압력이 커진다.</span></div>
     <div class="ws-line" style="margin-top:14px">힘이 작용하는 면적이 <span class="bk wide"><span class="a" data-step="2" data-fx="pop">좁을수록</span><span class="n">4</span></span> <span style="white-space:nowrap">압력이 커진다.</span></div>
+    <div class="ws-line" style="margin-top:14px" data-step="3" data-fx="fade">같은 물체를 <b class="c-amt">세우면</b> 압력이 커지고, <b class="c-amt">눕히면</b> 압력이 작아진다.</div>
   </div>
-  <div class="abs" style="left:120px;top:700px;width:820px;font-size:44px;font-weight:600;line-height:1.35;letter-spacing:-.02em" data-step="3">무게가 그대로여도<br><span class="c-amt">세우면</span> <span class="c-press">압력 ↑</span>, <span class="c-amt">넓게 펼치면</span> <span class="c-press">압력 ↓</span></div>
-  <div class="gx-tag c-force" style="left:1040px;top:236px" data-step="1">면적이 같을 때 — 힘이 클수록</div>
-  <div class="gx-tag c-amt" style="left:1040px;top:622px" data-step="2">힘이 같을 때 — 면적이 좁을수록</div>
-  <div class="abs mute" style="left:120px;top:850px;width:820px;font-size:26px;line-height:1.45" data-step="3">스펀지가 눌리는 깊이는 압력에 정확히 비례하지 않아요 — 그림의 깊이는 크기를 견주기 위한 표시예요.</div>
+  <div class="gx-tag c-force" style="left:1040px;top:236px" data-step="1">면적이 같을 때, 힘이 클수록</div>
+  <div class="gx-tag c-amt" style="left:1040px;top:622px" data-step="2">힘이 같을 때, 면적이 좁을수록</div>
+  <div class="abs mute" style="left:120px;top:850px;width:820px;font-size:26px;line-height:1.45" data-step="3">그림에서 스펀지가 눌린 깊이는 압력의 크기를 비교하기 위한 표시이다.</div>
   <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d1_05_knobs-minis"></g></svg>
 </section>
 <!-- ═══ 06_unit.html ═══ -->
-<section class="slide" id="d1_06_unit" data-tile="light" data-title="압력의 단위" data-notes="P7" data-say="빈칸 ⑤ N/m². 1 N/m² = 1 Pa. 예시는 40 N ÷ 2 m² = 20 N/m².">
-  <div class="hd" data-in><div class="eb">압력의 단위</div><h2>압력에도 단위가 있다</h2></div>
+<section class="slide" id="d1_06_unit" data-tile="light" data-title="압력의 단위" data-notes="P7" data-say="빈칸 ⑤ N/m². 1 N/m² = 1 Pa. 예시는 40 N ÷ 2 m² = 20 Pa(= 20 N/m²).">
+  <div class="hd" data-in><div class="eb">압력의 단위</div><h2>압력의 단위와 계산</h2></div>
   <div class="ws-card" style="left:120px;top:310px;width:900px" data-in="300">
     <div class="ws-h"><b>압력의 단위</b></div>
-    <div class="ws-line">압력의 단위는 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">N/m²</span><span class="n">5</span></span></div>
-    <div class="ws-line mute" style="font-size:32px">— 1 m² 에 1 N 의 힘이 작용할 때의 압력.</div>
-    <div class="ws-line mute" style="font-size:32px"><b style="color:var(--ink)">파스칼(Pa)</b>이라고도 부른다.</div>
+    <div class="ws-line">압력의 단위는 <span class="bk wide"><span class="a" data-step="1" data-fx="pop">N/m²</span><span class="n">5</span></span>로, 1 m²의 면적에 1 N의 힘이 작용할 때의 압력이다. <b>파스칼(Pa)</b>을 쓰기도 한다.</div>
   </div>
   <div class="qbox" style="left:120px;top:690px;width:900px;background:#f5f5f7;border:0" data-step="2">
     <div class="qh">예</div>
-    바닥 면적 <b class="num">2 m²</b> 에 <b class="num c-force">40 N</b> 의 힘 →
-    <div style="margin-top:8px"><span class="c-press" style="font-weight:700">압력</span> = 40 ÷ 2 = <b class="num c-press" style="font-size:48px"><span id="d1_06_unit-p">20</span> N/m²</b></div>
+    <b class="num">2 m²</b>의 면적에 <b class="num c-force">40 N</b>의 힘이 작용할 때
+    <div style="margin-top:8px"><span class="c-press" style="font-weight:700">압력</span> = 40 N ÷ 2 m² = <b class="num c-press" style="font-size:48px"><span id="d1_06_unit-p">20</span> Pa</b></div>
   </div>
   <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d1_06_unit-art"></g></svg>
 </section>
 <!-- ═══ 07_half.html ═══ -->
-<section class="slide" id="d1_07_half" data-tile="black" data-title="면적이 절반이면" data-notes="P8" data-say="같은 힘에서 면적 ½ → 압력 2배. 힘도 면적도 2배 → 압력 그대로. 빈칸 ⑥ 2배.">
-  <div class="hd" data-in><div class="eb">힘과 면적을 함께 본다</div><h2>면적이 절반이 되면 압력은</h2></div>
+<section class="slide" id="d1_07_half" data-tile="black" data-title="힘과 면적에 따른 압력" data-notes="P8" data-say="같은 힘에서 면적 ½ → 압력 2배. 힘과 면적이 모두 2배 → 압력은 변하지 않음. 빈칸 ⑥ 2배.">
+  <div class="hd" data-in><div class="eb">압력의 단위</div><h2>힘과 면적에 따른 압력</h2></div>
   <svg class="full-svg" viewBox="0 0 1920 1080"><g id="d1_07_half-cards"></g></svg>
   <div class="ws-card" style="left:120px;top:800px;width:1680px;padding:22px 44px" data-in="500">
-    <div class="ws-line" style="font-size:40px">같은 힘에서 면적이 절반이 되면 압력은 <span class="bk"><span class="a" data-step="1" data-fx="pop" data-delay="1900">2배</span><span class="n">6</span></span> — 힘이 2배, 면적도 2배면 압력은 그대로!</div>
+    <div class="ws-line" style="font-size:40px">같은 힘이 작용할 때 면적이 절반이 되면 압력은 <span class="bk"><span class="a" data-step="1" data-fx="pop" data-delay="1900">2배</span><span class="n">6</span></span>가 되고,<br>힘과 면적이 모두 2배가 되면 압력은 변하지 않는다.</div>
   </div>
 </section>
 <!-- ═══ 08_basket.html ═══ -->
-<section class="slide" id="d1_08_basket" data-tile="parchment" data-title="압력 바구니 나누기" data-notes="P9" data-say="학습지 1 아래 표. 못은 예시로 채워져 있고 나머지는 학생이 채운 뒤 한 줄씩 확인합니다.">
-  <div class="hd" data-in><div class="eb">적용하기</div><h2>압력 바구니 나누기</h2></div>
-  <div class="abs mute s08-lead" style="left:960px;width:840px;top:132px" data-in="300">각 물건이 압력을 크게 쓰는지 작게 쓰는지,<br>면적을 어떻게 바꿨는지 채워 보자.</div>
-  <div class="abs s08-h" style="left:290px;top:262px" data-in="400">물건</div>
-  <div class="abs s08-h" style="left:880px;top:262px" data-in="400"><svg class="tri" viewBox="0 0 40 40"><polygon points="20,4 37,35 3,35" fill="var(--heat)"/></svg>크게 / <svg class="tri" viewBox="0 0 40 40"><polygon points="3,5 37,5 20,36" fill="#6e6e73"/></svg>작게</div>
-  <div class="abs s08-h" style="left:1150px;top:262px" data-in="400">까닭 — 면적을 어떻게?</div>
-  <div class="abs s08-h" style="left:1584px;top:262px" data-in="400">닿는 면적</div>
+<section class="slide" id="d1_08_basket" data-tile="parchment" data-title="생활 속 압력" data-notes="P9" data-say="학습지 1 아래 표. 못은 예시로 채워져 있고 나머지는 학생이 채운 뒤 한 번 누를 때마다 한 줄씩 확인합니다. 순서: 주사기 바늘 → 눈썰매 → 축구화 바닥의 징 → 갯벌 널빤지.">
+  <div class="hd" data-in><div class="eb">생활 속 압력</div><h2>압력을 크게 하거나 작게 하는 물건</h2></div>
+  <div class="abs s08-lead" style="left:120px;width:1680px;top:226px" data-in="300">다음 물건이 압력을 크게 하는 경우인지 작게 하는 경우인지 쓰고, 그 까닭을 면적과 관련지어 쓰시오.</div>
+  <div class="abs s08-h" style="left:290px;top:296px" data-in="400">물건</div>
+  <div class="abs s08-h" style="left:760px;top:296px" data-in="400">압력(크게 / 작게)</div>
+  <div class="abs s08-h" style="left:1040px;top:296px" data-in="400">까닭(면적의 변화)</div>
   <div id="d1_08_basket-rows"></div>
 </section>
 <!-- ═══ 09_recap.html ═══ -->
-<section class="slide" id="d1_09_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P10" data-say="핵심 낱말이 빈칸으로 나옵니다 — 학생이 먼저 말하게 한 뒤 누를 때마다 카드 한 장씩 채워져요. 마지막 줄로 처음의 연필을 되받습니다.">
+<section class="slide" id="d1_09_recap" data-tile="parchment" data-title="오늘의 정리" data-notes="P10" data-say="핵심 낱말이 빈칸으로 나옵니다. 학생이 먼저 말하게 한 뒤 누를 때마다 카드 한 장씩 채워져요. 마지막 줄로 처음의 연필을 되받습니다.">
   <div class="hd" data-in><div class="eb">정리</div><h2>오늘 배운 것</h2></div>
   <div id="d1_09_recap-cards"></div>
-  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">처음의 연필 — 뾰족한 끝은 <span class="rk c-amt" data-rk="4" data-kind="shrink"><span class="rk-w">면적</span><span class="rk-fx" aria-hidden="true"></span></span>이 좁아서 같은 힘에도 <span class="rk c-press" data-rk="4" data-kind="press"><span class="rk-w">압력</span><span class="rk-fx" aria-hidden="true"></span></span>이 크다</div>
-  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">제작 : 과학을 사랑하는 선생님 · © 2026 · All rights reserved · 최종 업데이트: 2026-10-03</div>
+  <div class="abs center" style="left:0;width:1920px;top:880px;font-size:44px;font-weight:600;letter-spacing:-.02em" data-step="4">연필의 뾰족한 쪽은 <span class="rk c-amt" data-rk="4" data-kind="shrink"><span class="rk-w">면적</span><span class="rk-fx" aria-hidden="true"></span></span>이 좁아서 같은 힘에도 <span class="rk c-press" data-rk="4" data-kind="press"><span class="rk-w">압력</span><span class="rk-fx" aria-hidden="true"></span></span>이 크다</div>
+  <div id="app-credit" class="abs center" style="left:0;width:1920px;top:1016px;font-size:24px;color:var(--t3)">제작 : 과학을 사랑하는 선생님 · © 2026 · All rights reserved · 최종 업데이트: 2026-10-14</div>
 </section>
 <!-- ═══ 90_quiz0.html ═══ -->
 <section class="slide" id="d1_90_quiz0" data-tile="black" data-title="문제로 확인하기" data-notes="" data-say="수업 페이지 확인하기에서 고른 4문제입니다. 문제마다 먼저 풀어 보게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다.">
@@ -462,25 +500,25 @@ html.student #notes{display:none!important}
   </div>
 </section>
 <!-- ═══ 91_quiz1.html ═══ -->
-<section class="slide" id="d1_91_quiz1" data-tile="light" data-title="문제 1" data-notes="" data-say="양쪽 힘이 같은데도 아픔이 다른 까닭을 면적으로 설명하는지 확인한다(힘 차이 오개념 차단). 정답 ②. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 연필을 사이에 끼우고 누르면 양쪽 손가락이 받는 힘은 같습니다 . 다른 것은 닿는 면적 — 뾰족한 쪽은 면적이 아주 좁아 같은 힘이 한 점에 몰리고, 압력이 커져 아픕니다.">
+<section class="slide" id="d1_91_quiz1" data-tile="light" data-title="문제 1" data-notes="" data-say="양쪽 힘이 같은데도 아픔이 다른 까닭을 면적으로 설명하는지 확인한다(힘 차이 오개념 차단). 정답 ②. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 연필을 사이에 끼우고 누르면 양쪽 손가락이 받는 힘은 같습니다. 다른 것은 닿는 면적입니다. 뾰족한 쪽은 면적이 아주 좁아 같은 힘이 한 점에 몰리고, 압력이 커져 아픕니다.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 1</b> / 4 <span class="qz-lv">기본</span></div>
     <div class="qz-stem" data-in="150">그림과 같이 연필을 두 손가락 사이에 끼우고 양쪽에서 눌렀더니 뾰족한 쪽에 닿은 손가락이 훨씬 아팠다. 그 까닭으로 옳은 것은?</div>
-    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 195" role="img" aria-label="연필을 두 손가락 사이에 끼워 양쪽에서 누르는 그림. 왼손가락은 뾰족한 연필심 쪽, 오른손가락은 뭉툭한 지우개 쪽에 닿아 있고, 두 손가락이 미는 힘은 같다는 화살표가 그려져 있다."><rect x="150" y="96" width="250" height="16" rx="3" fill="#f2c94c" stroke="#9a7b1e" stroke-width="1.5"/><polygon points="150,96 118,104 150,112" fill="#e9d8b0" stroke="#9a7b1e" stroke-width="1.5"/><polygon points="128,101.5 118,104 128,106.5" fill="#333"/><rect x="400" y="94" width="18" height="20" rx="4" fill="#e88a8a" stroke="#9a4a4a" stroke-width="1.5"/><ellipse cx="92" cy="104" rx="26" ry="18" fill="#f6d2b8" stroke="#c99a7a" stroke-width="1.5"/><ellipse cx="450" cy="104" rx="26" ry="18" fill="#f6d2b8" stroke="#c99a7a" stroke-width="1.5"/><line x1="60.0" y1="104.0" x2="82.0" y2="104.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="90.0,104.0 75.6,108.8 75.6,99.2" fill="#b23a30"/><line x1="482.0" y1="104.0" x2="460.0" y2="104.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="452.0,104.0 466.4,99.2 466.4,108.8" fill="#b23a30"/><text x="92" y="146" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">왼손가락</text><text x="450" y="146" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">오른손가락</text><text x="134" y="80" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">뾰족한 쪽</text><text x="409" y="80" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">뭉툭한 쪽</text><text x="280" y="40" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">연필을 두 손가락 사이에 끼우고 양쪽에서 누른다</text><text x="280" y="178" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c">※ 두 손가락이 연필을 미는 힘(빨간 화살표)은 서로 같다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">뾰족한 쪽을 더 세게 누르기 때문이다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">②</span><span class="qz-t">두 손가락이 받는 힘은 같지만, 뾰족한 쪽은 닿는 면적이 좁아 압력이 크기 때문이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">③</span><span class="qz-t">뾰족한 쪽에는 연필심의 무게가 더 실리기 때문이다.</span></li><li><span class="qz-n">④</span><span class="qz-t">뭉툭한 쪽에는 힘이 작용하지 않기 때문이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">압력은 힘과 관계없이 물체의 모양만으로 정해지기 때문이다.</span></li></ol></div>
-    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ② · 풀이</div><div class="qz-why-t">연필을 사이에 끼우고 누르면 양쪽 손가락이 받는 <b>힘은 같습니다</b>. 다른 것은 <b>닿는 면적</b> — 뾰족한 쪽은 면적이 아주 좁아 같은 힘이 한 점에 몰리고, 압력이 커져 아픕니다.</div></div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 195" role="img" aria-label="연필을 두 손가락 사이에 끼워 양쪽에서 누르는 그림. 왼손가락은 뾰족한 연필심 쪽, 오른손가락은 뭉툭한 지우개 쪽에 닿아 있고, 두 손가락이 미는 힘은 같다는 화살표가 그려져 있다."><rect x="150" y="96" width="250" height="16" rx="3" fill="#f2c94c" stroke="#9a7b1e" stroke-width="1.5"/><polygon points="150,96 118,104 150,112" fill="#e9d8b0" stroke="#9a7b1e" stroke-width="1.5"/><polygon points="128,101.5 118,104 128,106.5" fill="#333"/><rect x="400" y="94" width="18" height="20" rx="4" fill="#e88a8a" stroke="#9a4a4a" stroke-width="1.5"/><ellipse cx="92" cy="104" rx="26" ry="18" fill="#f6d2b8" stroke="#c99a7a" stroke-width="1.5"/><ellipse cx="450" cy="104" rx="26" ry="18" fill="#f6d2b8" stroke="#c99a7a" stroke-width="1.5"/><line x1="60.0" y1="104.0" x2="82.0" y2="104.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="90.0,104.0 75.6,108.8 75.6,99.2" fill="#b23a30"/><line x1="482.0" y1="104.0" x2="460.0" y2="104.0" stroke="#b23a30" stroke-width="3" stroke-linecap="round"/><polygon points="452.0,104.0 466.4,99.2 466.4,108.8" fill="#b23a30"/><text x="92" y="146" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">왼손가락</text><text x="450" y="146" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">오른손가락</text><text x="134" y="80" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">뾰족한 쪽</text><text x="409" y="80" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#2e2315" font-weight="800">뭉툭한 쪽</text><text x="280" y="40" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">연필을 두 손가락 사이에 끼우고 양쪽에서 누른다</text><text x="280" y="178" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c">※ 두 손가락이 연필을 미는 힘(빨간 화살표)은 서로 같다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">뾰족한 쪽을 더 세게 누르기 때문이다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">②</span><span class="qz-t">두 손가락이 받는 힘은 같지만, 뾰족한 쪽은 닿는 면적이 좁아 압력이 크기 때문이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">③</span><span class="qz-t">뾰족한 쪽의 연필심이 단단해서 손가락을 더 세게 밀기 때문이다.</span></li><li><span class="qz-n">④</span><span class="qz-t">뭉툭한 쪽에는 힘이 작용하지 않기 때문이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">압력은 힘과 관계없이 물체의 모양만으로 정해지기 때문이다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ② · 풀이</div><div class="qz-why-t">연필을 사이에 끼우고 누르면 양쪽 손가락이 받는 <b>힘은 같습니다</b>. 다른 것은 <b>닿는 면적</b>입니다. 뾰족한 쪽은 면적이 아주 좁아 같은 힘이 한 점에 몰리고, 압력이 커져 아픕니다.</div></div>
   </div>
 </section>
 <!-- ═══ 92_quiz2.html ═══ -->
-<section class="slide" id="d1_92_quiz2" data-tile="parchment" data-title="문제 2" data-notes="" data-say="힘이 같을 때 면적이 1/4이 되면 압력이 4배가 됨을 계산하는지 확인한다. 정답 ③. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 벽돌의 무게(힘)는 그대로인데 닿는 면적이 200 → 50 cm²로 1/4 이 되었습니다. 압력 = 힘 ÷ 면적이므로 (나)의 압력은 (가)의 4배 예요. 힘이 같으면 면적이 좁을수록 압력이 큽니다.">
+<section class="slide" id="d1_92_quiz2" data-tile="parchment" data-title="문제 2" data-notes="" data-say="힘이 같을 때 면적이 1/4이 되면 압력이 4배가 됨을 계산하는지 확인한다. 정답 ③. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 벽돌이 바닥을 누르는 힘은 그대로인데 닿는 면적이 200 → 50 cm²로 1/4 이 되었습니다. 압력 = 힘 ÷ 면적이므로 (나)의 압력은 (가)의 4배 예요. 힘이 같으면 면적이 좁을수록 압력이 큽니다.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 2</b> / 4 <span class="qz-lv">중간</span></div>
     <div class="qz-stem" data-in="150">그림은 같은 벽돌을 (가) 넓은 면(200 cm²)으로 눕혀 놓았을 때와 (나) 좁은 면(50 cm²)으로 세워 놓았을 때이다. 바닥이 받는 압력을 옳게 비교한 것은?</div>
-    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 250" role="img" aria-label="같은 벽돌을 (가) 넓은 면(200 cm²)으로 눕혀 놓은 모습과 (나) 좁은 면(50 cm²)으로 세워 놓은 모습."><rect x="60" y="120" width="180" height="60" rx="4" fill="#c97a5a" stroke="#7a3f2a" stroke-width="2"/><rect x="360" y="60" width="60" height="120" rx="4" fill="#c97a5a" stroke="#7a3f2a" stroke-width="2"/><line x1="40" y1="182" x2="280" y2="182" stroke="#2e2315" stroke-width="3"/><line x1="340" y1="182" x2="460" y2="182" stroke="#2e2315" stroke-width="3"/><text x="150" y="105" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(가) 넓은 면으로 놓기</text><text x="390" y="45" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(나) 좁은 면으로 세우기</text><text x="150" y="205" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">닿는 면적 200 cm²</text><text x="390" y="205" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">닿는 면적 50 cm²</text><text x="280" y="235" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c">※ 같은 벽돌이다 — 바닥을 누르는 힘(무게)은 (가)와 (나)가 같다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">(가)와 (나)가 같다.</span></li><li><span class="qz-n">②</span><span class="qz-t">(나)가 (가)의 2배이다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">③</span><span class="qz-t">(나)가 (가)의 4배이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">④</span><span class="qz-t">(가)가 (나)의 2배이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">(가)가 (나)의 4배이다.</span></li></ol></div>
-    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ③ · 풀이</div><div class="qz-why-t">벽돌의 무게(힘)는 그대로인데 닿는 면적이 200 → 50 cm²로 <b>1/4</b>이 되었습니다. 압력 = 힘 ÷ 면적이므로 (나)의 압력은 (가)의 <b>4배</b>예요. 힘이 같으면 면적이 좁을수록 압력이 큽니다.</div></div>
+    <div class="qz-row" data-in="350"><div class="qz-left"><div class="qz-card qz-fig"><svg viewBox="0 0 560 250" role="img" aria-label="같은 벽돌을 (가) 넓은 면(200 cm²)으로 눕혀 놓은 모습과 (나) 좁은 면(50 cm²)으로 세워 놓은 모습."><rect x="60" y="120" width="180" height="60" rx="4" fill="#c97a5a" stroke="#7a3f2a" stroke-width="2"/><rect x="360" y="60" width="60" height="120" rx="4" fill="#c97a5a" stroke="#7a3f2a" stroke-width="2"/><line x1="40" y1="182" x2="280" y2="182" stroke="#2e2315" stroke-width="3"/><line x1="340" y1="182" x2="460" y2="182" stroke="#2e2315" stroke-width="3"/><text x="150" y="105" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(가) 넓은 면으로 놓기</text><text x="390" y="45" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="13" fill="#2e2315" font-weight="800">(나) 좁은 면으로 세우기</text><text x="150" y="205" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">닿는 면적 200 cm²</text><text x="390" y="205" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12.5" fill="#5c4a33">닿는 면적 50 cm²</text><text x="280" y="235" text-anchor="middle" font-family="Gowun Dodum, Pretendard, sans-serif" font-size="12" fill="#96805c">※ 같은 벽돌이므로 바닥을 누르는 힘은 (가)와 (나)가 같다</text></svg></div></div><ol class="qz-ch"><li><span class="qz-n">①</span><span class="qz-t">(가)와 (나)가 같다.</span></li><li><span class="qz-n">②</span><span class="qz-t">(나)가 (가)의 2배이다.</span></li><li class="ok"><span class="qz-hl" data-step="1" data-fx="fade"></span><span class="qz-n">③</span><span class="qz-t">(나)가 (가)의 4배이다.</span><span class="qz-mark" data-step="1" data-fx="pop">정답</span></li><li><span class="qz-n">④</span><span class="qz-t">(가)가 (나)의 2배이다.</span></li><li><span class="qz-n">⑤</span><span class="qz-t">(가)가 (나)의 4배이다.</span></li></ol></div>
+    <div class="qz-card qz-why" data-step="1" data-fx="up"><div class="qz-why-h">정답 ③ · 풀이</div><div class="qz-why-t">벽돌이 바닥을 누르는 힘은 그대로인데 닿는 면적이 200 → 50 cm²로 <b>1/4</b>이 되었습니다. 압력 = 힘 ÷ 면적이므로 (나)의 압력은 (가)의 <b>4배</b>예요. 힘이 같으면 면적이 좁을수록 압력이 큽니다.</div></div>
   </div>
 </section>
 <!-- ═══ 93_quiz3.html ═══ -->
-<section class="slide" id="d1_93_quiz3" data-tile="light" data-title="문제 3" data-notes="" data-say="압력 = 힘 ÷ 면적으로 값을 구하고 단위(N/m², Pa)를 아는지 확인한다. 정답 ④. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 압력 = 힘 ÷ 면적 = 40 N ÷ 2 m² = 20 N/m² . 1 m²마다 20 N의 힘이 작용한다는 뜻이고, 20 Pa(파스칼)이라고도 씁니다.">
+<section class="slide" id="d1_93_quiz3" data-tile="light" data-title="문제 3" data-notes="" data-say="압력 = 힘 ÷ 면적으로 값을 구하고 단위(N/m², Pa)를 아는지 확인한다. 정답 ④. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 압력 = 힘 ÷ 면적 = 40 N ÷ 2 m² = 20 N/m². 1 m²마다 20 N의 힘이 작용한다는 뜻이고, 20 Pa(파스칼)이라고도 씁니다.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 3</b> / 4 <span class="qz-lv">중간</span></div>
     <div class="qz-stem" data-in="150">바닥 면적이 2 m²인 상자가 바닥을 40 N의 힘으로 누르고 있다. 상자가 바닥에 가하는 압력은? (1 N/m² = 1 Pa)</div>
@@ -489,7 +527,7 @@ html.student #notes{display:none!important}
   </div>
 </section>
 <!-- ═══ 94_quiz4.html ═══ -->
-<section class="slide" id="d1_94_quiz4" data-tile="parchment" data-title="문제 4" data-notes="" data-say="못의 개수가 늘면 힘이 나뉘어 각 끝의 압력이 작아짐을 추론하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 누르는 힘은 같은데 못이 30개면 그 힘이 30개의 끝에 나뉘어 한 끝이 받는 힘이 작아지고, 닿는 면적도 전체로는 넓어져 압력이 작아집니다 . 못 1개는 모든 힘이 한 점에 몰려 압력이 커서 터져요.">
+<section class="slide" id="d1_94_quiz4" data-tile="parchment" data-title="문제 4" data-notes="" data-say="못의 개수가 늘면 힘이 나뉘어 각 끝의 압력이 작아짐을 추론하는지 확인한다. 정답 ①. 학생이 먼저 고르게 한 뒤 한 번 누르면 정답과 풀이가 함께 나옵니다. 누르는 힘은 같은데 못이 30개면 그 힘이 30개의 끝에 나뉘어 한 끝이 받는 힘이 작아지고, 닿는 면적도 전체로는 넓어져 압력이 작아집니다. 못 1개는 모든 힘이 한 점에 몰려 압력이 커서 터져요.">
   <div class="qz-body">
     <div class="qz-eb" data-in><b>문제 4</b> / 4 <span class="qz-lv">중간</span></div>
     <div class="qz-stem" data-in="150">그림과 같이 누름못 1개 위에 올린 풍선은 터졌지만, 같은 누름못 30개를 촘촘히 깔고 같은 힘으로 올린 풍선은 터지지 않았다. 그 까닭으로 옳은 것은?</div>
@@ -500,7 +538,8 @@ html.student #notes{display:none!important}
 <div id="gridov"></div>
 </div></div>
 
-<script>window.NOTES = {"P1": "오늘은 「압력」을 배웁니다. 먼저 연필 하나만 꺼내 보세요. 두 손가락 사이에 끼우고, 아프기 전에 멈출 만큼만 눌러 봅니다.", "P2": "연필이 가만히 있으면 양쪽 손가락이 연필을 누르는 힘은 똑같을 수밖에 없어요. 한쪽을 더 세게 누르면 반대쪽 손가락도 그만큼 더 세게 눌려야 연필이 가만히 있거든요. 그래서 한쪽만 더 세게 누를 방법이 없습니다. 그런데 아픈 쪽은 뾰족한 쪽 하나뿐입니다. 힘이 같은데 왜 한쪽만 아플까요?", "P3": "같은 힘이라도 손가락에 닿는 자리의 넓이가 다르기 때문이에요. 뾰족한 쪽은 아주 좁고, 지우개 쪽은 넓습니다. 그래서 「힘」 하나만 보면 안 되고 「힘이 닿는 넓이」를 함께 봐야 합니다.", "P4": "스펀지 위에 페트병을 올리고, 한 번에 하나만 바꿔 봅시다. 병의 방향만 바꾸면 눌린 깊이가 달라지고, 병의 무게만 바꿔도 달라집니다. 무게와 닿는 넓이, 둘 다 눌리는 정도를 정해요.", "P5": "이제 이름을 붙입니다. 일정한 넓이에 작용하는 힘을 압력이라고 해요. 학습지 1번 빈칸에는 「힘」, 2번 빈칸에는 「면적」이 들어갑니다. 압력은 힘을 면적으로 나눈 값입니다. 갯벌 널빤지의 비밀이 바로 여기에 있어요.", "P6": "압력을 바꾸는 방법은 딱 둘입니다. 하나, 넓이는 그대로 두고 누르는 힘을 키우면 압력이 커집니다. 작용하는 힘의 크기가 클수록 압력이 커지니 3번 빈칸은 「클수록」이에요. 둘, 힘은 그대로 두고 닿는 넓이를 좁히면 압력이 커집니다. 힘이 작용하는 면적이 좁을수록 압력이 커지니 4번 빈칸은 「좁을수록」입니다. 벽돌은 무게가 그대로여도 세우면 압력이 커지고, 눕혀서 넓게 펼치면 작아져요. 세우면 닿는 면의 가로세로가 모두 절반(20×10 cm에서 10×5 cm)이 되니까 면적은 1/4이 됩니다.", "P7": "압력의 단위는 N/m² 입니다. 5번 빈칸이에요. 1 m² 에 1 N 의 힘이 작용할 때의 압력이 1 N/m² 이고, 파스칼(Pa)이라고도 불러요. 예를 들어 바닥 면적 2 m² 에 40 N 의 힘이 작용하면 압력은 40 나누기 2, 20 N/m² 입니다.", "P8": "같은 힘에서 면적이 절반이 되면 압력은 2배가 됩니다. 6번 빈칸은 「2배」예요. 반대로 힘이 2배가 되어도 면적이 함께 2배가 되면 압력은 그대로예요. 힘과 면적을 같이 봐야 하는 이유입니다.", "P9": "압력 바구니를 나눠 봅시다. 물건마다 압력을 크게 쓰는지 작게 쓰는지, 그리고 그러려고 면적을 어떻게 바꿨는지 표에 채워 보세요. 못의 뾰족한 끝은 면적을 좁혀서 압력을 크게 만든 예입니다. 주사기 바늘과 축구화의 징(흔히 「뽕」이라고 부르는 것)도 면적을 좁혀서 압력을 크게 쓰고, 눈썰매와 갯벌 널빤지는 면적을 넓혀서 압력을 작게 씁니다.", "P10": "오늘 정리입니다. 압력은 힘 나누기 면적이고, 힘이 클수록, 면적이 좁을수록 커집니다. 처음의 연필을 다시 떠올려 볼까요. 뾰족한 끝은 면적이 좁아서 같은 힘에도 압력이 컸던 거예요."};</script>
+<script>window.NOTES = {"P1": "오늘은 「압력」을 배웁니다. 먼저 연필 하나만 꺼내 보세요. 두 손가락 사이에 끼우고, 아프기 전에 멈출 만큼만 눌러 봅니다.", "P2": "연필이 가만히 있으면 양쪽 손가락이 연필을 누르는 힘은 똑같을 수밖에 없어요. 한쪽을 더 세게 누르면 반대쪽 손가락도 그만큼 더 세게 눌려야 연필이 가만히 있거든요. 그런데 아픈 쪽은 뾰족한 쪽에 닿은 손가락뿐입니다. 힘이 같은데 한쪽만 아픈 까닭을 생각해 봅시다.", "P3": "같은 힘이라도 손가락에 닿는 자리의 넓이가 다르기 때문이에요. 뾰족한 쪽은 아주 좁고, 지우개 쪽은 넓습니다. 그래서 「힘」 하나만 보면 안 되고 「힘이 닿는 넓이」를 함께 봐야 합니다.", "P3k": "본격적으로 들어가기 전에 오늘의 키워드부터 볼까요? 오늘은 세 가지 키워드를 따라갑니다. 첫 번째 「스펀지 실험」, 두 번째 「압력이란」, 그리고 마지막 「단위와 계산」입니다. 화면 오른쪽 위를 보면 지금 어떤 키워드를 배우고 있는지 계속 표시해 둘게요. 그럼 첫 번째 키워드, 「스펀지 실험」부터 시작해 볼까요? <span class=\"cue\">화면: 오늘의 키워드 3개 — 오른쪽 위 진행 표시 안내</span>", "P4": "스펀지 위에 페트병을 올리고, 한 번에 하나만 바꿔 봅시다. 병을 거꾸로 세워 닿는 넓이만 좁히면 더 깊이 눌리고, 물을 채워 누르는 힘만 크게 해도 더 깊이 눌립니다. 누르는 힘이 클수록, 닿는 넓이가 좁을수록 스펀지가 깊이 눌려요.", "P5": "이제 이름을 붙입니다. 일정한 넓이(면적)에 작용하는 힘을 압력이라고 해요. 학습지 1번 빈칸에는 「힘」, 2번 빈칸에는 「면적」이 들어갑니다. 압력은 힘을 면적으로 나눈 값입니다.", "P6": "압력의 크기에 영향을 주는 요인을 봅시다. 면적은 그대로 두고 누르는 힘을 크게 하면 압력이 커집니다. 작용하는 힘의 크기가 클수록 압력이 커지니 3번 빈칸은 「클수록」이에요. 힘은 그대로 두고 닿는 면적을 좁히면 압력이 커집니다. 힘이 작용하는 면적이 좁을수록 압력이 커지니 4번 빈칸은 「좁을수록」입니다. 그래서 같은 물체를 세우면 압력이 커지고, 눕히면 압력이 작아져요. 벽돌을 세우면 닿는 면의 가로세로가 모두 절반(20×10 cm에서 10×5 cm)이 되니까 면적은 1/4이 됩니다.", "P7": "압력의 단위는 N/m²입니다. 5번 빈칸이에요. 1 m²의 면적에 1 N의 힘이 작용할 때의 압력이 1 N/m²이고, 파스칼(Pa)을 쓰기도 해요. 예를 들어 2 m²의 면적에 40 N의 힘이 작용하면 압력은 40 N 나누기 2 m², 20 Pa입니다.", "P8": "같은 힘이 작용할 때 면적이 절반이 되면 압력은 2배가 됩니다. 6번 빈칸은 「2배」예요. 그리고 힘과 면적이 모두 2배가 되면 압력은 변하지 않아요. 그래서 힘과 면적을 함께 봐야 합니다.", "P9": "생활 속 압력을 찾아봅시다. 물건마다 압력을 크게 하는 경우인지 작게 하는 경우인지 쓰고, 그 까닭을 면적과 관련지어 표에 써 보세요. 못의 뾰족한 끝은 면적을 좁게 하여 압력을 크게 하므로 벽에 잘 박힙니다. 주사기 바늘은 면적을 좁게 하여 피부를 쉽게 뚫고, 축구화 바닥의 징은 면적을 좁게 하여 땅에 잘 박혀 미끄러지지 않아요. 둘 다 압력을 크게 하는 경우입니다. 눈썰매와 갯벌 널빤지는 면적을 넓게 하여 압력을 작게 하므로 눈이나 갯벌에 잘 빠지지 않습니다.", "P10": "오늘 정리입니다. 압력은 일정한 면적에 작용하는 힘이고, 힘 나누기 면적으로 구합니다. 힘이 클수록, 면적이 좁을수록 압력이 커집니다. 단위는 N/m²이고 파스칼(Pa)을 쓰기도 해요. 처음의 연필을 다시 떠올려 볼까요. 뾰족한 쪽은 면적이 좁아서 같은 힘에도 압력이 컸던 거예요."};</script>
+<script>window.KW = {"items": [{"kw": "스펀지 실험"}, {"kw": "압력이란"}, {"kw": "단위와 계산"}], "at": [-1, -1, -1, 0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3]};</script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
    core.js — 강의 덱 엔진
@@ -870,7 +909,30 @@ html.student #notes{display:none!important}
     const on = !window.SFX || SFX.isOn();
     b.innerHTML = on ? ICON.sound : ICON.mute; b.classList.toggle('off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
+  /* ── 키워드 진행 표시(무대 오른쪽 위 · 녹화 화면에도 보임) ──
+     window.KW = {items:[{kw}], at:[장마다 키워드 번호]} — build.py 가 slides/…/_keywords.json 으로 넣는다.
+     at: -1 = 숨김(표지·도입·키워드 장), 0..n-1 = 그 키워드, n = 모두 끝(정리·문제). 칩을 누르면 그 키워드의 첫 장으로 */
+  let kwEl = null;
+  function buildKw() {
+    const K = window.KW; if (!K || !K.items || !K.items.length || !K.at) return;
+    kwEl = document.createElement('div'); kwEl.id = 'kwbar'; kwEl.setAttribute('data-interactive', '');
+    kwEl.innerHTML = K.items.map((it, j) => `<button type="button" class="kw" data-j="${j}" aria-label="키워드 ${j + 1}: ${it.kw}"><b>${j + 1}</b><span>${it.kw}</span></button>`).join('');
+    stage.appendChild(kwEl);
+    kwEl.addEventListener('click', e => {
+      const b = e.target.closest('.kw'); if (!b) return; e.stopPropagation();
+      const i = K.at.indexOf(+b.dataset.j); if (i >= 0 && i !== Deck.i) show(i, 0);
+    });
+  }
+  function syncKw() {
+    if (!kwEl) return;
+    const K = window.KW, a = K.at[Deck.i], sec = Deck.list[Deck.i];
+    const hide = a == null || a < 0 || (sec && sec.hasAttribute('data-kw-hide'));
+    kwEl.classList.toggle('show', !hide);
+    kwEl.classList.toggle('end', a >= K.items.length);
+    kwEl.querySelectorAll('.kw').forEach((b, j) => { b.classList.toggle('done', j < a); b.classList.toggle('cur', j === a); });
+  }
   function buildChrome() {
+    buildKw();
     hud = document.createElement('div'); hud.id = 'hud';
     hud.innerHTML = `<button data-a="replay" aria-label="이 단계 다시 보기(R)">${ICON.replay}</button>${STUDENT ? '' : `<button data-a="notes" aria-label="대본 보기(T)">${ICON.notes}</button>`}<button data-a="grid" aria-label="전체 보기(O)">${ICON.grid}</button><button data-a="prev" aria-label="이전">${ICON.prev}</button><span class="count" id="count">1 / 1</span><button data-a="next" aria-label="다음">${ICON.next}</button><button data-a="sound" aria-label="소리 켜기/끄기(M)">${ICON.sound}</button><button data-a="full" aria-label="전체 화면(F)">${ICON.full}</button>`;
     document.body.appendChild(hud); syncSound();
@@ -908,6 +970,7 @@ html.student #notes{display:none!important}
     hud.querySelector('#count').textContent = `${Deck.i + 1} / ${n}`;
     prog.firstChild.style.width = `${((Deck.i + (st ? Deck.k / (st + 1) : 0)) / Math.max(1, n - 1)) * 100}%`;
     dots.innerHTML = st ? Array.from({ length: st + 1 }, (_, j) => `<i class="${j <= Deck.k ? 'on' : ''}"></i>`).join('') : '';
+    syncKw();
     if (notesEl.classList.contains('show')) renderNotes();
     if (ovEl.classList.contains('show')) renderOverview();
   }
@@ -1073,11 +1136,14 @@ window.SFX = (function () {
   const D = window.Deck || {};
   const OFF = !!D.STILL || Q.get('nosfx') === '1';
   const KEY = 'sc_sfx';
+  const VOLUME_KEY = 'sc_sfx_volume';
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  let volume = 1;
+  try { const saved = localStorage.getItem(VOLUME_KEY); if (saved !== null && saved.trim() !== '' && Number.isFinite(Number(saved))) volume = clamp(Number(saved)); } catch (e) {}
   let on = !D.STUDENT;
   try { const s = localStorage.getItem(KEY); if (s === '1' || s === '0') on = s === '1'; } catch (e) {}
   if (Q.get('sound') === '1') on = true; else if (Q.get('sound') === '0') on = false;
-  let ac = null, out = null, X = null, unlocked = Q.get('sfxtest') === '1', broken = false;
+  let ac = null, out = null, master = null, X = null, unlocked = Q.get('sfxtest') === '1', broken = false;
   const pending = new Set();
 
   /* ── 잡음(결정적) ── */
@@ -1095,8 +1161,10 @@ window.SFX = (function () {
       try { ac = new AC(); } catch (e) { broken = true; return null; }
       const comp = ac.createDynamicsCompressor();
       comp.threshold.value = -14; comp.knee.value = 18; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .18;
-      out = ac.createGain(); out.gain.value = on ? .9 : 0;
-      out.connect(comp); comp.connect(ac.destination);
+      out = ac.createGain(); out.gain.value = .9;
+      // Apply volume after compression, so every one-shot and loop shares the same level.
+      master = ac.createGain(); master.gain.value = on ? volume : 0;
+      out.connect(comp); comp.connect(master); master.connect(ac.destination);
       X = { ac, dest: out, nz: noiseBuf(ac) };
     }
     if (ac.state === 'suspended' && on && !document.hidden) ac.resume().catch(() => {});
@@ -1404,11 +1472,90 @@ window.SFX = (function () {
     try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
     unlock();
     const x = ensure();
-    if (x && out) out.gain.setTargetAtTime(on ? .9 : 0, ac.currentTime, .03);
+    if (x && master) master.gain.setTargetAtTime(on ? volume : 0, ac.currentTime, .03);
+    syncVolumeUI();
     toast(on);
     if (on) play('pop');
     return on;
   }
+
+  function setVolume(value, persist = true) {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return volume;
+    volume = clamp(value);
+    if (persist) { try { localStorage.setItem(VOLUME_KEY, String(volume)); } catch (e) {} }
+    if (master && ac) master.gain.setTargetAtTime(on ? volume : 0, ac.currentTime, .03);
+    syncVolumeUI();
+    return volume;
+  }
+  let volumeButton = null, volumePanel = null, volumeInput = null, volumeOutput = null, volumeStatus = null, volumeTry = null;
+  function syncVolumeUI() {
+    if (!volumeButton) return;
+    const percent = Math.round(volume * 100);
+    volumeButton.textContent = percent + '%';
+    volumeButton.title = '효과음 볼륨 ' + percent + '% · 조절하기';
+    volumeInput.value = String(percent);
+    volumeInput.setAttribute('aria-valuetext', percent + '%');
+    volumeOutput.textContent = percent + '%';
+    volumeStatus.textContent = OFF ? '소리가 비활성화된 화면' : !on ? '음소거 중 · 아래 스피커 버튼으로 켜기' : percent === 0 ? '볼륨 0% · 소리 없음' : '효과음 전체에 적용';
+    volumeInput.disabled = OFF;
+    volumeTry.disabled = OFF || !on || volume === 0;
+  }
+  function mountVolumeUI() {
+    const hud = document.getElementById('hud');
+    if (!hud || document.getElementById('lecture-volume-toggle')) return;
+    const sound = hud.querySelector('[data-a="sound"]');
+    if (!sound) return;
+    const style = document.createElement('style');
+    style.textContent = `#hud #lecture-volume-toggle{width:58px;border-radius:22px;font:600 14px system-ui,sans-serif}
+      #hud.volume-open{opacity:1;transform:none;pointer-events:auto}
+      #lecture-volume-panel{position:absolute;right:0;bottom:calc(100% + 10px);width:280px;max-width:calc(100vw - 28px);box-sizing:border-box;padding:18px;background:#172238;color:#fff;border:1px solid #62718a;border-radius:14px;font:16px/1.5 system-ui,sans-serif;touch-action:auto}
+      #lecture-volume-panel[hidden]{display:none!important}
+      #lecture-volume-panel .volume-heading{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:12px}
+      #lecture-volume-range{display:block;width:100%;height:36px;margin:0;accent-color:#8bceff;touch-action:auto;cursor:pointer}
+      #lecture-volume-status{font-size:14px;color:#d5e4fa;margin:8px 0 12px}
+      #hud #lecture-volume-panel button{width:auto;min-height:40px;height:auto;padding:8px 14px;border-radius:8px;font:600 14px system-ui,sans-serif;background:#e1edff;color:#172238}
+      #lecture-volume-panel .volume-actions{display:flex;justify-content:space-between;gap:12px}
+      #lecture-volume-panel button:disabled{opacity:.45;cursor:default}
+      @media(max-width:600px){#hud{right:8px;gap:4px;max-width:calc(100vw - 16px);flex-wrap:wrap;justify-content:flex-end}#hud button{width:32px;height:38px}#hud .count{min-width:50px;height:38px;padding:0 8px}#hud #lecture-volume-toggle{width:44px;font-size:12px}}
+      @media print{#lecture-volume-panel,#lecture-volume-toggle{display:none!important}}`;
+    document.head.appendChild(style);
+    volumeButton = document.createElement('button');
+    volumeButton.id = 'lecture-volume-toggle'; volumeButton.type = 'button';
+    volumeButton.setAttribute('aria-label','효과음 볼륨 조절');
+    volumeButton.setAttribute('aria-expanded','false');
+    volumeButton.setAttribute('aria-controls','lecture-volume-panel');
+    hud.insertBefore(volumeButton,sound.nextSibling);
+    volumePanel = document.createElement('div');
+    volumePanel.id = 'lecture-volume-panel'; volumePanel.hidden = true;
+    volumePanel.setAttribute('role','group'); volumePanel.setAttribute('aria-label','효과음 볼륨');
+    volumePanel.innerHTML = '<div class="volume-heading"><label for="lecture-volume-range">효과음 볼륨</label><output id="lecture-volume-value" for="lecture-volume-range"></output></div><input id="lecture-volume-range" type="range" min="0" max="100" step="1" aria-label="효과음 볼륨"><div id="lecture-volume-status"></div><div class="volume-actions"><button type="button" id="lecture-volume-try">시험 듣기</button><button type="button" id="lecture-volume-close">닫기</button></div>';
+    hud.appendChild(volumePanel);
+    volumeInput = volumePanel.querySelector('input'); volumeOutput = volumePanel.querySelector('output');
+    volumeStatus = volumePanel.querySelector('#lecture-volume-status'); volumeTry = volumePanel.querySelector('#lecture-volume-try');
+    const setOpen = (open, restoreFocus = false) => {
+      volumePanel.hidden = !open; volumeButton.setAttribute('aria-expanded',String(open));
+      hud.classList.toggle('volume-open',open);
+      if (open) volumeInput.focus(); else if (restoreFocus) volumeButton.focus();
+    };
+    volumeButton.addEventListener('click', e => { e.stopPropagation(); setOpen(volumePanel.hidden); });
+    volumeButton.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') e.stopPropagation(); });
+    volumePanel.addEventListener('click', e => e.stopPropagation());
+    volumePanel.addEventListener('keydown', e => e.stopPropagation());
+    volumeInput.addEventListener('input', () => setVolume(Number(volumeInput.value)/100));
+    volumeTry.addEventListener('click', () => { unlock(); play('ding'); });
+    volumePanel.querySelector('#lecture-volume-close').addEventListener('click', () => setOpen(false,true));
+    document.addEventListener('keydown', e => {
+      if (!volumePanel.hidden && e.key === 'Escape') { setOpen(false,true); e.preventDefault(); e.stopImmediatePropagation(); }
+    },true);
+    document.addEventListener('pointerdown', e => { if (!volumePanel.hidden && !volumePanel.contains(e.target) && e.target !== volumeButton) setOpen(false); },true);
+    window.addEventListener('blur', () => setOpen(false));
+    window.addEventListener('storage', e => {
+      if (e.key === VOLUME_KEY && e.newValue !== null && e.newValue.trim() !== '' && Number.isFinite(Number(e.newValue))) setVolume(Number(e.newValue),false);
+    });
+    syncVolumeUI();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(mountVolumeUI,0));
+  else setTimeout(mountVolumeUI,0);
 
   /* ═════════ 점검 도구 ═════════ */
   function measure(buf) {
@@ -1454,7 +1601,7 @@ window.SFX = (function () {
   }
   if (Q.get('sfx') === 'demo') { const go = () => demoPanel(); if (document.body) go(); else document.addEventListener('DOMContentLoaded', go); }
 
-  return { play, loop, toggle, unlock, analyze, analyzeLoop, names: () => Object.keys(S), isOn: () => on, isOff: () => OFF, S, debug: () => ({ pendingLoops: pending.size, unlocked, state: ac ? ac.state : 'none' }) };
+  return { play, loop, toggle, unlock, setVolume, getVolume: () => volume, analyze, analyzeLoop, names: () => Object.keys(S), isOn: () => on, isOff: () => OFF, S, debug: () => ({ pendingLoops: pending.size, unlocked, state: ac ? ac.state : 'none', volume, effectiveVolume: on && !OFF ? volume : 0 }) };
 })();
 
 }catch(e){console.error("[object 03_sfx.js]",e)}
@@ -1759,13 +1906,13 @@ try{
    · 마크업: RK.b('척력', 'push', 2)  → 빈칸(밑줄만, 낱말은 숨김). 세 번째 값 = 채워지는 단계(k)
    · 장면 go(c, k) 에서 RK.fill(c, k) → 그 단계의 빈칸이 차례로(시차 ms) 모션그래픽과 함께 채워진다
    · 순간 모드(되돌리기·건너뛰기)에서는 c.a/c.wait 가 곧장 끝 상태 → 낱말만 보이고 효과는 사라진 상태
-   종류(kind): electron · pos · neg · push · pull · spark · rub · flow · volt · zigzag · line · curve · press · hits
+   종류(kind): electron · pos · neg · push · pull · spark · rub · flow · volt · zigzag · line · curve · press · hits · chain · fork · cut
               · grow · shrink · up · down · glow · equal · pop(기본)
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
   const SND = { electron: 'zip', pos: 'pop', neg: 'pop', push: 'whoosh', pull: 'whoosh', spark: 'spark', rub: 'zip', flow: 'slide', volt: 'rise',
-    zigzag: 'scan', line: 'scan', curve: 'scan', press: 'thunk', hits: 'tick', grow: 'rise', shrink: 'pop', up: 'rise', down: 'pop', glow: 'ding', equal: 'step', pop: 'pop' };
+    zigzag: 'scan', line: 'scan', curve: 'scan', press: 'thunk', hits: 'tick', grow: 'rise', shrink: 'pop', up: 'rise', down: 'pop', glow: 'ding', equal: 'step', chain: 'step', fork: 'slide', cut: 'sweepDown', pop: 'pop' };
   const R = window.RK = {
     /** 빈칸 하나(문자열). word 는 HTML 가능(색 span 등). cls 로 색(c-neg 등)을 줄 수 있다 */
     b(word, kind, step, cls) {
@@ -1900,6 +2047,32 @@ try{
       c.a(g, [{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .5 }, { transform: 'scale(1.2)', opacity: 0 }], { dur: 1000, ease: 'out' });
       return 300;
     },
+    chain(c, el, fx) {   // 낱말 위 한 줄 도선에 전구 셋이 차례로 — 직렬(길이 하나)
+      const s = R.svg(fx, 140, 36, '<path d="M4 18H136" fill="none" stroke="var(--t3)" stroke-width="4" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>' +
+        [34, 70, 106].map(x => `<circle cx="${x}" cy="18" r="9" fill="#FFE27A" stroke="var(--t2)" stroke-width="3" opacity="0"/>`).join(''), { left: '50%', bottom: '100%', marginLeft: '-70px', marginBottom: '2px' });
+      c.a(s.querySelector('path'), [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: 420, ease: 'inOut' });
+      s.querySelectorAll('circle').forEach((b, i) => c.a(b, [{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(1)' }], { dur: 260, delay: 300 + i * 110, ease: 'spring' }));
+      return 420;
+    },
+    fork(c, el, fx) {    // 낱말 위에서 한 줄기가 두 갈래로 나뉘었다가 다시 만난다 — 병렬(길이 여러 개)
+      const P = ['M4 22H34', 'M34 22C44 22 44 5 58 5H82C96 5 96 22 106 22', 'M34 22C44 22 44 39 58 39H82C96 39 96 22 106 22', 'M106 22H136'];
+      const s = R.svg(fx, 140, 44, P.map(d => `<path d="${d}" fill="none" stroke="var(--light)" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`).join(''),
+        { left: '50%', bottom: '100%', marginLeft: '-70px', marginBottom: '2px' });
+      const ps = s.querySelectorAll('path'), D = [[0, 220], [200, 420], [200, 420], [600, 220]];
+      ps.forEach((p, i) => c.a(p, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { dur: D[i][1], delay: D[i][0], ease: 'linear' }));
+      return 520;
+    },
+    cut(c, el, fx) {     // 한 줄 도선의 켜진 전구들 — 가운데가 끊기면 모두 함께 꺼진다
+      const xs = [30, 70, 110];
+      const s = R.svg(fx, 140, 40, '<path d="M4 20H56M84 20H136" fill="none" stroke="var(--t3)" stroke-width="4" stroke-linecap="round"/><path d="M56 20H84" fill="none" stroke="var(--t3)" stroke-width="4"/>' +
+        xs.map(x => `<circle cx="${x}" cy="20" r="9" fill="var(--t3)" opacity=".5"/><circle class="on" cx="${x}" cy="20" r="9" fill="#FFE27A"/>`).join('') +
+        '<path d="M60 10L80 30M80 10L60 30" stroke="var(--heat)" stroke-width="5" stroke-linecap="round" opacity="0"/>', { left: '50%', bottom: '100%', marginLeft: '-70px', marginBottom: '2px' });
+      const p = s.querySelectorAll('path');
+      c.a(p[1], [{ opacity: 1 }, { opacity: 0 }], { dur: 120, delay: 380 });
+      c.a(p[2], [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'scale(1)' }], { dur: 260, delay: 380, ease: 'out' });
+      s.querySelectorAll('.on').forEach(b => c.a(b, [{ opacity: 1 }, { opacity: 0 }], { dur: 180, delay: 460 }));   // 같은 순간에 모두
+      return 520;
+    },
     equal(c, el, fx) {
       const a = R.el(fx, '', { left: '-30px', right: '-30px', top: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
       const b = R.el(fx, '', { left: '-30px', right: '-30px', bottom: '-16px', height: '6px', borderRadius: '3px', background: 'var(--act)' });
@@ -1990,6 +2163,25 @@ try{
 })();
 
 }catch(e){console.error("[slide 02_pencil.html]",e)}
+/* ── 02_pencilk_keywords.html ── */
+try{
+
+(function () {
+  const S = 'd1_02_pencilk_keywords', TT = [600, 1440, 2280], TEND = 2280;
+  Deck.scene(S, {
+    steps: 0,
+    enter(c) {
+      if (!c.instant) { c.sfx('scan', 600, 1680); TT.forEach(t => c.sfx('tick', t)); c.sfx('chime', TEND + 250); }
+      const ring = c.$(`#${S}-ring`);
+      c.loop(t => {   // 「여기서 시작」: 첫 키워드 둘레가 천천히 숨 쉬듯
+        const k = t * 1000 < TEND ? 0 : (Math.sin((t * 1000 - TEND) / 420) + 1) / 2;
+        ring.setAttribute('r', (54 + 4 + 12 * k).toFixed(1)); ring.setAttribute('opacity', (t * 1000 < TEND ? 0 : .55 - .45 * k).toFixed(3));
+      });
+    },
+  });
+})();
+
+}catch(e){console.error("[slide 02_pencilk_keywords.html]",e)}
 /* ── 03_sponge.html ── */
 try{
 
@@ -2012,7 +2204,7 @@ try{
     `<text x="200" y="${y + 29}" text-anchor="middle" style="font-size:28px;font-weight:600;fill:${col}">${txt}</text></g>`;
   const cell = (d, i) => `<g id="d1_03_sponge-c${i}" transform="translate(${X0 + i * PITCH} ${OY})" opacity="0">` +
     `<text x="200" y="34" text-anchor="middle" style="font-size:32px;font-weight:700;fill:var(--ink)">${d.name}</text>` +
-    pill(`d1_03_sponge-pw${i}`, 56, `무게 약 ${d.w} N`, 'var(--sound)', 236) + pill(`d1_03_sponge-pa${i}`, 108, `닿는 넓이 약 ${d.a} cm²`, 'var(--light)', 306) +
+    pill(`d1_03_sponge-pw${i}`, 56, `누르는 힘 약 ${d.w} N`, 'var(--sound)', 290) + pill(`d1_03_sponge-pa${i}`, 108, `닿는 넓이 약 ${d.a} cm²`, 'var(--light)', 306) +
     `<path id="d1_03_sponge-s${i}" d="${GX.spongeD({ cx: 200, y: SY, hw: HW, h: TH, dw: d.dw, depth: 0 })}" fill="#d2d2d7" stroke="#d2d2d7" stroke-width="12" stroke-linejoin="round"/>` +
     `<path d="M${200 - HW} ${SY}H${200 + HW}" stroke="rgba(255,255,255,.7)" stroke-width="2" opacity=".0"/>` +
     `<g id="d1_03_sponge-b${i}" transform="${bottleTF(d, SY - LIFT)}">${bottle(d)}</g>` +
@@ -2036,7 +2228,7 @@ try{
     build(root) { root.querySelector('#d1_03_sponge-cells').innerHTML = DATA.map(cell).join(''); },
     async enter(c) { await c.wait(900); await drop(c, 0); },
     async go(c, k) {
-      if (k === 2) c.a(c.$('#d1_03_sponge-c1'), [{ opacity: 1 }, { opacity: .3 }], { dur: 500 });   // 「무게만」 비교는 1번과 3번 — 사이의 2번은 흐리게
+      if (k === 2) c.a(c.$('#d1_03_sponge-c1'), [{ opacity: 1 }, { opacity: .3 }], { dur: 500 });   // 「누르는 힘만」 비교는 1번과 3번 — 사이의 2번은 흐리게
       if (k === 3) c.a(c.$('#d1_03_sponge-c1'), [{ opacity: .3 }, { opacity: 1 }], { dur: 500 });
       if (k >= 1 && k <= 3) {
         const i = k;
@@ -2093,7 +2285,7 @@ try{
   const brick = m => { const w = m.w * U7, h = m.h * U7; let s = '';
     for (let i = 0; i < m.n; i++) s += `<rect x="${-w / 2}" y="${-h * (i + 1)}" width="${w}" height="${h}" rx="4" fill="#cbb8a3" stroke="rgba(0,0,0,.35)" stroke-width="2"/><rect x="${-w / 2}" y="${-h * (i + 1)}" width="${w}" height="5" rx="2.5" fill="rgba(255,255,255,.28)"/>`;
     const top = -h * m.n; return s + GX.arrow(0, top - 8 - m.arrow, 0, top - 4, { color: 'var(--sound)', w: 7, head: 22 }) +
-      `<text x="14" y="${top - 8 - m.arrow / 2 + 8}" style="font-size:24px;font-weight:700;fill:var(--sound)">무게</text>`; };
+      `<text x="14" y="${top - 8 - m.arrow / 2 + 8}" style="font-size:24px;font-weight:700;fill:var(--sound)">힘</text>`; };
   const mini = m => `<g id="d1_05_knobs-m${m.id}" transform="translate(${m.x} ${m.y})" opacity="0">` +
     `<path id="d1_05_knobs-s${m.id}" d="${GX.spongeD({ cx: CX, y: SY, hw: HW, h: TH, dw: m.dw, depth: 0 })}" fill="#4a4a4d" stroke="#4a4a4d" stroke-width="12" stroke-linejoin="round"/>` +
     `<g id="d1_05_knobs-b${m.id}" transform="translate(${CX} ${SY - LIFT})">${brick(m)}</g>` +
@@ -2162,8 +2354,8 @@ try{
   // F(N) · A(m²) · P = F ÷ A (N/m²) — 바닥 그림은 1 m² = 90 px, 압력 막대는 1 N/m² = 4 px
   const C = [
     { x: 120, tag: '처음', F: 40, A: 2, P: 20, note: '' },
-    { x: 700, tag: '면적이 절반', F: 40, A: 1, P: 40, note: '→ 압력 2배' },
-    { x: 1280, tag: '힘 2배 · 면적 2배', F: 80, A: 4, P: 20, note: '→ 압력 그대로' },
+    { x: 700, tag: '면적이 절반', F: 40, A: 1, P: 40, note: '압력은 2배' },
+    { x: 1280, tag: '힘과 면적이 모두 2배', F: 80, A: 4, P: 20, note: '압력은 변하지 않는다' },
   ];
   const card = (o, i) => {
     const wA = o.A * 90, cx = 230, bw = wA;
@@ -2207,21 +2399,22 @@ try{
     stud: `<rect x="8" y="30" width="84" height="16" rx="7" fill="#aeaeb2"/><polygon points="18,46 32,46 25,68" fill="#636366"/><polygon points="38,46 52,46 45,68" fill="#636366"/><polygon points="58,46 72,46 65,68" fill="#636366"/><polygon points="78,46 92,46 85,68" fill="#636366"/>`,
     board: `<rect x="4" y="38" width="92" height="12" rx="5" fill="#b08968"/><path d="M0 62Q12 54 24 62T48 62T72 62T100 60V88H0Z" fill="#8b7355"/>`,
   };
-  const UP = `<svg viewBox="0 0 40 40"><polygon points="20,4 37,35 3,35" fill="var(--heat)"/></svg>`;
-  const DN = `<svg viewBox="0 0 40 40"><polygon points="3,5 37,5 20,36" fill="#6e6e73"/></svg>`;
+  // 학습지 1 「생활 속 압력」 표 그대로 — [그림, 물건, 압력(크게/작게), 까닭 앞부분, 까닭 뒷부분]. 첫 줄(못)은 학습지에 채워져 있는 예시
   const ROWS = [
-    ['nail', '못의 뾰족한 끝', true, '좁혀서', '벽에 잘 박힌다', 34, '예'],
-    ['needle', '주사기 바늘', true, '좁혀서', '살갗에 잘 들어간다', 34, ''],
-    ['sled', '눈썰매', false, '넓혀서', '눈에 덜 빠진다', 168, ''],
-    ['stud', '축구화의 징', true, '좁혀서', '땅에 잘 박힌다', 34, '(뽕)'],
-    ['board', '갯벌 널빤지', false, '넓혀서', '뻘에 덜 빠진다', 168, ''],
+    ['nail', '못의 뾰족한 끝', '크게', '면적을 좁게 하여', '벽에 잘 박힌다'],
+    ['needle', '주사기 바늘', '크게', '면적을 좁게 하여', '피부를 쉽게 뚫는다'],
+    ['sled', '눈썰매', '작게', '면적을 넓게 하여', '눈에 잘 빠지지 않는다'],
+    ['stud', '축구화 바닥의 징', '크게', '면적을 좁게 하여', '땅에 잘 박혀 미끄러지지 않는다'],
+    ['board', '갯벌 널빤지', '작게', '면적을 넓게 하여', '갯벌에 잘 빠지지 않는다'],
   ];
-  const row = (r, i) => `<div class="s08-row" style="top:${310 + i * 132}px" ${i === 0 ? 'data-in="600"' : `data-step="${i}"`}>` +
-    `<svg class="ic" viewBox="0 0 100 100">${IC[r[0]]}</svg>` +
-    `<div class="nm">${r[1]}${r[6] ? `<small>${r[6]}</small>` : ''}</div>` +
-    `<div class="sz" style="color:${r[2] ? 'var(--heat)' : '#6e6e73'}">${r[2] ? UP : DN}${r[2] ? '크게' : '작게'}</div>` +
-    `<div class="rs"><b>면적을 ${r[3]}</b><span>${r[4]}</span></div>` +
-    `<div class="trk"><i style="width:${r[5]}px"></i></div></div>`;
+  const row = (r, i) => {
+    const st = i === 0 ? '' : ` data-step="${i}" data-fx="pop"`;
+    return `<div class="s08-row" style="top:${348 + i * 122}px" data-in="${500 + i * 120}">` +
+      `<svg class="ic" viewBox="0 0 100 100">${IC[r[0]]}</svg>` +
+      `<div class="nm">${r[1]}</div>` +
+      `<div class="sz${i ? ' ans' : ''}"${st}>${r[2]}</div>` +
+      `<div class="rs${i ? ' ans' : ''}"${i ? ` data-step="${i}" data-fx="fade" data-delay="250"` : ''}><b>${r[3]}</b><span>${r[4]}</span></div></div>`;
+  };
   Deck.scene('d1_08_basket', {
     steps: 4,
     build(root) { root.querySelector('#d1_08_basket-rows').innerHTML = ROWS.map(row).join(''); },
@@ -2237,8 +2430,8 @@ try{
   const b = (w, kind, k, cls) => RK.b(w, kind, k, cls);
   const CARDS = [
     ['압력', `<p>일정한 ${b('면적', 'grow', 1, 'c-amt')}에 작용하는 ${b('힘', 'press', 1, 'c-force')}</p>`, `<div class="big gx-eq" style="position:static;font-size:54px"><span class="p">압력</span> = ${b('힘', 'press', 1, 'c-force')} ÷ ${b('면적', 'grow', 1, 'c-amt')}</div>`],
-    ['커지는 조건', `<p><span class="c-force" style="font-weight:700">${b('힘', 'press', 2)}</span>이 클수록</p><p><span class="c-amt" style="font-weight:700">${b('면적', 'shrink', 2)}</span>이 좁을수록</p>`, `<div class="big c-press">압력 ${b('↑', 'up', 2)}</div>`],
-    ['단위', `<p>1 m² 에 1 N 의 힘이 작용할 때의 압력이 ${b('1 N/m²', 'pop', 3)}</p><p class="m">${b('파스칼', 'spark', 3)}(Pa)이라고도 부른다</p>`, '<div class="big num" data-step="3" data-delay="1400">N/m² = Pa</div>'],
+    ['압력의 크기', `<p><span class="c-force" style="font-weight:700">${b('힘', 'press', 2)}</span>이 클수록</p><p><span class="c-amt" style="font-weight:700">${b('면적', 'shrink', 2)}</span>이 좁을수록</p>`, `<div class="big c-press">압력 ${b('↑', 'up', 2)}</div>`],
+    ['압력의 단위', `<p>1 m²의 면적에 1 N의 힘이 작용할 때의 압력이 ${b('1 N/m²', 'pop', 3)}</p><p class="m">${b('파스칼', 'spark', 3)}(Pa)을 쓰기도 한다</p>`, '<div class="big num" data-step="3" data-delay="1400">N/m² = Pa</div>'],
   ];
   Deck.scene('d1_09_recap', {
     steps: 4,
