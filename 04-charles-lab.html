@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>온도와 부피 · 스포이트 온도계 가상 실험대</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#eef5fb;--card:#ffffff;--ink:#1f2f3d;--sub:#5d7286;--line:#d5e2ed;
+  --theme:#3f64b5;--soft:#e6eefa;--warm:#c4711e;--red:#b23a30;--ok:#2f7d4f;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Pretendard','Malgun Gothic',system-ui,sans-serif;font-size:16.5px;line-height:1.6;word-break:keep-all}
+@media (min-width:1600px){html{zoom:1.35}}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 40px}
+
+/* 머리 */
+.top{position:sticky;top:0;z-index:20;background:rgba(238,245,251,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top .in{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top h1{font-size:18px;margin:0;font-weight:800;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
+.top h1 .mk{width:6px;height:20px;border-radius:3px;background:var(--theme)}
+.dots{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.dot{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:#fff;color:var(--sub);font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.dot.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.dot.now{border-color:var(--theme);color:var(--theme);box-shadow:0 0 0 3px rgba(63,100,181,.18)}
+.intro{background:var(--soft);border-radius:14px;padding:12px 16px;margin:14px 0 16px;font-size:15.5px;color:#2b4a7a}
+.intro b{color:var(--theme)}
+
+/* 단계 */
+.step{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden}
+.step.now{border-color:var(--theme);box-shadow:0 2px 10px rgba(63,100,181,.12)}
+.sh{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.sh .no{flex:none;width:34px;height:34px;border-radius:50%;background:var(--theme);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step.done .sh .no{background:var(--ok)}
+.sh .no.talk{background:#7d5ba6}
+.sh .tt{font-weight:800;font-size:17.5px}
+.sh .ws{margin-left:auto;font-size:13px;color:var(--sub);white-space:nowrap}
+.sh .ws b{color:var(--theme)}
+.sh .chev{flex:none;color:var(--sub);transition:transform .2s}
+.step.open .sh .chev{transform:rotate(180deg)}
+.sb{display:none;padding:0 18px 18px}
+.step.open .sb{display:block}
+.who{display:inline-block;font-size:12.5px;font-weight:700;color:#7d5ba6;background:#f1ebf8;border-radius:999px;padding:1px 10px;margin-bottom:6px}
+.do{margin:6px 0 10px;padding-left:22px}
+.do li{margin:4px 0}
+.tip{background:#f6f9fc;border:1px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:15px;color:var(--sub);margin:10px 0}
+.tip b{color:var(--ink)}
+.btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:15px;border-radius:12px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.btn.primary{background:var(--theme);border-color:var(--theme);color:#fff}
+.btn.sm{font-size:14px;padding:7px 12px}
+.btn:disabled{opacity:.45;cursor:default}
+.next{display:flex;justify-content:flex-end;margin-top:14px}
+.next .btn{background:var(--ok);border-color:var(--ok);color:#fff}
+
+.baskets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.bk{border:1px solid var(--line);border-radius:14px;padding:12px}
+.bk h4{margin:0 0 4px;font-size:16px}
+.bk p{margin:0;font-size:14px;color:var(--sub)}
+.bk .ex{margin-top:6px;font-size:13.5px;color:#41586c}
+.bk.mid{border:2px solid var(--theme);background:#f5f8fe}
+.vars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.var{border-radius:12px;padding:10px 12px;background:#f6f9fc;border:1px solid var(--line)}
+.var b{display:block;font-size:15.5px}
+.var span{font-size:14px;color:var(--sub)}
+.eg{border-left:4px solid var(--theme);background:#f8fafe;border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0;font-size:15px}
+.eg .q1{color:var(--sub)}
+.eg .q2{font-weight:700}
+.checks{display:flex;flex-direction:column;gap:4px;margin:8px 0 0;font-size:15px}
+@media (max-width:640px){.baskets,.vars{grid-template-columns:1fr}.sh .ws{display:none}}
+
+/* 시뮬 */
+.sim{display:grid;grid-template-columns:1fr 220px;gap:12px;margin-top:10px}
+@media (max-width:720px){.sim{grid-template-columns:1fr}}
+.stage{background:#f6fafd;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stage svg,.stage canvas{display:block;width:100%;height:auto}
+#chBox{aspect-ratio:660/330}
+#chGraph{aspect-ratio:520/330}
+.cap{font-size:13.5px;color:var(--sub);margin:6px 2px 0}
+.ctlbox{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfdff}
+.ctlbox h5{margin:0 0 8px;font-size:15px}
+.ctl label{display:flex;justify-content:space-between;font-size:14.5px;font-weight:700}
+.ctl input[type=range]{width:100%;margin:8px 0 4px;accent-color:var(--warm)}
+.ro{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ro .r{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 8px;text-align:center}
+.ro .l{font-size:12.5px;color:var(--sub)}
+.ro .v{font-size:19px;font-weight:800}
+.ro .v small{font-size:12px;font-weight:600}
+.ro.three{grid-template-columns:1fr}
+.rec-in{margin-top:10px;background:#fff8ec;border:1px solid #f0d7a8;border-radius:12px;padding:10px}
+.rec-in input{width:80px;font:inherit;font-size:16px;padding:5px 8px;border:1px solid var(--line);border-radius:8px}
+.rec-q{font-size:14px;margin-bottom:6px}
+.rec-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rec-msg{font-size:13.5px;margin-top:6px}
+.rec-msg.err{color:var(--red)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:720px){.two{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.card h5{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
+.badge{font-size:12.5px;background:var(--soft);color:var(--theme);border-radius:999px;padding:1px 9px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px;text-align:center}
+th{background:var(--soft);font-weight:700}
+td.empty{color:var(--sub);font-size:14px}
+td.del{cursor:pointer;color:var(--sub);width:34px}
+tr.fresh td{background:#fff8ec}
+.plot-bar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13.5px;color:var(--sub);flex-wrap:wrap}
+.plot-bar .ph{flex:1}
+.stage.plotting{outline:2px dashed var(--warm);outline-offset:-2px;cursor:crosshair}
+.verdict{margin-top:10px;background:#eef7f1;border:1px solid #bfe0cb;border-radius:12px;padding:10px 12px;font-size:15px}
+.pick{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.pick button{appearance:none;font:inherit;font-size:15px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
+.pick button.sel{border-color:var(--theme);background:#f2f6fe;font-weight:700}
+.lockmsg{margin-top:10px;font-size:14.5px;color:var(--sub)}
+.after{display:none;margin-top:10px}
+.after.open{display:block}
+.qs{margin:6px 0 0;padding-left:22px}
+.qs li{margin:3px 0}
+.shakex{animation:shk .42s}
+@keyframes shk{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#1f2f3d;color:#fff;font-size:14.5px;border-radius:12px;padding:10px 16px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.good{background:var(--ok)}
+#toast.warn{background:#a8621b}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">
+  <h1><span class="mk"></span>스포이트 온도계 · 가상 실험대</h1>
+</div></div>
+
+<div class="wrap">
+  <div class="intro">실험 도구가 모자랄 때 쓰는 <b>가상 실험대</b>예요. 물의 온도를 바꾸고 <b>물방울 위치를 직접 읽어</b> 표에 적어요.<br>
+  다 재면 <b>활동지 ⑤</b> 표에도 옮겨 적어요.</div>
+  <section class="step open"><div class="sb" style="display:block;padding-top:16px">
+      <div class="tip"><b>스포이트 온도계</b> — 스포이트 끝을 잘라 자에 붙이고 색소 물방울을 한 방울 넣었어요.
+        물방울 아래에는 <b>공기가 갇혀</b> 있어요. 물방울이 움직이면 갇힌 공기의 부피가 변한 거예요.
+        물방울의 <b>맨 아래쪽</b>을 기준으로 읽어요.</div>
+
+      <div class="sim">
+        <div>
+          <div class="stage">
+            <svg id="dropSvg" viewBox="0 0 660 240" role="img" aria-label="자에 붙인 스포이트가 물이 담긴 비커에 잠겨 있다. 물의 온도에 따라 색소 물방울의 위치가 달라진다.">
+              <rect x="0" y="0" width="660" height="240" fill="#f6fafd"/>
+              <g id="beakerG"></g><g id="pipetG"></g>
+              <text x="330" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="#41586c" id="dropTitle"></text>
+            </svg>
+          </div>
+        </div>
+        <div class="ctlbox">
+          <h5>🎛️ 조작판</h5>
+          <div class="ctl"><label>물의 온도 <span id="tmpV">20 ℃</span></label>
+            <input type="range" id="tmpR" min="2" max="60" step="1" value="20" aria-label="물의 온도"></div>
+          <div class="ro">
+            <div class="r"><div class="l">물의 온도</div><div class="v" id="roT" style="color:var(--warm)">20<small> ℃</small></div></div>
+            <div class="r"><div class="l">물방울 위치</div><div class="v" id="roPos" style="color:var(--theme)">–<small> cm</small></div></div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn sm primary" id="chRec">📌 표에 기록</button>
+            <button class="btn sm" id="chClear">기록 지우기</button>
+          </div>
+          <div class="rec-in" id="recIn" hidden>
+            <div class="rec-q" id="recQ"></div>
+            <div class="rec-row">
+              <label for="recVal" style="font-size:14px">물방울 위치</label>
+              <input id="recVal" inputmode="decimal" autocomplete="off"><span style="font-size:14px">cm</span>
+              <button class="btn sm primary" id="recOk">넣기</button>
+              <button class="btn sm" id="recNo">취소</button>
+            </div>
+            <div class="rec-msg" id="recMsg"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <h5>🧾 측정 기록 <span class="badge" id="chCount">0 / 3</span></h5>
+          <table><thead><tr><th>물의 온도 (℃)</th><th>물방울 위치 (cm)</th><th></th></tr></thead>
+            <tbody id="chBody"></tbody></table>
+          <p class="cap">온도 차가 큰 <b>3곳 이상</b>을 재요. 찬물부터! 활동지 ⑤ 표에도 옮겨 적어요.</p>
+        </div>
+        <div class="card">
+          <h5>📈 온도와 물방울 위치 그래프</h5>
+          <div class="stage" id="graphStage"><canvas id="chGraph" width="520" height="330"></canvas></div>
+          <div class="plot-bar"><span class="ph" id="plotHint"></span><button class="btn sm" id="plotDone" disabled>그래프 완성하기</button></div>
+          <div class="verdict" id="chSay" style="display:none"></div>
+        </div>
+      </div>
+  </div></section>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const TAU=Math.PI*2;
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SAVE='gas_charles_lab_v1';
+let S={ch:[],plotDone:0};
+try{const o=JSON.parse(localStorage.getItem(SAVE)||'null');if(o)S=Object.assign(S,o);}catch(e){}
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(S));}catch(e){}}
+const A={pop(){},wrong(){},win(){}};
+let _tt=null;
+function toast(msg,kind){const t=$('#toast');t.innerHTML=msg;t.className='show'+(kind?' '+kind:'');clearTimeout(_tt);_tt=setTimeout(()=>t.className='',2600);}
+
+/* ── ⑤ 스포이트 온도계 (기체_온도부피 2단계와 같은 계산) ──
+   물방울 위치: 교과서 실측(15.7℃→9.5cm … 40.6℃→11.4cm)의 직선 근사 */
+const dropPos=t=>Math.round((8.3+0.0763*t)*10)/10;
+const NEED=3;
+let drawLab1=null;
+(function(){
+ const tmpR=$('#tmpR');
+ function draw(){
+  const t=+tmpR.value,pos=dropPos(t);
+  const warm=Math.min(1,Math.max(0,(t-2)/58));
+  const wr=Math.round(63+warm*180),wg=Math.round(136-warm*30),wb=Math.round(197-warm*140);
+  $('#beakerG').innerHTML='<rect x="150" y="70" width="360" height="150" rx="12" fill="rgb('+wr+','+wg+','+wb+')" opacity=".28" stroke="#41586c" stroke-width="2.5"/>'
+   +'<text x="180" y="208" font-size="13" fill="#41586c">'+t+' ℃ 물</text>'
+   +'<rect x="470" y="52" width="10" height="150" rx="5" fill="#f9fcfe" stroke="#41586c" stroke-width="2"/>'
+   +'<rect x="472" y="'+(198-warm*120)+'" width="6" height="'+(warm*120+4)+'" rx="3" fill="#b23a30"/>'
+   +'<circle cx="475" cy="205" r="9" fill="#b23a30" stroke="#41586c" stroke-width="2"/>';
+  const X0=180,PXCM=26;
+  let ruler='<rect x="'+(X0-10)+'" y="96" width="'+(14*PXCM+20)+'" height="20" rx="4" fill="#f5d789" stroke="#a8763f" stroke-width="1.6"/>';
+  for(let c=0;c<=14;c+=1){const x=X0+c*PXCM;
+   ruler+='<line x1="'+x+'" y1="98" x2="'+x+'" y2="'+(c%2===0?110:105)+'" stroke="#7d5a2a" stroke-width="1.3"/>'
+    +(c%2===0?'<text x="'+x+'" y="132" text-anchor="middle" font-size="10.5" fill="#7d5a2a">'+c+'</text>':'');}
+  const dropX=X0+pos*PXCM;
+  ruler+='<rect x="'+(X0-6)+'" y="74" width="'+(14*PXCM+8)+'" height="18" rx="9" fill="#eef4f9" stroke="#1c507e" stroke-width="2" opacity=".92"/>'
+   +'<rect x="'+(X0-4)+'" y="77" width="'+(dropX-X0)+'" height="12" rx="6" fill="#cfe4f4" opacity=".8"/>'
+   +'<rect x="'+dropX+'" y="76" width="16" height="14" rx="6" fill="#b23a30" opacity=".9"/>'
+   +'<text x="'+(dropX+8)+'" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#b23a30">물방울</text>'
+   +'<text x="'+(X0+40)+'" y="88" font-size="10.5" fill="#41586c">갇힌 공기</text>';
+  $('#pipetG').innerHTML=ruler;
+  $('#dropTitle').textContent='물의 온도 '+t+' ℃ — 물방울 위치 '+pos.toFixed(1)+' cm';
+  $('#tmpV').textContent=t+' ℃';
+  $('#roT').innerHTML=t+'<small> ℃</small>';
+  $('#roPos').innerHTML=pos.toFixed(1)+'<small> cm</small>';
+ }
+ tmpR.addEventListener('input',draw);
+
+ let _GEO=null;
+ const gcv=$('#chGraph'),gc=gcv.getContext('2d');
+ function drawGraph(){
+  const W=520,H=330,L=64,B=46,T=18,R=18;
+  gc.clearRect(0,0,W,H);gc.fillStyle='#f6fafd';gc.fillRect(0,0,W,H);
+  gc.strokeStyle='#41586c';gc.lineWidth=1.8;
+  gc.beginPath();gc.moveTo(L,T);gc.lineTo(L,H-B);gc.lineTo(W-R,H-B);gc.stroke();
+  gc.fillStyle='#7b91a4';gc.font='12.5px Pretendard, sans-serif';gc.textAlign='center';
+  gc.fillText('물의 온도 (℃)',(L+W-R)/2,H-10);
+  gc.save();gc.translate(16,(T+H-B)/2);gc.rotate(-Math.PI/2);gc.fillText('물방울 위치 (cm)',0,0);gc.restore();
+  const tMin=0,tMax=65,pMin=8,pMax=13.5;
+  const X=t=>L+(t-tMin)/(tMax-tMin)*(W-L-R);
+  const Y=p=>H-B-(p-pMin)/(pMax-pMin)*(H-B-T);
+  _GEO={X:X,Y:Y};
+  gc.textAlign='center';
+  for(let t=0;t<=60;t+=10){gc.fillText(t,X(t),H-B+18);gc.strokeStyle='#dce8f1';gc.beginPath();gc.moveTo(X(t),T);gc.lineTo(X(t),H-B);gc.stroke();}
+  gc.textAlign='right';
+  for(let p=8;p<=13;p+=1){gc.fillText(p,L-8,Y(p)+4);gc.strokeStyle='#dce8f1';gc.beginPath();gc.moveTo(L,Y(p));gc.lineTo(W-R,Y(p));gc.stroke();}
+  if(S.plotDone){
+   gc.strokeStyle='rgba(196,113,30,.45)';gc.lineWidth=2;gc.setLineDash([5,4]);
+   gc.beginPath();gc.moveTo(X(0),Y(dropPos(0)));gc.lineTo(X(65),Y(dropPos(65)));gc.stroke();gc.setLineDash([]);
+  }
+  S.ch.filter(r=>r.k).forEach(r=>{gc.fillStyle='#c4711e';gc.beginPath();gc.arc(X(r.t),Y(r.p),5.5,0,TAU);gc.fill();gc.strokeStyle='#f9fcfe';gc.lineWidth=1.5;gc.stroke();});
+  const nx=S.ch.find(r=>!r.k);
+  if(nx){gc.save();gc.setLineDash([4,4]);gc.strokeStyle='#c4711e';gc.globalAlpha=.55;gc.lineWidth=1.4;
+   gc.beginPath();gc.moveTo(X(nx.t),T);gc.lineTo(X(nx.t),H-B);gc.stroke();gc.restore();}
+ }
+ function paintRec(){
+  const tb=$('#chBody');
+  if(!S.ch.length)tb.innerHTML='<tr><td class="empty" colspan="3">온도를 바꿔 가며 📌 를 누르고 <b>물방울 위치를 읽어 적어</b> 3개 이상 모아요</td></tr>';
+  else tb.innerHTML=S.ch.map((r,i)=>'<tr'+(i===S.ch.length-1?' class="fresh"':'')+'><td>'+r.t+'</td><td><b>'+r.p.toFixed(1)+'</b></td><td class="del" data-i="'+i+'">✕</td></tr>').join('');
+  $('#chCount').textContent=Math.min(S.ch.length,99)+' / '+NEED;
+  const sy=$('#chSay');
+  if(S.plotDone&&S.ch.length>=NEED){sy.style.display='block';
+   sy.innerHTML='그래프를 완성했어요. 점들이 <b>어떤 모양</b>으로 놓였나요? 지난 시간 압력과 부피 그래프와 견주어 봐요.';}
+  else sy.style.display='none';
+  drawGraph();paintPlot();
+ }
+ let _pend=null;
+ function closeIn(){_pend=null;$('#recIn').hidden=true;$('#recVal').value='';$('#recMsg').textContent='';}
+ function plotIdx(){return S.ch.findIndex(r=>!r.k);}
+ $('#chRec').addEventListener('click',()=>{
+  const c=+tmpR.value;
+  if(S.ch.some(r=>r.t===c)){toast('이 온도는 이미 기록했어요 — 온도를 바꿔 보세요','warn');return;}
+  _pend={c:c,t:dropPos(c)};
+  $('#recQ').innerHTML='지금 물의 온도 <b>'+c+' ℃</b> — <b>물방울 위치</b>를 읽어 적어요.';
+  $('#recIn').hidden=false;$('#recMsg').textContent='';$('#recVal').value='';
+  setTimeout(()=>$('#recVal').focus(),40);});
+ $('#recNo').addEventListener('click',closeIn);
+ $('#recVal').addEventListener('keydown',e=>{if(e.key==='Enter')$('#recOk').click();if(e.key==='Escape')closeIn();});
+ $('#recOk').addEventListener('click',()=>{
+  if(!_pend)return;
+  const raw=($('#recVal').value||'').trim(), m=$('#recMsg');
+  const bad=t=>{m.className='rec-msg err';m.innerHTML=t;$('#recVal').classList.add('shakex');setTimeout(()=>$('#recVal').classList.remove('shakex'),460);$('#recVal').select();};
+  if(!/^[0-9]*\.?[0-9]+$/.test(raw))return bad('숫자로 적어 주세요');
+  const x=parseFloat(raw), t=_pend.t;
+  if(Math.abs(x-t)>Math.max(Math.abs(t)*0.05,0.15))return bad('<b>'+raw+' cm</b> 는 계기와 달라요. <b>다시 한 번</b> 읽고 적어 주세요.');
+  S.ch.push({t:_pend.c,p:x,k:0});S.ch.sort((a,b)=>a.t-b.t);
+  S.plotDone=0;closeIn();save();paintRec();
+  toast('표에 넣었어요 — 이제 <b>그래프에 점을 찍어</b> 보세요 📈','good');});
+ function paintPlot(){
+  const st=$('#graphStage'), hint=$('#plotHint'), btn=$('#plotDone');
+  const ni=plotIdx(), n=S.ch.length;
+  st.classList.toggle('plotting',ni>=0);
+  btn.disabled=!(n>=2&&ni<0&&!S.plotDone);
+  if(!n){hint.innerHTML='표에 자료가 쌓이면 여기에 <b>직접 점을 찍어요.</b>';return;}
+  if(ni>=0)hint.innerHTML='<b>'+(ni+1)+'번째 자료</b>를 찍을 차례 — 표의 두 값이 만나는 자리를 눌러요. (점선이 온도 자리)';
+  else if(S.plotDone)hint.innerHTML='그래프를 완성했어요 ✅';
+  else if(n<2)hint.innerHTML='찍었어요. 선을 그으려면 <b>자료가 2개 이상</b> 있어야 해요.';
+  else hint.innerHTML='점을 다 찍었어요 — <b>「그래프 완성하기」</b>를 눌러요.';
+ }
+ gcv.addEventListener('click',e=>{
+  if(!_GEO)return; const ni=plotIdx(); if(ni<0)return;
+  const rc=gcv.getBoundingClientRect();
+  const px=(e.clientX-rc.left)*(520/rc.width), py=(e.clientY-rc.top)*(330/rc.height);
+  const r=S.ch[ni];
+  if(Math.hypot(px-_GEO.X(r.t),py-_GEO.Y(r.p))<=24){r.k=1;save();paintRec();
+   toast(plotIdx()<0?'점을 다 찍었어요 — <b>그래프 완성하기</b>를 눌러요 📈':'좋아요! 다음 자료를 찍어 보세요','good');}
+  else toast('그 자리가 아니에요 — <b>표의 두 값</b>이 만나는 곳을 눌러요','warn');});
+ $('#plotDone').addEventListener('click',()=>{if(plotIdx()>=0||S.ch.length<2)return;S.plotDone=1;save();paintRec();});
+ $('#chBody').addEventListener('click',e=>{const d=e.target.closest('.del');if(!d)return;S.ch.splice(+d.dataset.i,1);S.plotDone=0;save();paintRec();});
+ $('#chClear').addEventListener('click',()=>{S.ch=[];S.plotDone=0;closeIn();save();paintRec();});
+ drawLab1=()=>{draw();paintRec();};
+ draw();paintRec();
+})();
+
+</script>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:12.5px;line-height:1.6;color:#8a8f98;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">© 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br>최종 업데이트: 2026-10-16</footer>
+</body>
+</html>
