@@ -86,6 +86,14 @@ main{max-width:1180px;margin:0 auto;padding:30px 18px 90px}
 footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;
  font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;
  border-top:1px solid rgba(128,128,128,.25)}
+/* 질문으로 탐구하기 — 그날 수업 페이지로 가는 단추 (기체 시뮬레이터 카드 아래) */
+.qbtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;margin-top:12px;
+ border:2px solid var(--c2);border-radius:var(--r);background:#f3f7fd;padding:13px 18px;box-shadow:var(--shadow);transition:.18s}
+.qbtn:hover{transform:translateY(-2px)}
+.qbtn .qi{flex:none;font-size:26px}
+.qbtn .qt{flex:1;min-width:0;font-weight:800;font-size:16.5px;line-height:1.4}
+.qbtn .qt small{display:block;font-weight:500;font-size:13.5px;color:var(--ink-dim)}
+.qbtn .qgo{flex:none;font-weight:800;font-size:14px;color:var(--c2);white-space:nowrap}
 /* 단원 내내 키우는 개인 프로젝트 — 기체 시뮬레이터 만들기 */
 .proj{position:relative;display:flex;gap:18px;align-items:center;text-decoration:none;color:inherit;margin-top:26px;
  border:2px solid var(--c3);border-radius:var(--r);background:linear-gradient(180deg,#fffaf2,#fbf1e2);
@@ -132,6 +140,11 @@ footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14p
   <div class="stages"><span><b>①</b> 고치기 — 기체의 압력을 배운 뒤</span><span><b>②</b> 압력과 부피를 배운 뒤</span><span><b>③</b> 온도와 부피를 배운 뒤</span><span><b>④</b> 최종본 — 단원 끝</span></div>
  </div>
  <span class="pgo">프로젝트 열기 →</span>
+</a>
+<a class="qbtn" href="04-charles-question.html" id="qlabBtn">
+ <span class="qi" aria-hidden="true">🙋</span>
+ <span class="qt">질문으로 탐구하기 — 온도와 부피<small>활동지와 같은 번호로 한 칸씩 · 스포이트 온도계 · 입자 상자</small></span>
+ <span class="qgo">열기 →</span>
 </a>
 
 <div class="blocks">
