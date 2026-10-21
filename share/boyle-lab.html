@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#eef4f9">
+<title>보이지 않는 공기의 힘 · 실험 데이터로 나만의 시뮬레이터 만들기</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── 발표 크기(2026-09-03) ── 큰 화면에서만 전체를 키운다. 세로가 짧은 화면(디벗)은 덜 키운다 */
+@media (min-width:1000px){html{zoom:1.35}}
+@media (min-width:1000px) and (max-height:860px){html{zoom:1.1}}
+
+/* ══════════ VI. 기체의 성질 — 「바람과 하늘 공방」 테마 (색 약속: 압력 빨강 · 부피 파랑 · 온도 주황 · 입자 초록) ══════════ */
+:root{
+ --paper:#eef4f9; --paper-hi:#f9fcfe; --paper-lo:#d9e6f0;
+ --line:#9db7cc; --line-soft:#c3d5e2;
+ --ink:#1e2c39; --ink-dim:#41586c; --ink-mute:#6b8195;
+ --accent:#20748f; --sky:#3f88c5; --sky-hi:#a9d0ef; --sky-dk:#1c507e;
+ --c1:#b23a30; --c2:#3f64b5; --c3:#c4711e; --c4:#3a7a3f; --c5:#7d5ba6;
+ --ok:#2c7a44; --danger:#b3362e; --warn:#9a5410;
+ --disp:"Pretendard",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ --mono:"JetBrains Mono",ui-monospace,Consolas,"Pretendard","Malgun Gothic",monospace;   /* 숫자·코드에만 */
+ --jua:"Jua",var(--disp);
+ --r:16px; --shadow:0 14px 38px -22px rgba(23,52,80,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+html,body{background:var(--paper-lo)}
+body{font-family:var(--disp);color:var(--ink);line-height:1.62;font-size:16.5px;word-break:keep-all;overflow-wrap:break-word;
+ background:radial-gradient(1100px 560px at 80% -8%,rgba(63,136,197,.16),transparent 60%),
+            radial-gradient(800px 500px at 6% 6%,rgba(196,113,30,.10),transparent 62%),
+            linear-gradient(180deg,var(--paper-hi),var(--paper) 55%,var(--paper-lo))}
+[hidden]{display:none!important}
+a{color:var(--sky-dk)}
+button{font:inherit;color:inherit}
+h2{font-family:var(--jua);font-weight:400;font-size:clamp(22px,3vw,28px);color:var(--sky-dk);margin:0 0 6px}
+h3{font-family:var(--jua);font-weight:400;font-size:18.5px;color:var(--accent);margin:22px 0 8px}
+p{margin:0 0 10px}
+.num{font-family:var(--mono)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px 48px}
+
+/* ── 머리 ── */
+header.top{position:sticky;top:0;z-index:40;background:rgba(240,246,251,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-soft)}
+.topin{max-width:1000px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.back{font-size:13.5px;font-weight:700;text-decoration:none;color:var(--ink-dim);white-space:nowrap}
+.ttl{font-family:var(--jua);font-size:19px;color:var(--sky-dk);line-height:1.2}
+.ttl small{display:block;font-family:var(--disp);font-size:12px;color:var(--ink-mute)}
+.sp{flex:1}
+.chip{font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--paper-hi);white-space:nowrap}
+.chip.ok{color:var(--ok);border-color:var(--ok);background:#eef8f0}
+.chip.wait{color:var(--warn);border-color:#e2b377;background:#fff6e6}
+.chip.err{color:var(--danger);border-color:var(--danger);background:#fdeeee}
+button.chip{cursor:pointer}
+.hbtn{font-size:16px;line-height:1;padding:5px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper-hi);cursor:pointer}
+.hbtn.on{background:var(--accent);border-color:var(--accent)}
+nav.steps{max-width:1000px;margin:0 auto;padding:2px 16px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+nav.steps button{flex:1 0 auto;min-width:112px;display:flex;align-items:center;gap:8px;text-align:left;padding:7px 11px;border:1.5px solid var(--line-soft);border-radius:12px;background:var(--paper-hi);cursor:pointer;line-height:1.25}
+nav.steps .no{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--paper-lo);color:var(--sky-dk)}
+nav.steps .nm{font-size:13.5px;font-weight:700}
+nav.steps .nm small{display:block;font-weight:400;font-size:11.5px;color:var(--ink-mute)}
+nav.steps button.on{border-color:var(--accent);background:#e4f2f6;box-shadow:0 6px 16px -12px rgba(23,52,80,.7)}
+nav.steps button.on .no{background:var(--accent);color:#fff}
+nav.steps button.done .no{background:var(--ok);color:#fff}
+nav.steps button.started:not(.done) .no{background:#fff;border:2px solid var(--accent);color:var(--accent)}
+.prog{height:4px;background:var(--paper-lo)}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+
+/* ── 안내 띠 ── */
+.banner{max-width:1000px;margin:12px auto 0;padding:10px 16px;border:2px dashed #e2b377;background:#fff6e6;border-radius:12px;font-size:14.5px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.banner b{color:var(--warn)}
+
+/* ── 단계 ── */
+section.step{display:none;animation:fade .2s ease}
+section.step.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.pill{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--accent);padding:3px 11px;border-radius:999px;margin:18px 0 6px}
+.lead{font-size:17px;color:var(--ink-dim)}
+.card{background:var(--paper-hi);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px 18px;margin:12px 0;box-shadow:var(--shadow)}
+.card h4{font-family:var(--jua);font-weight:400;font-size:17px;color:var(--sky-dk);margin:0 0 6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media(max-width:860px){.two{grid-template-columns:1fr}}
+.note{font-size:14px;color:var(--ink-mute)}
+.stepnav{display:flex;justify-content:space-between;gap:10px;margin:22px 0 0;flex-wrap:wrap}
+
+/* ── 버튼·입력 ── */
+.btn{font-weight:700;font-size:15px;padding:9px 16px;border:1px solid var(--line);border-radius:10px;background:var(--paper-hi);cursor:pointer;text-decoration:none;display:inline-block;color:var(--ink)}
+.btn:hover{background:#e9f2fa}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{background:#1a6079}
+.btn.sm{font-size:13px;padding:5px 10px}
+.btn:disabled{opacity:.5;cursor:default}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+label.fl{display:block;font-weight:700;font-size:15px;margin:12px 0 4px}
+label.fl small{font-weight:400;color:var(--ink-mute)}
+input[type=text],input[type=password],input[type=url],input:not([type]),select,textarea{font:inherit;font-size:15.5px;line-height:1.5;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);width:100%}
+textarea{display:block;resize:vertical;min-height:84px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--sky);outline-offset:1px}
+.cnt{font-size:12.5px;color:var(--ink-mute);text-align:right;margin-top:2px}
+.cnt.ok{color:var(--ok)}
+.opts{display:flex;flex-wrap:wrap;gap:7px}
+.opts label{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--line-soft);border-radius:999px;background:#fff;cursor:pointer;font-size:14.5px}
+.opts label:has(input:checked){border-color:var(--accent);background:#e4f2f6;font-weight:700}
+.opts input{accent-color:var(--accent);width:17px;height:17px}
+.opts.col{flex-direction:column;align-items:stretch}
+.opts.col label{border-radius:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}
+.chips button{font-size:13px;padding:4px 10px;border:1px dashed var(--line);border-radius:999px;background:#fff;cursor:pointer;text-align:left;color:var(--ink-dim)}
+.chips button:hover{border-color:var(--accent);color:var(--accent)}
+ol.do{margin:6px 0 8px;padding-left:1.35em}
+ol.do li{margin-bottom:5px}
+.kw{color:var(--c1);font-weight:700}.kv{color:var(--c2);font-weight:700}.kp{color:var(--c4);font-weight:700}
+
+/* ── 1단계: 룰렛 ── */
+.wheelbox{display:flex;flex-direction:column;align-items:center;gap:10px}
+.wheelwrap{position:relative;width:100%;max-width:340px;aspect-ratio:1}
+#wheel{width:100%;height:100%;display:block}
+.pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:26px solid var(--danger);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));z-index:2}
+.names input{margin-bottom:6px}
+.sizes{display:flex;gap:6px;margin:0 0 8px}
+.sizes button{flex:1;padding:7px 0;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:800;cursor:pointer}
+.sizes button.on{border-color:var(--accent);background:#e4f2f6;color:var(--accent)}
+.roster{list-style:none;padding:0;margin:0}
+.roster li{display:flex;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--line-soft);border-radius:11px;background:#fff;margin-bottom:6px}
+.roster li.empty{color:var(--ink-mute);background:transparent;border-style:dashed}
+.roster li.fresh{border-color:var(--ok);background:#eef8f0;animation:pop .5s}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+.roster b{min-width:7.5em}
+.roster .who{margin-left:auto;font-weight:800;color:var(--sky-dk)}
+.msg{min-height:1.4em;font-size:14.5px;font-weight:700}
+.msg.err{color:var(--danger)}.msg.ok{color:var(--ok)}
+.rolecards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0}
+@media(max-width:860px){.rolecards{grid-template-columns:1fr 1fr}}
+.rolecards div{background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px;font-size:14px}
+.rolecards b{display:block;font-size:15px;color:var(--sky-dk)}
+.rolecards em{display:block;font-style:normal;font-size:12.5px;color:var(--c4);font-weight:700}
+
+/* ── 2단계: 표 ── */
+table.dt{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+table.dt th,table.dt td{border:1px solid var(--line-soft);padding:6px 8px;text-align:center}
+table.dt th{background:var(--paper-lo);color:var(--sky-dk);font-size:14px}
+table.dt th.v{color:var(--c2)}table.dt th.p{color:var(--c1)}
+table.dt td input{text-align:center;font-family:var(--mono);padding:6px 8px;border-radius:7px}
+table.dt td input.bad{border-color:var(--danger);background:#fdeeee}
+table.dt td.no{width:44px;font-family:var(--mono);color:var(--ink-mute)}
+table.dt td.x{width:64px}
+.unitrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.unitrow input{width:120px}
+.safe{border:2px solid #e2b377;background:#fff6e6;border-radius:12px;padding:10px 14px;font-size:14.5px;margin:10px 0}
+.safe b{color:var(--warn)}
+
+/* ── 3단계: 그래프 ── */
+.axes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.axes{grid-template-columns:1fr}}
+.graphbox{position:relative;background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:8px;margin:10px 0}
+.graphbox canvas{display:block;width:100%}
+.graphbox .empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--ink-mute);padding:20px;font-size:15px}
+#tip{position:absolute;pointer-events:none;background:#1e2c39;color:#fff;font-size:12.5px;font-family:var(--mono);padding:3px 8px;border-radius:7px;white-space:nowrap;z-index:3}
+
+/* ── 4·5단계 ── */
+.ref{background:#f3f8fc;border:1px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:14.5px}
+.ref summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.prompt{white-space:pre-wrap;background:#fff;border:1px solid var(--line-soft);border-left:5px solid var(--c4);border-radius:11px;padding:12px 14px;font-size:14.2px;line-height:1.65;max-height:440px;overflow:auto}
+.prompt mark{background:#fff1b8;padding:0 2px;border-radius:3px}
+.ck{background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:10px 14px;margin:0 0 8px}
+.ck.ok{border-left:5px solid var(--ok)}.ck.no{border-left:5px solid var(--danger)}.ck.unk{border-left:5px solid var(--ink-mute)}
+.ck p{margin:0 0 6px;font-weight:700}
+.ck textarea{min-height:46px}
+figure.shot{margin:0;background:var(--paper-hi);border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
+figure.shot img{display:block;width:100%;height:auto;border-bottom:1px solid var(--line-soft)}
+figure.shot figcaption{padding:7px 10px;font-size:13px;line-height:1.5}
+.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
+@media(max-width:860px){.shots{grid-template-columns:1fr 1fr}}
+.lab{border:2px solid var(--sky);border-radius:var(--r);background:#f4faff;padding:14px 16px;margin:12px 0}
+.lab textarea{height:120px;font-family:var(--mono);font-size:12.5px;line-height:1.5}
+.simbox{border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden;background:#fff;margin:8px 0}
+.simbox iframe{display:block;width:100%;height:560px;border:0}
+.simbox .cap{padding:6px 12px;background:var(--paper-lo);font-size:13px;color:var(--ink-dim)}
+.upstep{counter-reset:u;list-style:none;padding:0}
+.upstep li{counter-increment:u;display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+.upstep li::before{content:counter(u);flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800}
+.big{font-family:var(--jua);font-size:clamp(20px,3vw,26px);color:var(--sky-dk);text-align:center;margin:10px 0}
+
+/* ── 7단계 ── */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp div{background:#fff;border:2px solid var(--line-soft);border-radius:14px;padding:12px 14px}
+.cmp b{display:block;font-size:13px;color:var(--ink-mute)}
+.cmp strong{font-size:20px;color:var(--sky-dk)}
+.verdict{margin-top:8px;font-weight:800}
+.lockbox{border:2px dashed var(--line);background:#f3f7fa;border-radius:14px;padding:14px 16px;color:var(--ink-dim)}
+
+/* ── 교사용 ── */
+.tonly{display:none}
+body.tmode .tonly{display:block}
+.tbox{border:1.5px dashed var(--c5);background:#f7f3fb;border-radius:12px;padding:12px 16px;margin:12px 0;font-size:14.5px}
+.tbox .tag{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;background:var(--c5);padding:2px 9px;border-radius:999px;margin-right:6px}
+.tbox ul,.tbox ol{margin:6px 0 4px;padding-left:1.25em}
+.tbox li{margin-bottom:3px}
+.tbox input[type=text]{max-width:340px}
+
+/* ── 모달·알림 ── */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(18,32,45,.5);display:flex;align-items:flex-start;justify-content:center;padding:56px 16px;overflow:auto}
+.mbox{width:min(460px,100%);background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}
+.mbox h3{margin:0 0 6px}
+.mbox .gsel{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);background:var(--sky-dk);color:#fff;padding:10px 18px;border-radius:24px;font-weight:700;font-size:14.5px;opacity:0;pointer-events:none;transition:.25s;z-index:95;max-width:92vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+footer#app-credit{margin-top:2.5rem}
+@media(max-width:640px){body{font-size:16px}.ttl small{display:none}.card{padding:14px}}
+@media print{header.top,.stepnav,.btnrow,.toast,.modal{display:none!important}section.step{display:block!important}}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="topin">
+    <a class="back" id="hubLink" href="index.html">← 기체의 성질</a>
+    <div class="ttl">보이지 않는 공기의 힘<small>실험 데이터로 나만의 시뮬레이터 만들기</small></div>
+    <span class="sp"></span>
+    <span class="chip" id="saveChip" aria-live="polite">불러오는 중…</span>
+    <button type="button" class="chip" id="userChip">👤 로그인</button>
+    <button type="button" class="hbtn" id="tmodeBtn" title="교사용 보기 켜기/끄기">🧑‍🏫</button>
+  </div>
+  <nav class="steps" id="stepNav" aria-label="수업 단계"></nav>
+  <div class="prog"><i id="progBar"></i></div>
+</header>
+
+<div class="banner" id="loginBanner" hidden>
+  <span>👤 <b>아직 로그인하지 않았어요.</b> 지금 쓰는 내용은 <b>이 기기에만</b> 저장되고, 내 계정에는 저장되지 않아요.</span>
+  <button type="button" class="btn pri sm" id="bannerLogin">로그인하기</button>
+</div>
+
+<main class="wrap" id="main">
+
+<!-- ══════════ 교사용 준비 ══════════ -->
+<section class="tbox tonly" id="tPrep">
+  <span class="tag">교사용</span> <b>수업 전 확인 (45분)</b>
+  <ol>
+    <li><b>계정</b> — 학생은 질문나무·도장판과 같은 계정(학년·반·번호 + 비밀번호)으로 로그인합니다. 허브(선생님과학)에서 로그인해 두었다면 이 페이지는 바로 이어집니다. 기록은 로그인한 학생 계정에만 저장되고, 다른 학생의 기록은 서버 규칙상 읽거나 고칠 수 없습니다.</li>
+    <li><b>측정 부피</b> — 기본 예시는 <span class="num" id="volsNow">50, 45, 40, 35, 30</span> mL 입니다. 바꾸려면 아래 칸에 쉼표로 적고 「링크 만들기」로 만든 주소를 학생에게 알려 주세요. (학생은 표에서 언제든 고칠 수 있어요)
+      <div class="btnrow"><input type="text" id="tVols" value="50, 45, 40, 35, 30" aria-label="측정 부피 목록" style="max-width:260px"><button type="button" class="btn sm" id="tVolsGo">링크 만들기·복사</button></div></li>
+    <li><b>6단계 올리기</b> — Studentgithub 「보일의 법칙 가상실험실」 과제(주소 끝 <span class="num">?t=boyle</span>)가 열려 있어야 합니다. 올린 판은 처음에 「확인 대기」이니 <span class="num">…/studentgithub/?t=boyle#/admin</span> → 올린 판 확인에서 공개하세요.</li>
+    <li><b>학생 기록 보기</b> — 교사 대시보드(<a href="https://scienceisjo.github.io/electricity/04-ohm-teacher.html" target="_blank" rel="noopener">📊 혼자 탐구 기록</a>)에 교사 계정으로 로그인 → 단원 「기체의 성질」 → 이 페이지의 키 <span class="num">gas-boyle-lab</span>. 학생이 쓴 글·표·그래프 설정·프롬프트·점검·업로드 자기보고가 한 줄로 모입니다.</li>
+    <li><b>연결 점검</b> — 수업 전에 학생 계정 하나로 로그인해 기록이 저장되는지 확인하세요. <button type="button" class="btn sm" id="tPing">☁️ 저장 점검</button> <span id="tPingMsg" class="note"></span></li>
+  </ol>
+  <p class="note">45분 흐름(안): ① 역할 정하기 3분 · ② 실험·기록 8분 · ③ 그래프 4분 · ④ 생각 쓰기 6분 · ⑤ 시뮬레이터 12분 · ⑥ 공유 4분 · ⑦ 초코파이 8분. 5단계에서 AI가 코드를 만드는 30초~1분은 조용히 기다리며 예상을 적게 합니다.</p>
+</section>
+
+<!-- ══════════ 1. 역할 ══════════ -->
+<section class="step" id="s1" data-step="1">
+  <span class="pill">1단계 · 3분</span>
+  <h2>모둠 실험 준비 — 역할 정하기</h2>
+  <p class="lead">모둠이 주사기 하나와 압력계 하나로 함께 실험해요. 룰렛으로 역할을 정하고, <b>내 역할</b>을 고르면 1단계가 끝나요. <span class="note">(룰렛은 모둠 노트북 한 대에서만 돌리면 돼요.)</span></p>
+
+  <div class="two">
+    <div class="card">
+      <h4>① 모둠원 이름</h4>
+      <div class="sizes" id="sizes" role="group" aria-label="모둠 인원">
+        <button type="button" data-n="3">3명</button><button type="button" data-n="4">4명</button><button type="button" data-n="5">5명</button>
+      </div>
+      <div class="names" id="names"></div>
+      <p class="note" id="sizeNote"></p>
+      <div class="btnrow">
+        <button type="button" class="btn pri" id="spinBtn">🎡 룰렛 돌리기</button>
+        <button type="button" class="btn" id="spinAll">모두 한 번에 뽑기</button>
+        <button type="button" class="btn" id="spinReset">다시 뽑기</button>
+      </div>
+      <div class="msg" id="rlMsg" role="status"></div>
+    </div>
+    <div class="card wheelbox">
+      <div class="wheelwrap"><i class="pointer"></i><canvas id="wheel" width="340" height="340" aria-label="역할 룰렛"></canvas></div>
+      <div class="msg" id="wheelMsg" aria-live="polite">이름을 넣고 룰렛을 돌려 보세요</div>
+    </div>
+  </div>
+
+  <h3>② 결과</h3>
+  <ul class="roster" id="roster"></ul>
+
+  <div class="card">
+    <h4>③ 나는 누구? 내 역할은?</h4>
+    <div class="two">
+      <div><label class="fl" for="meName">내 이름 <small>(룰렛을 돌린 노트북이라면 고르면 역할이 자동으로 들어와요)</small></label><select id="meName"></select></div>
+      <div><label class="fl" for="meRole">내 역할 <small>(다른 노트북에서 룰렛을 돌렸다면 여기서 직접 골라요)</small></label>
+        <select id="meRole" data-f="role.me"><option value="">고르기</option><option>실험 조작자</option><option>압력 관찰자</option><option>데이터 기록자</option><option>탐구 검증자</option><option>데이터 기록자 + 탐구 검증자 (겸임)</option></select></div>
+    </div>
+  </div>
+
+  <div class="rolecards">
+    <div><b>실험 조작자</b><em>주사기 조작</em>주사기 손잡이를 천천히 움직여 정한 부피에 맞춰요.</div>
+    <div><b>압력 관찰자</b><em>압력계 수치 확인</em>숫자가 안정되면 소리 내어 읽어요.</div>
+    <div><b>데이터 기록자</b><em>측정 결과 기록</em>부피와 압력을 빠짐없이 표에 적어요.</div>
+    <div><b>탐구 검증자</b><em>과정과 측정값 확인</em>읽은 값과 적은 값이 같은지, 과정이 맞는지 확인해요.</div>
+  </div>
+  <p class="note">3명이면 데이터 기록자가 탐구 검증자를 겸하고, 5명이면 실험 조작자가 2명이에요.</p>
+
+  <div class="stepnav"><span></span><button type="button" class="btn pri" data-go="2">다음 · 실험하고 기록하기 ›</button></div>
+</section>
+
+<!-- ══════════ 2. 기록 ══════════ -->
+<section class="step" id="s2" data-step="2">
+  <span class="pill">2단계 · 8분</span>
+  <h2>모둠 실험 — 내 표에 기록하기</h2>
+  <p class="lead">모둠이 <b>같은 실험</b>을 하고, 측정값은 <b>각자</b> 내 표에 적어요. 내 기록은 내 계정에 따로 저장돼요.</p>
+
+  <div class="card">
+    <h4>실험 방법</h4>
+    <ol class="do">
+      <li>주사기와 압력계를 연결해요.</li>
+      <li>주사기 속 기체의 <b class="kv">부피</b>를 정해요.</li>
+      <li>압력계의 <b class="kw">압력</b> 숫자가 안정되면 읽어요.</li>
+      <li>기체의 부피를 <b>단계적으로 줄이면서</b> 측정해요.</li>
+      <li>측정값이 어떻게 변하는지 <b>규칙</b>을 찾아봐요.</li>
+    </ol>
+    <div class="safe"><b>⚠ 안전·정확한 측정</b> — 주사기를 세게 누르지 않아요. 압력계에 적힌 <b>사용 범위</b>를 넘기면 안 돼요. 천천히 누르고, 숫자가 멈춘 뒤에 읽어요. 이상한 값은 탐구 검증자와 다시 확인해요.</div>
+  </div>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> <b>압력계 주의</b>
+    <ul>
+      <li><b>게이지압과 절대압</b> — 압력계가 공기 중에서 <b>0</b>을 나타내면 게이지압(대기압을 뺀 값)이고, <b>약 100 kPa(1기압)</b>을 나타내면 절대압입니다. 부피↓ → 압력↑ 경향은 둘 다 보이지만, 「부피×압력이 일정」은 절대압에서만 맞습니다. 게이지압 장치라면 학생이 읽은 값에 대기압을 더해 절대압으로 바꿔 보게 하세요(3단계의 「부피×압력」 축에서 비교).</li>
+      <li><b>사용 범위</b> — 이상 기체로 보면 부피를 절반으로 줄일 때 절대압은 약 2배입니다(예: 60 mL → 30 mL). 장치의 최대 허용 압력과 주사기 연결부를 확인하고, 최소 부피를 정해 학생에게 알려 주세요.</li>
+      <li>빨리 누르면 공기가 데워져 값이 더 크게 나옵니다. 「천천히 누르고, 숫자가 멈춘 뒤에 읽기」를 강조하세요. 연결부에서 공기가 새면 값이 계속 내려갑니다.</li>
+      <li>이 페이지는 측정값을 대신 만들거나 정답을 채워 주지 않습니다.</li>
+    </ul></div>
+
+  <div class="card">
+    <h4>내 측정 기록</h4>
+    <div class="unitrow"><label for="dUnit" class="fl" style="margin:0">압력 단위</label><input type="text" id="dUnit" data-f="d.unit" maxlength="12" placeholder="압력계에 적힌 단위" list="units"><datalist id="units"><option value="kPa"><option value="hPa"><option value="mmHg"><option value="기압"></datalist>
+      <span class="note">압력계 화면에 적힌 단위를 그대로 써요.</span></div>
+    <p class="note" style="margin-top:8px">추천 부피 <span class="num" id="volChips"></span> mL <button type="button" class="btn sm" id="volFill">부피 칸 채우기</button> <span class="note">(압력 칸은 직접 측정해서 적어요)</span></p>
+    <table class="dt" id="dtable"><thead><tr><th>번호</th><th class="v">부피 (mL)</th><th class="p">압력 <span id="pUnit"></span></th><th></th></tr></thead><tbody id="dbody"></tbody></table>
+    <div class="btnrow"><button type="button" class="btn" id="rowAdd">＋ 행 추가</button><span class="note" id="rowInfo"></span></div>
+  </div>
+  <div class="stepnav"><button type="button" class="btn" data-go="1">‹ 이전</button><button type="button" class="btn pri" data-go="3">다음 · 그래프로 바꾸기 ›</button></div>
+</section>
+
+<!-- ══════════ 3. 그래프 ══════════ -->
+<section class="step" id="s3" data-step="3">
+  <span class="pill">3단계 · 4분</span>
+  <h2>실험 데이터를 그래프로 바꾸기</h2>
+  <p class="lead">내 표의 값이 그래프의 점이 돼요. 가로축과 세로축을 골라 보고, 그래프에서 무엇이 보이는지 찾아봐요.</p>
+  <div class="card">
+    <div class="axes">
+      <div><label class="fl" for="gx">가로축 (x)</label><select id="gx" data-f="g.x"></select></div>
+      <div><label class="fl" for="gy">세로축 (y)</label><select id="gy" data-f="g.y"></select></div>
+    </div>
+    <div class="opts" style="margin-top:8px">
+      <label><input type="checkbox" id="gzero" data-fc="g.zero"> 축을 0부터 시작</label>
+      <label><input type="checkbox" id="gline" data-fc="g.line"> 점을 선으로 잇기</label>
+    </div>
+    <div class="graphbox" id="gbox"><canvas id="gcv"></canvas><div class="empty" id="gempty">표에 부피와 압력을 2개 이상 적으면<br>그래프가 그려져요</div><div id="tip" hidden></div></div>
+    <div class="btnrow"><button type="button" class="btn" id="gsave">🖼 그래프를 이미지로 저장</button><span class="note" id="gnote"></span></div>
+  </div>
+  <div class="card">
+    <h4>그래프로 알아보기</h4>
+    <label class="fl" for="grel">실험 결과를 그래프로 표현했을 때, 기체의 부피와 압력 사이에는 어떤 관계가 나타나나요?</label>
+    <textarea id="grel" data-f="g.rel" rows="4" placeholder="그래프의 점이 어떻게 놓였는지, 부피가 줄 때 압력이 어떻게 되는지 내 말로 써 보세요."></textarea>
+    <div class="cnt" data-cnt="g.rel" data-min="10"></div>
+  </div>
+  <div class="tbox tonly"><span class="tag">교사용</span> 가로축·세로축을 「부피의 역수」「부피×압력」으로 바꿔 보는 것은 내 데이터를 계산한 값일 뿐, 정해진 그래프를 보여 주지 않습니다. 같은 데이터가 축에 따라 직선·곡선·수평선으로 달라 보이는 것을 이야기해 보세요.</div>
+  <div class="stepnav"><button type="button" class="btn" data-go="2">‹ 이전</button><button type="button" class="btn pri" data-go="4">다음 · 내 생각 쓰기 ›</button></div>
+</section>
+
+<!-- ══════════ 4. 생각 ══════════ -->
+<section class="step" id="s4" data-step="4">
+  <span class="pill">4단계 · 6분</span>
+  <h2>내 생각을 과학적으로 설명하기</h2>
+  <p class="lead">정답을 보기 전에, 실험 결과를 <b>내 말로</b> 설명해 봐요. 여기에 쓴 글이 5단계에서 시뮬레이터를 만드는 <b>내 프롬프트</b>에 그대로 들어가요.</p>
+  <details class="ref"><summary>내 데이터와 그래프 다시 보기</summary>
+    <div style="margin-top:8px"><div id="miniTable" class="note"></div><div class="graphbox"><canvas id="mcv"></canvas><div class="empty" id="mempty">아직 그래프가 없어요</div></div></div>
+    <p class="note" id="miniRel"></p>
+  </details>
+  <div class="card">
+    <label class="fl" for="q1">질문 1. 기체의 부피가 줄어들수록 압력은 어떻게 변하는가?</label>
+    <textarea id="q1" data-f="q.1" rows="3" placeholder="실험 결과를 근거로 써 보세요."></textarea><div class="cnt" data-cnt="q.1" data-min="8"></div>
+    <label class="fl" for="q2">질문 2. 주사기의 부피가 줄어들면 기체 입자의 크기나 개수도 달라지는가?</label>
+    <textarea id="q2" data-f="q.2" rows="3" placeholder="그렇게 생각한 까닭도 함께 써 보세요."></textarea><div class="cnt" data-cnt="q.2" data-min="8"></div>
+    <label class="fl" for="q3">질문 3. 기체의 압력이 변화하는 까닭을 기체 입자의 운동과 용기 벽 충돌을 이용하여 설명해 보자.</label>
+    <textarea id="q3" data-f="q.3" rows="5" placeholder="입자는 어떻게 움직이는지, 벽에 어떻게 부딪히는지, 부피가 줄면 무엇이 달라지는지 써 보세요."></textarea><div class="cnt" data-cnt="q.3" data-min="8"></div>
+    <p class="note">틀려도 괜찮아요. 내 생각을 그대로 써요. 쓴 글은 고칠 수 있어요.</p>
+  </div>
+  <div class="tbox tonly"><span class="tag">교사용</span> <b>살펴볼 핵심(학생 글을 대신하지 않습니다)</b>
+    <ul><li>Q1 — 부피가 줄수록 압력이 <b>커진다</b>(실험 값 근거).</li>
+      <li>Q2 — 입자의 <b>크기와 개수는 그대로</b>(양이 일정한 닫힌 주사기). 「입자가 작아진다·줄어든다」는 흔한 오개념.</li>
+      <li>Q3 — 입자는 <b>끊임없이 모든 방향으로 움직이며</b> 벽에 충돌하고, 부피가 줄면 <b>충돌 횟수(빈도)가 늘어</b> 압력이 커진다. 「입자가 빨라진다」「입자가 커진다」는 오개념(온도가 일정하면 빠르기는 그대로).</li></ul></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="3">‹ 이전</button><button type="button" class="btn pri" data-go="5">다음 · 시뮬레이터 만들기 ›</button></div>
+</section>
+
+<!-- ══════════ 5. 시뮬레이터 ══════════ -->
+<section class="step" id="s5" data-step="5">
+  <span class="pill">5단계 · 12분</span>
+  <h2>나만의 시뮬레이터 만들기</h2>
+  <p class="lead">내가 알아낸 규칙을 <b>눈으로 볼 수 있는 시뮬레이터</b>로 만들어요. 아래에서 고른 것과 4단계에 쓴 <b>내 설명</b>이 합쳐져 나만의 프롬프트가 만들어져요.</p>
+
+  <div class="card">
+    <h4>① 만들고 싶은 시뮬레이터 정하기</h4>
+    <label class="fl" for="mPhen">내가 표현하려는 과학 현상 <small>(아래에서 ＋로 고르거나 직접 써요)</small></label>
+    <textarea id="mPhen" data-f="m.phen" rows="2" placeholder="예: 주사기의 부피를 줄이면 압력이 커지는 모습"></textarea>
+    <div class="chips" data-addto="mPhen">
+      <button type="button">부피가 줄어들면 압력이 커지는 모습.</button>
+      <button type="button">부피가 줄어도 기체 입자의 개수와 크기는 그대로인 모습.</button>
+      <button type="button">부피가 줄면 입자가 벽에 더 자주 부딪히는 모습.</button>
+      <button type="button">내 실험 결과처럼 부피와 압력이 함께 변하는 모습.</button>
+    </div>
+    <label class="fl">시뮬레이터에서 조절하고 싶은 요소</label>
+    <div class="opts" data-fa="m.ctrl">
+      <label><input type="checkbox" value="부피를 바꾸는 손잡이(주사기 손잡이처럼 밀고 당기기)"> 부피 손잡이</label>
+      <label><input type="checkbox" value="멈춤·다시 시작 단추"> 멈춤·다시 시작</label>
+      <label><input type="checkbox" value="처음 상태로 되돌리는 단추"> 처음으로 되돌리기</label>
+      <label><input type="checkbox" value="부피를 정해진 값(예: 50·40·30 mL)으로 바로 바꾸는 단추"> 부피를 바로 정하는 단추</label>
+    </div>
+    <input type="text" id="mCtrlX" data-f="m.ctrlx" maxlength="120" style="margin-top:6px" placeholder="그 밖에 조절하고 싶은 것(선택)">
+    <label class="fl" for="mPart">기체 입자를 표현하는 방법</label>
+    <select id="mPart" data-f="m.part"><option value="">고르기</option><option>색깔이 있는 둥근 구슬</option><option>작은 점</option><option>둥근 구슬과 지나간 자취</option><option>내가 직접 정할래요(아래에 써요)</option></select>
+    <input type="text" id="mPartX" data-f="m.partx" maxlength="120" style="margin-top:6px" placeholder="입자의 모양·색·크기에 대한 내 생각(선택)">
+    <label class="fl">부피가 변할 때 화면에 나타낼 변화</label>
+    <div class="opts" data-fa="m.chg">
+      <label><input type="checkbox" value="입자가 1초 동안 벽에 부딪힌 횟수를 숫자로 보여 주기"> 벽에 부딪힌 횟수(숫자)</label>
+      <label><input type="checkbox" value="입자가 벽에 부딪히는 순간 벽이 반짝이기"> 부딪히는 순간 반짝임</label>
+      <label><input type="checkbox" value="압력을 막대나 바늘로 보여 주기"> 압력 막대·바늘</label>
+      <label><input type="checkbox" value="부피와 압력을 숫자로 함께 보여 주기"> 부피·압력 숫자</label>
+      <label><input type="checkbox" value="기체 입자의 개수와 크기가 그대로임을 숫자로 확인하게 하기"> 입자 개수·크기 그대로</label>
+      <label><input type="checkbox" value="기체 입자의 평균 빠르기가 그대로임을 숫자로 확인하게 하기"> 입자 빠르기 그대로</label>
+    </div>
+    <label class="fl" for="mExtra">추가로 구현하고 싶은 기능 <small>(선택)</small></label>
+    <textarea id="mExtra" data-f="m.extra" rows="2" placeholder="예: 부피와 압력이 짝지어진 점을 그래프에 하나씩 찍어 주기"></textarea>
+    <div class="opts" style="margin-top:8px"><label><input type="checkbox" data-fc="m.data"> 내 실험 데이터(표)를 시뮬레이터 옆 「내 실험 결과」로 함께 보여 달라고 하기</label></div>
+  </div>
+
+  <div class="card">
+    <h4>② 내 프롬프트 <span class="note">— 4단계에 쓴 내 설명이 자동으로 들어가요</span></h4>
+    <p class="note" id="promptWarn"></p>
+    <div class="prompt" id="promptBox" aria-live="polite"></div>
+    <label class="fl" for="mMore">프롬프트에 더하고 싶은 말 <small>(선택)</small></label>
+    <textarea id="mMore" data-f="m.more" rows="2" placeholder="예: 화면은 하늘색 느낌으로 꾸며 줘."></textarea>
+    <div class="btnrow"><button type="button" class="btn pri" id="copyPrompt">📋 프롬프트 복사</button><button type="button" class="btn" data-go="4">‹ 내 설명 고치러 가기</button><span class="note" id="copyInfo"></span></div>
+  </div>
+
+  <div class="card">
+    <h4>③ 제미나이 캔버스에 붙여넣기</h4>
+    <ol class="do">
+      <li>제미나이 탭 → 왼쪽 메뉴 <b>새 채팅</b> → 입력칸 왼쪽 <b>+</b> → 맨 아래 <b>Canvas</b>. (학교 계정인지 확인해요)</li>
+      <li>복사한 프롬프트를 입력칸에 <b>Ctrl+V</b> → <b>보내기(↑)</b>. <span class="kw">Enter만 누르면 바로 보내져요!</span></li>
+      <li>만드는 동안(30초~1분)은 <b>조용히</b> 기다리며 예상을 적어요: <b>부피를 줄이면 내 시뮬레이터에서는 무엇이 어떻게 보일까?</b></li>
+      <li>결과 카드의 <b>미리보기</b>에서 직접 조작해 봐요. 이상한 곳은 <b>보이는 것 → 배운 내용 → 고칠 곳</b> 순서로 말해 고치게 해요.</li>
+    </ol>
+    <div class="btnrow"><a class="btn pri" href="https://gemini.google.com/app" target="_blank" rel="noopener">제미나이 열기 ↗</a><a class="btn" id="guideLink" href="model-fixing.html" target="_blank" rel="noopener">📖 제미나이 캔버스 쓰는 법 · AI에게 말하는 규칙 ↗</a></div>
+    <div class="shots">
+      <figure class="shot"><img src="img/vibe/gemini-01-menu.webp" alt="입력칸 왼쪽 더하기 단추를 누르면 나오는 메뉴, 맨 아래에 Canvas" loading="lazy"><figcaption>① 입력칸 왼쪽 <b>+</b> → 맨 아래 <b>Canvas</b></figcaption></figure>
+      <figure class="shot"><img src="img/vibe/gemini-02-canvas-on.webp" alt="입력칸에 Canvas 칩이 켜진 모습" loading="lazy"><figcaption>② <b>Canvas</b>가 켜지면 준비 끝</figcaption></figure>
+      <figure class="shot"><img src="img/vibe/gemini-04-card.webp" alt="요청을 보내자 캔버스 카드가 생긴 모습" loading="lazy"><figcaption>③ 보내면 캔버스 카드가 생겨요. 오른쪽 위 <b>⤢ 펼치기</b></figcaption></figure>
+      <figure class="shot"><img src="img/vibe/gemini-08-share.webp" alt="펼친 화면의 공유 메뉴와 콘텐츠 복사" loading="lazy"><figcaption>④ 코드 복사: <b>공유 → 콘텐츠 복사</b></figcaption></figure>
+    </div>
+    <p class="note">AI가 거절하거나 엉뚱하게 답하면 새 채팅에서 Canvas를 켜고 다시 보내요. 그래도 안 되면 손을 들어요.</p>
+  </div>
+
+  <div class="card">
+    <h4>④ 실행해 보고 파일로 저장하기</h4>
+    <div class="lab">
+      <p class="note" style="margin-top:0">제미나이의 <b>콘텐츠 복사</b>로 복사한 코드를 아래 칸에 붙여넣고 <b>▶ 실행</b>해 보세요. 여기에 붙인 코드는 <b>이 기기에만</b> 저장되고 서버에는 올라가지 않아요.</p>
+      <textarea id="codeBox" placeholder="제미나이가 만든 코드를 여기에 붙여넣으세요 (&lt;!DOCTYPE html&gt; 부터 &lt;/html&gt; 까지 전부)"></textarea>
+      <div class="btnrow"><button type="button" class="btn pri" id="codeRun">▶ 실행</button><button type="button" class="btn" id="codeOpen">🗗 새 창에서 열기</button><button type="button" class="btn" id="codeSave">⬇ HTML 파일로 저장</button><button type="button" class="btn" id="codeCopy">📋 코드 복사</button><button type="button" class="btn" id="codeClear">지우기</button></div>
+      <div class="simbox" id="simBox" hidden><div class="cap">내가 만든 시뮬레이터</div><iframe id="simFrame" title="내가 만든 시뮬레이터"></iframe></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>⑤ 점검하기 <span class="note">— 내 시뮬레이터를 직접 조작해 확인해요</span></h4>
+    <div id="checks"></div>
+    <details class="ref"><summary>AI가 자주 틀리는 곳</summary>
+      <ul class="do"><li>부피를 줄일 때 <b>입자가 빨라져요</b> → 온도가 일정하면 빠르기는 그대로예요.</li><li>부피를 바꿀 때 입자가 <b>새로 생기거나 사라져요</b> / <b>커지거나 작아져요</b>.</li><li>압력을 <b>식으로 계산</b>해 보여 줘요 → 벽에 부딪힌 횟수에서 나와야 해요.</li><li>입자가 <b>바닥으로 가라앉거나</b> 벽 밖으로 빠져나가요.</li><li>내가 말하지 않은 기능이나 배우지 않은 말이 들어가요.</li></ul></details>
+  </div>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> 5단계에서 AI가 코드를 통째로 새로 쓰면 학습이 끊깁니다. 「다른 부분은 그대로 두고 말한 곳만 고쳐 줘」를 붙이게 하세요. 학생 프롬프트는 6단계 전에 <b>대시보드의 「5 · AI 제작 프롬프트」</b>로도 볼 수 있습니다. 시간이 남으면 <a href="model-fixing.html" target="_blank" rel="noopener" id="guideLink2">기체 시뮬레이터 만들기</a> 페이지의 잘못 찾기 활동과 연결할 수 있습니다.</div>
+  <div class="stepnav"><button type="button" class="btn" data-go="4">‹ 이전</button><button type="button" class="btn pri" data-go="6">다음 · 세상에 공유하기 ›</button></div>
+</section>
+
+<!-- ══════════ 6. 공유 ══════════ -->
+<section class="step" id="s6" data-step="6">
+  <span class="pill">6단계 · 4분</span>
+  <h2>GitStudentHub에 올리기</h2>
+  <p class="big">내가 만든 과학 시뮬레이터를 세상에 공유해 보세요!</p>
+  <ol class="upstep">
+    <li><div><b>HTML 파일 저장</b> — 5단계 ④에서 <b>⬇ HTML 파일로 저장</b>을 눌러요. <button type="button" class="btn sm" id="saveAgain">⬇ 지금 저장</button></div></li>
+    <li><div><b>브라우저에서 실행 확인</b> — 저장한 파일을 더블클릭하거나 <button type="button" class="btn sm" id="openAgain">🗗 새 창에서 열어</button> 오류 없이 돌아가는지 봐요.</div></li>
+    <li><div><b>GitStudentHub 접속</b> — 학번만 넣고 들어가요. <a class="btn pri sm" id="sghLink" href="https://scienceisjo.github.io/studentgithub/?t=boyle#/in" target="_blank" rel="noopener">GitStudentHub 열기 ↗</a></div></li>
+    <li><div><b>HTML 파일 업로드</b> — 「내 가상실험실 올리기」에서 <b>HTML 파일 열기</b>로 파일을 고르고, 소개 두 칸(무엇을 보여 주나요 · 이렇게 해 보세요)을 써요. <a class="btn sm" id="sghLink2" href="https://scienceisjo.github.io/studentgithub/?t=boyle#/me/submit" target="_blank" rel="noopener">올리기 화면 ↗</a></div></li>
+    <li><div><b>업로드 결과 확인</b> — 「내가 올린 판」에 내 시뮬레이터가 생겼는지 봐요. 선생님이 확인하면 전시관에 나와요.</div></li>
+  </ol>
+  <div class="card">
+    <h4>올렸다면 여기에 표시해요 <span class="note">— 내가 직접 체크하는 기록이에요(선생님이 따로 확인해요)</span></h4>
+    <div class="opts"><label><input type="checkbox" id="upDone" data-fc="u.done"> GitStudentHub에 올렸어요</label></div>
+    <label class="fl" for="upUrl">게시물 주소 <small>(선택 — 올린 뒤 전시관에서 내 시뮬레이터를 열었을 때 주소창의 주소)</small></label>
+    <input type="url" id="upUrl" data-f="u.url" maxlength="300" placeholder="https://scienceisjo.github.io/studentgithub/…">
+    <p class="msg" id="upMsg"></p>
+  </div>
+  <div class="tbox tonly"><span class="tag">교사용</span> 업로드 체크는 학생의 자기보고입니다. 실제 업로드는 <span class="num">studentgithub/?t=boyle#/admin</span> 「올린 판 확인」에서 학번으로 확인하세요. 서버에서 <b>sgh_tasks에 boyle 줄</b>이 없으면 학생에게 「올리기 기간이 아닙니다」가 보입니다.</div>
+  <div class="stepnav"><button type="button" class="btn" data-go="5">‹ 이전</button><button type="button" class="btn pri" data-go="7">다음 · 초코파이 실험 ›</button></div>
+</section>
+
+<!-- ══════════ 7. 초코파이 ══════════ -->
+<section class="step" id="s7" data-step="7">
+  <span class="pill">7단계 · 8분</span>
+  <h2>감압용기 속 초코파이</h2>
+  <div class="safe"><b>⚠ 안전</b> — 실험 장치에 넣은 초코파이는 <b>먹지 않아요</b>. 감압용기와 초코파이는 선생님만 만져요.</div>
+  <div class="card">
+    <h4>① 실험 전 — 예상하기</h4>
+    <p><b>감압용기에서 공기를 빼내면 초코파이의 부피는 어떻게 될까?</b></p>
+    <div class="opts" id="pdOpts"><label><input type="radio" name="pd" value="커진다" data-fr="p.pred"> 커진다</label><label><input type="radio" name="pd" value="작아진다" data-fr="p.pred"> 작아진다</label><label><input type="radio" name="pd" value="그대로이다" data-fr="p.pred"> 그대로이다</label></div>
+    <label class="fl" for="pdWhy">그렇게 예상한 이유 <small>(주사기 실험에서 알아낸 것을 떠올려 봐요)</small></label>
+    <textarea id="pdWhy" data-f="p.why" rows="3" placeholder="내 생각을 써 보세요."></textarea><div class="cnt" data-cnt="p.why" data-min="8"></div>
+    <div class="btnrow"><button type="button" class="btn pri" id="pdLock">🔒 예상 확정하고 실험 보기</button><span class="note" id="pdLockInfo">확정하면 예상은 고칠 수 없고, 아래 관찰 칸이 열려요.</span></div>
+  </div>
+
+  <div class="lockbox" id="pdLocked">🔒 예상을 확정하면 선생님의 실험을 보고 <b>관찰 결과</b>를 적을 수 있어요.</div>
+
+  <div id="pdAfter" hidden>
+    <div class="card">
+      <h4>② 선생님의 감압용기 실험 — 관찰하기</h4>
+      <p>선생님이 보여 주는 초코파이의 변화를 잘 보고, 실제로 어떻게 되었는지 적어요.</p>
+      <div class="opts"><label><input type="radio" name="po" value="커졌다" data-fr="p.obs"> 커졌다</label><label><input type="radio" name="po" value="작아졌다" data-fr="p.obs"> 작아졌다</label><label><input type="radio" name="po" value="그대로였다" data-fr="p.obs"> 그대로였다</label></div>
+      <label class="fl" for="poTxt">본 것을 자세히 써 보세요 <small>(모양·크기·언제 변했는지)</small></label>
+      <textarea id="poTxt" data-f="p.obstxt" rows="3"></textarea>
+      <div class="cmp" style="margin-top:12px"><div><b>실험 전 내 예상</b><strong id="cmpPred">—</strong></div><div><b>실제 관찰</b><strong id="cmpObs">—</strong></div></div>
+      <p class="verdict" id="cmpVerdict"></p>
+      <label class="fl" for="cmpWhy">예상과 달랐다면, 무엇이 달랐나요? 같았다면, 무엇을 알고 있어서 맞혔나요? <small>(선택)</small></label>
+      <textarea id="cmpWhy" data-f="p.cmp" rows="2"></textarea>
+    </div>
+    <div class="card">
+      <h4>③ 정리 — 주사기 실험의 규칙으로 설명하기</h4>
+      <label class="fl" for="pFin"><b>주사기 실험에서 발견한 규칙을 활용하여 초코파이가 부풀어 오른 까닭을 설명해 보자.</b></label>
+      <textarea id="pFin" data-f="p.fin" rows="5" placeholder="초코파이 속(그리고 둘레)의 공기, 압력과 부피의 관계, 기체 입자의 충돌로 설명해 보세요."></textarea><div class="cnt" data-cnt="p.fin" data-min="8"></div>
+    </div>
+  </div>
+
+  <div class="tbox tonly"><span class="tag">교사용</span> <b>안전·준비</b>
+    <ul><li><b>식품용으로 검증되지 않은 실험 장치에 넣은 초코파이는 먹지 않아요.</b> 간식으로 줄 초코파이는 <b>따로</b> 준비하세요.</li>
+      <li>감압용기는 사용 전에 균열·패킹을 확인하고, 학생이 용기를 직접 들거나 흔들지 않도록 합니다. 공기를 천천히 빼고, 되돌릴 때도 천천히 공기를 넣습니다.</li>
+      <li>초코파이 속(마시멜로·빵의 기포)과 포장 속 공기는 바깥 압력이 낮아지면 팽창합니다. 「주사기 실험: 부피가 줄면 압력이 커진다」를 거꾸로 생각하게 하세요(바깥 압력↓ → 속 기체의 부피↑). 다시 공기를 넣어도 원래 크기로 완전히 돌아오지 않을 수 있습니다.</li>
+      <li>예상은 「확정」 뒤 고칠 수 없습니다. 학생이 잘못 확정했다면 아래 단추로 풀어 주세요. <button type="button" class="btn sm" id="pdUnlock">🔓 이 기기의 예상 잠금 풀기</button></li></ul></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="6">‹ 이전</button><span class="chip ok" id="allDone" hidden>🎉 7단계를 모두 마쳤어요</span></div>
+</section>
+
+</main>
+
+<!-- ══════════ 로그인 ══════════ -->
+<div class="modal" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden>
+  <div class="mbox">
+    <h3 id="gateT">👤 로그인</h3>
+    <p class="note" id="gateWhy">질문나무·도장판과 같은 계정이에요. 로그인하면 내가 쓴 기록이 <b>내 계정에 저장</b>되고, 다시 들어와도 이어서 할 수 있어요.</p>
+    <label class="fl">학년 · 반 · 번호</label>
+    <div class="gsel"><select id="gGrade" aria-label="학년"></select><select id="gClass" aria-label="반"></select><select id="gNum" aria-label="번호"></select></div>
+    <label class="fl" for="gPw">비밀번호 <small>(질문나무 비밀번호)</small></label>
+    <input id="gPw" type="password" maxlength="40" autocomplete="current-password" placeholder="질문나무 비밀번호">
+    <div class="msg" id="gMsg" role="status"></div>
+    <div class="btnrow"><button type="button" class="btn pri" id="gGo">로그인하고 시작</button><button type="button" class="btn" id="gLater">나중에 하기</button></div>
+    <p class="note">비밀번호가 기억나지 않으면 선생님께 말해 주세요.</p>
+  </div>
+</div>
+<div class="modal" id="whoM" role="dialog" aria-modal="true" hidden>
+  <div class="mbox">
+    <h3>👤 <span id="whoName"></span></h3>
+    <p class="note" id="whoInfo"></p>
+    <div class="btnrow"><button type="button" class="btn" id="whoSave">지금 저장</button><button type="button" class="btn" id="whoOut">로그아웃</button><button type="button" class="btn" id="whoClose">닫기</button></div>
+    <p class="note">로그아웃하면 질문나무·도장판·허브에서도 로그아웃돼요.</p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:12.5px;line-height:1.6;color:#8a8f98;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">제작 : 과학을 사랑하는 선생님 · © 2026 · All rights reserved<br><span style="font-size:11px;opacity:.85;">최종 업데이트: 2026-10-22</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script>
+'use strict';
+/* ══════════════════════════════════════════════════════════════════
+   보이지 않는 공기의 힘 — 실험 데이터로 나만의 시뮬레이터 만들기 (중1 · 기체의 압력과 부피)
+   기록은 «기존 혼자 탐구 시스템»(Supabase hmzk · 질문나무 계정 · solo_join/solo_save/solo_pull)에 계정별로 저장한다.
+   · 로그인 = 학년·반·번호 + 질문나무 비밀번호(허브·질문나무·도장판과 같은 세션)
+   · 서버 규칙(RLS·auth.uid())상 다른 학생의 기록은 읽거나 고칠 수 없다
+   · 서버에 보내기 전의 기록은 «이 기기에만» 저장된다고 화면에 분명히 표시한다
+   ══════════════════════════════════════════════════════════════════ */
+const PAGE = 'gas-boyle-lab';
+const QS = new URLSearchParams(location.search);
+const ONLINE = !/\/share\//.test(location.pathname) && QS.get('rec') !== 'off';
+const SB_URL = 'https://hmzklbrksfdhzsgwzfyg.supabase.co', SB_KEY = 'sb_publishable_OFVhbjVPbJiMWXVz2nKQuw_m6RmVVZE';
+const FIXING_URL = 'model-fixing.html';
+const STEP_NAMES = [['역할', '룰렛'], ['기록', '측정값'], ['그래프', '변환'], ['생각', '서술'], ['시뮬레이터', '만들기'], ['공유', '올리기'], ['초코파이', '실험']];
+const STEP_LABELS = ['1 모둠 역할 정하기', '2 실험 데이터 기록', '3 그래프와 관계 찾기', '4 내 생각 쓰기', '5 시뮬레이터 제작·점검', '6 GitStudentHub 공유', '7 초코파이 실험'];
+
+/* ══ 도구 ══ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const len = k => String(F(k, '') || '').trim().length;
+const num = s => { const t = String(s == null ? '' : s).trim().replace(',', '.'); if (t === '') return NaN; const x = Number(t); return Number.isFinite(x) ? x : NaN; };
+const hhmm = t => { const d = new Date(t); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
+const rand = () => { try { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); } };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem('gasbl:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('gasbl:' + k, JSON.stringify(v)); } catch (e) {} }
+};
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), msg.length > 28 ? 3400 : 2000); }
+function copyText(txt, msg) {
+  const ok = () => toast(msg || '복사했어요');
+  const fb = () => { const ta = document.createElement('textarea'); ta.value = txt; ta.style.cssText = 'position:fixed;left:-9999px'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (e) { toast('복사가 안 돼요. 직접 긁어서 복사해 주세요'); } ta.remove(); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(ok, fb); else fb();
+}
+function download(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type || 'text/html;charset=utf-8' }));
+  a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+function extractHtml(raw) {
+  if (!raw) return null; raw = raw.replace(/^```[a-z]*\s*$/gim, '');
+  let s = raw.search(/<!doctype/i); if (s < 0) s = raw.search(/<html[\s>]/i);
+  const e = raw.toLowerCase().lastIndexOf('</html>');
+  if (s >= 0 && e > s) return raw.slice(s, e + 7);
+  return /<[a-z!][\s\S]*>/i.test(raw) ? raw.trim() : null;
+}
+/* 남의(내가 AI로 만든) HTML 을 안전하게 돌리기 — allow-same-origin 을 주지 않아 이 페이지의 로그인·기록에 손을 못 댄다. localStorage 는 메모리로 대신한다 */
+const SHIM = '<script>(function(){function M(){var d={};return{getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(d,k)?d[k]:null},setItem:function(k,v){d[String(k)]=String(v)},removeItem:function(k){delete d[String(k)]},clear:function(){d={}},key:function(i){var a=Object.keys(d);return i<a.length?a[i]:null},get length(){return Object.keys(d).length}}}["localStorage","sessionStorage"].forEach(function(n){try{window[n].getItem("__t")}catch(e){try{Object.defineProperty(window,n,{value:M(),configurable:true})}catch(e2){}}});try{document.cookie}catch(e){try{Object.defineProperty(document,"cookie",{get:function(){return""},set:function(){},configurable:true})}catch(e2){}}})();<\/script>';
+const withShim = html => { const m = /^\s*<!doctype[^>]*>/i.exec(html); return m ? m[0] + SHIM + html.slice(m[0].length) : SHIM + html; };
+
+/* ══ 내 기록(이 기기) — 키별 «마지막에 쓴 때»(at)를 함께 둔다. 서버와 합칠 때 키마다 더 새것을 고른다 ══ */
+let ST = LS.get('state', null) || { owner: '', f: {}, at: {} };
+if (!ST.f || typeof ST.f !== 'object') ST.f = {};
+if (!ST.at || typeof ST.at !== 'object') ST.at = {};
+const F = (k, d) => (k in ST.f) ? ST.f[k] : d;
+function setF(k, v, quiet) { ST.f[k] = v; ST.at[k] = Date.now(); LS.set('state', ST); if (!quiet) changed(k); }
+
+/* ══ 학생(로그인) · 서버 ══ */
+const ME = { ok: false, uid: '', sid: '', name: '' };
+const SY = { st: 'init', at: 0, dirty: false, busy: false, t: null, err: '' };
+const OHM = {
+  sb: null, token: '',
+  client() {
+    if (window.__SB_TEST) return window.__SB_TEST;
+    if (this.sb) return this.sb;
+    if (!window.supabase || !window.supabase.createClient) return null;
+    this.sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+    try { this.sb.auth.onAuthStateChange((ev, ses) => { this.token = (ses && ses.access_token) || ''; }); } catch (e) {}
+    return this.sb;
+  },
+  device() { try { let d = localStorage.getItem('elec_device'); if (!d) { d = Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem('elec_device', d); } return d; } catch (e) { return 'na'; } },
+  async rpc(name, args) { const c = this.client(); if (!c) throw new Error('supabase 라이브러리를 불러오지 못했어요'); const r = await c.rpc(name, args); if (r.error) throw new Error(r.error.message || String(r.error)); return r.data; },
+  async session() { const c = this.client(); if (!c) return null; try { const r = await c.auth.getSession(); const s = (r.data && r.data.session) || null; this.token = (s && s.access_token) || ''; return s; } catch (e) { return null; } },
+  async login(g, c, n, pw) {
+    const cl = this.client(); if (!cl) throw new Error('supabase 라이브러리를 불러오지 못했어요');
+    const r = await cl.auth.signInWithPassword({ email: 's' + (+g) + '_' + (+c) + '_' + (+n) + '@haenuri.app', password: pw });
+    if (r.error) throw new Error(/invalid|credential/i.test(r.error.message) ? '학년·반·번호 또는 비밀번호가 맞지 않아요' : r.error.message);
+    return r.data.session;
+  },
+  async join() {
+    try { const d = await this.rpc('solo_join', { p_page: PAGE, p_device: this.device() }); if (!d || d.error) return { error: (d && d.error) || '참여하지 못했어요' }; return d; }
+    catch (e) { const m = String(e.message || e);
+      if (/function .*solo_join|404|not find|PGRST202/i.test(m)) return { error: '선생님이 아직 서버를 준비하지 않았어요.' };
+      if (/JWT|not authenticated|auth|401/i.test(m)) return { error: '로그인이 풀렸어요. 다시 로그인해 주세요.' };
+      return { error: '연결 오류 — ' + m }; }
+  }
+};
+
+/* ══ 서버에 저장되는 모양 ══
+   texts = 교사 대시보드 「쓴 글」 칸(사람이 읽는 이름표) / checks = 진행 항목 / f·at = 이 페이지가 다시 열 때 쓰는 원자료 */
+function unitText() { return (F('d.unit', '') || '').trim(); }
+function dataLines() { const u = unitText() || '(단위 없음)'; return validRows().map(r => '부피 ' + r.v + ' mL → 압력 ' + r.p + ' ' + u); }
+const TEXT_LABELS = ['1 · 모둠 역할', '2 · 실험 데이터(부피→압력)', '3 · 그래프 축 설정', '3 · 그래프에서 찾은 관계', '4 · 질문1 부피가 줄면 압력은', '4 · 질문2 입자의 크기·개수', '4 · 질문3 충돌과 압력의 까닭',
+  '5 · 시뮬레이터 설계 선택', '5 · AI 제작 프롬프트(복사한 것)', '5 · 시뮬레이터 점검 기록', '6 · 공유(학생 자기보고)', '7 · 초코파이 예상', '7 · 초코파이 관찰', '7 · 초코파이 정리 설명'];
+const TEXT_KEYS = (() => { const bl = s => new TextEncoder().encode(s).length; let prev = 0; return TEXT_LABELS.map(l => { let k = l; while (bl(k) <= prev) k += '​'; prev = bl(k); return k; }); })();   // jsonb 는 키를 «길이순»으로 줄 세우므로, 단계 순서대로 보이게 길이를 맞춘다
+function buildTexts() {
+  const out = {}, add = (i, v) => { const s = String(v == null ? '' : v).trim(); if (s) out[TEXT_KEYS[i]] = s; };
+  const t = team(), V = vars();
+  if (t.assign.length || F('role.me', '')) add(0, '모둠 ' + t.n + '명: ' + t.names.slice(0, t.n).filter(Boolean).join('·') + '\n내 역할: ' + (F('role.me', '') || '(고르지 않음)') + (t.assign.length ? '\n룰렛 결과: ' + t.assign.map(a => slotLabel(t.n, a.slot) + '=' + a.who).join(' / ') : ''));
+  add(1, dataLines().length ? '(압력 단위: ' + (unitText() || '없음') + ')\n' + dataLines().join('\n') : '');
+  if (F('g.x', null) || F('g.y', null) || validRows().length >= 2) add(2, '가로축: ' + V[F('g.x', 'v')].n + '(' + V[F('g.x', 'v')].u + ') · 세로축: ' + V[F('g.y', 'p')].n + '(' + V[F('g.y', 'p')].u + ')' + (F('g.zero', true) ? ' · 0부터 시작' : '') + (F('g.line', false) ? ' · 점 잇기' : ''));
+  add(3, F('g.rel', '')); add(4, F('q.1', '')); add(5, F('q.2', '')); add(6, F('q.3', ''));
+  const mk = []; if ((F('m.phen', '') || '').trim()) mk.push('현상: ' + F('m.phen').trim());
+  const ctrl = listOr(F('m.ctrl', []), F('m.ctrlx', '')); if (ctrl.length) mk.push('조절: ' + ctrl.join(' / '));
+  const part = [F('m.part', ''), (F('m.partx', '') || '').trim()].filter(Boolean).join(' — '); if (part) mk.push('입자 표현: ' + part);
+  const chg = F('m.chg', []); if (chg.length) mk.push('변화 표시: ' + chg.join(' / '));
+  if ((F('m.extra', '') || '').trim()) mk.push('추가 기능: ' + F('m.extra').trim());
+  if (F('m.data', false)) mk.push('내 실험 데이터 함께 보이기: 예');
+  add(7, mk.join('\n'));
+  add(8, F('m.prompt', ''));
+  add(9, CHECKS.map((c, i) => F('k.' + i, '') ? (i + 1) + '. ' + c[0] + ' → ' + ({ ok: '됨', no: '안 됨', unk: '모르겠음' }[F('k.' + i)]) + ((F('k.' + i + '.why', '') || '').trim() ? ' — ' + F('k.' + i + '.why').trim() : '') : '').filter(Boolean).join('\n'));
+  add(10, (F('u.done', false) ? '올렸어요(학생 체크' + (F('u.at', 0) ? ' ' + hhmm(F('u.at')) : '') + ')' : '') + ((F('u.url', '') || '').trim() ? '\n게시물 주소: ' + F('u.url').trim() : ''));
+  add(11, F('p.pred', '') ? '예상: ' + F('p.pred') + '\n이유: ' + (F('p.why', '') || '(안 씀)') + (F('p.lock', 0) ? '\n(예상 확정 ' + hhmm(F('p.lock')) + ')' : '\n(아직 확정 전)') : '');
+  add(12, F('p.obs', '') ? '관찰: ' + F('p.obs') + (F('p.obstxt', '') ? '\n' + F('p.obstxt') : '') + (F('p.pred', '') ? '\n예상과 ' + (PIE_MAP[F('p.pred')] === F('p.obs') ? '같음' : '다름') : '') + ((F('p.cmp', '') || '').trim() ? '\n비교 메모: ' + F('p.cmp').trim() : '') : '');
+  add(13, F('p.fin', ''));
+  return out;
+}
+function snapshot() {
+  const d = stepsDone(), progress = d.filter(Boolean).length;
+  const snap = { v: 1, page: PAGE, sid: ME.sid, name: ME.name, tab: 's' + STEP, progress, total: 7, pct: Math.round(progress / 7 * 100),
+    checks: STEP_LABELS.map((l, i) => ({ l, ok: d[i] ? 1 : 0 })), texts: buildTexts(), f: ST.f, at: ST.at, savedAt: new Date().toISOString() };
+  if (JSON.stringify(snap).length > 110000) { delete snap.texts[TEXT_KEYS[8]]; snap.f = Object.assign({}, ST.f); delete snap.f['m.prompt']; }
+  return snap;
+}
+function mergeServer(st) {
+  if (!st || typeof st !== 'object' || !st.f) return 0;
+  const sat = st.at || {}; let n = 0;
+  Object.keys(st.f).forEach(k => { if ((+sat[k] || 0) > (+ST.at[k] || 0) || !(k in ST.f)) { ST.f[k] = st.f[k]; ST.at[k] = +sat[k] || 0; n++; } });
+  return n;
+}
+function paintChip() {
+  const c = $('#saveChip'), u = $('#userChip'); let cls = 'chip wait', tx = '';
+  if (!ONLINE) tx = '이 사본은 서버에 보내지 않아요 · 이 기기에만 저장';
+  else if (!OHM.client()) tx = '⚠ 서버에 연결할 수 없어요 · 이 기기에만 저장';
+  else if (!ME.ok) tx = '⚠ 로그인 전 · 이 기기에만 저장';
+  else if (SY.st === 'saving') tx = '저장 중…';
+  else if (SY.st === 'err') { cls = 'chip err'; tx = '❌ 저장 실패 — 눌러서 다시 시도'; }
+  else if (SY.dirty) tx = '저장 대기 중…';
+  else { cls = 'chip ok'; tx = '☁️ 내 계정에 저장됨 ' + (SY.at ? hhmm(SY.at) : ''); }
+  c.className = cls; c.textContent = tx; c.style.cursor = SY.st === 'err' ? 'pointer' : '';
+  u.textContent = ME.ok ? '👤 ' + ME.sid + ' ' + ME.name : '👤 로그인';
+  u.className = 'chip' + (ME.ok ? ' ok' : ' wait'); u.style.cursor = 'pointer';
+  $('#loginBanner').hidden = !(ONLINE && !ME.ok && SY.st !== 'init' && $('#gate').hidden);
+}
+function touch() {
+  SY.dirty = true; SY.ver = (SY.ver || 0) + 1; SY.err = ''; if (SY.st === 'err') SY.st = 'idle';
+  if (!ONLINE || !ME.ok) { paintChip(); return; }
+  clearTimeout(SY.t); SY.t = setTimeout(flush, 1200); paintChip();
+}
+async function flush() {
+  if (!ONLINE || !ME.ok || SY.busy) return;
+  clearTimeout(SY.t); SY.busy = true; SY.st = 'saving'; paintChip();
+  const v0 = SY.ver || 0;
+  try {
+    const snap = snapshot();
+    let ok = await OHM.rpc('solo_save', { p_page: PAGE, p_state: snap, p_progress: snap.progress, p_pct: snap.pct, p_tab: snap.tab });
+    if (ok === false) {                                   // 내 줄이 없다고 하면 한 번 다시 참여하고 저장
+      const j = await OHM.join(); if (j.error) throw new Error(j.error);
+      ok = await OHM.rpc('solo_save', { p_page: PAGE, p_state: snap, p_progress: snap.progress, p_pct: snap.pct, p_tab: snap.tab });
+      if (ok === false) throw new Error('저장할 줄을 찾지 못했어요');
+    }
+    if ((SY.ver || 0) === v0) SY.dirty = false;
+    SY.st = 'ok'; SY.at = Date.now();
+  } catch (e) { SY.st = 'err'; SY.err = String(e && e.message || e); console.warn('[기록 저장]', e); }
+  finally { SY.busy = false; paintChip(); if (SY.dirty && SY.st === 'ok') { SY.t = setTimeout(flush, 500); } }
+}
+function flushOnLeave() {     // 창을 닫거나 숨길 때 — 마지막 글이 사라지지 않게
+  if (!ONLINE || !ME.ok || !SY.dirty || !OHM.token) return;
+  try { const snap = snapshot(); const body = JSON.stringify({ p_page: PAGE, p_state: snap, p_progress: snap.progress, p_pct: snap.pct, p_tab: snap.tab });
+    if (body.length < 60000) fetch(SB_URL + '/rest/v1/rpc/solo_save', { method: 'POST', keepalive: true, headers: { apikey: SB_KEY, Authorization: 'Bearer ' + OHM.token, 'Content-Type': 'application/json' }, body }); } catch (e) {}
+}
+addEventListener('pagehide', flushOnLeave);
+addEventListener('visibilitychange', () => { if (document.hidden) { if (SY.dirty) { flush(); flushOnLeave(); } } });
+
+/* 로그인 직후: 내 줄 만들기·이어붙이기 → 이 기기 기록과 서버 기록 합치기 */
+async function afterAuth() {
+  const j = await OHM.join();
+  if (j.error) { openGate(j.error); return false; }
+  const hasLocal = Object.keys(ST.f).length > 0;
+  if (ST.owner && ST.owner !== j.uid && hasLocal) {
+    if (!confirm('이 기기에는 다른 학생이 쓴 기록이 있어요.\n' + j.sid + ' ' + j.name + ' 학생으로 새로 시작할까요?\n(그 학생이 이미 저장한 기록은 서버에 그대로 남아요)')) {
+      try { await OHM.client().auth.signOut(); } catch (e) {} ME.ok = false; paintChip(); return false; }
+    ST = { owner: '', f: {}, at: {} }; LS.set('code', ''); $('#codeBox').value = '';
+  }
+  const adopt = !ST.owner && hasLocal;
+  ST.owner = j.uid; ME.ok = true; ME.uid = j.uid; ME.sid = j.sid; ME.name = j.name || '';
+  let n = 0;
+  if (j.has_state) { try { const p = await OHM.rpc('solo_pull', { p_page: PAGE }); n = mergeServer(p && p.state); } catch (e) { console.warn('[불러오기]', e); } }
+  LS.set('state', ST); renderAll(); SY.st = 'idle'; SY.dirty = true; paintChip(); flush();
+  toast(n ? '☁️ ' + ME.name + ' 님의 저장된 기록을 불러왔어요' : (adopt ? '👤 ' + ME.name + ' 님, 지금까지 쓴 내용도 함께 저장해요' : '👤 ' + ME.name + ' 님, 로그인했어요'));
+  return true;
+}
+async function boot() {
+  if (!ONLINE) { SY.st = 'idle'; paintChip(); return; }
+  if (!OHM.client()) { SY.st = 'idle'; paintChip(); return; }
+  const ses = await OHM.session();
+  SY.st = 'idle';
+  if (ses) { const ok = await afterAuth(); if (ok) return; }
+  paintChip();
+  if (!ME.ok && $('#gate').hidden) openGate();
+}
+
+/* ══ 로그인 창 ══ */
+function fillGate() {
+  const opt = (a, b, ph) => '<option value="">' + ph + '</option>' + Array.from({ length: b - a + 1 }, (_, i) => '<option>' + (a + i) + '</option>').join('');
+  $('#gGrade').innerHTML = opt(1, 3, '학년'); $('#gClass').innerHTML = opt(1, 20, '반'); $('#gNum').innerHTML = opt(1, 40, '번호');
+  const l = LS.get('last', null); if (l) { $('#gGrade').value = l.g; $('#gClass').value = l.c; $('#gNum').value = l.n; }
+}
+function openGate(why) {
+  $('#gMsg').textContent = why || ''; $('#gMsg').className = 'msg' + (why ? ' err' : '');
+  $('#gate').hidden = false; setTimeout(() => { const el = $('#gGrade').value ? $('#gPw') : $('#gGrade'); el.focus(); }, 40);
+}
+function closeGate() { $('#gate').hidden = true; paintChip(); }
+async function doLogin() {
+  const g = +$('#gGrade').value, c = +$('#gClass').value, n = +$('#gNum').value, pw = $('#gPw').value;
+  const say = (t, k) => { $('#gMsg').textContent = t; $('#gMsg').className = 'msg ' + (k || ''); };
+  if (!g || !c || !n) { say('학년·반·번호를 모두 골라 주세요', 'err'); return; }
+  if (!pw) { say('비밀번호를 써 주세요', 'err'); $('#gPw').focus(); return; }
+  $('#gGo').disabled = true; say('로그인하는 중…');
+  try { await OHM.login(g, c, n, pw); LS.set('last', { g, c, n }); $('#gPw').value = ''; const ok = await afterAuth(); if (ok) closeGate(); }
+  catch (e) { say(String(e && e.message || e), 'err'); }
+  finally { $('#gGo').disabled = false; }
+}
+
+/* ══ 모둠 역할 룰렛 ══ */
+const ROLE_NAME = { op: '실험 조작자', ob: '압력 관찰자', rc: '데이터 기록자', vf: '탐구 검증자' };
+const SLOTS = { 3: [['op'], ['ob'], ['rc', 'vf']], 4: [['op'], ['ob'], ['rc'], ['vf']], 5: [['op'], ['op'], ['ob'], ['rc'], ['vf']] };
+const slotLabel = (n, i) => { const s = SLOTS[n][i]; return s.length > 1 ? s.map(r => ROLE_NAME[r]).join(' + ') + ' (겸임)' : ROLE_NAME[s[0]]; };
+const WHEEL_COLORS = ['#3f88c5', '#c4711e', '#3a7a3f', '#7d5ba6', '#b23a30'];
+let rot = 0, spinning = false, fresh = -1;
+function team() {
+  let t = F('team', null);
+  if (!t || typeof t !== 'object') t = { n: 4, names: ['', '', '', '', ''], assign: [] };
+  if (![3, 4, 5].includes(t.n)) t.n = 4;
+  if (!Array.isArray(t.names)) t.names = ['', '', '', '', '']; while (t.names.length < 5) t.names.push('');
+  if (!Array.isArray(t.assign)) t.assign = [];
+  return t;
+}
+const saveTeam = t => setF('team', t);
+function activeNames(t) { return t.names.slice(0, t.n).map(s => s.trim()); }
+function pool(t) { const done = new Set(t.assign.map(a => a.who)); return activeNames(t).filter(x => x && !done.has(x)); }
+function drawWheel(names, r, emptyMsg) {
+  const cv = $('#wheel'), ctx = cv.getContext('2d'), W = cv.width, c = W / 2, R = c - 14;
+  ctx.clearRect(0, 0, W, W);
+  const n = names.length;
+  if (!n) { ctx.beginPath(); ctx.arc(c, c, R, 0, 7); ctx.fillStyle = '#d9e6f0'; ctx.fill(); ctx.fillStyle = '#6b8195'; ctx.font = '700 34px Pretendard,sans-serif'; ctx.textAlign = 'center'; ctx.fillText(emptyMsg || '이름을 넣어요', c, c + 10); return; }
+  const seg = 2 * Math.PI / n;
+  for (let i = 0; i < n; i++) {
+    const a0 = r + i * seg, a1 = a0 + seg;
+    ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, R, a0, a1); ctx.closePath(); ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length]; ctx.fill();
+    ctx.lineWidth = 5; ctx.strokeStyle = '#fff'; ctx.stroke();
+    ctx.save(); ctx.translate(c, c); ctx.rotate(a0 + seg / 2); ctx.textAlign = 'right'; ctx.fillStyle = '#fff'; ctx.font = '800 ' + (n > 3 ? 34 : 40) + 'px Pretendard,sans-serif';
+    ctx.fillText(names[i].length > 6 ? names[i].slice(0, 6) + '…' : names[i], R - 26, 12); ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(c, c, 34, 0, 7); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = '#9db7cc'; ctx.stroke();
+}
+function spinTo(n, idx) {
+  return new Promise(res => {
+    const seg = 2 * Math.PI / n, jit = (rand() - .5) * .7, target = -Math.PI / 2 - (idx + .5 + jit) * seg;
+    const delta = (((target - rot) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI), total = delta + 2 * Math.PI * (4 + Math.floor(rand() * 3));
+    const names = pool(team()), t0 = performance.now(), dur = 3200, start = rot;
+    (function step() { const t = Math.min(1, (performance.now() - t0) / dur), e = 1 - Math.pow(1 - t, 3); rot = start + total * e; drawWheel(names, rot); if (t < 1) setTimeout(step, 16); else { rot = rot % (2 * Math.PI); res(); } })();
+  });
+}
+function checkNames(t) {
+  const a = activeNames(t); if (a.some(x => !x)) return '모둠원 이름을 ' + t.n + '명 모두 써 주세요';
+  const low = a.map(x => x.replace(/\s+/g, '').toLowerCase()); if (new Set(low).size !== low.length) return '이름이 같은 모둠원이 있어요. 구별되게 써 주세요(예: 김민수, 김민서)'; return '';
+}
+function rlSay(t, k) { const m = $('#rlMsg'); m.textContent = t || ''; m.className = 'msg ' + (k || ''); }
+async function spinNext(auto) {
+  if (spinning) return false;
+  const t = team(), err = checkNames(t); if (err) { rlSay(err, 'err'); return false; }
+  const slots = SLOTS[t.n]; if (t.assign.length >= slots.length) return false;
+  rlSay(''); const p = pool(t);
+  if (p.length === 1) { assignTo(t, p[0], '마지막 모둠원은 남은 역할을 맡아요'); return true; }
+  spinning = true; renderTeam();
+  const idx = Math.floor(rand() * p.length); $('#wheelMsg').textContent = '🎡 ' + slotLabel(t.n, t.assign.length) + ' 을(를) 뽑는 중…';
+  await spinTo(p.length, idx); spinning = false;
+  assignTo(t, p[idx]); return true;
+}
+function assignTo(t, who, extra) {
+  const slot = t.assign.length; t.assign.push({ slot, who }); saveTeam(t); fresh = slot;
+  $('#wheelMsg').innerHTML = '🎉 <b>' + esc(who) + '</b> → <b>' + esc(slotLabel(t.n, slot)) + '</b>' + (extra ? '<br><small>' + esc(extra) + '</small>' : '');
+  renderTeam(); autoMe();
+  if (pool(t).length === 1 && t.assign.length === SLOTS[t.n].length - 1) setTimeout(() => { if (!spinning) { const t2 = team(); if (t2.assign.length === SLOTS[t2.n].length - 1 && pool(t2).length === 1) assignTo(t2, pool(t2)[0], '마지막 모둠원은 남은 역할을 맡아요'); } }, 1400);
+}
+async function spinAllRun() { for (let i = 0; i < 6; i++) { const t = team(); if (t.assign.length >= SLOTS[t.n].length) break; const ok = await spinNext(true); if (!ok) break; await sleep(900); } }
+function renderTeam() {
+  const t = team(), locked = t.assign.length > 0;
+  $$('#sizes button').forEach(b => { b.classList.toggle('on', +b.dataset.n === t.n); b.disabled = locked || spinning; });
+  const box = $('#names'); if (box.children.length !== t.n || box._n !== t.n) { box._n = t.n; box.innerHTML = Array.from({ length: t.n }, (_, i) => '<input type="text" maxlength="8" data-name="' + i + '" placeholder="모둠원 ' + (i + 1) + ' 이름" aria-label="모둠원 ' + (i + 1) + ' 이름">').join(''); }
+  $$('#names input').forEach((el, i) => { if (document.activeElement !== el) el.value = t.names[i] || ''; el.disabled = locked || spinning; });
+  $('#sizeNote').textContent = t.n === 3 ? '3명이면 데이터 기록자가 탐구 검증자를 겸해요.' : t.n === 5 ? '5명이면 실험 조작자가 2명이에요.' : '4명이면 역할이 하나씩이에요.';
+  const slots = SLOTS[t.n], done = t.assign.length;
+  $('#roster').innerHTML = slots.map((s, i) => { const a = t.assign.find(x => x.slot === i); return '<li class="' + (a ? (i === fresh ? 'fresh' : '') : 'empty') + '"><b>' + esc(slotLabel(t.n, i)) + '</b><span class="who">' + (a ? esc(a.who) : '—') + '</span></li>'; }).join('');
+  const sb = $('#spinBtn'); sb.disabled = spinning || done >= slots.length; sb.textContent = done >= slots.length ? '✅ 모두 뽑았어요' : '🎡 룰렛 돌리기 — 다음: ' + slotLabel(t.n, done);
+  $('#spinAll').disabled = spinning || done >= slots.length; $('#spinReset').disabled = spinning || !done;
+  drawWheel(pool(t).length ? pool(t) : (done ? [] : activeNames(t).filter(Boolean)), rot, done ? '모두 뽑았어요 🎉' : '');
+  const me = $('#meName'), names = activeNames(t).filter(Boolean), cur = F('team.me', '');
+  me.innerHTML = '<option value="">고르기</option>' + names.map(x => '<option' + (x === cur ? ' selected' : '') + '>' + esc(x) + '</option>').join('');
+  $('#meRole').value = F('role.me', '');
+}
+function autoMe() {
+  const t = team(), who = F('team.me', ''); if (!who) return;
+  const mine = t.assign.filter(a => a.who === who).map(a => SLOTS[t.n][a.slot]); if (!mine.length) return;
+  const roles = [...new Set([].concat(...mine))]; const label = roles.length > 1 ? '데이터 기록자 + 탐구 검증자 (겸임)' : ROLE_NAME[roles[0]];
+  setF('role.me', label); $('#meRole').value = label;
+}
+
+/* ══ 2단계 · 표 ══ */
+function parseVols() { const s = QS.get('vols'); if (!s) return [50, 45, 40, 35, 30]; const a = s.split(/[,\s]+/).map(Number).filter(x => Number.isFinite(x) && x > 0).slice(0, 12); return a.length >= 2 ? a : [50, 45, 40, 35, 30]; }
+let VOLS = parseVols();
+function getRows() { let r = F('d.rows', null); if (!Array.isArray(r) || !r.length) { r = Array.from({ length: 5 }, () => ({ v: '', p: '' })); ST.f['d.rows'] = r; } return r; }
+function validRows() { return getRows().map(r => ({ v: num(r.v), p: num(r.p) })).filter(r => Number.isFinite(r.v) && Number.isFinite(r.p)); }
+function renderTable() {
+  const rows = getRows();
+  $('#dbody').innerHTML = rows.map((r, i) => '<tr data-i="' + i + '"><td class="no">' + (i + 1) + '</td><td><input inputmode="decimal" data-c="v" value="' + esc(r.v) + '" aria-label="' + (i + 1) + '번 부피"></td><td><input inputmode="decimal" data-c="p" value="' + esc(r.p) + '" aria-label="' + (i + 1) + '번 압력"></td><td class="x"><button type="button" class="btn sm" data-del="' + i + '">삭제</button></td></tr>').join('');
+  $$('#dbody input').forEach(markBad); rowInfo();
+}
+function markBad(el) { el.classList.toggle('bad', el.value.trim() !== '' && !Number.isFinite(num(el.value))); }
+function rowInfo() {
+  const rows = getRows(), ok = validRows().length, part = rows.filter(r => (String(r.v).trim() !== '') !== (String(r.p).trim() !== '')).length;
+  $('#rowInfo').textContent = '측정값 ' + ok + '개 입력됨' + (part ? ' · 한쪽만 적은 줄 ' + part + '개(부피·압력을 모두 적어야 그래프에 나와요)' : '') + (ok >= 3 ? '' : ' · 3개 이상 적으면 2단계가 끝나요');
+  $('#pUnit').textContent = unitText() ? '(' + unitText() + ')' : '(압력계 단위)';
+}
+function renderVols() { $('#volChips').textContent = VOLS.join(', '); $('#volsNow').textContent = VOLS.join(', '); $('#tVols').value = VOLS.join(', '); }
+
+/* ══ 3단계 · 그래프 ══ */
+function vars() {
+  const u = unitText() || '압력계 단위';
+  return { v: { n: '부피', u: 'mL', f: r => r.v }, p: { n: '압력', u, f: r => r.p },
+    iv: { n: '부피의 역수', u: '1/mL', f: r => r.v !== 0 ? 1 / r.v : NaN }, pv: { n: '부피×압력', u: 'mL×' + u, f: r => r.v * r.p } };
+}
+function fillAxisSelects() {
+  const V = vars(), opt = (k) => '<option value="' + k + '">' + V[k].n + ' (' + V[k].u + ')</option>';
+  const html = '<optgroup label="내가 잰 값">' + opt('v') + opt('p') + '</optgroup><optgroup label="내 값으로 계산해 살펴보기">' + opt('iv') + opt('pv') + '</optgroup>';
+  ['gx', 'gy'].forEach(id => { const s = $('#' + id); s.innerHTML = html; });
+  $('#gx').value = F('g.x', 'v'); $('#gy').value = F('g.y', 'p');
+}
+function nice(n, round) { const e = Math.floor(Math.log10(n)), f = n / Math.pow(10, e); let nf; if (round) nf = f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10; else nf = f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10; return nf * Math.pow(10, e); }
+function axisRange(lo, hi, zero, target) {
+  if (zero) { if (lo > 0) lo = 0; if (hi < 0) hi = 0; }
+  if (hi === lo) { const d = Math.abs(lo || 1) * .1; hi += d; if (!zero) lo -= d; }
+  if (!zero) { const p = (hi - lo) * .08; lo -= p; hi += p; } else { hi += (hi - lo) * .06; }
+  const step = nice(nice(hi - lo, false) / (target - 1), true), a = Math.floor(lo / step + 1e-9) * step, b = Math.ceil(hi / step - 1e-9) * step, ticks = [];
+  for (let v = a; v <= b + step / 2; v += step) ticks.push(+v.toFixed(10));
+  return { min: a, max: b, step, ticks };
+}
+const fmtTick = (v, step) => { const d = Math.min(5, Math.max(0, -Math.floor(Math.log10(step) + 1e-9))); return v.toFixed(d); };
+function drawGraph(cv, o) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(o.w * dpr); cv.height = Math.round(o.h * dpr); cv.style.height = o.h + 'px';
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, o.w, o.h);
+  const V = vars(), X = V[o.x], Y = V[o.y];
+  const pts = validRows().map(r => ({ x: X.f(r), y: Y.f(r) })).filter(p => Number.isFinite(p.x) && Number.isFinite(p.y));
+  cv._pts = [];
+  if (pts.length < 2) return pts.length;
+  const L = o.small ? 46 : 66, B = o.small ? 40 : 56, T = 16, Rr = 18, pw = o.w - L - Rr, ph = o.h - T - B;
+  const xr = axisRange(Math.min(...pts.map(p => p.x)), Math.max(...pts.map(p => p.x)), o.zero, o.small ? 5 : 7), yr = axisRange(Math.min(...pts.map(p => p.y)), Math.max(...pts.map(p => p.y)), o.zero, o.small ? 5 : 6);
+  const px = v => L + (v - xr.min) / (xr.max - xr.min) * pw, py = v => T + ph - (v - yr.min) / (yr.max - yr.min) * ph;
+  ctx.font = (o.small ? 11 : 12.5) + 'px "JetBrains Mono",Consolas,monospace'; ctx.lineWidth = 1;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  xr.ticks.forEach(v => { const x = px(v); ctx.strokeStyle = '#e3ecf3'; ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + ph); ctx.stroke(); ctx.fillStyle = '#41586c'; ctx.fillText(fmtTick(v, xr.step), x, T + ph + 6); });
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  yr.ticks.forEach(v => { const y = py(v); ctx.strokeStyle = '#e3ecf3'; ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke(); ctx.fillStyle = '#41586c'; ctx.fillText(fmtTick(v, yr.step), L - 7, y); });
+  ctx.strokeStyle = '#41586c'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(L, T); ctx.lineTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+  ctx.fillStyle = '#1e2c39'; ctx.font = '700 ' + (o.small ? 12 : 14) + 'px Pretendard,"Malgun Gothic",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = o.x === 'v' || o.x === 'iv' ? '#3f64b5' : o.x === 'p' ? '#b23a30' : '#1e2c39'; ctx.fillText(X.n + ' (' + X.u + ')', L + pw / 2, o.h - 8);
+  ctx.save(); ctx.translate(14, T + ph / 2); ctx.rotate(-Math.PI / 2); ctx.fillStyle = o.y === 'v' || o.y === 'iv' ? '#3f64b5' : o.y === 'p' ? '#b23a30' : '#1e2c39'; ctx.fillText(Y.n + ' (' + Y.u + ')', 0, 0); ctx.restore();
+  const sorted = [...pts].sort((a, b) => a.x - b.x);
+  if (o.line) { ctx.strokeStyle = '#20748f'; ctx.lineWidth = 2; ctx.beginPath(); sorted.forEach((p, i) => i ? ctx.lineTo(px(p.x), py(p.y)) : ctx.moveTo(px(p.x), py(p.y))); ctx.stroke(); }
+  pts.forEach(p => { const x = px(p.x), y = py(p.y); ctx.beginPath(); ctx.arc(x, y, o.small ? 4 : 6, 0, 7); ctx.fillStyle = '#20748f'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); cv._pts.push({ x, y, vx: p.x, vy: p.y }); });
+  cv._geom = { w: o.w, h: o.h, xs: X, ys: Y };
+  return pts.length;
+}
+function paintGraph() {
+  const cv = $('#gcv'), box = $('#gbox'); const w = Math.max(260, Math.min(760, box.clientWidth - 16)), h = Math.round(w * .56);
+  const n = drawGraph(cv, { w, h, x: F('g.x', 'v'), y: F('g.y', 'p'), zero: F('g.zero', true), line: F('g.line', false) });
+  $('#gempty').hidden = n >= 2; cv.style.visibility = n >= 2 ? 'visible' : 'hidden';
+  if (n < 2) { const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height); }
+  $('#gnote').textContent = n >= 2 ? '점 ' + n + '개 · 내 표의 값이 그대로 점이 돼요' : '';
+  if (F('g.x', 'v') === F('g.y', 'p') && n >= 2) $('#gnote').textContent = '가로축과 세로축이 같아요. 서로 다른 변인을 골라 보세요.';
+  paintMini();
+}
+function paintMini() {
+  const d = $('details.ref'); if (!d) return;
+  const lines = dataLines(); $('#miniTable').innerHTML = lines.length ? lines.map(esc).join('<br>') : '표에 적은 값이 아직 없어요(2단계).';
+  const cv = $('#mcv'), box = cv.parentElement; const w = Math.max(240, Math.min(520, (box.clientWidth || 320) - 16));
+  const n = drawGraph(cv, { w, h: Math.round(w * .55), x: F('g.x', 'v'), y: F('g.y', 'p'), zero: F('g.zero', true), line: F('g.line', false), small: true });
+  $('#mempty').hidden = n >= 2; cv.style.visibility = n >= 2 ? 'visible' : 'hidden';
+  $('#miniRel').textContent = F('g.rel', '') ? '그래프에서 내가 찾은 관계: ' + F('g.rel') : '';
+}
+function bindGraphHover() {
+  const cv = $('#gcv'), tip = $('#tip');
+  const move = e => {
+    const r = cv.getBoundingClientRect(), g = cv._geom; if (!g || !cv._pts.length) { tip.hidden = true; return; }
+    const cx = (e.clientX - r.left) * (g.w / r.width), cy = (e.clientY - r.top) * (g.h / r.height);
+    let best = null, bd = 1e9; cv._pts.forEach(p => { const d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = p; } });
+    if (!best || bd > 16) { tip.hidden = true; return; }
+    tip.hidden = false; tip.textContent = '(' + +best.vx.toPrecision(4) + ', ' + +best.vy.toPrecision(4) + ')';
+    const br = cv.parentElement.getBoundingClientRect(); tip.style.left = Math.min(br.width - 120, best.x * (r.width / g.w) + 10) + 'px'; tip.style.top = Math.max(0, best.y * (r.height / g.h) - 30) + 'px';
+  };
+  cv.addEventListener('mousemove', move); cv.addEventListener('pointerdown', move); cv.addEventListener('mouseleave', () => { tip.hidden = true; });
+}
+
+/* ══ 5단계 · 프롬프트 · 점검 · 실행실 ══ */
+const CHECKS = [
+  ['부피를 바꿀 수 있는가?', '손잡이를 움직이면 부피가 바뀌는지 눌러 보세요.'],
+  ['기체 입자가 움직이는가?', '입자가 상자 안에서 계속 움직이는지 지켜보세요.'],
+  ['실험에서 발견한 관계가 올바르게 표현되었는가?', '부피를 줄이면 부딪히는 횟수·압력이 커지고, 늘리면 작아지는지 보세요.'],
+  ['과학적 오류가 없는가?', '입자의 개수·크기·빠르기가 그대로인지, 압력이 충돌에서 나오는지 보세요.'],
+  ['HTML 파일이 정상 실행되는가?', '저장한 파일을 열었을 때 오류 없이 실행되는지 보세요.']
+];
+function listOr(arr, x) { const a = Array.isArray(arr) ? [...arr] : []; if ((x || '').trim()) a.push(x.trim()); return a; }
+function promptLines() {
+  const L = [], hl = []; const add = (t, h) => { L.push(t); hl.push(!!h); };
+  add('[목표]'); add('중학교 1학년인 내가 주사기와 압력계로 직접 실험해서 알아낸 「기체의 부피와 압력 사이의 관계」를 눈으로 볼 수 있는 시뮬레이터를 만들어 줘.'); add('');
+  add('[기술 조건]');
+  ['HTML, CSS, JavaScript만 써서 하나의 HTML 파일로 만들어 줘. 외부 라이브러리나 서버 없이, 파일을 열면 바로 실행되어야 해.', '기체의 부피를 내가 직접 조절할 수 있어야 해. 주사기 손잡이나 피스톤처럼 밀고 당기는 느낌이면 좋아.', '기체 입자가 상자 안에서 움직이는 모습이 보여야 해.', '압력이 어떻게 변하는지 화면에서 관찰할 수 있는 표시를 넣어 줘.', '내가 코드를 열어 보고 고칠 수 있도록 코드에 한국어 주석을 달아 줘.'].forEach(s => add('- ' + s));
+  add('');
+  add('[지켜야 할 과학]');
+  ['온도는 일정하고, 상자 안 기체의 양도 일정하다.', '부피가 줄어도 기체 입자의 개수와 크기는 그대로다. 입자를 새로 만들거나 없애지 말고, 크기도 바꾸지 마.', '입자의 평균 빠르기도 그대로다(온도가 일정하므로). 부피를 바꿀 때 입자를 빠르게 하거나 느리게 하지 마.', '부피가 줄어들면 입자가 벽에 부딪히는 횟수(충돌 빈도)가 늘어나서 압력이 커진다. 부피가 커지면 충돌 횟수가 줄어 압력이 작아진다.', '압력은 계산식으로 정해 두지 말고, 입자가 벽에 부딪히는 횟수를 1초 단위로 세어서 나타내 줘. 압력 숫자에는 어려운 단위를 붙이지 마.', '입자는 모든 방향으로 움직이며 상자 전체에 고르게 퍼져 있어야 해. 바닥에 가라앉거나 벽 밖으로 빠져나가면 안 돼.'].forEach(s => add('- ' + s));
+  add('');
+  add('[내가 만들고 싶은 시뮬레이터]');
+  add('- 표현하려는 과학 현상: ' + ((F('m.phen', '') || '').trim() || '(아직 정하지 않았어요)'), true);
+  add('- 조절하고 싶은 요소: 부피를 바꾸는 손잡이(꼭 필요)' + (listOr(F('m.ctrl', []).filter(x => !/^부피를 바꾸는 손잡이/.test(x)), F('m.ctrlx', '')).length ? ' / ' + listOr(F('m.ctrl', []).filter(x => !/^부피를 바꾸는 손잡이/.test(x)), F('m.ctrlx', '')).join(' / ') : ''), true);
+  add('- 기체 입자를 표현하는 방법: ' + ([F('m.part', ''), (F('m.partx', '') || '').trim()].filter(Boolean).join(' — ') || '(정하지 않았으니 알아서 보기 좋게)'), true);
+  add('- 부피가 변할 때 화면에 나타낼 변화: ' + (F('m.chg', []).length ? F('m.chg', []).join(' / ') : '부피와 압력이 바뀌는 모습'), true);
+  if ((F('m.extra', '') || '').trim()) add('- 추가로 넣고 싶은 기능: ' + F('m.extra').trim(), true);
+  add('');
+  if (F('m.data', false)) {
+    const rows = dataLines();
+    add('[내 실험 결과]'); add(rows.length ? '우리 모둠이 주사기와 압력계로 잰 값이야:' : '(표에 적은 값이 아직 없어요)'); rows.forEach(r => add('- ' + r, true));
+    add('이 값은 시뮬레이터 옆에 「내 실험 결과」 작은 표나 점으로만 보여 주고, 입자의 충돌 횟수나 압력을 계산하는 데는 쓰지 마.'); add('');
+  }
+  add('[내가 쓴 과학적 설명 — 이 설명이 시뮬레이터 화면에서 잘 드러나게 만들어 줘]');
+  const ex = [['그래프에서 내가 찾은 관계', F('g.rel', '')], ['기체의 부피가 줄어들수록 압력은 어떻게 변하는가?', F('q.1', '')], ['주사기의 부피가 줄어들면 기체 입자의 크기나 개수도 달라지는가?', F('q.2', '')], ['기체의 압력이 변하는 까닭(입자의 운동과 용기 벽 충돌)', F('q.3', '')]];
+  ex.forEach(([q, a]) => { if ((a || '').trim()) { add('• ' + q); add('  → ' + String(a).trim().replace(/\n+/g, ' '), true); } });
+  if (!ex.some(x => (x[1] || '').trim())) add('(4단계에서 내 설명을 쓰면 여기에 자동으로 들어와요)');
+  add('');
+  add('[디자인]'); add('색깔·모양·배치·입자의 표현은 내가 위에서 고른 것을 따르고, 나머지는 보기 좋고 쓰기 쉽게 알아서 정해 줘.');
+  add('[주의]'); add('내가 말하지 않은 기능은 더하지 마. 화면의 글은 중학교 1학년이 이해할 수 있는 쉬운 말로 써 줘. 다 만든 뒤에는 위 「지켜야 할 과학」을 어긴 곳이 없는지 스스로 점검해서 알려 줘.');
+  if ((F('m.more', '') || '').trim()) { add(''); add('[더하고 싶은 말]'); add(F('m.more').trim(), true); }
+  return { L, hl };
+}
+const promptText = () => promptLines().L.join('\n');
+function paintPrompt() {
+  const { L, hl } = promptLines();
+  $('#promptBox').innerHTML = L.map((t, i) => hl[i] ? '<mark>' + esc(t) + '</mark>' : esc(t)).join('\n');
+  const miss = []; if (!(F('m.phen', '') || '').trim()) miss.push('표현하려는 과학 현상'); if (!['q.1', 'q.2', 'q.3'].every(k => len(k) >= 8)) miss.push('4단계의 내 설명');
+  $('#promptWarn').textContent = miss.length ? '아직 비어 있는 곳: ' + miss.join(', ') + ' — 채우면 내 프롬프트가 더 정확해져요.' : '내 선택과 내 설명이 모두 들어 있어요. 노란 줄은 내가 쓴 내용이에요.';
+  $('#copyInfo').textContent = F('m.copied', 0) ? '마지막 복사 ' + hhmm(F('m.copied')) : '';
+}
+function renderChecks() {
+  $('#checks').innerHTML = CHECKS.map((c, i) => { const v = F('k.' + i, ''); return '<div class="ck ' + v + '" data-ck="' + i + '"><p>' + (i + 1) + '. ' + esc(c[0]) + ' <span class="note">' + esc(c[1]) + '</span></p><div class="opts">' + [['ok', '됨'], ['no', '안 됨'], ['unk', '모르겠음']].map(([k, t]) => '<label><input type="radio" name="ck' + i + '" value="' + k + '"' + (v === k ? ' checked' : '') + '> ' + t + '</label>').join('') + '</div><textarea data-ckwhy="' + i + '" rows="2" placeholder="어떻게 확인했나요? (안 됨이면 무엇이 문제였나요?)">' + esc(F('k.' + i + '.why', '')) + '</textarea></div>'; }).join('');
+}
+function runCode() {
+  const code = extractHtml($('#codeBox').value); if (!code) { toast('먼저 코드를 붙여넣어 주세요'); return; }
+  const fr = $('#simFrame'); fr.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals allow-popups allow-downloads'); fr.srcdoc = withShim(code);
+  $('#simBox').hidden = false; toast('실행했어요'); setTimeout(() => $('#simBox').scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+}
+const myHtml = () => extractHtml($('#codeBox').value) || '';
+function saveCode() { const h = myHtml(); if (!h) { toast('저장할 코드가 없어요. 5단계 ④에 붙여넣어 주세요'); return false; } download('내_기체_시뮬레이터' + (ME.sid ? '_' + ME.sid : '') + '.html', h); return true; }
+function openCode() { const h = myHtml(); if (!h) { toast('열어 볼 코드가 없어요. 5단계 ④에 붙여넣어 주세요'); return; } const u = URL.createObjectURL(new Blob([h], { type: 'text/html;charset=utf-8' })); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000); }
+
+/* ══ 7단계 · 초코파이 ══ */
+const PIE_MAP = { '커진다': '커졌다', '작아진다': '작아졌다', '그대로이다': '그대로였다' };
+function paintPie() {
+  const lock = +F('p.lock', 0), pred = F('p.pred', ''), obs = F('p.obs', '');
+  $('#pdAfter').hidden = !lock; $('#pdLocked').hidden = !!lock;
+  $$('#pdOpts input').forEach(i => { i.checked = i.value === pred; i.disabled = !!lock; }); $('#pdWhy').disabled = !!lock;
+  $('#pdLock').disabled = !!lock; $('#pdLock').textContent = lock ? '🔒 예상 확정됨 ' + hhmm(lock) : '🔒 예상 확정하고 실험 보기';
+  $('#pdLockInfo').textContent = lock ? '예상은 이제 고칠 수 없어요.' : '확정하면 예상은 고칠 수 없고, 아래 관찰 칸이 열려요.';
+  $$('input[name=po]').forEach(i => { i.checked = i.value === obs; });
+  $('#cmpPred').textContent = pred || '—'; $('#cmpObs').textContent = obs || '—';
+  const v = $('#cmpVerdict'); if (pred && obs) { const same = PIE_MAP[pred] === obs; v.textContent = same ? '✅ 예상과 같았어요' : '🔁 예상과 달랐어요 — 무엇이 달랐는지 아래에 써 봐요'; v.style.color = same ? 'var(--ok)' : 'var(--warn)'; } else { v.textContent = ''; }
+  $('#allDone').hidden = !stepsDone().every(Boolean);
+}
+
+/* ══ 진행 ══ */
+function stepsDone() {
+  const rows = validRows().length;
+  return [!!F('role.me', ''), rows >= 3, rows >= 2 && len('g.rel') >= 10, ['q.1', 'q.2', 'q.3'].every(k => len(k) >= 8), !!F('m.copied', 0) && CHECKS.every((_, i) => !!F('k.' + i, '')), !!F('u.done', false), !!+F('p.lock', 0) && len('p.fin') >= 8];
+}
+function stepsStarted() {
+  const any = ks => ks.some(k => { const v = F(k, ''); return Array.isArray(v) ? v.length : !!String(v || '').trim() && v !== false && v !== 0; });
+  const t = team();
+  return [t.names.some(Boolean) || !!F('role.me', ''), getRows().some(r => String(r.v).trim() || String(r.p).trim()) || !!unitText(), any(['g.rel']) || ('g.x' in ST.f), any(['q.1', 'q.2', 'q.3']), any(['m.phen', 'm.ctrl', 'm.part', 'm.chg', 'm.copied', 'k.0', 'k.1', 'k.2', 'k.3', 'k.4']) || !!$('#codeBox').value.trim(), any(['u.done', 'u.url']), any(['p.pred', 'p.lock', 'p.fin'])];
+}
+let STEP = 1;
+function paintSteps() {
+  const d = stepsDone(), s = stepsStarted();
+  $('#stepNav').innerHTML = STEP_NAMES.map((n, i) => '<button type="button" data-go="' + (i + 1) + '" class="' + [STEP === i + 1 ? 'on' : '', d[i] ? 'done' : '', s[i] ? 'started' : ''].join(' ') + '" aria-current="' + (STEP === i + 1 ? 'step' : 'false') + '"><span class="no">' + (d[i] ? '✓' : i + 1) + '</span><span class="nm">' + n[0] + '<small>' + n[1] + '</small></span></button>').join('');
+  $('#progBar').style.width = Math.round(d.filter(Boolean).length / 7 * 100) + '%';
+  const cur = $('#stepNav button.on'); if (cur && cur.scrollIntoView) { try { cur.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {} }
+}
+function go(n, noScroll) {
+  n = Math.max(1, Math.min(7, +n || 1)); STEP = n; LS.set('step', n);
+  $$('section.step').forEach(s => s.classList.toggle('on', +s.dataset.step === n));
+  if (location.hash !== '#s' + n) history.replaceState(null, '', '#s' + n);
+  paintSteps();
+  if (n === 1) renderTeam(); if (n === 3) paintGraph(); if (n === 4) paintMini(); if (n === 5) paintPrompt(); if (n === 7) paintPie();
+  if (!noScroll) window.scrollTo({ top: 0, behavior: 'instant' });
+  touch();
+}
+
+/* ══ 변경 반영 ══ */
+function repaintCounters() { $$('[data-cnt]').forEach(el => { const n = len(el.dataset.cnt), m = +el.dataset.min || 0; el.textContent = n + '자' + (m && n < m ? ' · ' + m + '자 이상 쓰면 이 단계가 끝나요' : ''); el.classList.toggle('ok', !m || n >= m); }); }
+function changed(k) {
+  if (/^g\./.test(k) || k === 'd.rows' || k === 'd.unit') { if (STEP === 3) paintGraph(); else paintMini(); }
+  if (k === 'd.unit') { fillAxisSelects(); rowInfo(); paintGraph(); }
+  if (/^(q|m|d)\./.test(k) || k === 'g.rel') paintPrompt();
+  if (k === 'u.done') { if (F('u.done', false) && !F('u.at', 0)) setF('u.at', Date.now(), true); }
+  if (k && k.indexOf('p.') === 0) paintPie();
+  repaintCounters(); paintSteps(); touch();
+}
+function loadInputs() {
+  $$('[data-f]').forEach(el => { const v = F(el.dataset.f, ''); if (document.activeElement !== el) el.value = v == null ? '' : v; });
+  $$('[data-fc]').forEach(el => { const k = el.dataset.fc; el.checked = !!F(k, k === 'g.zero'); });
+  $$('[data-fa]').forEach(g => { const arr = F(g.dataset.fa, []); $$('input', g).forEach(i => { i.checked = arr.includes(i.value); }); });
+  $$('[data-fr]').forEach(el => { el.checked = el.value === F(el.dataset.fr, ''); });
+}
+function renderAll() {
+  loadInputs(); renderTeam(); renderTable(); fillAxisSelects(); $('#codeBox').value = LS.get('code', ''); renderChecks(); paintPie(); paintPrompt(); repaintCounters();
+  if (STEP === 3) paintGraph(); else paintMini(); paintSteps(); paintChip();
+}
+
+/* ══ 이벤트 ══ */
+function wire() {
+  document.addEventListener('input', e => {
+    const t = e.target, k = t.dataset && t.dataset.f;
+    if (k) { setF(k, t.value); return; }
+    if (t.matches('#names input')) { const tm = team(); tm.names[+t.dataset.name] = t.value; saveTeam(tm); drawWheel(activeNames(tm).filter(Boolean), rot); return; }
+    if (t.closest('#dbody') && t.dataset.c) { const i = +t.closest('tr').dataset.i, rows = getRows(); rows[i][t.dataset.c] = t.value; markBad(t); setF('d.rows', rows); rowInfo(); return; }
+    if (t.dataset && t.dataset.ckwhy != null) { setF('k.' + t.dataset.ckwhy + '.why', t.value); return; }
+    if (t.id === 'codeBox') { LS.set('code', t.value); paintSteps(); }
+  });
+  document.addEventListener('change', e => {
+    const t = e.target;
+    if (t.dataset && t.dataset.f) { setF(t.dataset.f, t.value); return; }
+    if (t.dataset && t.dataset.fc) { setF(t.dataset.fc, t.checked); return; }
+    if (t.dataset && t.dataset.fr) { if (t.checked) setF(t.dataset.fr, t.value); return; }
+    const g = t.closest('[data-fa]'); if (g) { setF(g.dataset.fa, $$('input:checked', g).map(i => i.value)); return; }
+    if (t.name === 'po') { setF('p.obs', t.value); return; }
+    if (/^ck\d$/.test(t.name || '')) { const i = +t.name.slice(2); setF('k.' + i, t.value); const c = t.closest('.ck'); c.className = 'ck ' + t.value; return; }
+    if (t.id === 'meName') { setF('team.me', t.value); autoMe(); return; }
+  });
+  document.addEventListener('click', e => {
+    const t = e.target, b = t.closest('button, a, summary'); if (!b) return;
+    if (b.dataset.go) { go(b.dataset.go); return; }
+    if (b.dataset.n && b.closest('#sizes')) { const tm = team(); if (tm.assign.length) return; tm.n = +b.dataset.n; saveTeam(tm); renderTeam(); return; }
+    if (b.dataset.del != null) { let rows = getRows(); rows.splice(+b.dataset.del, 1); if (!rows.length) rows = [{ v: '', p: '' }]; setF('d.rows', rows); renderTable(); return; }
+    if (b.closest('[data-addto]') && b.tagName === 'BUTTON') { const ta = $('#' + b.closest('[data-addto]').dataset.addto), s = b.textContent.trim(); if (ta.value.includes(s)) { toast('이미 넣었어요'); return; } ta.value = ((ta.value.trim() ? ta.value.trim() + ' ' : '') + s).slice(0, 400); setF(ta.dataset.f, ta.value); return; }
+  });
+  $('#spinBtn').addEventListener('click', () => spinNext());
+  $('#spinAll').addEventListener('click', () => spinAllRun());
+  $('#spinReset').addEventListener('click', () => { const t = team(); if (t.assign.length && !confirm('역할을 처음부터 다시 뽑을까요?')) return; t.assign = []; saveTeam(t); fresh = -1; $('#wheelMsg').textContent = '다시 뽑아요. 룰렛을 돌려 보세요'; rlSay(''); renderTeam(); });
+  $('#rowAdd').addEventListener('click', () => { const rows = getRows(); rows.push({ v: '', p: '' }); setF('d.rows', rows); renderTable(); const last = $$('#dbody input').slice(-2)[0]; if (last) last.focus(); });
+  $('#volFill').addEventListener('click', () => { const rows = getRows(); VOLS.forEach((v, i) => { if (!rows[i]) rows[i] = { v: '', p: '' }; if (!String(rows[i].v).trim()) rows[i].v = String(v); }); setF('d.rows', rows); renderTable(); toast('부피 칸을 채웠어요. 압력은 직접 측정해서 적어요'); });
+  $('#gx').addEventListener('change', e => setF('g.x', e.target.value)); $('#gy').addEventListener('change', e => setF('g.y', e.target.value));
+  $('#gsave').addEventListener('click', () => { const cv = $('#gcv'); if (cv.style.visibility === 'hidden') { toast('그래프가 아직 없어요. 표에 값을 2개 이상 적어 주세요'); return; } cv.toBlob(b => { if (!b) { toast('저장하지 못했어요'); return; } const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = '보일실험_그래프' + (ME.sid ? '_' + ME.sid : '') + '.png'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500); toast('그래프를 이미지로 저장했어요'); }); });
+  $('#copyPrompt').addEventListener('click', () => { const txt = promptText(); copyText(txt, '프롬프트를 복사했어요. 제미나이 입력칸에 Ctrl+V 하세요'); setF('m.prompt', txt, true); setF('m.copied', Date.now()); });
+  $('#codeRun').addEventListener('click', runCode); $('#codeOpen').addEventListener('click', openCode);
+  $('#codeSave').addEventListener('click', () => { if (saveCode()) toast('HTML 파일로 저장했어요'); });
+  $('#codeCopy').addEventListener('click', () => { const h = myHtml(); if (!h) { toast('복사할 코드가 없어요'); return; } copyText(h, '내 코드를 복사했어요. GitStudentHub의 앱 코드 칸에 붙여넣어도 돼요'); });
+  $('#codeClear').addEventListener('click', () => { if ($('#codeBox').value.trim() && !confirm('붙여넣은 코드를 지울까요?')) return; $('#codeBox').value = ''; LS.set('code', ''); $('#simBox').hidden = true; $('#simFrame').removeAttribute('srcdoc'); paintSteps(); });
+  $('#saveAgain').addEventListener('click', () => { if (saveCode()) toast('HTML 파일로 저장했어요'); }); $('#openAgain').addEventListener('click', openCode);
+  $('#upUrl').addEventListener('blur', e => { const v = e.target.value.trim(), m = $('#upMsg'); if (v && !/^https?:\/\//i.test(v)) { m.textContent = '주소는 https:// 로 시작해요'; m.className = 'msg err'; } else { m.textContent = v ? '✓ 주소를 적어 두었어요(학생이 직접 적은 기록)' : ''; m.className = 'msg ok'; } });
+  $('#pdLock').addEventListener('click', () => { if (!F('p.pred', '')) { toast('먼저 예상(커진다·작아진다·그대로이다)을 골라 주세요'); return; } if (len('p.why') < 8) { toast('예상한 이유를 한 문장 이상 써 주세요'); $('#pdWhy').focus(); return; } if (!confirm('예상을 확정할까요?\n확정하면 예상은 고칠 수 없어요.')) return; setF('p.lock', Date.now()); });
+  $('#pdUnlock').addEventListener('click', () => { setF('p.lock', 0); toast('예상 잠금을 풀었어요'); });
+  $('#userChip').addEventListener('click', () => { if (!ONLINE) { toast('이 사본은 서버에 보내지 않아요'); return; } if (ME.ok) { $('#whoName').textContent = ME.sid + ' ' + ME.name; $('#whoInfo').textContent = SY.st === 'ok' ? '마지막으로 계정에 저장된 때 ' + hhmm(SY.at) : (SY.err ? '저장 오류: ' + SY.err : '저장 대기 중이에요.'); $('#whoM').hidden = false; } else openGate(); });
+  $('#saveChip').addEventListener('click', () => { if (SY.st === 'err' || SY.dirty) { SY.st = 'idle'; flush(); } });
+  $('#bannerLogin').addEventListener('click', () => openGate());
+  $('#whoClose').addEventListener('click', () => { $('#whoM').hidden = true; });
+  $('#whoSave').addEventListener('click', async () => { SY.dirty = true; await flush(); $('#whoInfo').textContent = SY.st === 'ok' ? '✅ 저장했어요 ' + hhmm(SY.at) : '❌ ' + SY.err; });
+  $('#whoOut').addEventListener('click', async () => { if (SY.dirty) await flush(); try { await OHM.client().auth.signOut(); } catch (e) {} ME.ok = false; ME.sid = ME.name = ME.uid = ''; $('#whoM').hidden = true; paintChip(); openGate('다른 학생이 로그인할 수 있어요'); });
+  $('#gGo').addEventListener('click', doLogin); $('#gLater').addEventListener('click', closeGate);
+  $('#gPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  const tm = $('#tmodeBtn'), setT = on => { document.body.classList.toggle('tmode', on); tm.classList.toggle('on', on); LS.set('tmode', on); };
+  setT(LS.get('tmode', false)); tm.addEventListener('click', () => setT(!document.body.classList.contains('tmode')));
+  $('#tVolsGo').addEventListener('click', () => { const a = $('#tVols').value.split(/[,\s]+/).map(Number).filter(x => Number.isFinite(x) && x > 0); if (a.length < 2 || a.length > 12) { toast('부피를 2~12개, 쉼표로 적어 주세요'); return; } VOLS = a; renderVols(); const u = location.origin + location.pathname + '?vols=' + a.join(','); copyText(u, '링크를 복사했어요. 학생에게 이 주소를 알려 주세요'); });
+  $('#tPing').addEventListener('click', async () => {
+    const m = $('#tPingMsg'); if (!ME.ok) { m.textContent = '먼저 학생 계정으로 로그인해 주세요.'; return; }
+    m.textContent = '확인 중…';
+    try { await flush(); if (SY.st !== 'ok') throw new Error(SY.err || '저장 실패'); const p = await OHM.rpc('solo_pull', { p_page: PAGE }); const ok = p && p.state && p.state.savedAt && Math.abs(Date.now() - new Date(p.state.savedAt).getTime()) < 120000; m.textContent = ok ? '✅ 저장과 불러오기가 정상이에요 (' + ME.sid + ')' : '⚠ 저장은 됐지만 불러온 기록이 최근 것이 아니에요'; }
+    catch (e) { m.textContent = '❌ ' + (e.message || e); }
+  });
+  addEventListener('hashchange', () => { const m = /^#s([1-7])$/.exec(location.hash); if (m && +m[1] !== STEP) go(+m[1], true); });
+  addEventListener('resize', () => { if (STEP === 3) paintGraph(); else if (STEP === 4) paintMini(); });
+  document.addEventListener('toggle', e => { if (e.target.matches && e.target.matches('details.ref') && e.target.open) paintMini(); }, true);
+  bindGraphHover();
+  const ok = new URLSearchParams(location.search).get('mode'); if (ok === 'teacher') setT(true);
+  addEventListener('keydown', e => { if (e.key === 'Escape') { if (!$('#gate').hidden) closeGate(); if (!$('#whoM').hidden) $('#whoM').hidden = true; } });
+}
+
+/* ══ 시작 ══ */
+function start() {
+  const gl = FIXING_URL + '?tab=guide'; ['guideLink', 'guideLink2'].forEach(id => { const a = $('#' + id); if (a) a.href = (id === 'guideLink' ? gl : FIXING_URL); });
+  fillGate(); wire(); renderVols(); renderAll();
+  const m = /^#s([1-7])$/.exec(location.hash); let first = m ? +m[1] : LS.get('step', 0);
+  if (!first) { const d = stepsDone(); first = Math.max(1, d.indexOf(false) + 1 || 7); }
+  go(first, true);
+  boot();
+  window.__bl = { F, setF, ST: () => ST, ME, SY, go, stepsDone, buildTexts, snapshot, promptText, validRows, team, spinNext, spinAllRun, renderAll, flush, afterAuth, paintGraph, OHM, TEXT_KEYS };
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+
+</script>
+</body>
+</html>
