@@ -105,6 +105,14 @@ footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14p
  background:var(--paper-hi);border:1.5px solid var(--ok);color:var(--ok)}
 .proj .st[hidden]{display:none}
 @media(max-width:640px){.proj{flex-wrap:wrap;padding:18px 18px 16px}.proj .pi{display:none}.proj .pgo{width:100%;text-align:center}}
+/* 오늘의 수업 페이지로 가는 단추 (기체 시뮬레이터 카드 아래) */
+.qbtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;margin-top:12px;
+ border:2px solid var(--c2);border-radius:var(--r);background:#f3f7fd;padding:13px 18px;box-shadow:var(--shadow);transition:.18s}
+.qbtn:hover{transform:translateY(-2px)}
+.qbtn .qi{flex:none;font-size:26px}
+.qbtn .qt{flex:1;min-width:0;font-weight:800;font-size:16.5px;line-height:1.4}
+.qbtn .qt small{display:block;font-weight:500;font-size:13.5px;color:var(--ink-dim)}
+.qbtn .qgo{flex:none;font-weight:800;font-size:14px;color:var(--c2);white-space:nowrap}
 .hubfig{margin:22px 0 6px;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper-hi)}
 .hubfig img{display:block;width:100%;height:auto}
 .hubfig figcaption{font-size:13.5px;color:var(--ink-mute);padding:9px 13px;border-top:1px solid var(--line-soft)}
@@ -132,6 +140,11 @@ footer#app-credit{width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14p
   <div class="stages"><span><b>①</b> 고치기 — 기체의 압력을 배운 뒤</span><span><b>②</b> 압력과 부피를 배운 뒤</span><span><b>③</b> 온도와 부피를 배운 뒤</span><span><b>④</b> 최종본 — 단원 끝</span></div>
  </div>
  <span class="pgo">프로젝트 열기 →</span>
+</a>
+<a class="qbtn" href="boyle-lab.html" id="boyleLabBtn">
+ <span class="qi" aria-hidden="true">🔬</span>
+ <span class="qt">실험 데이터로 나만의 시뮬레이터 만들기 — 압력과 부피<small>주사기·압력계 실험 → 그래프 → 내 설명 → AI 시뮬레이터 → 초코파이 · 로그인하면 내 기록이 계정에 저장돼요</small></span>
+ <span class="qgo">열기 →</span>
 </a>
 
 <div class="blocks">
