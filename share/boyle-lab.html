@@ -241,19 +241,40 @@ footer#app-credit{margin-top:2.5rem}
     <li><b>계정</b> — 학생은 질문나무·도장판과 같은 계정(학년·반·번호 + 비밀번호)으로 로그인합니다. 허브(선생님과학)에서 로그인해 두었다면 이 페이지는 바로 이어집니다. 기록은 로그인한 학생 계정에만 저장되고, 다른 학생의 기록은 서버 규칙상 읽거나 고칠 수 없습니다.</li>
     <li><b>측정 부피</b> — 기본 예시는 <span class="num" id="volsNow">60, 55, 50, 45, 40, 35, 30, 25, 20</span> mL 입니다(5 mL씩). 바꾸려면 아래 칸에 쉼표로 적고 「링크 만들기」로 만든 주소를 학생에게 알려 주세요. (학생은 표에서 언제든 고칠 수 있어요)
       <div class="btnrow"><input type="text" id="tVols" value="60, 55, 50, 45, 40, 35, 30, 25, 20" aria-label="측정 부피 목록" style="max-width:260px"><button type="button" class="btn sm" id="tVolsGo">링크 만들기·복사</button></div></li>
+    <li><b>역할 룰렛</b> — 학생이 각자 노트북에 값을 적어야 해서 이번 수업에서는 <b>잠가 두었습니다</b>(역할은 모둠에서 정해 각자 「내 역할」을 고름). 쓰려면 1단계의 「🔓 룰렛 열기」 또는 주소 끝 <span class="num">?roulette=1</span>.</li>
     <li><b>6단계 올리기</b> — Studentgithub 「보일의 법칙 가상실험실」 과제(주소 끝 <span class="num">?t=boyle</span>)가 열려 있어야 합니다. 올린 판은 처음에 「확인 대기」이니 <span class="num">…/studentgithub/?t=boyle#/admin</span> → 올린 판 확인에서 공개하세요.</li>
     <li><b>학생 기록 보기</b> — 교사 대시보드(<a href="https://scienceisjo.github.io/electricity/04-ohm-teacher.html" target="_blank" rel="noopener">📊 혼자 탐구 기록</a>)에 교사 계정으로 로그인 → 단원 「기체의 성질」 → 이 페이지의 키 <span class="num">gas-boyle-lab</span>. 학생이 쓴 글·표·그래프 설정·프롬프트·점검·업로드 자기보고가 한 줄로 모입니다.</li>
     <li><b>연결 점검</b> — 수업 전에 학생 계정 하나로 로그인해 기록이 저장되는지 확인하세요. <button type="button" class="btn sm" id="tPing">☁️ 저장 점검</button> <span id="tPingMsg" class="note"></span></li>
   </ol>
-  <p class="note">45분 흐름(안): ① 역할 정하기 3분 · ② 실험·기록 10분 · ③ 그래프 4분 · ④ 생각 쓰기 6분 · ⑤ 시뮬레이터 10분 · ⑥ 공유 4분 · ⑦ 초코파이 8분. 5단계에서 AI가 코드를 만드는 30초~1분은 조용히 기다리며 예상을 적게 합니다.</p>
+  <p class="note">45분 흐름(안): ① 역할 정하기 2분 · ② 실험·기록 11분 · ③ 그래프 4분 · ④ 생각 쓰기 6분 · ⑤ 시뮬레이터 10분 · ⑥ 공유 4분 · ⑦ 초코파이 8분. 5단계에서 AI가 코드를 만드는 30초~1분은 조용히 기다리며 예상을 적게 합니다.</p>
 </section>
 
 <!-- ══════════ 1. 역할 ══════════ -->
 <section class="step" id="s1" data-step="1">
-  <span class="pill">1단계 · 3분</span>
+  <span class="pill">1단계 · 2분</span>
   <h2>모둠 실험 준비 — 역할 정하기</h2>
-  <p class="lead">모둠이 주사기 하나와 압력계 하나로 함께 실험해요. 룰렛으로 역할을 정하고, <b>내 역할</b>을 고르면 1단계가 끝나요. <span class="note">(룰렛은 모둠 노트북 한 대에서만 돌리면 돼요.)</span></p>
+  <p class="lead">모둠이 주사기 하나와 압력계 하나로 함께 실험해요. 모둠에서 이야기해 역할을 나누고, 아래에서 <b>내 역할</b>을 고르면 1단계가 끝나요. <span class="note">(측정값은 모두 각자 내 표에 적어요.)</span></p>
 
+  <div class="rolecards">
+    <div><b>실험 조작자</b><em>주사기 조작</em>주사기 손잡이를 천천히 움직여 정한 부피에 맞춰요.</div>
+    <div><b>압력 관찰자</b><em>압력계 수치 확인</em>숫자가 안정되면 소리 내어 읽어요.</div>
+    <div><b>데이터 기록자</b><em>측정 결과 기록</em>부피와 압력을 빠짐없이 표에 적어요.</div>
+    <div><b>탐구 검증자</b><em>과정과 측정값 확인</em>읽은 값과 적은 값이 같은지, 과정이 맞는지 확인해요.</div>
+  </div>
+  <p class="note">3명이면 데이터 기록자가 탐구 검증자를 겸하고, 5명이면 실험 조작자가 2명이에요.</p>
+
+
+  <div class="card">
+    <h4>내 역할</h4>
+    <label class="fl" for="meRole">우리 모둠에서 내가 맡은 역할은?</label>
+    <select id="meRole" data-f="role.me"><option value="">고르기</option><option>실험 조작자</option><option>압력 관찰자</option><option>데이터 기록자</option><option>탐구 검증자</option><option>데이터 기록자 + 탐구 검증자 (겸임)</option></select>
+  </div>
+
+  <div class="lockbox" id="rlLocked">🔒 <b>역할 룰렛은 잠겨 있어요.</b> 이번 수업에서는 모둠에서 이야기해서 역할을 나눠요.
+    <span class="tonly"><br><button type="button" class="btn sm" id="rlOpen">🔓 룰렛 열기(이 기기에서만)</button> <span class="note">— 또는 주소 끝에 <span class="num">?roulette=1</span></span></span></div>
+
+  <div id="rouletteBox" hidden>
+    <div class="tbox tonly"><span class="tag">교사용</span> 룰렛이 열려 있어요(이 기기에서만). 한 모둠에 한 대에서만 돌리고, 나머지 학생은 위 「내 역할」에서 직접 골라요. <button type="button" class="btn sm" id="rlClose">🔒 다시 잠그기</button></div>
   <div class="two">
     <div class="card">
       <h4>① 모둠원 이름</h4>
@@ -278,29 +299,18 @@ footer#app-credit{margin-top:2.5rem}
   <h3>② 결과</h3>
   <ul class="roster" id="roster"></ul>
 
-  <div class="card">
-    <h4>③ 나는 누구? 내 역할은?</h4>
-    <div class="two">
-      <div><label class="fl" for="meName">내 이름 <small>(룰렛을 돌린 노트북이라면 고르면 역할이 자동으로 들어와요)</small></label><select id="meName"></select></div>
-      <div><label class="fl" for="meRole">내 역할 <small>(다른 노트북에서 룰렛을 돌렸다면 여기서 직접 골라요)</small></label>
-        <select id="meRole" data-f="role.me"><option value="">고르기</option><option>실험 조작자</option><option>압력 관찰자</option><option>데이터 기록자</option><option>탐구 검증자</option><option>데이터 기록자 + 탐구 검증자 (겸임)</option></select></div>
+    <div class="card">
+      <h4>나는 누구? <span class="note">룰렛을 돌린 노트북이라면 내 이름을 고르면 위 「내 역할」이 자동으로 들어와요</span></h4>
+      <select id="meName" aria-label="내 이름"></select>
     </div>
   </div>
-
-  <div class="rolecards">
-    <div><b>실험 조작자</b><em>주사기 조작</em>주사기 손잡이를 천천히 움직여 정한 부피에 맞춰요.</div>
-    <div><b>압력 관찰자</b><em>압력계 수치 확인</em>숫자가 안정되면 소리 내어 읽어요.</div>
-    <div><b>데이터 기록자</b><em>측정 결과 기록</em>부피와 압력을 빠짐없이 표에 적어요.</div>
-    <div><b>탐구 검증자</b><em>과정과 측정값 확인</em>읽은 값과 적은 값이 같은지, 과정이 맞는지 확인해요.</div>
-  </div>
-  <p class="note">3명이면 데이터 기록자가 탐구 검증자를 겸하고, 5명이면 실험 조작자가 2명이에요.</p>
 
   <div class="stepnav"><span></span><button type="button" class="btn pri" data-go="2">다음 · 실험하고 기록하기 ›</button></div>
 </section>
 
 <!-- ══════════ 2. 기록 ══════════ -->
 <section class="step" id="s2" data-step="2">
-  <span class="pill">2단계 · 10분</span>
+  <span class="pill">2단계 · 11분</span>
   <h2>모둠 실험 — 내 표에 기록하기</h2>
   <p class="lead">모둠이 <b>같은 실험</b>을 하고, 측정값은 <b>각자</b> 내 표에 적어요. 내 기록은 내 계정에 따로 저장돼요.</p>
 
@@ -589,7 +599,7 @@ const QS = new URLSearchParams(location.search);
 const ONLINE = !/\/share\//.test(location.pathname) && QS.get('rec') !== 'off';
 const SB_URL = 'https://hmzklbrksfdhzsgwzfyg.supabase.co', SB_KEY = 'sb_publishable_OFVhbjVPbJiMWXVz2nKQuw_m6RmVVZE';
 const FIXING_URL = 'model-fixing.html';
-const STEP_NAMES = [['역할', '룰렛'], ['기록', '측정값'], ['그래프', '변환'], ['생각', '서술'], ['시뮬레이터', '만들기'], ['공유', '올리기'], ['초코파이', '실험']];
+const STEP_NAMES = [['역할', '정하기'], ['기록', '측정값'], ['그래프', '변환'], ['생각', '서술'], ['시뮬레이터', '만들기'], ['공유', '올리기'], ['초코파이', '실험']];
 const STEP_LABELS = ['1 모둠 역할 정하기', '2 실험 데이터 기록', '3 그래프와 관계 찾기', '4 내 생각 쓰기', '5 시뮬레이터 제작·점검', '6 GitStudentHub 공유', '7 초코파이 실험'];
 
 /* ══ 도구 ══ */
@@ -674,7 +684,7 @@ const TEXT_KEYS = (() => { const bl = s => new TextEncoder().encode(s).length; l
 function buildTexts() {
   const out = {}, add = (i, v) => { const s = String(v == null ? '' : v).trim(); if (s) out[TEXT_KEYS[i]] = s; };
   const t = team(), V = vars();
-  if (t.assign.length || F('role.me', '')) add(0, '모둠 ' + t.n + '명: ' + t.names.slice(0, t.n).filter(Boolean).join('·') + '\n내 역할: ' + (F('role.me', '') || '(고르지 않음)') + (t.assign.length ? '\n룰렛 결과: ' + t.assign.map(a => slotLabel(t.n, a.slot) + '=' + a.who).join(' / ') : ''));
+  if (t.assign.length || F('role.me', '')) add(0, (t.names.slice(0, t.n).some(Boolean) ? '모둠 ' + t.n + '명: ' + t.names.slice(0, t.n).filter(Boolean).join('·') + '\n' : '') + '내 역할: ' + (F('role.me', '') || '(고르지 않음)') + (t.assign.length ? '\n룰렛 결과: ' + t.assign.map(a => slotLabel(t.n, a.slot) + '=' + a.who).join(' / ') : ''));
   add(1, dataLines().length ? '(압력 단위: ' + (unitText() || '없음') + ')\n' + dataLines().join('\n') : '');
   if (F('g.x', null) || F('g.y', null) || validRows().length >= 2) add(2, '가로축: ' + V[F('g.x', 'v')].n + '(' + V[F('g.x', 'v')].u + ') · 세로축: ' + V[F('g.y', 'p')].n + '(' + V[F('g.y', 'p')].u + ')' + (F('g.zero', true) ? ' · 0부터 시작' : '') + (F('g.line', false) ? ' · 점 잇기' : ''));
   add(3, F('g.rel', '')); add(4, F('q.1', '')); add(5, F('q.2', '')); add(6, F('q.3', ''));
@@ -800,7 +810,9 @@ async function doLogin() {
   finally { $('#gGo').disabled = false; }
 }
 
-/* ══ 모둠 역할 룰렛 ══ */
+/* ══ 모둠 역할 룰렛 ══ (2026-10-22: 학생이 각자 값을 적어야 해서 수업에서는 잠금. 교사가 이 기기에서 열거나 ?roulette=1 로 연다) */
+const rouletteOn = () => QS.get('roulette') === '1' || LS.get('rouletteOpen', false) === true;
+function paintRoulette() { const on = rouletteOn(); $('#rouletteBox').hidden = !on; $('#rlLocked').hidden = on; if (on) renderTeam(); }
 const ROLE_NAME = { op: '실험 조작자', ob: '압력 관찰자', rc: '데이터 기록자', vf: '탐구 검증자' };
 const SLOTS = { 3: [['op'], ['ob'], ['rc', 'vf']], 4: [['op'], ['ob'], ['rc'], ['vf']], 5: [['op'], ['op'], ['ob'], ['rc'], ['vf']] };
 const slotLabel = (n, i) => { const s = SLOTS[n][i]; return s.length > 1 ? s.map(r => ROLE_NAME[r]).join(' + ') + ' (겸임)' : ROLE_NAME[s[0]]; };
@@ -1138,6 +1150,8 @@ function wire() {
     if (b.dataset.del != null) { let rows = getRows(); rows.splice(+b.dataset.del, 1); if (!rows.length) rows = [{ v: '', p: '' }]; setF('d.rows', rows); renderTable(); return; }
     if (b.closest('[data-addto]') && b.tagName === 'BUTTON') { const ta = $('#' + b.closest('[data-addto]').dataset.addto), s = b.textContent.trim(); if (ta.value.includes(s)) { toast('이미 넣었어요'); return; } ta.value = ((ta.value.trim() ? ta.value.trim() + ' ' : '') + s).slice(0, 400); setF(ta.dataset.f, ta.value); return; }
   });
+  $('#rlOpen').addEventListener('click', () => { LS.set('rouletteOpen', true); paintRoulette(); toast('룰렛을 열었어요(이 기기에서만)'); });
+  $('#rlClose').addEventListener('click', () => { LS.set('rouletteOpen', false); paintRoulette(); toast('룰렛을 잠갔어요'); });
   $('#spinBtn').addEventListener('click', () => spinNext());
   $('#spinAll').addEventListener('click', () => spinAllRun());
   $('#spinReset').addEventListener('click', () => { const t = team(); if (t.assign.length && !confirm('역할을 처음부터 다시 뽑을까요?')) return; t.assign = []; saveTeam(t); fresh = -1; $('#wheelMsg').textContent = '다시 뽑아요. 룰렛을 돌려 보세요'; rlSay(''); renderTeam(); });
@@ -1182,7 +1196,7 @@ function wire() {
 /* ══ 시작 ══ */
 function start() {
   const gl = FIXING_URL + '?tab=guide'; ['guideLink', 'guideLink2'].forEach(id => { const a = $('#' + id); if (a) a.href = (id === 'guideLink' ? gl : FIXING_URL); });
-  fillGate(); wire(); renderVols(); renderAll();
+  fillGate(); wire(); renderVols(); renderAll(); paintRoulette();
   const m = /^#s([1-7])$/.exec(location.hash); let first = m ? +m[1] : LS.get('step', 0);
   if (!first) { const d = stepsDone(); first = Math.max(1, d.indexOf(false) + 1 || 7); }
   go(first, true);
