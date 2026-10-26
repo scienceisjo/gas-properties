@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>기체 시뮬레이터 프로젝트 — 바이브코딩</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -229,7 +230,7 @@ body.tmode .after[hidden]{display:block}
 .afterlock[hidden]{display:none}
 body.tmode .afterlock{display:none}
 
-/* ── 👤 학번·이름 — 선생님께 보내기 ── */
+/* ── 👤 로그인 — 선생님께 보내기 ── */
 .stubtn{font:inherit;font-weight:700;font-size:13.5px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--paper-hi);color:var(--ink);cursor:pointer;white-space:nowrap;max-width:230px;overflow:hidden;text-overflow:ellipsis}
 .stubtn[hidden]{display:none}
 .stubtn.on{border-color:var(--ok);color:var(--ok);background:#eef8f0}
@@ -244,6 +245,8 @@ body.tmode .dashlink[hidden]{display:none}
 .modal label{display:block;font-weight:700;font-size:14.5px;margin:12px 0 4px}
 .modal label small{font-weight:400;color:var(--ink-mute)}
 .modal input{display:block;width:100%;font:inherit;font-size:17px;padding:9px 11px;border:1px solid var(--line);border-radius:9px}
+.modal .gsel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.modal select{font:inherit;font-size:17px;padding:9px 8px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);min-width:0}
 .modal .mmsg{min-height:22px;font-size:14px;margin-top:10px;line-height:1.5}
 .modal .mmsg.err{color:var(--danger);font-weight:700} .modal .mmsg.ok{color:var(--ok);font-weight:700}
 .loginhint{border:2px dashed var(--c3);background:#fff9ef}
@@ -394,7 +397,7 @@ td .num{font-family:var(--mono)}
     <div class="brand">기체 시뮬레이터 프로젝트<small>고치기 → 압력과 부피 → 온도와 부피 → 최종본</small></div>
     <div class="spacer"></div>
     <a class="dashlink" id="dashLink" href="#" target="_blank" rel="noopener" title="교사 대시보드 — 학생이 보낸 찾은 잘못·돌아보기·기획서">&#128202; 학생 기록</a>
-    <button type="button" class="stubtn" id="stuBtn" hidden>&#128100; 학번·이름 넣기</button>
+    <button type="button" class="stubtn" id="stuBtn" hidden>&#128100; 로그인</button>
     <div class="prog"><div class="track"><i id="progBar"></i></div><span class="pct" id="progPct">0%</span></div>
     <button class="hbtn" id="tmodeBtn" title="교사용 보기 켜기/끄기">&#129489;&#8205;&#127979;</button>
   </div>
@@ -410,15 +413,14 @@ td .num{font-family:var(--mono)}
 
 <div class="modal" id="loginM" hidden role="dialog" aria-modal="true" aria-labelledby="loginT">
   <div class="mbox">
-    <h3 id="loginT">&#128100; 선생님께 기록 보내기</h3>
-    <p style="font-size:14.5px;color:var(--ink-dim);margin:0" id="loginWhy">학번과 이름을 넣으면 이 페이지에서 쓴 <b>찾은 잘못</b>, <b>돌아보기(극복한 점·느낀 점)</b>, <b>내 시뮬레이터 기획서</b>가 선생님께 전해집니다. 다른 칸은 이 기기에만 남아요.</p>
-    <label for="lgSid">학번 <small>(1학년 3반 12번 → 10312)</small></label>
-    <input id="lgSid" inputmode="numeric" maxlength="6" placeholder="10312" autocomplete="off">
-    <label for="lgName">이름</label>
-    <input id="lgName" maxlength="12" placeholder="홍길동" autocomplete="off">
-    <div id="lgCodeRow" hidden><label for="lgCode">참여 코드 <small>(선생님이 알려 준 숫자)</small></label><input id="lgCode" inputmode="numeric" maxlength="12" autocomplete="off"></div>
+    <h3 id="loginT">&#128100; 로그인 — 선생님께 기록 보내기</h3>
+    <p style="font-size:14.5px;color:var(--ink-dim);margin:0" id="loginWhy">질문나무·도장판과 같은 계정이에요. 로그인하면 이 페이지에서 쓴 <b>찾은 잘못</b>, <b>돌아보기(극복한 점·느낀 점)</b>, <b>내 시뮬레이터 기획서</b>가 선생님께 전해지고, 다른 기기에서 열어도 이어져요. 다른 칸은 이 기기에만 남아요.</p>
+    <label>학년 · 반 · 번호</label>
+    <div class="gsel"><select id="lgG" aria-label="학년"></select><select id="lgC" aria-label="반"></select><select id="lgN" aria-label="번호"></select></div>
+    <label for="lgPw">비밀번호 <small>(질문나무 비밀번호)</small></label>
+    <input id="lgPw" type="password" maxlength="40" autocomplete="current-password" placeholder="질문나무 비밀번호">
     <div class="mmsg" id="lgMsg"></div>
-    <div class="btnrow" style="margin-bottom:0"><button type="button" class="btn pri" id="lgGo">들어가기</button><button type="button" class="btn" id="lgOut" hidden>다른 학생으로 바꾸기</button><button type="button" class="btn" id="lgClose">닫기</button></div>
+    <div class="btnrow" style="margin-bottom:0"><button type="button" class="btn pri" id="lgGo">로그인</button><button type="button" class="btn" id="lgOut" hidden>다른 학생으로 바꾸기</button><button type="button" class="btn" id="lgClose">닫기</button></div>
   </div>
 </div>
 
@@ -1429,7 +1431,7 @@ requestAnimationFrame(loop);
 &lt;/html&gt;
 </textarea>
 
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">&copy; 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-22</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">&copy; 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-26</span></footer>
 
 <script>
 /* ══════════════════ 설정 ══════════════════ */
@@ -1810,18 +1812,17 @@ function labHTML(id, fname, mission){
   </div>`;
 }
 
-/* ══════════════════ 선생님께 보내기 — 학번 + 이름 ══════════════════
+/* ══════════════════ 선생님께 보내기 — 질문나무 계정 ══════════════════
    거두는 것은 네 가지뿐: 찾은 잘못(정답 공개 때 적어 둔 그대로) · 극복한 점 · 느낀 점 · 내 시뮬레이터 기획서.
    조건 적기·고칠 방법·생각해 보기·실행실 코드는 이 기기에만 남는다.
-   서버 = 기체 단원 「혼자 탐구」와 같은 곳(A 프로젝트, ohm_join → ohm_save, 차시 'gas-vibe').
-   선생님은 기체 단원 교사 대시보드(teacher.html)에서 「★ 시뮬레이터 프로젝트」로 본다. 나눔용(/share/) 사본은 보내지 않는다. */
+   서버 = 질문나무·도장판·보일 실험 페이지와 같은 곳(Supabase hmzk). 질문나무 로그인(학년·반·번호+비밀번호) → solo_join → solo_save, 차시 'gas-vibe'.
+   (2026-10-26) 옛 서버(A)의 참여 코드가 만료돼 옮겼다 — 학번+이름+참여 코드 대신 이미 쓰는 계정으로 들어간다. 기록은 계정별로 저장되어 다른 기기에서도 이어진다.
+   선생님은 교사 대시보드(electricity/04-ohm-teacher.html)에서 「기체의 성질」 → gas-vibe 로 본다. 나눔용(/share/) 사본은 보내지 않는다. */
 const REC = {
-  url:'https://vbvtnmnodeoocbbjauap.supabase.co',
-  key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZidnRubW5vZGVvb2NiYmphdWFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0OTQ0OTYsImV4cCI6MjA5NTA3MDQ5Nn0.dvuRrt3qw2Tya_QwGbcXrmGPdfDgI4xmgyH8UjU73Nc',
-  page:'gas-vibe', code:'8314',
+  page:'gas-vibe',
   on: !/\/share\//.test(location.pathname) && new URLSearchParams(location.search).get('rec') !== 'off'
 };
-const DASH_URL = 'https://scienceisjo.github.io/gas-properties/teacher.html?page=gas-vibe';
+const DASH_URL = 'https://scienceisjo.github.io/electricity/04-ohm-teacher.html';
 const REC_LAB = {
   'm1-find':'미션 1 · 찾은 잘못', 'm1-over':'미션 1 · 극복한 점', 'm1-feel':'미션 1 · 느낀 점',
   'm2-find':'미션 2 · 찾은 잘못', 'm2-over':'미션 2 · 극복한 점', 'm2-feel':'미션 2 · 느낀 점',
@@ -1833,71 +1834,108 @@ const SEND_KEYS = { m1:['m1-over', 'm1-feel'], m2:['m2-over', 'm2-feel'], m3:['m
   plan:['plan-q', 'plan-cond', 'plan-ui', 'plan-check'], fin:['fin-find', 'fin-over', 'fin-feel'] };
 const REC_CHECKS = [['m1-find', '미션 1 찾은 잘못'], ['m1-over', '미션 1 돌아보기'], ['m2-find', '미션 2 찾은 잘못'], ['m2-over', '미션 2 돌아보기'],
   ['m3-find', '미션 3 찾은 잘못'], ['m3-over', '미션 3 돌아보기'], ['plan-q', '내 시뮬레이터 기획서'], ['fin-over', '최종본 돌아보기']];
-let stu = store.get('stu', null);                                   // {sid, name, code, token, shown}
+let stu = null;                                                     // {sid, name, uid} — 로그인한 학생. 이 기기에 따로 적지 않고 질문나무 로그인 기록(세션)에서 다시 읽는다
 let rec = store.get('rec', null) || { owner:'', texts:{}, at:{}, hit:{}, saved:0 };
 ['texts', 'at', 'hit'].forEach(k => { if(!rec[k] || typeof rec[k] !== 'object') rec[k] = {}; });
 let recTimer = null, recBusy = false, recErr = '';
 const HIT_TAIL = '\n— 정답 공개 뒤 「찾았어요」: ';
 const hhmm = t => { const d = new Date(t); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
-function elecStu(){ try{ return JSON.parse(localStorage.getItem('elec_stu') || 'null'); }catch(e){ return null; } }
-function devId(){ try{ let d = localStorage.getItem('elec_device'); if(!d){ d = Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem('elec_device', d); } return d; }catch(e){ return 'na'; } }
-function codeGuess(){
-  const q = new URLSearchParams(location.search).get('code'), e = elecStu();
-  return String(q || (stu && stu.code) || (e && !e.local && e.code) || REC.code).toUpperCase();
-}
-async function aRpc(name, args){
-  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 12000);
-  try{
-    const r = await fetch(REC.url + '/rest/v1/rpc/' + name, { method:'POST', signal:ctl.signal,
-      headers:{ apikey:REC.key, Authorization:'Bearer ' + REC.key, 'Content-Type':'application/json' }, body:JSON.stringify(args) });
-    const txt = await r.text(); let j = null; try{ j = txt ? JSON.parse(txt) : null; }catch(e){}
-    if(!r.ok) throw new Error((j && (j.message || j.hint)) || ('HTTP ' + r.status));
-    return j;
-  } finally { clearTimeout(t); }
-}
+const SBX = {                                          // 질문나무 계정(Supabase Auth) — 보일 실험 페이지와 같은 세션을 쓴다
+  sb:null, token:'',
+  client(){
+    if(window.__SB_TEST) return window.__SB_TEST;
+    if(this.sb) return this.sb;
+    if(!window.supabase || !window.supabase.createClient) return null;
+    this.sb = window.supabase.createClient(SB_URL, SB_KEY, { auth:{ persistSession:true, autoRefreshToken:true } });
+    try{ this.sb.auth.onAuthStateChange((ev, ses) => { this.token = (ses && ses.access_token) || ''; }); }catch(e){}
+    return this.sb;
+  },
+  device(){ try{ let d = localStorage.getItem('elec_device'); if(!d){ d = Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem('elec_device', d); } return d; }catch(e){ return 'na'; } },
+  async rpc(name, args){
+    const c = this.client(); if(!c) throw new Error('서버 연결 도구를 불러오지 못했어요');
+    const r = await c.rpc(name, args); if(r.error) throw new Error(r.error.message || String(r.error));
+    return r.data;
+  },
+  async session(){ const c = this.client(); if(!c) return null; try{ const r = await c.auth.getSession(); const x = (r.data && r.data.session) || null; this.token = (x && x.access_token) || ''; return x; }catch(e){ return null; } },
+  async login(g, c, n, pw){
+    const cl = this.client(); if(!cl) throw new Error('서버 연결 도구를 불러오지 못했어요. 인터넷을 확인하고 페이지를 새로 고침해 주세요');
+    const r = await cl.auth.signInWithPassword({ email:'s' + (+g) + '_' + (+c) + '_' + (+n) + '@haenuri.app', password:pw });
+    if(r.error) throw new Error(/invalid|credential/i.test(r.error.message) ? '학년·반·번호 또는 비밀번호가 맞지 않아요' : r.error.message);
+    return r.data.session;
+  },
+  async join(){
+    try{ const d = await this.rpc('solo_join', { p_page:REC.page, p_device:this.device() }); if(!d || d.error) return { error:(d && d.error) || '참여하지 못했어요' }; return d; }
+    catch(e){ const m = String((e && e.message) || e);
+      if(/function .*solo_join|404|not find|PGRST202/i.test(m)) return { error:'선생님이 아직 서버를 준비하지 않았어요. 선생님께 알려 주세요' };
+      if(/JWT|not authenticated|auth|401/i.test(m)) return { error:'로그인이 풀렸어요. 다시 로그인해 주세요' };
+      return { error:'연결 오류 — ' + m }; }
+  },
+  async out(){ try{ await this.client().auth.signOut({ scope:'local' }); }catch(e){} this.token = ''; }
+};
+const _blen = t => new TextEncoder().encode(t).length;
+const LABKEY = (() => {                     // 대시보드 「쓴 글」 칸에 사람이 읽는 이름으로 보이게, 항목 순서대로 줄 서도록 이름 길이를 맞춘다(jsonb 는 키를 길이순으로 정렬)
+  const o = {}; let prev = 0;
+  Object.keys(REC_LAB).forEach(k => { let l = REC_LAB[k]; while(_blen(l) <= prev) l += '\u200b'; prev = _blen(l); o[k] = l; });
+  return o;
+})();
 function recText(k){                     // 찾은 잘못에는 공개 뒤 「찾았어요」 체크를 덧붙여 보낸다
   const m = /^(m\d)-find$/.exec(k);
   return (rec.texts[k] || '') + (m && rec.hit[m[1]] ? HIT_TAIL + rec.hit[m[1]] : '');
 }
 function recState(){
   const checks = REC_CHECKS.map(([k, l]) => ({ l, ok:!!(rec.texts[k] || '').trim() }));
-  const done = checks.filter(c => c.ok).length, texts = {}, lab = {}, sub = {};
-  Object.keys(REC_LAB).forEach(k => { if((rec.texts[k] || '').trim()){ texts[k] = recText(k); lab[k] = REC_LAB[k]; sub[k] = 1; } });
-  return { v:1, page:REC.page, sid:stu.sid, name:stu.name, progress:done, total:checks.length, pct:Math.round(done / checks.length * 100),
-    checks, texts, lab, sub, at:rec.at, hit:rec.hit, tab:(TABS.find(x => x.id === curTab) || {label:''}).label.slice(0, 20) };
+  const done = checks.filter(c => c.ok).length, texts = {}, sub = {}, raw = {};
+  Object.keys(REC_LAB).forEach(k => { if((rec.texts[k] || '').trim()){ texts[LABKEY[k]] = recText(k); sub[LABKEY[k]] = 1; raw[k] = rec.texts[k]; } });
+  return { v:2, page:REC.page, sid:stu.sid, name:stu.name, progress:done, total:checks.length, pct:Math.round(done / checks.length * 100),
+    checks, texts, sub, raw, at:rec.at, hit:rec.hit, tab:(TABS.find(x => x.id === curTab) || {label:''}).label.slice(0, 20), savedAt:new Date().toISOString() };
 }
 function recSave(now){ clearTimeout(recTimer); recTimer = setTimeout(recFlush, now ? 0 : 900); }
+const recArgs = st => ({ p_page:REC.page, p_state:st, p_progress:st.progress, p_pct:st.pct, p_tab:st.tab });
 async function recFlush(){
-  if(!REC.on || !stu || !stu.token || recBusy || !Object.keys(rec.texts).length){ paintSend(); return; }
+  if(!REC.on || !stu || recBusy || !Object.keys(rec.texts).length){ paintSend(); return; }
   recBusy = true; paintSend();
   const t0 = Date.now();
   try{
-    const st = recState();
-    const ok = await aRpc('ohm_save', { p_token:stu.token, p_state:st, p_progress:st.progress, p_pct:st.pct, p_tab:st.tab });
-    if(ok === false) throw new Error('참여 코드가 꺼졌거나 기한이 지났어요. 선생님께 알려 주세요.');
+    const args = recArgs(recState());
+    let ok = await SBX.rpc('solo_save', args);
+    if(ok === false){                                    // 내 줄이 없다고 하면 한 번 다시 참여하고 저장
+      const j = await SBX.join(); if(j.error) throw new Error(j.error);
+      ok = await SBX.rpc('solo_save', args);
+      if(ok === false) throw new Error('저장할 줄을 찾지 못했어요. 선생님께 알려 주세요');
+    }
     rec.saved = t0; recErr = ''; store.set('rec', rec);
-  }catch(e){ recErr = (e && e.name === 'AbortError') ? '연결이 늦어요' : ((e && e.message) || '연결 오류'); }
+  }catch(e){
+    const m = String((e && e.message) || e);
+    recErr = (e && e.name === 'AbortError') ? '연결이 늦어요' : (/JWT|not authenticated|401/i.test(m) ? '로그인이 풀렸어요. 오른쪽 위 👤을 눌러 다시 로그인해 주세요' : (m || '연결 오류'));
+    if(/JWT|not authenticated|401/i.test(m)){ stu = null; SBX.token = ''; }
+  }
   finally{
     recBusy = false; paintSend();
-    if(!recErr && Object.values(rec.at).some(t => t > rec.saved)) recSave();
+    if(!recErr && stu && Object.values(rec.at).some(t => t > rec.saved)) recSave();
   }
 }
+function recLeave(){                     // 창을 닫거나 숨길 때 — 아직 못 보낸 글이 사라지지 않게
+  if(!REC.on || !stu || !SBX.token || !Object.keys(rec.texts).length || !Object.values(rec.at).some(t => t > (rec.saved || 0))) return;
+  try{ const body = JSON.stringify(recArgs(recState()));
+    if(body.length < 60000) fetch(SB_URL + '/rest/v1/rpc/solo_save', { method:'POST', keepalive:true, headers:{ apikey:SB_KEY, Authorization:'Bearer ' + SBX.token, 'Content-Type':'application/json' }, body }); }catch(e){}
+}
+addEventListener('pagehide', recLeave);
+addEventListener('visibilitychange', () => { if(document.hidden) recLeave(); });
 function recPut(k, text){ rec.texts[k] = text; rec.at[k] = Date.now(); store.set('rec', rec); recSave(); paintSend(); }
 async function recPull(){                 // 다른 기기에서 보낸 것을 합친다
   try{
-    const d = await aRpc('ohm_pull', { p_token:stu.token });
-    const st = d && d.state; if(!st || !st.texts) return;
-    Object.keys(st.texts).forEach(k => {
+    const d = await SBX.rpc('solo_pull', { p_page:REC.page });
+    const st = d && d.state; if(!st || !st.raw) return;
+    Object.keys(st.raw).forEach(k => {
       if(!REC_LAB[k]) return;
       const ts = +((st.at || {})[k]) || 1;
       if(!(rec.texts[k] || '').trim() || ts > (rec.at[k] || 0)){
-        rec.texts[k] = String(st.texts[k]).split(HIT_TAIL)[0]; rec.at[k] = ts;
+        rec.texts[k] = String(st.raw[k]).split(HIT_TAIL)[0]; rec.at[k] = ts;
         const ta = document.querySelector(`textarea[data-refk="${k}"]`);
         if(ta && !ta.value.trim()){ ta.value = rec.texts[k]; store.set('refl:' + k, ta.value); }
       }
     });
     Object.keys(st.hit || {}).forEach(m => { if(!rec.hit[m]) rec.hit[m] = st.hit[m]; });
-    rec.saved = Math.max(rec.saved || 0, ...Object.keys(st.texts).map(k => +((st.at || {})[k]) || 0));
     store.set('rec', rec);
   }catch(e){ /* 못 읽어도 이 기기 것은 그대로 보낸다 */ }
 }
@@ -1906,7 +1944,7 @@ function sendState(keys){                 // 칸 묶음 하나의 보냄 상태
   const edited = keys.some(k => { const ta = document.querySelector(`textarea[data-refk="${k}"]`); return ta && has.length && ta.value.trim() !== (rec.texts[k] || '').trim(); });
   if(!REC.on) return has.length ? ['ok', '💾 이 기기에 저장했어요 (이 사본은 선생님께 보내지 않아요)'] : ['', ''];
   if(!has.length) return ['', ''];
-  if(!stu || !stu.token) return ['wait', '⏳ 아직 안 보냈어요 — 오른쪽 위 👤 학번·이름을 넣으면 보내져요'];
+  if(!stu) return ['wait', '⏳ 아직 안 보냈어요 — 오른쪽 위 👤 로그인을 하면 보내져요'];
   const unsent = has.some(k => (rec.at[k] || 0) > (rec.saved || 0));
   if(recBusy && unsent) return ['wait', '보내는 중…'];
   if(unsent && recErr) return ['err', '❌ 보내지 못했어요 — ' + recErr, true];
@@ -1926,52 +1964,67 @@ function paintStu(){
   const b = $('#stuBtn'); if(!b) return;
   b.hidden = !REC.on;
   const pending = Object.keys(rec.texts).some(k => (rec.texts[k] || '').trim());
-  if(stu && stu.token){ b.textContent = '👤 ' + stu.sid + ' ' + stu.name; b.className = 'stubtn on'; b.title = '선생님께 보내는 학번·이름 — 누르면 바꿀 수 있어요'; }
-  else { b.textContent = '👤 학번·이름 넣기'; b.className = 'stubtn' + (pending ? ' warn' : ''); b.title = '학번과 이름을 넣으면 찾은 잘못·돌아보기·기획서가 선생님께 전해져요'; }
-  document.querySelectorAll('.loginhint').forEach(x => { x.hidden = !REC.on || !!(stu && stu.token); });
+  if(stu){ b.textContent = '👤 ' + stu.sid + ' ' + stu.name; b.className = 'stubtn on'; b.title = '선생님께 보내는 계정 — 누르면 다른 학생으로 바꿀 수 있어요'; }
+  else { b.textContent = '👤 로그인'; b.className = 'stubtn' + (pending ? ' warn' : ''); b.title = '로그인하면 찾은 잘못·돌아보기·기획서가 선생님께 전해져요'; }
+  document.querySelectorAll('.loginhint').forEach(x => { x.hidden = !REC.on || !!stu; });
   const d = $('#dashLink'); if(d){ d.href = DASH_URL; d.hidden = !REC.on; }
 }
 const lgSay = (t, c) => { const m = $('#lgMsg'); m.innerHTML = t; m.className = 'mmsg ' + (c || ''); };
+function fillLogin(){
+  const opt = (a, b, ph) => '<option value="">' + ph + '</option>' + Array.from({ length:b - a + 1 }, (_, i) => '<option>' + (a + i) + '</option>').join('');
+  $('#lgG').innerHTML = opt(1, 3, '학년'); $('#lgC').innerHTML = opt(1, 20, '반'); $('#lgN').innerHTML = opt(1, 40, '번호');
+  const l = store.get('lastLogin', null); if(l){ $('#lgG').value = l.g; $('#lgC').value = l.c; $('#lgN').value = l.n; }
+}
 function openLogin(why){
-  const e = elecStu();
-  $('#lgSid').value = (stu && stu.sid) || (e && e.sid) || $('#lgSid').value;
-  $('#lgName').value = (stu && stu.name) || (e && e.name) || $('#lgName').value;
-  $('#lgCode').value = codeGuess();
-  $('#lgOut').hidden = !(stu && stu.token);
-  lgSay(why || (stu && stu.token ? '지금 <b>' + stu.sid + ' ' + stu.name + '</b>(으)로 보내고 있어요.' : ''), why ? 'err' : 'ok');
+  $('#lgOut').hidden = !stu;
+  lgSay(why || (stu ? '지금 <b>' + stu.sid + ' ' + stu.name + '</b>(으)로 보내고 있어요.' : ''), why ? 'err' : 'ok');
   $('#loginM').hidden = false;
-  setTimeout(() => (stu && stu.token ? $('#lgClose') : (!$('#lgSid').value ? $('#lgSid') : $('#lgName'))).focus(), 30);
+  setTimeout(() => (stu ? $('#lgClose') : ($('#lgG').value ? $('#lgPw') : $('#lgG'))).focus(), 30);
 }
 function closeLogin(){ $('#loginM').hidden = true; }
+async function recEnter(j){                // 로그인 직후(또는 열 때 이미 로그인돼 있을 때): 이 기기 기록과 내 계정 기록을 합친다
+  const hasLocal = Object.keys(rec.texts).some(k => (rec.texts[k] || '').trim());
+  const ownerSid = rec.owner && String(rec.owner).indexOf('|') > 0 ? String(rec.owner).split('|')[0] : '';   // 옛 판은 「학번|이름」으로 적어 두었다
+  const mine = !rec.owner || rec.owner === j.uid || (ownerSid && ownerSid === j.sid);
+  if(!mine && hasLocal){
+    // 이 기기에 다른 학생이 쓴 기록 — 그 학생 것을 이 학생 계정으로 보내지 않는다
+    if(!confirm('이 기기에 다른 학생이 쓴 기록이 있어요.\n' + j.sid + ' ' + (j.name || '') + ' 학생으로 새로 시작할까요?\n(그 학생이 이미 보낸 기록은 선생님께 그대로 남아요)')){ await SBX.out(); return false; }
+    rec = { owner:'', texts:{}, at:{}, hit:{}, saved:0 };
+    document.querySelectorAll('textarea[data-refk]').forEach(t => { t.value = ''; store.set('refl:' + t.dataset.refk, ''); });
+  }
+  stu = { sid:j.sid, name:j.name || '', uid:j.uid };
+  rec.owner = j.uid; store.set('rec', rec);
+  if(j.has_state) await recPull();
+  rec.saved = 0; store.set('rec', rec);        // 이 계정 서버에는 아직 없을 수 있으니 이 기기 기록을 한 번 모두 보낸다(덮어써도 같은 내용)
+  paintSend(); recSave(true);
+  return true;
+}
 async function doLogin(){
-  const sid = $('#lgSid').value.replace(/\D/g, ''), name = $('#lgName').value.trim();
-  if(!/^\d{4,6}$/.test(sid)){ lgSay('학번은 숫자 4~6자리로 써 주세요 — 1학년 3반 12번 → <b>10312</b>', 'err'); $('#lgSid').focus(); return; }
-  if(!name){ lgSay('이름을 써 주세요', 'err'); $('#lgName').focus(); return; }
-  const code = ($('#lgCodeRow').hidden ? codeGuess() : ($('#lgCode').value.trim() || codeGuess())).toUpperCase();
-  const owner = sid + '|' + name;
-  lgSay('확인하는 중…'); $('#lgGo').disabled = true;
+  const g = +$('#lgG').value, c = +$('#lgC').value, n = +$('#lgN').value, pw = $('#lgPw').value;
+  if(!g || !c || !n){ lgSay('학년·반·번호를 모두 골라 주세요', 'err'); return; }
+  if(!pw){ lgSay('비밀번호를 써 주세요', 'err'); $('#lgPw').focus(); return; }
+  lgSay('로그인하는 중…'); $('#lgGo').disabled = true;
   try{
-    const d = await aRpc('ohm_join', { p_code:code, p_sid:sid, p_name:name, p_page:REC.page, p_device:devId() });
-    if(!d || d.error){
-      const m = (d && d.error) || '참여 코드를 확인해 주세요';
-      if(/참여 코드/.test(m)){ $('#lgCodeRow').hidden = false; $('#lgCode').value = ''; }
-      lgSay('❌ ' + m, 'err'); return;
-    }
-    if(rec.owner && rec.owner !== owner && Object.keys(rec.texts).some(k => (rec.texts[k] || '').trim())){
-      // 이 기기에 다른 학생이 쓴 기록 — 그 학생 것을 이 학생 이름으로 보내지 않는다
-      if(!confirm('이 기기에 다른 학생(' + rec.owner.replace('|', ' ') + ')이 쓴 기록이 있어요.\n' + sid + ' ' + name + ' 학생으로 새로 시작할까요?\n(그 학생이 이미 보낸 기록은 선생님께 그대로 남아요)')){ lgSay('취소했어요.'); return; }
-      rec = { owner:'', texts:{}, at:{}, hit:{}, saved:0 };
-      document.querySelectorAll('textarea[data-refk]').forEach(t => { t.value = ''; store.set('refl:' + t.dataset.refk, ''); });
-    }
-    stu = { sid, name, shown:d.shown || '', code:d.code || code, token:d.token };
-    store.set('stu', stu); rec.owner = owner; store.set('rec', rec);
-    await recPull();
-    lgSay('✅ ' + sid + ' ' + name + ' — 들어왔어요. 이제 찾은 잘못·돌아보기·기획서가 선생님께 전해집니다.', 'ok');
-    paintSend(); recSave(true);
-    setTimeout(closeLogin, 1100);
+    await SBX.login(g, c, n, pw);
+    const j = await SBX.join();
+    if(j.error){ lgSay('❌ ' + j.error, 'err'); return; }
+    store.set('lastLogin', { g, c, n }); $('#lgPw').value = '';
+    if(await recEnter(j)){
+      lgSay('✅ ' + stu.sid + ' ' + stu.name + ' — 로그인했어요. 이제 찾은 잘못·돌아보기·기획서가 선생님께 전해집니다.', 'ok');
+      $('#lgOut').hidden = false;
+      setTimeout(closeLogin, 1100);
+    }else lgSay('취소했어요.');
   }catch(e){
-    lgSay('❌ 연결하지 못했어요 — 인터넷을 확인하고 다시 눌러 주세요' + (e && e.message ? ' (' + String(e.message).slice(0, 60) + ')' : ''), 'err');
+    lgSay('❌ ' + String((e && e.message) || e).slice(0, 120), 'err');
   }finally{ $('#lgGo').disabled = false; }
+}
+async function recBoot(){                  // 이미 로그인돼 있으면(질문나무·보일 실험 페이지에서) 다시 묻지 않는다
+  if(!REC.on) return;
+  try{
+    if(!(await SBX.session())) return;
+    const j = await SBX.join(); if(j.error) return;
+    await recEnter(j);
+  }catch(e){}
 }
 function recHit(mid){                     // 정답 공개 뒤 「찾았어요」 체크 → 찾은 잘못 기록에 덧붙인다
   const m = MISSIONS.find(x => x.id === mid); if(!m || !rec.texts[mid + '-find']) return;
@@ -2009,9 +2062,8 @@ const STUCK = {
   gemLong:   ['1분이 넘도록 계속 만들어요', '2분까지는 조용히 기다립니다. 그래도 멈춰 있으면 새 채팅에서 다시 보냅니다.'],
   gemPaste:  ['코드가 길어 붙여넣기가 안 돼요', '1단계의 <b>파일 내려받기</b>로 파일을 받고, 제미나이 <b>+ → 파일 업로드</b>로 올린 뒤 <b>문장만 복사</b>(ⓑ는 <b>프롬프트만 복사</b>)로 붙여넣어 보냅니다.'],
   copy:      ['「복사」를 눌러도 붙여넣기가 안 돼요', '<b>새 창에서 열기</b> → <b>Ctrl+A</b>, <b>Ctrl+C</b>로 직접 복사합니다.'],
-  loginSid:  ['「학번은 숫자 4~6자리로 써 주세요」', '1학년 3반 12번 → <b>10312</b>처럼 숫자만 씁니다.'],
-  loginCode: ['「참여 코드가 맞지 않거나 기한이 지났어요」', '선생님께 알립니다. 선생님이 알려 준 숫자를 새로 나온 <b>참여 코드</b> 칸에 넣고 다시 들어갑니다.'],
-  loginFull: ['「정원 초과」', '선생님께 알립니다(선생님이 서버를 한 번 손보면 됩니다). 그동안 쓴 것은 이 기기에 남아 있다가 들어가면 함께 보내집니다.'],
+  loginPw:   ['「학년·반·번호 또는 비밀번호가 맞지 않아요」', '학년·반·번호를 다시 고르고, 질문나무에 들어갈 때 쓰는 <b>비밀번호</b>를 넣습니다. 기억나지 않으면 선생님께 말합니다.'],
+  loginNone: ['「로그인이 풀렸어요」', '오른쪽 위 <b>👤</b>을 눌러 다시 로그인합니다. 쓴 글은 이 기기에 남아 있다가 로그인하면 함께 보내집니다.'],
   loginOther:['「이 기기에 다른 학생이 쓴 기록이 있어요」', '내 기기가 맞는지 봅니다. 친구 기기라면 <b>취소</b>하고 친구에게 돌려줍니다.'],
   sendFail:  ['「보내지 못했어요」', '인터넷을 확인하고 <b>다시 보내기</b>를 누릅니다. 쓴 글은 이 기기에 남아 있습니다.'],
   refShort:  ['「○○을 한 문장 이상 써 주세요」', '그 칸에 한 문장 이상 씁니다. 짧아도 내 말로 쓰면 됩니다.'],
@@ -2089,10 +2141,10 @@ function waitHTML(k){
     </ol></div>`;
 }
 const ext = (t, href) => ({t, href});
-const againStep = () => ({ t:'이어서 들어가기 — 👤 학번·이름 · Studentgithub',
-  do:['이 페이지 오른쪽 위 <b>👤</b>에 내 학번과 이름이 보이는지 봅니다. 「학번·이름 넣기」라고 보이면 눌러서 넣습니다.',
+const againStep = () => ({ t:'이어서 들어가기 — 👤 로그인 · Studentgithub',
+  do:['이 페이지 오른쪽 위 <b>👤</b>에 내 학번과 이름이 보이는지 봅니다. 「로그인」이라고 보이면 눌러서 학년·반·번호와 비밀번호를 넣습니다.',
       'Studentgithub에 <b>학번</b>만 넣고 들어갑니다. 하던 곳부터 이어집니다.', '제미나이 탭도 열어 둡니다(학교 계정).'],
-  links:[ext('들어가기 ↗', sghTo('#/in')), ext('제미나이 열기 ↗', GEMINI)], stuck:['loginSid', 'sghRelogin', 'gemAccount'] });
+  links:[ext('들어가기 ↗', sghTo('#/in')), ext('제미나이 열기 ↗', GEMINI)], stuck:['loginPw', 'loginNone', 'sghRelogin', 'gemAccount'] });
 function missionFlow(m, first){
   const look = {
     m1:'<b>입자 수</b> 손잡이를 움직여 보고, <b>멈춤</b>도 눌러 보고, 아무것도 건드리지 말고 <b>20초</b> 지켜봅니다.',
@@ -2129,9 +2181,9 @@ function missionFlow(m, first){
       stuck:['cvCopy', 'labWhite'] },
     { t:nm + ' — 돌아보기 · 선생님께 보내기', tab:m.id,
       do:['미션 탭 맨 아래 <b>6단계 · 돌아보기</b>에 <b>어려웠던 점과 극복한 점</b>, <b>느낀 점</b>을 한두 문장씩 씁니다.',
-          '<b>📮 선생님께 보내기</b>를 누르고 「✅ 선생님께 보냄」이 뜨는지 봅니다. 👤 학번·이름을 넣지 않았다면 넣는 창이 뜹니다.',
+          '<b>📮 선생님께 보내기</b>를 누르고 「✅ 선생님께 보냄」이 뜨는지 봅니다. 👤 로그인을 하지 않았다면 로그인 창이 뜹니다.',
           '2단계에 적은 <b>찾은 잘못</b>은 정답을 공개할 때 이미 함께 전해졌습니다.'],
-      stuck:['refShort', 'loginSid', 'loginCode', 'sendFail'] }
+      stuck:['refShort', 'loginPw', 'loginNone', 'sendFail'] }
   ];
 }
 function uploadMission(m){
@@ -2164,12 +2216,12 @@ const FLOW = [
    goal:'불량 압력 시뮬레이터의 잘못을 찾아 고치고, 고친 시뮬레이터를 Studentgithub에 올립니다. 시뮬레이터도 모형이라는 것을 알아봅니다.',
    end:'🎉 1단계 끝! 다음은 2단계(압력과 부피)입니다.',
    steps:[
-    { t:'준비하기 — 👤 학번·이름 넣고 탭 3개 열어 두기',
-      do:['이 페이지 오른쪽 위 <b>👤 학번·이름 넣기</b>를 누르고 <b>학번</b>(예: 10312)과 <b>이름</b>을 넣은 뒤 <b>들어가기</b>. 찾은 잘못·돌아보기·기획서가 선생님께 전해집니다(다른 칸은 이 기기에만 남아요).',
+    { t:'준비하기 — 👤 로그인하고 탭 3개 열어 두기',
+      do:['이 페이지 오른쪽 위 <b>👤 로그인</b>을 누르고 <b>학년·반·번호</b>를 고른 뒤 질문나무 <b>비밀번호</b>를 넣어 <b>로그인</b>. 이미 내 학번과 이름이 보이면 그대로 둡니다. 찾은 잘못·돌아보기·기획서가 선생님께 전해집니다(다른 칸은 이 기기에만 남아요).',
           '이 페이지는 그대로 두고, 새 탭에 <b>제미나이</b>를 엽니다. 오른쪽 위 동그라미가 <b>학교 계정</b>인지 봅니다.',
           '새 탭에 <b>Studentgithub</b>를 엽니다.',
           '이제 탭 3개 — <b>이 페이지 · 제미나이 · Studentgithub</b>를 오가며 합니다.'],
-      links:[ext('제미나이 열기 ↗', GEMINI), ext('Studentgithub 열기 ↗', sghTo(''))], stuck:['loginSid', 'loginCode', 'loginOther', 'gemAccount'] },
+      links:[ext('제미나이 열기 ↗', GEMINI), ext('Studentgithub 열기 ↗', sghTo(''))], stuck:['loginPw', 'loginNone', 'loginOther', 'gemAccount'] },
     { t:'Studentgithub 들어가기',
       do:['Studentgithub에서 <b>들어가기</b>를 누릅니다.',
           '<b>학번</b>(예: 10312 = 1학년 3반 12번)만 넣고 <b>들어가기</b>.',
@@ -2205,7 +2257,7 @@ const FLOW = [
     { t:'내 시뮬레이터 기획서 쓰고 보내기', tab:'make',
       do:['<b>만들기</b> 탭 <b>1단계 · 기획서</b>에 네 가지를 씁니다 — ① 설명할 탐구 질문 ② 갖춰야 할 조건 ③ 화면 기획(조작과 보이는 것) ④ AI가 틀리기 쉬운 곳과 확인 방법.',
           '<b>📮 선생님께 보내기</b>를 누르고 「✅ 선생님께 보냄」이 뜨는지 봅니다.'],
-      stuck:['refShort', 'loginSid', 'sendFail'] },
+      stuck:['refShort', 'loginPw', 'sendFail'] },
     { t:'내 앱 설계 채우기', tab:'make',
       do:['만들기 탭 <b>2단계 · 내 앱 설계</b>에서 <b>앱 이름</b>과 <b>분위기</b>를 정합니다.',
           '<b>생활 속 예</b> 2개 이상을 씁니다(관련 개념을 고르고, 까닭은 기체 입자의 움직임으로 내 말로).',
@@ -2248,7 +2300,7 @@ function errDictHTML(){
   const G = [
     ['🤖 제미나이', ['gemAccount', 'gemEnter', 'gemRefuse', 'gemText', 'gemWhite', 'gemAll', 'gemExtra', 'gemLong', 'gemPaste']],
     ['📄 이 수업 페이지', ['condShort', 'copy', 'fixNeed', 'fixNone', 'fixDup', 'cvCopy', 'labWhite', 'mkStarter', 'lost']],
-    ['📮 선생님께 보내기 (👤 학번·이름)', ['loginSid', 'loginCode', 'loginFull', 'loginOther', 'sendFail', 'refShort']],
+    ['📮 선생님께 보내기 (👤 로그인)', ['loginPw', 'loginNone', 'loginOther', 'sendFail', 'refShort']],
     ['🐙 Studentgithub — 들어가기', ['sghNum', 'sghReady', 'sghRelogin']],
     ['📤 Studentgithub — 내 모델 올리기', ['upDl', 'upNoHtml', 'upIntro', 'upPriv', 'upClosed', 'upOften', 'upBig']],
     ['🤝 Studentgithub — 서로 평가', ['rvClosed', 'rvPraise', 'rvSlow']]
@@ -2268,12 +2320,12 @@ function flowShellHTML(){
       <li>🤫 <b>AI가 만드는 동안(30초~1분)은 조용히</b> 기다립니다. 떠들거나 돌아다니면 <b class="bad">벌점</b>입니다.</li>
       <li>⏳ 기다리는 시간은 쉬는 시간이 아닙니다. ① 결과가 <b>어떻게 나올지 예상</b>해 적고, ② <b>교과서</b>에서 그 내용을 찾아 밑줄을 긋고, ③ 결과가 나오면 예상·교과서와 견줍니다.</li>
       <li>☝ 고칠 때마다 <b>직접 조작해 확인</b>합니다. AI가 "고쳤습니다"라고 해도 그대로 믿지 않습니다.</li>
-      <li>📮 <b>찾은 잘못 · 돌아보기 · 기획서</b>는 이 페이지에서 선생님께 보냅니다(오른쪽 위 👤 학번·이름). 고친 시뮬레이터와 최종본은 <b>Studentgithub</b>에 올립니다(학번만 넣고 들어감).</li>
+      <li>📮 <b>찾은 잘못 · 돌아보기 · 기획서</b>는 이 페이지에서 선생님께 보냅니다(오른쪽 위 👤 로그인). 고친 시뮬레이터와 최종본은 <b>Studentgithub</b>에 올립니다(학번만 넣고 들어감).</li>
       <li>🙋 막히면 손 들기 전에 그 순서의 「막혔을 때」와 맨 아래 「오류 사전」을 먼저 봅니다.</li>
     </ul>
   </div>
-  <div class="card loginhint" hidden><b>👤 먼저 학번과 이름을 넣어 주세요.</b> 찾은 잘못·돌아보기·기획서가 선생님께 전해집니다(다른 칸은 이 기기에만 남아요).
-    <div class="btnrow" style="margin-bottom:0"><button type="button" class="btn pri" data-login>👤 학번·이름 넣기</button></div></div>
+  <div class="card loginhint" hidden><b>👤 먼저 로그인해 주세요.</b> 질문나무 계정(학년·반·번호+비밀번호)으로 들어갑니다. 찾은 잘못·돌아보기·기획서가 선생님께 전해집니다(다른 칸은 이 기기에만 남아요).
+    <div class="btnrow" style="margin-bottom:0"><button type="button" class="btn pri" data-login>👤 로그인</button></div></div>
   <div class="stagepick" id="stagepick">${FLOW.map(f => `<button type="button" data-stage="${f.no}"><b>${f.no}단계 · ${f.t}</b><small>${f.when}</small><span class="pp" data-pp="${f.no}"></span></button>`).join('')}</div>
   <div id="flowbox"></div>
   <h2 id="errdict">막혔을 때 — 오류 사전</h2>
@@ -2487,7 +2539,7 @@ function missionHTML(m){
     <ol class="finds">${m.bugs.map((b, i) => `<li><textarea data-find="${m.id}:${i}" rows="2" placeholder="${i === 0 ? '예: ○○를 했더니 ○○가 보여요 — 배운 내용(○○)과 달라요' : '이상한 점 ' + (i + 1)}"></textarea></li>`).join('')}</ol>
     <details class="hint"><summary>막혔을 때 — 어디를 볼까?</summary><div class="in"><ul style="margin:0">${m.bugs.map(b => `<li>${b.h1}</li>`).join('')}</ul></div></details>
     <div class="sendrow"><button type="button" class="btn pri" data-reveal="${m.id}">다 적었어요 — 잘못 ${m.bugs.length}개 공개</button><span class="sendst" data-sendst="${m.id}-find"></span></div>
-    <p style="margin:8px 0 0;font-size:13.5px;color:var(--ink-mute)">공개를 누르는 순간 위에 적은 것이 <b>찾은 잘못</b> 기록으로 선생님께 전해집니다(👤 학번·이름을 넣었을 때). 공개한 뒤에 고쳐 써도 기록은 바뀌지 않아요.</p>
+    <p style="margin:8px 0 0;font-size:13.5px;color:var(--ink-mute)">공개를 누르는 순간 위에 적은 것이 <b>찾은 잘못</b> 기록으로 선생님께 전해집니다(👤 로그인했을 때). 공개한 뒤에 고쳐 써도 기록은 바뀌지 않아요.</p>
   </div>
   <div class="bugs" data-bugs="${m.id}" hidden>
     <p class="revealed">숨어 있던 잘못 <b>${m.bugs.length}개</b>입니다. 내가 적은 것과 견주어 보고, 찾은 것에 <b>찾았어요</b>를 체크하세요. 카드를 누르면 왜 틀렸는지가 나옵니다.</p>
@@ -2585,7 +2637,7 @@ function buildMain(){
       <li><b>극복한 점</b>과 <b>느낀 점</b> — 미션마다 6단계 돌아보기, 그리고 최종본 돌아보기</li>
       <li><b>내 시뮬레이터 기획서</b> — 만들기 탭(4단계)</li>
     </ol>
-    <p style="margin:0;font-size:15px;color:var(--ink-dim)">오른쪽 위 <b>👤</b>에 학번과 이름을 넣으면 보내집니다. 조건 적기·고칠 방법·예상·생각해 보기·내 앱 설계·확인하기·자기평가·실행실 코드는 이 기기에만 남고 거두지 않습니다. 고친 시뮬레이터와 최종본은 Studentgithub에 <b>모델 소개</b>와 함께 올립니다.</p>
+    <p style="margin:0;font-size:15px;color:var(--ink-dim)">오른쪽 위 <b>👤</b>에서 질문나무 계정으로 로그인하면 보내집니다. 조건 적기·고칠 방법·예상·생각해 보기·내 앱 설계·확인하기·자기평가·실행실 코드는 이 기기에만 남고 거두지 않습니다. 고친 시뮬레이터와 최종본은 Studentgithub에 <b>모델 소개</b>와 함께 올립니다.</p>
   </div>
   <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a>
     <span>학번만 넣고 들어가면 어디까지 했는지 이어집니다.</span></div>
@@ -2663,7 +2715,7 @@ function buildMain(){
     <b>AI 없이도 끝까지 가는 길</b> 만들기 탭 3단계의 <b>ⓒ 시작 앱으로 만들기</b>(학생의 앱 이름·예시·퀴즈·한계를 선생님이 검증한 시작 앱에 넣어 실행실에 띄움)로 전 과정이 돌아갑니다.<br>
     <b>배치</b> 미션 1 → 올리기 = 압력을 배운 뒤 / 미션 2 → 올리기 = 압력과 부피를 배운 뒤 / 미션 3 → 올리기 = 온도와 부피를 배운 뒤 / 최종본(나만의 시뮬레이터) = 단원 마무리. 3·4단계는 Studentgithub 관리 → 과제 설정 「열린 단계」로 엽니다(처음 값 2). 한 차시에 몰아서 하지 않고 단원 내내 이어 가는 개인 프로젝트입니다. 모형 이야기는 미션 1 바로 뒤가 가장 잘 맞습니다(방금 고친 경험이 "모형을 고친다"는 말로 바로 이어짐).<br>
     <b>진행</b> 잘못을 몇 개 찾았는지를 겨루게 하면 힌트를 안 열고 버팁니다. 다 찾은 학생은 "잘못을 하나 더 만들어 짝에게 내기"로 확장하세요.<br>
-    <b>학생 기록(2026-10-06)</b> 이 페이지는 학생이 <b>학번 + 이름</b>만 넣으면(참여 코드 8314는 페이지가 알아서 씀) 네 가지만 보냅니다 — 미션마다 <b>찾은 잘못</b>(정답 공개 순간 2단계에 적어 둔 그대로 + 공개 뒤 「찾았어요」 체크), <b>극복한 점·느낀 점</b>(미션마다 6단계, 최종본), <b>내 시뮬레이터 기획서</b>(만들기 탭). 기체 단원 혼자 탐구와 같은 서버(A)에 차시 「★ 시뮬레이터 프로젝트」로 쌓이고, 오른쪽 위 <b>📊 학생 기록</b>(선생님 보기에서만 보임) = 기체 단원 교사 대시보드에서 관리 코드로 봅니다(「🧪 모아 보기」로 학생 × 미션 표, CSV). 다른 칸은 거두지 않습니다. 학생이 「정원 초과」를 보면 A 프로젝트에서 <code>혼자탐구_정원초과_수정_0915.sql</code>을 한 번 Run 하세요(여러 번 돌려도 안전). 나눔용(/share/) 사본은 보내지 않습니다.<br>
+    <b>학생 기록(2026-10-26 개정)</b> 이 페이지는 학생이 <b>질문나무 계정</b>(학년·반·번호+비밀번호)으로 로그인하면 네 가지만 보냅니다 — 미션마다 <b>찾은 잘못</b>(정답 공개 순간 2단계에 적어 둔 그대로 + 공개 뒤 「찾았어요」 체크), <b>극복한 점·느낀 점</b>(미션마다 6단계, 최종본), <b>내 시뮬레이터 기획서</b>(만들기 탭). 질문나무·도장판·보일 실험 페이지와 같은 서버(hmzk)에 계정별로 쌓이고(차시 이름 <code>gas-vibe</code>), 다른 기기에서 로그인해도 이어집니다. 이미 질문나무나 보일 실험 페이지에서 로그인한 기기라면 다시 묻지 않습니다. 오른쪽 위 <b>📊 학생 기록</b>(선생님 보기에서만 보임) = 교사 대시보드(<code>electricity/04-ohm-teacher.html</code>)에서 「기체의 성질」 → <code>gas-vibe</code>를 고르면 학생별 «쓴 글»로 봅니다. <b>10-26 이전에 옛 서버(A)로 보낸 미션 1·2 기록</b>은 A 대시보드에 그대로 있고, 이 기기에 남은 글은 로그인하면 새 서버로 한 번 더 보내집니다(옛 참여 코드 8314는 10-22에 만료). 다른 칸은 거두지 않습니다. 나눔용(/share/) 사본은 보내지 않습니다.<br>
     <b>참고 실험실(2026-10-07)</b> 「AI가 만드는 동안」 칸에 미션마다 다른 시뮬레이터 링크와 보는 법을 넣었습니다 — PhET 「기체 소개」(광고 없음·한국어·충돌 계수기, 소개/법칙 화면으로 바로 열림)와 자바실험실 「기체 분자 운동 장치」(쇠구슬 모형)·「여러 상황에서의 기체」(피스톤 충돌 소리). 자바실험실 페이지에는 <b>광고</b>가 뜨고, 「여러 상황에서의 기체」 아래 설명에는 PV=nRT가 나옵니다. 「보일의 법칙」(미션 2)·「샤를의 법칙」(미션 3)도 넣었습니다(10-07 요청) — 그래프 수치(기압·L·K)와 「반비례」·「2배면 1/2」 설명이 나오므로 학생 안내에는 「숫자는 몰라도 됨, 과학자 이름이라 외우지 않아도 됨」을 붙였습니다. 만들기 탭(기획서 아래)과 모형 이야기에도 같은 링크가 있습니다.<br>
     <b>역할 나누기(2026-10-12)</b> 이 페이지 = 고치기·만들기·질문에 답하기·내 생각 쓰기(조건, 찾은 잘못, 고칠 방법, 예상, 생각해 보기, 기획서, 내 앱 설계, 최종본 확인하기, 돌아보기, 자기평가). Studentgithub = 고친 시뮬레이터·최종본을 <b>모델 소개</b>(무엇을 보여 주나 · 이렇게 써 보세요 · 한계 — 전시관에 보임)와 함께 올리기, 전시관, 서로 평가. 예전 Studentgithub 작업실의 고치기 기록·만들기·점검표·자기평가·「이번 판 돌아보기」는 겹치는 질문이라 이 페이지로 옮겼습니다(전에 쓴 기록은 Studentgithub 관리 화면에 그대로 남음).<br>
     <b>주의</b> AI가 코드를 통째로 새로 쓰면 학습이 끊깁니다. 여러 곳을 한 번에 부탁해도 되지만 "다른 부분은 그대로 두고 말한 곳만 고쳐 주세요"는 꼭 붙이게 해 주세요.</div>
@@ -2903,7 +2955,7 @@ function buildMain(){
     <textarea id="selfq4" data-think="selfq4" rows="3"></textarea></div>
   </div>
 
-  <h3>선생님께 보내는 것 — 이 페이지에서 (👤 학번·이름)</h3>
+  <h3>선생님께 보내는 것 — 이 페이지에서 (👤 로그인)</h3>
   <ol>
     <li><b>찾은 잘못</b> — 미션마다 2단계에 적은 것(정답 공개 때 저절로), 최종본에서 찾은 AI의 잘못(만들기 탭 6단계)</li>
     <li><b>돌아보기</b> — 미션마다, 그리고 최종본: 어려웠던 점과 극복한 점, 느낀 점</li>
@@ -3031,7 +3083,7 @@ function wire(){
       if(!wrote && !confirm('아직 하나도 적지 않았어요. 그래도 정답을 공개할까요?')) return;
       store.set('reveal:' + mid, true); reveal(mid, true);
       recPut(mid + '-find', findSnap(mid));
-      if(REC.on && !(stu && stu.token)) toast('👤 학번·이름을 넣으면 찾은 잘못이 선생님께 전해져요');
+      if(REC.on && !stu) toast('👤 로그인하면 찾은 잘못이 선생님께 전해져요');
       setTimeout(() => document.querySelector(`[data-bugs="${mid}"]`).scrollIntoView({behavior:'smooth', block:'start'}), 80);
     });
   });
@@ -3051,7 +3103,7 @@ function wire(){
     keys.forEach((k, i) => { rec.texts[k] = tas[i].value.trim(); rec.at[k] = now; });
     store.set('rec', rec);
     if(!REC.on){ toast('이 기기에 저장했어요'); paintSend(); return; }
-    if(!(stu && stu.token)){ paintSend(); openLogin('보내려면 먼저 학번과 이름을 넣어 주세요. 넣으면 바로 보내져요.'); return; }
+    if(!stu){ paintSend(); openLogin('보내려면 먼저 로그인해 주세요. 로그인하면 바로 보내져요.'); return; }
     recSave(true); toast('선생님께 보내는 중…');
   }));
   document.addEventListener('click', e => {
@@ -3059,20 +3111,21 @@ function wire(){
     if(e.target.closest('[data-login]')) openLogin();
   });
 
-  // 👤 학번·이름 창
+  // 👤 로그인 창
+  fillLogin();
   $('#stuBtn').addEventListener('click', () => openLogin());
   $('#lgGo').addEventListener('click', doLogin);
-  ['lgSid', 'lgName', 'lgCode'].forEach(id => $('#' + id).addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); }));
+  $('#lgPw').addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });
   $('#lgClose').addEventListener('click', closeLogin);
   $('#loginM').addEventListener('click', e => { if(e.target === $('#loginM')) closeLogin(); });
   addEventListener('keydown', e => { if(e.key === 'Escape' && !$('#loginM').hidden) closeLogin(); });
-  $('#lgOut').addEventListener('click', () => {
-    stu = null; store.set('stu', null);
-    $('#lgSid').value = ''; $('#lgName').value = ''; $('#lgOut').hidden = true;
-    lgSay('다른 학생의 학번과 이름을 넣어 주세요.'); paintSend(); $('#lgSid').focus();
+  $('#lgOut').addEventListener('click', async () => {
+    clearTimeout(recTimer); if(stu && Object.values(rec.at).some(t => t > (rec.saved || 0))) await recFlush();   // 마지막 글을 먼저 보낸다
+    await SBX.out(); stu = null; $('#lgOut').hidden = true;
+    lgSay('다른 학생이 로그인해 주세요.'); paintSend(); $('#lgG').focus();
   });
   paintSend();
-  if(stu && stu.token && Object.values(rec.at).some(t => t > (rec.saved || 0))) recSave();
+  recBoot();
 
   // 생각해 보기 — 쓰기만 하고 내지 않는다(이 기기에만)
   document.querySelectorAll('textarea[data-think]').forEach(t => {
