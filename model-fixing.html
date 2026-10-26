@@ -1431,7 +1431,7 @@ requestAnimationFrame(loop);
 &lt;/html&gt;
 </textarea>
 
-<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">&copy; 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-26</span></footer>
+<footer id="app-credit" style="width:100%;box-sizing:border-box;margin:2.5rem 0 0;padding:14px 12px;text-align:center;font-size:15px;line-height:1.6;color:#6b8195;font-family:system-ui,-apple-system,'Segoe UI','Malgun Gothic',sans-serif;border-top:1px solid rgba(128,128,128,.25);">&copy; 2026 조승재(과학이조선생) · 해누리중학교 · All rights reserved<br><span style="font-size:13.5px;opacity:.85;">최종 업데이트: 2026-10-27</span></footer>
 
 <script>
 /* ══════════════════ 설정 ══════════════════ */
@@ -2188,11 +2188,11 @@ function missionFlow(m, first){
 }
 function uploadMission(m){
   const what = '미션 ' + m.no + ' · 고친 ' + {m1:'압력', m2:'압력과 부피', m3:'온도와 부피'}[m.id] + ' 시뮬레이터';
-  return { t:'고친 시뮬레이터 올리기 (미션 ' + m.no + ') — Studentgithub에 소개하며',
+  return { t:'고친 시뮬레이터 올리기 (미션 ' + m.no + ') — Studentgithub에',
     do:['고친 코드를 복사합니다. 제미나이 캔버스 카드 오른쪽 위 <b>⤢ 펼치기</b> → <b>공유</b> → <b>콘텐츠 복사</b>. (실행실에 붙여 두었다면 실행실의 <b>📋 내 코드 복사</b>도 됩니다)',
         'Studentgithub → <b>내 모델 올리기</b> → 「무엇을 올리나요?」에서 <b>' + what + '</b>를 고르고, <b>앱 코드</b> 칸을 누른 뒤 <b>Ctrl+V</b>.',
         '<b>미리보기</b>를 눌러 고친 시뮬레이터가 돌아가는지 봅니다.',
-        '<b>모델 소개</b>를 씁니다 — ① 이 모델은 무엇을 보여 주나요? ② 이렇게 써 보세요(무엇을 조작하고 무엇을 보면 되나요?) ③ 실제 기체와 다른 점(골라서). 전시관에서 친구들이 이 소개를 읽고 돌려 봅니다.',
+        '<b>모델 소개는 이번엔 안 써도 됩니다.</b> 비워 두면 「' + what + '」 한 줄로 올라가요. 소개는 마지막 최종본을 올릴 때 씁니다.',
         '「앱 안에 내 실명·사진·연락처가 없습니다」에 체크하고 <b>올리기</b>를 누릅니다.',
         '「내가 올린 판」에 <b>미션 ' + m.no + '</b> 판이 생기면 끝입니다. 선생님이 확인하면 전시관에 나옵니다.'],
     links:[ext('올리기 열기 ↗', sghTo('#/me/submit'))], shots:['share'],
@@ -2637,7 +2637,7 @@ function buildMain(){
       <li><b>극복한 점</b>과 <b>느낀 점</b> — 미션마다 6단계 돌아보기, 그리고 최종본 돌아보기</li>
       <li><b>내 시뮬레이터 기획서</b> — 만들기 탭(4단계)</li>
     </ol>
-    <p style="margin:0;font-size:15px;color:var(--ink-dim)">오른쪽 위 <b>👤</b>에서 질문나무 계정으로 로그인하면 보내집니다. 조건 적기·고칠 방법·예상·생각해 보기·내 앱 설계·확인하기·자기평가·실행실 코드는 이 기기에만 남고 거두지 않습니다. 고친 시뮬레이터와 최종본은 Studentgithub에 <b>모델 소개</b>와 함께 올립니다.</p>
+    <p style="margin:0;font-size:15px;color:var(--ink-dim)">오른쪽 위 <b>👤</b>에서 질문나무 계정으로 로그인하면 보내집니다. 조건 적기·고칠 방법·예상·생각해 보기·내 앱 설계·확인하기·자기평가·실행실 코드는 이 기기에만 남고 거두지 않습니다. 고친 시뮬레이터는 코드만 Studentgithub에 올리고, 나만의 시뮬레이터(최종본)는 <b>모델 소개</b>와 함께 올립니다.</p>
   </div>
   <div class="sgh"><a class="btn pri" data-sgh href="#">Studentgithub 들어가기 →</a>
     <span>학번만 넣고 들어가면 어디까지 했는지 이어집니다.</span></div>
@@ -2963,7 +2963,7 @@ function buildMain(){
   </ol>
   <h3>올리는 것 — Studentgithub에</h3>
   <ol>
-    <li>미션마다 고친 시뮬레이터(미션 1·2·3)와 나만의 시뮬레이터 최종본 — 올릴 때 <b>모델 소개</b>(무엇을 보여 주나요 · 이렇게 써 보세요 · 한계)를 함께 씁니다. 전시관에서 친구들에게 보입니다.</li>
+    <li>미션마다 고친 시뮬레이터(미션 1·2·3)는 <b>코드만</b> 올립니다(2026-10-27부터 소개는 비워도 되고, 비우면 「미션 N · 고친 …」 한 줄로 채워져 전시관에 보입니다). 나만의 시뮬레이터 최종본은 올릴 때 <b>모델 소개</b>(무엇을 보여 주나요 · 이렇게 써 보세요 · 한계)를 함께 씁니다. 전시관에서 친구들에게 보입니다.</li>
     <li>친구 모델 서로 평가</li>
   </ol>
   <p style="font-size:15px;color:var(--ink-dim)">조건 적기·고칠 방법·예상·「생각해 보기」·내 앱 설계·최종본 확인하기·자기평가는 쓰기만 하고 내지 않습니다(이 기기에만 저장).</p>
