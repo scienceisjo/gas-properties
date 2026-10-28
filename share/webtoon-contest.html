@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#14181d">
+<meta name="theme-color" content="#ffffff">
 <title>해누리 웹툰 공모전 · 실생활 속 기체의 부피 변화</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -285,20 +285,150 @@ details.ref ol.exsb{margin:8px 0;padding-left:1.2em}details.ref ol.exsb li{margi
 nav.steps button{min-width:92px;padding:6px 9px;gap:6px}
 nav.steps .no{width:24px;height:24px}
 
+
+/* ══════════ 웹툰 사이트 모양 (2026-10-29 · 사용자: 「네이버웹툰 페이지처럼」) ══════════
+   작품 홈(표지·작가·태그·첫화보기) → 회차 목록 → 회차 보기(검은 띠 「목록 · 이전화 · 다음화」).
+   색은 흰 바탕 + 초록 강조, 글꼴은 굵은 고딕. 이름·로고는 「해누리 웹툰」(다른 회사 로고는 쓰지 않음). */
+:root{
+ --nv:#00dc64; --nvd:#00a84f; --nvt:#007a3d;
+ --ink:#222; --ink-dim:#505050; --ink-mute:#8a8a8a;
+ --line:#d6d6d6; --line-soft:#ebebeb;
+ --paper:#f6f6f6; --paper-hi:#fff; --paper-lo:#f1f1f1;
+ --accent:#00a84f; --sky:#00c73c; --sky-dk:#1e1e1e; --sky-hi:#bdf2d3;
+ --shadow:none; --r:10px; --jua:var(--disp);
+}
+html,body{background:#fff}
+body{background:#fff}
+h2{font-weight:800;color:#111;letter-spacing:-.035em;font-size:clamp(23px,3vw,30px)}
+h3{font-weight:800;color:#111;letter-spacing:-.02em}
+.card h4,.cut h4{font-weight:800;color:#111}
+.card{border:1px solid #ebebeb;box-shadow:none;border-radius:10px}
+.btn{border-radius:6px;border-color:#d6d6d6;background:#fff}
+.btn:hover{background:#f6f6f6}
+.btn.pri{background:var(--nvd);border-color:var(--nvd);color:#fff}
+.btn.pri:hover{background:#00953f}
+.pill{display:block;background:none;color:var(--nvd);padding:0;border-radius:0;font-size:14.5px;font-weight:800;margin:24px 0 2px}
+.lead{color:#444}
+.opts label:has(input:checked){border-color:var(--nvd);background:#eafaf1}
+.opts input,.okline input,.mis input{accent-color:var(--nvd)}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--nv)}
+.poster .ph{font-weight:900;letter-spacing:-.045em}
+.toast{background:#1e1e1e}
+
+/* ── 맨 위 (GNB) ── */
+header.gnb{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid #e5e5e5}
+.gin{max-width:1000px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:#111;flex:none}
+.logo .lg{width:30px;height:30px;border-radius:7px;background:var(--nv);color:#fff;display:grid;place-items:center;font-weight:900;font-size:16px;letter-spacing:0}
+.logo .lt{font-size:19px;font-weight:900;letter-spacing:-.05em}
+.logo .lt b{color:var(--nvd);margin-right:3px}
+.gtabs{display:flex;gap:2px;height:100%;margin-left:8px}
+.gtabs a{display:flex;align-items:center;padding:0 11px;font-size:15px;font-weight:800;color:#555;text-decoration:none;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.gtabs a:hover{color:#111}
+.gtabs a.on{color:#111;border-bottom-color:var(--nv)}
+.gin .sp{flex:1}
+@media(max-width:860px){.gtabs a:not(.on){display:none}.gin .chip#saveChip{display:none}}
+
+/* ── 회차 보기 띠 (검정) ── */
+.epbar{background:#1e1e1e;color:#fff}
+.ein{max-width:1000px;margin:0 auto;padding:7px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.epbar .eb{font:inherit;font-size:13.5px;font-weight:800;color:#fff;background:transparent;border:1px solid #4a4a4a;border-radius:5px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+.epbar .eb:hover{border-color:#9a9a9a}
+.epbar .eb:disabled{opacity:.3;cursor:default}
+.epbar .et{line-height:1.25;min-width:0}
+.epbar .et small{display:block;font-size:11px;color:#9a9a9a}
+.epbar .et b{font-size:15.5px;font-weight:800}
+.epbar .sp{flex:1}
+.epbar nav.steps{padding:0;margin:0;gap:4px;max-width:none;overflow:visible;display:flex}
+.epbar nav.steps button{min-width:0;flex:none;padding:0;border:0;background:transparent;width:24px;height:24px;display:grid;place-items:center;box-shadow:none}
+.epbar nav.steps .nm{display:none}
+.epbar nav.steps .no{width:22px;height:22px;background:#3a3a3a;color:#cfcfcf;font-size:11.5px;border:0}
+.epbar nav.steps button.on .no{background:var(--nv);color:#111}
+.epbar nav.steps button.done:not(.on) .no{background:#255c3d;color:#c9f7dc}
+.epbar .prog{background:#333;height:3px}
+.epbar .prog i{background:var(--nv)}
+@media(max-width:700px){.epbar nav.steps{display:none}}
+
+/* ── 작품 홈 ── */
+.home{padding:26px 0 8px}
+.series{display:grid;grid-template-columns:210px 1fr;gap:28px;align-items:start}
+@media(max-width:700px){.series{grid-template-columns:1fr}.cover{max-width:220px}}
+.cover{position:relative;aspect-ratio:3/4;border-radius:8px;overflow:hidden;color:#fff;padding:16px 15px;
+  background:linear-gradient(165deg,#0f3324 0%,#14181d 55%,#43230f 100%);box-shadow:0 10px 24px -14px rgba(0,0,0,.7)}
+.cv-k{display:inline-block;font-size:11px;font-weight:900;color:#111;background:var(--nv);border-radius:4px;padding:2px 7px}
+.cv-t{font-size:26px;font-weight:900;line-height:1.15;margin-top:12px;letter-spacing:-.05em}
+.cv-art{position:absolute;left:0;right:0;bottom:0;height:46%}
+.cv-b{position:absolute;right:16px;bottom:20px;font-size:62px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
+.cv-art i{position:absolute;width:11px;height:11px;border-radius:50%;background:#7ef0b0;opacity:.9;animation:cvf 3.2s ease-in-out infinite}
+.cv-art i:nth-child(2){left:14%;top:30%}.cv-art i:nth-child(3){left:30%;top:62%;animation-delay:-.6s}.cv-art i:nth-child(4){left:46%;top:22%;animation-delay:-1.2s}
+.cv-art i:nth-child(5){left:22%;top:80%;animation-delay:-1.8s}.cv-art i:nth-child(6){left:56%;top:58%;animation-delay:-.3s}.cv-art i:nth-child(7){left:8%;top:52%;animation-delay:-2.2s}
+.cv-art i:nth-child(8){left:40%;top:84%;animation-delay:-1.5s}.cv-art i:nth-child(9){left:64%;top:30%;animation-delay:-2.6s}
+@keyframes cvf{0%,100%{transform:translate(0,0)}25%{transform:translate(6px,-8px)}50%{transform:translate(-5px,-3px)}75%{transform:translate(4px,6px)}}
+@media(prefers-reduced-motion:reduce){.cv-art i{animation:none}}
+.sbadge{margin:0 0 4px;font-size:13px;color:#777;font-weight:700}
+.sbadge .up,.em2 .up{display:inline-block;background:#ff4646;color:#fff;font-style:normal;font-size:10.5px;font-weight:900;border-radius:3px;padding:1px 5px;vertical-align:1px}
+.sinfo h1{font-size:clamp(25px,3.6vw,34px);font-weight:900;letter-spacing:-.05em;margin:2px 0 8px;color:#111;line-height:1.2}
+.sauthor{color:#555;font-size:15px;margin:0 0 8px}
+.sauthor b{color:#111}
+.stags{margin:0 0 10px}
+.stags span{display:inline-block;font-size:13px;color:#666;background:#f2f2f2;border-radius:4px;padding:3px 8px;margin:0 4px 4px 0}
+.sdesc{color:#333;font-size:15.5px;line-height:1.65;margin:0}
+.sbtns{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 12px}
+.nbtn{font:inherit;font-size:16px;font-weight:800;padding:12px 22px;border-radius:6px;border:1px solid var(--nvd);background:var(--nvd);color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.nbtn:hover{background:#00953f}
+.nbtn.line{background:#fff;color:#111;border-color:#cfcfcf}
+.nbtn.line:hover{background:#f6f6f6}
+.nbtn[hidden]{display:none}
+.sprog{display:flex;align-items:center;gap:10px;font-size:14px;color:#555}
+.sprog .bar{flex:1;max-width:260px;height:6px;background:#ececec;border-radius:3px;overflow:hidden}
+.sprog .bar i{display:block;height:100%;width:0;background:var(--nv);transition:width .3s}
+.eph{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid #111;padding:26px 0 10px;margin:8px 0 0}
+.eph b{font-size:17px;font-weight:900}
+.eph span{font-size:13px;color:#888}
+.eplist{list-style:none;padding:0;margin:0}
+.eplist .ep{font:inherit;color:inherit;width:100%;display:flex;align-items:center;gap:16px;padding:12px 6px;border:0;border-bottom:1px solid #eee;background:#fff;cursor:pointer;text-align:left}
+.eplist .ep:hover{background:#f8f8f8}
+.eplist .ep.now{background:#f2fdf7}
+.eplist .th{flex:none;width:124px;aspect-ratio:16/10;border-radius:4px;position:relative;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(0,0,0,.06)}
+.eplist .th .em{font-size:34px}
+.eplist .th .no{position:absolute;left:5px;bottom:4px;font-size:11px;font-weight:900;color:#fff;background:rgba(0,0,0,.55);border-radius:3px;padding:0 5px}
+.eplist .ei{min-width:0}
+.eplist .ei b{display:block;font-size:16px;font-weight:800;color:#111}
+.eplist .ei small{display:block;color:#777;font-size:13.5px;margin:1px 0 3px}
+.em2{font-size:12.5px;color:#999}
+.em2 .ok{color:var(--nvd);font-style:normal;font-weight:900}
+.eplist .ego{margin-left:auto;font-size:13px;color:#888;font-weight:800;white-space:nowrap;padding-left:8px}
+.eplist .ep.done .th{filter:saturate(.75)}
+@media(max-width:560px){.eplist .th{width:92px}.eplist .ego{display:none}}
+
+/* ── 회차 아래 「이전화 · 목록 · 다음화」 ── */
+.stepnav{border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5;padding:12px 4px;margin:30px 0 0;align-items:center}
+.stepnav .btn{font-weight:800}
+.stepnav .btn:not(.pri){border-color:transparent;background:none}
+.stepnav .btn:not(.pri):hover{background:#f4f4f4}
+
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="topin">
-    <a class="back" id="hubLink" href="index.html">← 기체의 성질</a>
-    <div class="ttl">해누리 웹툰 공모전<small>실생활 속 기체의 부피 변화 · 네 컷 만화</small></div>
+<header class="gnb">
+  <div class="gin">
+    <a class="logo" href="#home" data-home aria-label="해누리 웹툰 공모전 홈"><span class="lg" aria-hidden="true">해</span><span class="lt"><b>해누리</b>웹툰</span></a>
+    <nav class="gtabs" aria-label="메뉴"><a href="#home" data-home id="tabHome" class="on">공모전 홈</a><a id="tabWorks" target="_blank" rel="noopener">출품작 ↗</a><a href="#s1" id="tabRule">평가 기준</a><a id="hubLink" href="index.html">기체의 성질</a></nav>
     <span class="sp"></span>
     <span class="chip" id="saveChip" aria-live="polite">불러오는 중…</span>
     <button type="button" class="chip" id="userChip">👤 로그인</button>
     <button type="button" class="hbtn" id="tmodeBtn" title="교사용 보기 켜기/끄기">🧑‍🏫</button>
   </div>
-  <nav class="steps" id="stepNav" aria-label="활동 단계"></nav>
-  <div class="prog"><i id="progBar"></i></div>
+  <div class="epbar" id="epBar" hidden>
+    <div class="ein">
+      <button type="button" class="eb" data-home>☰ 목록</button>
+      <span class="et"><small>해누리 웹툰 공모전 · 실생활 속 기체의 부피 변화</small><b id="epTitle"></b></span>
+      <span class="sp"></span>
+      <nav class="steps" id="stepNav" aria-label="회차"></nav>
+      <button type="button" class="eb" id="epPrev">‹ 이전화</button><button type="button" class="eb" id="epNext">다음화 ›</button>
+    </div>
+    <div class="prog"><i id="progBar"></i></div>
+  </div>
 </header>
 
 <div class="banner" id="loginBanner" hidden>
@@ -307,6 +437,29 @@ nav.steps .no{width:24px;height:24px}
 </div>
 
 <main class="wrap" id="main">
+
+<!-- ══════════ 작품 홈 (네이버웹툰 작품 페이지처럼) ══════════ -->
+<section class="home" id="home">
+  <div class="series">
+    <div class="cover" aria-hidden="true">
+      <span class="cv-k">해누리 웹툰 공모전</span>
+      <div class="cv-t">실생활 속<br>기체의<br>부피 변화</div>
+      <div class="cv-art"><span class="cv-b">🎈</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="sinfo">
+      <p class="sbadge"><span class="up">UP</span> 과학 시간 연재 · 제1회 공모전</p>
+      <h1>실생활 속 기체의 부피 변화</h1>
+      <p class="sauthor">글/그림 <b id="homePen">나</b> · 기획 선생님</p>
+      <p class="stags"><span>#기체의성질</span><span>#압력과부피</span><span>#온도와부피</span><span>#네컷만화</span><span>#과학웹툰</span><span>#생성형AI</span></p>
+      <p class="sdesc">우리 주변에서 기체의 부피가 변하는 장면을 찾아, 기체 입자의 움직임이 보이는 네 컷 만화로 그려요. 그림은 AI가 돕지만 <b>이야기와 과학 원리는 내가</b> 만듭니다. 완성하면 해누리 웹툰에 올리고 친구 만화에 과학 피드백을 남겨요. 추천을 많이 받은 작품은 <b>과학실에 전시</b>돼요.</p>
+      <div class="sbtns"><button type="button" class="nbtn" id="firstEp">첫화보기 <b>1화</b></button><button type="button" class="nbtn line" id="contEp" hidden>이어보기 <b id="contN"></b></button><a class="nbtn line" id="worksBtn" target="_blank" rel="noopener">출품작 보기 ↗</a></div>
+      <div class="sprog"><div class="bar"><i id="homeBar"></i></div><span><b id="homeDone">0</b> / 9화 완료</span></div>
+    </div>
+  </div>
+  <div class="eph"><b>총 9화</b><span>1화부터 차례로 보면서 만들어요 · 다 한 화에는 ✓</span></div>
+  <ul class="eplist" id="epList"></ul>
+  <p class="note" style="margin-top:14px">📌 쓴 내용은 로그인하면 내 계정에 저장돼요. 만화 그림은 이 기기에 저장되고, 해누리 웹툰에 올리면 친구들이 볼 수 있어요.</p>
+</section>
 
 <!-- ══════════ 교사용 ══════════ -->
 <section class="tbox tonly" id="tPrep">
@@ -323,6 +476,7 @@ nav.steps .no{width:24px;height:24px}
 
 <!-- ══════════ 1. 공모전 ══════════ -->
 <section class="step" id="s1" data-step="1">
+  <span class="pill">1화 · 공모전 안내 · 5분</span>
   <div class="poster">
     <p class="pk">제1회 해누리 웹툰 공모전</p>
     <h2 class="ph">실생활 속<br>기체의 부피 변화</h2>
@@ -362,12 +516,12 @@ nav.steps .no{width:24px;height:24px}
     </ul>
     <label class="okline"><input type="checkbox" data-fc="c.ok"> 공모전 약속과 평가 기준을 읽었어요.</label>
   </div>
-  <div class="stepnav"><span></span><button type="button" class="btn pri" data-go="2">예 찾기 ›</button></div>
+  <div class="stepnav"><span></span><button type="button" class="btn pri" data-go="2">다음화 · 예 찾기 ›</button></div>
 </section>
 
 <!-- ══════════ 2. 예 찾기 ══════════ -->
 <section class="step" id="s2" data-step="2">
-  <span class="pill">1단계 · 예 찾기 · 10분</span>
+  <span class="pill">2화 · 예 찾기 · 10분</span>
   <h2>우리 주변의 기체 부피 변화 찾기</h2>
   <p class="lead">카드마다 <b>어느 관계</b>로 설명할 수 있는지 골라 보세요. 고르면 까닭이 열려요. 그다음 내 만화로 그릴 장면 <b>하나</b>를 정해요.</p>
   <div class="legend"><span class="kpv">🔵 압력과 부피</span> 온도는 그대로, 기체를 누르는 압력이 변할 때 <span class="ktv">🟠 온도와 부피</span> 누르는 압력은 그대로, 온도가 변할 때</div>
@@ -382,12 +536,12 @@ nav.steps .no{width:24px;height:24px}
     <label class="fl" for="tWhere">어디서 찾았나요? <small>(골라서)</small></label>
     <input type="text" id="tWhere" data-f="t.where" maxlength="80" placeholder="예: 교과서 214쪽 / 내 경험 / 뉴스 기사">
   </div>
-  <div class="stepnav"><button type="button" class="btn" data-go="1">‹ 이전</button><button type="button" class="btn pri" data-go="3">원리 쓰기 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="1">‹ 이전화</button><button type="button" class="btn pri" data-go="3">다음화 · 원리 쓰기 ›</button></div>
 </section>
 
 <!-- ══════════ 3. 원리 ══════════ -->
 <section class="step" id="s3" data-step="3">
-  <span class="pill">2단계 · 원리 쓰기 · 10분</span>
+  <span class="pill">3화 · 원리 쓰기 · 10분</span>
   <h2>왜 부피가 변했을까? — 기체 입자로 설명하기</h2>
   <p class="lead">만화의 3컷은 <b>원리 컷</b>이에요. 먼저 까닭을 정확하게 써 두면 만화가 흔들리지 않아요.</p>
   <div class="card mypick" id="myPick"></div>
@@ -417,12 +571,12 @@ nav.steps .no{width:24px;height:24px}
     <p class="note" style="margin:0 0 8px">원리를 다 썼으면 손을 들고 선생님께 보여 드려요. 확인을 받은 뒤 스토리보드를 짜면 실수가 크게 줄어요.</p>
     <div class="btnrow" style="margin:0"><button type="button" class="btn" id="stampBtn">🧑‍🏫 선생님 확인 받기</button><span class="chip ok" id="stampChip" hidden></span></div>
   </div>
-  <div class="stepnav"><button type="button" class="btn" data-go="2">‹ 이전</button><button type="button" class="btn pri" data-go="4">스토리보드 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="2">‹ 이전화</button><button type="button" class="btn pri" data-go="4">다음화 · 스토리보드 ›</button></div>
 </section>
 
 <!-- ══════════ 4. 스토리보드 ══════════ -->
 <section class="step" id="s4" data-step="4">
-  <span class="pill">3단계 · 스토리보드 · 20분</span>
+  <span class="pill">4화 · 스토리보드 · 20분</span>
   <h2>네 컷 스토리보드</h2>
   <p class="lead">교과서처럼 장면마다 <b>무엇을 그릴지</b>와 <b>대사</b>를 써요. 여기 쓴 내용으로 AI 프롬프트와 말풍선이 <b>저절로</b> 만들어져요.</p>
   <details class="ref"><summary>📖 교과서 스토리보드 예 — 「산 위에서 커진 과자 봉지」를 네 컷으로</summary>
@@ -448,12 +602,12 @@ nav.steps .no{width:24px;height:24px}
   </div>
   <div class="sbgrid" id="sbGrid"></div>
   <p class="msg" id="sbMsg"></p>
-  <div class="stepnav"><button type="button" class="btn" data-go="3">‹ 이전</button><button type="button" class="btn pri" data-go="5">그림체 고르기 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="3">‹ 이전화</button><button type="button" class="btn pri" data-go="5">다음화 · 그림체 고르기 ›</button></div>
 </section>
 
 <!-- ══════════ 5. 그림체 ══════════ -->
 <section class="step" id="s5" data-step="5">
-  <span class="pill">4단계 · 그림체 · 5분</span>
+  <span class="pill">5화 · 그림체 · 5분</span>
   <h2>그림체 고르기</h2>
   <p class="lead">두 가지 방법 중 하나를 골라요. 고른 그림체는 프롬프트에 저절로 들어가요.</p>
   <h3>ⓐ 선생님 그림체 카드</h3>
@@ -472,12 +626,12 @@ nav.steps .no{width:24px;height:24px}
     <div class="btnrow"><button type="button" class="btn" id="stUseMine">이 방법(ⓑ)으로 할래요</button></div>
   </div>
   <p class="msg ok" id="stNow"></p>
-  <div class="stepnav"><button type="button" class="btn" data-go="4">‹ 이전</button><button type="button" class="btn pri" data-go="6">AI로 그리기 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="4">‹ 이전화</button><button type="button" class="btn pri" data-go="6">다음화 · AI로 그리기 ›</button></div>
 </section>
 
 <!-- ══════════ 6. AI로 그리기 ══════════ -->
 <section class="step" id="s6" data-step="6">
-  <span class="pill">5단계 · AI로 그리기 · 20분</span>
+  <span class="pill">6화 · AI로 그리기 · 20분</span>
   <h2>제미나이로 네 컷 그리기</h2>
   <p class="lead">스토리보드와 그림체로 <b>프롬프트가 저절로</b> 만들어졌어요. 복사해서 제미나이(학교 계정)에 붙여 넣기만 하면 돼요.</p>
   <div class="card">
@@ -504,12 +658,12 @@ nav.steps .no{width:24px;height:24px}
     <p style="margin:0 0 6px">🤫 조용히 기다리며 <b>3컷의 입자 그림이 어떻게 나올지</b> 예상해 적어요. 나오면 예상과 견줘요.</p>
     <input type="text" data-f="pr.guess" maxlength="100" placeholder="예: 봉지 속 입자 8개가 처음보다 넓게 퍼져 있을 것이다">
   </div>
-  <div class="stepnav"><button type="button" class="btn" data-go="5">‹ 이전</button><button type="button" class="btn pri" data-go="7">말풍선 넣기 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="5">‹ 이전화</button><button type="button" class="btn pri" data-go="7">다음화 · 말풍선 넣기 ›</button></div>
 </section>
 
 <!-- ══════════ 7. 말풍선 ══════════ -->
 <section class="step" id="s7" data-step="7">
-  <span class="pill">6단계 · 말풍선 넣기 · 10분</span>
+  <span class="pill">7화 · 말풍선 넣기 · 10분</span>
   <h2>그림 넣고, 말풍선 넣고, 만화 완성</h2>
   <p class="lead">제미나이에서 받은 그림을 넣으면 <b>네 컷이 세로로</b> 이어진 웹툰이 돼요. 스토리보드의 대사가 말풍선으로 들어가 있어요 — <b>끌어서 자리를 옮기고</b> 글을 고쳐요.</p>
   <div class="card">
@@ -545,12 +699,12 @@ nav.steps .no{width:24px;height:24px}
       </div>
     </div>
   </div>
-  <div class="stepnav"><button type="button" class="btn" data-go="6">‹ 이전</button><button type="button" class="btn pri" data-go="8">점검 · 올리기 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="6">‹ 이전화</button><button type="button" class="btn pri" data-go="8">다음화 · 점검 · 올리기 ›</button></div>
 </section>
 
 <!-- ══════════ 8. 점검 · 올리기 ══════════ -->
 <section class="step" id="s8" data-step="8">
-  <span class="pill">7단계 · 점검 · 올리기 · 10분</span>
+  <span class="pill">8화 · 점검 · 올리기 · 10분</span>
   <h2>AI 그림 과학 점검, 그리고 해누리 웹툰에 올리기</h2>
   <p class="lead">AI는 그럴듯하지만 <b>과학을 틀리게</b> 그릴 때가 많아요. 하나씩 <b>내 눈으로</b> 확인해요.</p>
   <div class="card"><h4>🔍 AI 그림 점검표</h4><div id="ckBox"></div></div>
@@ -568,12 +722,12 @@ nav.steps .no{width:24px;height:24px}
     <textarea id="upLim" data-f="up.lim" maxlength="200" rows="2"></textarea>
     <label class="okline big2"><input type="checkbox" data-fc="up.done"> 해누리 웹툰에 내 만화를 올렸어요.</label>
   </div>
-  <div class="stepnav"><button type="button" class="btn" data-go="7">‹ 이전</button><button type="button" class="btn pri" data-go="9">평가 ›</button></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="7">‹ 이전화</button><button type="button" class="btn pri" data-go="9">다음화 · 평가 ›</button></div>
 </section>
 
 <!-- ══════════ 9. 평가 ══════════ -->
 <section class="step" id="s9" data-step="9">
-  <span class="pill">8단계 · 평가 · 25분</span>
+  <span class="pill">9화 · 평가 · 25분</span>
   <h2>친구 만화 과학 피드백 · 전시 추천 · 자기평가</h2>
   <div class="card">
     <h4>🤝 친구 만화 평가 (2편 이상)</h4>
@@ -602,7 +756,7 @@ nav.steps .no{width:24px;height:24px}
     <label class="fl" for="rfCmp">받은 평가와 내 자기평가 견주기 <small>(평가를 받은 뒤 · 골라서)</small></label>
     <textarea id="rfCmp" data-f="rf.cmp" rows="2" placeholder="예: 친구들은 원리 전달을 ★★로 줬는데, 나는 ★★★라고 생각했다. 3컷 대사가 길어서 그런 것 같다."></textarea>
   </div>
-  <div class="stepnav"><button type="button" class="btn" data-go="8">‹ 이전</button><span class="chip ok" id="allDone" hidden>🎉 공모전 출품을 모두 마쳤어요</span></div>
+  <div class="stepnav"><button type="button" class="btn" data-go="8">‹ 이전화</button><span class="chip ok" id="allDone" hidden>🎉 공모전 출품을 모두 마쳤어요</span></div>
 </section>
 
 </main>
@@ -662,6 +816,18 @@ const T_PIN = '4527';                       // 선생님 확인 코드(교사용
 const STEP_NAMES = [['공모전', '안내'], ['예', '찾기'], ['원리', '쓰기'], ['스토리', '보드'], ['그림체', '고르기'], ['AI로', '그리기'], ['말풍선', '넣기'], ['점검', '올리기'], ['평가', '돌아보기']];
 const STEP_LABELS = ['1 공모전 안내', '2 예 찾기', '3 원리 쓰기', '4 스토리보드', '5 그림체', '6 AI로 그리기', '7 말풍선·만화 완성', '8 점검·올리기', '9 평가·돌아보기'];
 const NSTEP = 9;
+// 회차(= 수업 단계) — 작품 홈의 회차 목록과 회차 보기 머리에 쓴다
+const EPS = [
+  { t: '공모전 안내', s: '제1회 해누리 웹툰 공모전에 오신 것을 환영해요', m: 5, em: '🏆', bg: 'linear-gradient(135deg,#14181d,#24443a)' },
+  { t: '예 찾기', s: '우리 주변의 기체 부피 변화', m: 10, em: '🔍', bg: 'linear-gradient(135deg,#d7ecff,#fde8c9)' },
+  { t: '원리 쓰기', s: '왜 부피가 변했을까? 기체 입자로 설명해요', m: 10, em: '🔬', bg: 'linear-gradient(135deg,#d9f5e3,#cfe4ff)' },
+  { t: '스토리보드', s: '발견 · 궁금증 · 원리 · 정리, 네 컷 설계', m: 20, em: '🎬', bg: 'linear-gradient(135deg,#fff1c1,#ffd6d6)' },
+  { t: '그림체 고르기', s: '어떤 그림으로 그릴까?', m: 5, em: '🎨', bg: 'linear-gradient(135deg,#f3dcff,#d6f0ff)' },
+  { t: 'AI로 그리기', s: '저절로 만든 프롬프트로 제미나이와 함께', m: 20, em: '🤖', bg: 'linear-gradient(135deg,#e0e7ff,#d9f5e3)' },
+  { t: '말풍선 넣기', s: '대사는 내가 직접 — 만화 완성', m: 10, em: '💬', bg: 'linear-gradient(135deg,#ffffff,#e8edf2)' },
+  { t: '점검 · 올리기', s: 'AI 그림 과학 점검 → 해누리 웹툰에 출품', m: 10, em: '🧐', bg: 'linear-gradient(135deg,#ffe3c2,#d9f5e3)' },
+  { t: '평가 · 돌아보기', s: '친구 만화 과학 피드백 · 전시 추천 · 자기평가', m: 25, em: '⭐', bg: 'linear-gradient(135deg,#fff6c9,#ffd9e6)' }
+];
 
 /* ══ 도구 ══ */
 const $ = (s, r = document) => r.querySelector(s);
@@ -953,12 +1119,35 @@ function stepsDone() {
 }
 function paintSteps() {
   const d = stepsDone();
-  $('#stepNav').innerHTML = STEP_NAMES.map((n, i) => `<button type="button" data-go="${i + 1}" class="${STEP === i + 1 ? 'on' : ''} ${d[i] ? 'done' : ''}"><span class="no">${d[i] ? '✓' : i + 1}</span><span class="nm">${n[0]}<small>${n[1]}</small></span></button>`).join('');
+  $('#stepNav').innerHTML = STEP_NAMES.map((n, i) => `<button type="button" data-go="${i + 1}" title="${i + 1}화 · ${EPS[i].t}${d[i] ? ' (완료)' : ''}" class="${STEP === i + 1 ? 'on' : ''} ${d[i] ? 'done' : ''}"><span class="no">${d[i] ? '✓' : i + 1}</span><span class="nm">${n[0]}<small>${n[1]}</small></span></button>`).join('');
   $('#progBar').style.width = Math.round(d.filter(Boolean).length / NSTEP * 100) + '%';
   $('#allDone').hidden = !d.every(Boolean);
+  if (!$('#home').hidden) renderHome(d);
+}
+function renderHome(d) {                              // 작품 홈 — 회차 목록(네이버웹툰 작품 페이지처럼)
+  d = d || stepsDone();
+  const next = d.indexOf(false), n = d.filter(Boolean).length;
+  $('#epList').innerHTML = EPS.map((e, i) => `<li><button type="button" class="ep${d[i] ? ' done' : ''}${i === next ? ' now' : ''}" data-go="${i + 1}">
+      <span class="th" style="background:${e.bg}"><span class="em" aria-hidden="true">${e.em}</span><span class="no">${i + 1}화</span></span>
+      <span class="ei"><b>${i + 1}화 · ${e.t}</b><small>${e.s}</small><span class="em2">${d[i] ? '<i class="ok">✓ 완료</i>' : i === next ? '<i class="up">UP</i> 지금 할 차례' : '아직'} · ${e.m}분</span></span>
+      <span class="ego">${d[i] ? '다시 보기' : '보기'} ›</span></button></li>`).join('');
+  $('#homeDone').textContent = n; $('#homeBar').style.width = Math.round(n / NSTEP * 100) + '%';
+  $('#homePen').textContent = (F('sb.pen', '') || '').trim() || '나';
+  const c = $('#contEp'); c.hidden = !(n > 0 && next > 0); if (!c.hidden) $('#contN').textContent = (next + 1) + '화';
+}
+function home(quiet) {
+  STEP = 0; LS.set('step', 0);
+  $$('section.step').forEach(s => s.classList.remove('on'));
+  $('#home').hidden = false; $('#epBar').hidden = true; $('#tabHome').classList.add('on');
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);   // 작품 홈은 주소 꼬리 없이(#home 을 붙이면 로딩 뒤 그 자리로 스크롤된다)
+  renderHome();
+  if (!quiet) scrollTo({ top: 0, behavior: 'smooth' });
 }
 function go(n, quiet) {
   n = Math.max(1, Math.min(NSTEP, +n || 1)); STEP = n; LS.set('step', n);
+  $('#home').hidden = true; $('#epBar').hidden = false; $('#tabHome').classList.remove('on');
+  $('#epTitle').textContent = n + '화 · ' + EPS[n - 1].t;
+  $('#epPrev').disabled = n === 1; $('#epNext').textContent = n === NSTEP ? '목록 ›' : '다음화 ›';
   $$('section.step').forEach(s => s.classList.toggle('on', +s.dataset.step === n));
   if (location.hash !== '#s' + n) history.replaceState(null, '', '#s' + n);
   paintSteps();
@@ -1331,6 +1520,7 @@ function wire() {
   document.addEventListener('click', e => {
     const b = e.target.closest('button, a'); if (!b) return;
     if (b.dataset.go) { go(b.dataset.go); return; }
+    if (b.dataset.home != null) { e.preventDefault(); home(); return; }
     if (b.dataset.ans) { const id = b.closest('[data-ex]').dataset.ex; setF('q.' + id, b.dataset.ans); return; }
     if (b.dataset.pick) { const ex = EX.find(x => x.id === b.dataset.pick); setF('t.pick', ex.id); setF('t.kind', ex.kind); if (!len('t.own')) { setF('t.own', ex.tx); $('#tOwn').value = ex.tx; } $$('#s2 input[data-fr="t.kind"]').forEach(i => { i.checked = i.value === ex.kind; }); toast('「' + ex.tx + '」로 정했어요. 장면을 내 이야기로 바꿔 써도 돼요'); return; }
     if (b.dataset.style) { setF('st.pick', b.dataset.style); return; }
@@ -1382,7 +1572,14 @@ function wire() {
     try { SY.dirty = true; await flush(); if (SY.st !== 'ok') throw new Error(SY.err || '저장 실패'); const p = await OHM.rpc('solo_pull', { p_page: PAGE }); const ok = p && p.state && p.state.savedAt && Math.abs(Date.now() - new Date(p.state.savedAt).getTime()) < 120000; m.textContent = ok ? '✅ 저장과 불러오기가 정상이에요 (' + ME.sid + ')' : '⚠ 저장은 됐지만 불러온 기록이 최근 것이 아니에요'; }
     catch (e) { m.textContent = '❌ ' + (e.message || e); }
   });
-  addEventListener('hashchange', () => { const m = /^#s([1-9])$/.exec(location.hash); if (m && +m[1] !== STEP) go(+m[1], true); });
+  addEventListener('hashchange', () => { if (!location.hash || location.hash === '#home') { if (STEP) home(true); return; } const m = /^#s([1-9])$/.exec(location.hash); if (m && +m[1] !== STEP) go(+m[1], true); });
+  $('#epPrev').addEventListener('click', () => { if (STEP > 1) go(STEP - 1); });
+  $('#epNext').addEventListener('click', () => { if (STEP < NSTEP) go(STEP + 1); else home(); });
+  $('#firstEp').addEventListener('click', () => go(1));
+  $('#contEp').addEventListener('click', () => { const i = stepsDone().indexOf(false); go(i < 0 ? 1 : i + 1); });
+  $('#tabRule').addEventListener('click', e => { e.preventDefault(); go(1, true); setTimeout(() => $('#rubricBox').scrollIntoView({ behavior: 'smooth', block: 'center' }), 60); });
+  // 회차 아래 「이전화 · 목록 · 다음화」 — 가운데에 목록
+  $$('section.step .stepnav').forEach(nv => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.dataset.home = ''; b.textContent = '☰ 목록'; nv.insertBefore(b, nv.lastElementChild); });
   addEventListener('keydown', e => { if (e.key === 'Escape') { if (!$('#gate').hidden) closeGate(); $('#whoM').hidden = true; $('#stampM').hidden = true; } });
 }
 
@@ -1391,15 +1588,15 @@ function start() {
   $('#tPinShow').textContent = T_PIN;
   $('#tSghAdmin').href = SGH + '#/admin';
   $('#sghLink').href = SGH + '#/me/submit'; $('#sghReview').href = SGH + '#/me/review';
+  $('#tabWorks').href = SGH + '#/'; $('#worksBtn').href = SGH + '#/';
   if (!('ed.head' in ST.f)) ST.f['ed.head'] = true;
   if (!('pr.mode' in ST.f)) ST.f['pr.mode'] = 'grid';
   fillGate(); wire(); renderAll();
-  const m = /^#s([1-9])$/.exec(location.hash); let first = m ? +m[1] : LS.get('step', 0);
-  if (!first) { const d = stepsDone(); first = Math.max(1, d.indexOf(false) + 1 || NSTEP); }
-  go(first, true);
+  const m = /^#s([1-9])$/.exec(location.hash);       // 처음엔 작품 홈(회차 목록). 주소가 #s3 처럼 회차를 가리키면 그 회차
+  if (m) go(+m[1], true); else home(true);
   edLoad();
   boot();
-  window.__wt = { F, setF, ST: () => ST, ME, SY, go, stepsDone, buildTexts, snapshot, promptGrid, promptEach, frameSentence, ED, edRender, setGrid, setEach, edFinish, IDB, savePack, checkItems, flush };
+  window.__wt = { F, setF, ST: () => ST, ME, SY, go, home, stepsDone, buildTexts, snapshot, promptGrid, promptEach, frameSentence, ED, edRender, setGrid, setEach, edFinish, IDB, savePack, checkItems, flush };
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 
